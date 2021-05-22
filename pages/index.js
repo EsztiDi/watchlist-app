@@ -1,65 +1,41 @@
-import Link from 'next/link'
-import dbConnect from '../utils/dbConnect'
-import Pet from '../models/Pet'
+import Head from "next/head";
+import dbConnect from "../utils/dbConnect";
+import Watchlist from "../models/Watchlist";
 
-const Index = ({ pets }) => (
-  <>
-    {/* Create a card for each pet */}
-    {pets.map((pet) => (
-      <div key={pet._id}>
-        <div className="card">
-          <img src={pet.image_url} />
-          <h5 className="pet-name">{pet.name}</h5>
-          <div className="main-content">
-            <p className="pet-name">{pet.name}</p>
-            <p className="owner">Owner: {pet.owner_name}</p>
+export default function Index({ watchlists }) {
+  return (
+    <>
+      <Head>
+        {/* For Fb sharing - change before production! */}
+        <meta property="og:url" content="http://localhost:3000/" />
+        <meta property="og:title" content="Watchlist App" />
+        <meta
+          property="og:description"
+          content="An app to create watchlists for films and tv shows"
+        />
+        <meta
+          property="og:image"
+          content="http://localhost:3000/android-chrome-256x256.png"
+        />
+        <meta property="fb:app_id" content="827802261304460" />
+      </Head>
 
-            {/* Extra Pet Info: Likes and Dislikes */}
-            <div className="likes info">
-              <p className="label">Likes</p>
-              <ul>
-                {pet.likes.map((data, index) => (
-                  <li key={index}>{data} </li>
-                ))}
-              </ul>
-            </div>
-            <div className="dislikes info">
-              <p className="label">Dislikes</p>
-              <ul>
-                {pet.dislikes.map((data, index) => (
-                  <li key={index}>{data} </li>
-                ))}
-              </ul>
-            </div>
-
-            <div className="btn-container">
-              <Link href="/[id]/edit" as={`/${pet._id}/edit`}>
-                <button className="btn edit">Edit</button>
-              </Link>
-              <Link href="/[id]" as={`/${pet._id}`}>
-                <button className="btn view">View</button>
-              </Link>
-            </div>
+      {watchlists.map((list) => (
+        <div key={list._id}>
+          <div>
+            {list.title} - {list.position}
           </div>
         </div>
-      </div>
-    ))}
-  </>
-)
-
-/* Retrieves pet(s) data from mongodb database */
-export async function getServerSideProps() {
-  await dbConnect()
-
-  /* find all the data in our database */
-  const result = await Pet.find({})
-  const pets = result.map((doc) => {
-    const pet = doc.toObject()
-    pet._id = pet._id.toString()
-    return pet
-  })
-
-  return { props: { pets: pets } }
+      ))}
+    </>
+  );
 }
 
-export default Index
+export async function getServerSideProps() {
+  await dbConnect();
+
+  const results = await Watchlist.find({}).sort({ position: 1 });
+  const watchlists = await JSON.parse(JSON.stringify(results));
+
+  return { props: { watchlists } };
+}
