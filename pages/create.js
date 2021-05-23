@@ -1,19 +1,13 @@
-// import Form from '../components/Form'
+import Form from "../components/Form";
 
-// const NewPet = () => {
-//   const petForm = {
-//     name: '',
-//     owner_name: '',
-//     species: '',
-//     age: 0,
-//     poddy_trained: false,
-//     diet: [],
-//     image_url: '',
-//     likes: [],
-//     dislikes: [],
-//   }
+// get setmessage from props
+export default function Create({ setMessage }) {
+  const list = {
+    title: "My Watchlist",
+    movies: [],
+    private: false,
+    emails: false,
+  };
 
-//   return <Form formId="add-pet-form" petForm={petForm} />
-// }
-
-// export default NewPet
+  return <Form list={list} setMessage={setMessage} />;
+}

@@ -1,6 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
-import { signIn, signOut, useSession } from "next-auth/client";
+import { signOut, useSession } from "next-auth/client";
 
 import { makeStyles } from "@material-ui/core/styles";
 import AppBar from "@material-ui/core/AppBar";
@@ -83,9 +83,9 @@ export default function Navbar() {
               </Link>
             </>
           ) : (
-            <Button size="large" onClick={() => signIn()}>
-              Login
-            </Button>
+            <Link href="/login">
+              <Button size="large">Login</Button>
+            </Link>
           )}
         </Toolbar>
       </AppBar>

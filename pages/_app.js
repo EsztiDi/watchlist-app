@@ -129,7 +129,7 @@ export default function MyApp({ Component, pageProps }) {
           </Fade>
         )}
         <Container className={classes.mainContainer}>
-          <Component {...pageProps} />
+          <Component {...pageProps} setMessage={setMessage} />
         </Container>
       </ThemeProvider>
     </Provider>

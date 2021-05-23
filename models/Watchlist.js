@@ -3,12 +3,12 @@ import mongoose from "mongoose";
 const WatchlistSchema = new mongoose.Schema(
   {
     user: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
+      type: Object,
+      required: true,
     },
     title: {
       type: String,
-      required: [true, "Please add a title"],
+      required: true,
       trim: true,
     },
     movies: {
