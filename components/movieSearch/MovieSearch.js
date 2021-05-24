@@ -296,7 +296,11 @@ export default function MovieSearch(props) {
           <Alert
             severity="warning"
             variant="filled"
-            style={{ fontSize: "1.2rem", alignItems: "center" }}
+            style={{
+              fontSize: "1.2rem",
+              lineHeight: 1.8,
+              alignItems: "center",
+            }}
           >
             {message}
           </Alert>

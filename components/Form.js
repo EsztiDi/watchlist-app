@@ -293,7 +293,7 @@ export default function Form({ setMessage, list, newList = true }) {
                 }
               />
               <Typography variant="subtitle1" color="textSecondary">
-                Receive weekly emails of the upcoming releases on your
+                Receive weekly emails of any upcoming releases from your
                 watchlist.
               </Typography>
             </Grid>

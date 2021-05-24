@@ -14,6 +14,7 @@ import VerticalAlignBottomRoundedIcon from "@material-ui/icons/VerticalAlignBott
 import KeyboardArrowUpRoundedIcon from "@material-ui/icons/KeyboardArrowUpRounded";
 import KeyboardArrowDownRoundedIcon from "@material-ui/icons/KeyboardArrowDownRounded";
 
+import Overview from "./Overview";
 import Seasons from "./Seasons";
 
 const useStyles = makeStyles((theme) => ({
@@ -24,13 +25,11 @@ const useStyles = makeStyles((theme) => ({
     margin: theme.spacing(1.5),
     padding: theme.spacing(1.5),
   },
-  details: {
+  content: {
     display: "flex",
     flexDirection: "column",
     minWidth: "70%",
-  },
-  content: {
-    flex: "1 0 auto",
+    // flex: "1 0 auto",
   },
   image: {
     minWidth: "20%",
@@ -45,7 +44,7 @@ const useStyles = makeStyles((theme) => ({
     marginBottom: theme.spacing(1),
     fontSize: "0.9rem",
   },
-  date: {
+  nowrap: {
     whiteSpace: "nowrap",
   },
   miniIcon: {
@@ -77,25 +76,6 @@ const useStyles = makeStyles((theme) => ({
     "&::-webkit-scrollbar": {
       width: "4px",
       height: "4px",
-      background: "#F0F0F0",
-      borderRadius: "100px",
-    },
-    "&::-webkit-scrollbar-track": {
-      background: "#F0F0F0",
-      borderRadius: "100px",
-    },
-    "&::-webkit-scrollbar-thumb": {
-      background: "#CECECE",
-      borderRadius: "100px",
-    },
-  },
-  overview: {
-    fontSize: "0.95rem",
-    maxHeight: "68px",
-    overflow: "auto",
-    "&::-webkit-scrollbar": {
-      width: "6px",
-      height: "6px",
       background: "#F0F0F0",
       borderRadius: "100px",
     },
@@ -174,7 +154,6 @@ export default function MovieCard(props) {
       number_of_episodes,
       vote_average,
       external_ids,
-      tv_date,
       season_number,
       directors,
       creators,
@@ -183,6 +162,10 @@ export default function MovieCard(props) {
     } = details;
   }
   var { imdb_id } = external_ids;
+
+  var poster = poster_path
+    ? `https://image.tmdb.org/t/p/w200${poster_path}`
+    : "/movieIcon.png";
 
   // For seasons modal
   const [open, setOpen] = React.useState(false);
@@ -201,128 +184,83 @@ export default function MovieCard(props) {
         <CardMedia
           data-image="background"
           className={classes.image}
-          image={
-            poster_path
-              ? `https://image.tmdb.org/t/p/w200${poster_path}`
-              : "/movieIcon.png"
-          }
+          image={poster}
         />
-        <div className={classes.details}>
-          <CardContent className={classes.content}>
-            <Typography component="h6" variant="h6" className={classes.title}>
-              {title ? title : "Untitled"} ({year},{" "}
-              {media_type ? media_type : "-"})
-            </Typography>
-            <Typography
-              variant="subtitle2"
-              color="textSecondary"
-              className={classes.info}
-            >
-              {number_of_episodes > 0 && (
-                <>
-                  <span className={classes.external} onClick={handleOpen}>
-                    {number_of_episodes +
-                      (number_of_episodes === 1 ? " episode" : " episodes")}
-                  </span>
-                  <span>{" ● "}</span>
-                  <Seasons
-                    open={open}
-                    onClose={handleClose}
-                    seasons={seasons}
-                    lastSeason={season_number}
-                  />
-                </>
-              )}
-              {number_of_episodes === 0 && (
-                <span className={classes.date}>
-                  {number_of_episodes + " episodes ● "}
-                </span>
-              )}
-              {(runtime && genres && genres.length > 0) ||
-              (runtime && (release_date || tv_date))
-                ? runtime + " ● "
-                : runtime
-                ? runtime
-                : ""}
-              {genres && genres.length > 0
-                ? genres.map((genre, index) =>
-                    index === genres.length - 1 && (release_date || tv_date)
-                      ? genre.name + " ● "
-                      : index === genres.length - 1
-                      ? genre.name
-                      : genre.name + " | "
-                  )
-                : ""}
-              <span className={classes.date}>
-                {tv_date ? tv_date : release_date ? release_date : ""}
-              </span>
-              {vote_average ? (
-                <a
-                  href={`https://www.themoviedb.org/${media_type}/${id}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={classes.external}
-                >
-                  {" "}
-                  <StarRoundedIcon className={classes.miniIcon} />{" "}
-                  {vote_average} (TMDb)
-                </a>
-              ) : (
-                ""
-              )}
-              {imdb_id ? (
-                <a
-                  href={`https://www.imdb.com/title/${imdb_id}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={classes.external}
-                >
-                  {" "}
-                  <TheatersRoundedIcon className={classes.miniIcon} /> IMDb
-                </a>
-              ) : (
-                ""
-              )}
-            </Typography>
-            <Typography className={classes.director}>
-              {creators ? <b>Created by: </b> : <b>Director: </b>}
-              {creators && creators.length > 0
-                ? creators.map((member, index) =>
-                    index === creators.length - 1
-                      ? member.name
-                      : member.name + ", "
-                  )
-                : directors && directors.length > 0
-                ? directors.map((member, index) =>
-                    index === directors.length - 1
-                      ? member.name
-                      : member.name + ", "
-                  )
-                : "-"}
-            </Typography>
-            <Typography className={classes.cast}>
-              <b>Cast: </b>
-              {cast}
-              {/* {credits &&
-              credits.hasOwnProperty("cast") &&
-              credits.cast.length > 0
-                ? credits.cast.map((member, index) =>
-                    index === credits.cast.length - 1
-                      ? member.name
-                      : member.name + ", "
-                  )
-                : "-"} */}
-            </Typography>
-            <Typography className={classes.overview}>
-              {overview ? overview : ""}
-            </Typography>
-          </CardContent>
-        </div>
-        {deleteMovie && (
-          <span className={classes.buttons}>
-            {index !== 0 && (
+        <CardContent className={classes.content}>
+          <Typography component="h6" variant="h6" className={classes.title}>
+            {title || "Untitled"} ({year}, {media_type || "-"})
+          </Typography>
+          <Typography
+            variant="subtitle2"
+            color="textSecondary"
+            className={classes.info}
+          >
+            {number_of_episodes > 0 && (
               <>
-                {moviesLength > 2 && index !== 1 && (
+                <span className={classes.external} onClick={handleOpen}>
+                  {number_of_episodes +
+                    (number_of_episodes === 1 ? " episode" : " episodes")}
+                </span>
+                {" ● "}
+                <Seasons
+                  open={open}
+                  onClose={handleClose}
+                  seasons={seasons}
+                  lastSeason={season_number}
+                />
+              </>
+            )}
+            {number_of_episodes === 0 && (
+              <span className={classes.nowrap}>
+                {number_of_episodes + " episodes ● "}
+              </span>
+            )}
+            {runtime}
+            {runtime && (genres || release_date) && " ● "}
+            {genres}
+            {genres && release_date && " ● "}
+            <span className={classes.nowrap}>{release_date}</span>
+            {vote_average ? (
+              <a
+                href={`https://www.themoviedb.org/${media_type}/${id}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={classes.external}
+              >
+                {" "}
+                <StarRoundedIcon className={classes.miniIcon} /> {vote_average}{" "}
+                (TMDb)
+              </a>
+            ) : (
+              ""
+            )}
+            {imdb_id && (
+              <a
+                href={`https://www.imdb.com/title/${imdb_id}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={classes.external}
+              >
+                {" "}
+                <TheatersRoundedIcon className={classes.miniIcon} /> IMDb
+              </a>
+            )}
+          </Typography>
+          <Typography className={classes.director}>
+            {creators ? <b>Created by: </b> : <b>Director: </b>}
+            {creators || directors || "-"}
+          </Typography>
+          <Typography className={classes.cast}>
+            <b>Cast: </b>
+            {cast}
+          </Typography>
+          <Overview overview={overview} />
+        </CardContent>
+        {deleteMovie && (
+          <div className={classes.buttons}>
+            {index > 0 && (
+              <>
+                {index > 1 && (
                   <IconButton
                     aria-label="move to top"
                     title="Move to top"
@@ -353,7 +291,7 @@ export default function MovieCard(props) {
             >
               <HighlightOffRoundedIcon className={classes.delete} />
             </IconButton>
-            {index !== moviesLength - 1 && (
+            {index < moviesLength - 1 && (
               <>
                 <IconButton
                   aria-label="move down"
@@ -364,7 +302,7 @@ export default function MovieCard(props) {
                 >
                   <KeyboardArrowDownRoundedIcon className={classes.arrow} />
                 </IconButton>
-                {moviesLength > 2 && index !== moviesLength - 2 && (
+                {index < moviesLength - 2 && (
                   <IconButton
                     aria-label="move to bottom"
                     title="Move to bottom"
@@ -379,7 +317,7 @@ export default function MovieCard(props) {
                 )}
               </>
             )}
-          </span>
+          </div>
         )}
       </Card>
     </>

@@ -21,7 +21,6 @@ const useStyles = makeStyles((theme) => ({
     flex: "1 0 auto",
   },
   overview: {
-    textAlign: "left",
     fontSize: "0.95rem",
     maxHeight: "113.2px",
     overflow: "auto",
@@ -29,9 +28,11 @@ const useStyles = makeStyles((theme) => ({
       width: "6px",
       height: "6px",
       background: "#F0F0F0",
+      borderRadius: "100px",
     },
     "&::-webkit-scrollbar-track": {
       background: "#F0F0F0",
+      borderRadius: "100px",
     },
     "&::-webkit-scrollbar-thumb": {
       background: "#CECECE",
@@ -43,7 +44,7 @@ const useStyles = makeStyles((theme) => ({
 export default function MovieListItem({ movie }) {
   const classes = useStyles();
 
-  let {
+  var {
     poster_path,
     title,
     name,
@@ -53,33 +54,29 @@ export default function MovieListItem({ movie }) {
     overview,
   } = movie;
 
+  var poster = poster_path
+    ? `https://image.tmdb.org/t/p/w200${poster_path}`
+    : "/movieIcon.png";
+
   title = title || name || "Untitled";
-  release_date = release_date
+
+  var year = release_date
     ? new Date(release_date).getFullYear()
     : first_air_date
     ? new Date(first_air_date).getFullYear()
     : "No release date";
 
   return (
-    <React.Fragment>
-      <CardMedia
-        className={classes.image}
-        image={
-          poster_path
-            ? `https://image.tmdb.org/t/p/w200${poster_path}`
-            : "/movieIcon.png"
-        }
-      />
+    <>
+      <CardMedia className={classes.image} image={poster} />
       <div className={classes.details}>
         <CardContent className={classes.content}>
           <Typography component="h6" variant="h6" className={classes.title}>
-            {title} ({release_date}, {media_type ? media_type : "-"})
+            {title} ({year}, {media_type || "-"})
           </Typography>
-          <Typography className={classes.overview}>
-            {overview ? overview : ""}
-          </Typography>
+          <Typography className={classes.overview}>{overview || ""}</Typography>
         </CardContent>
       </div>
-    </React.Fragment>
+    </>
   );
 }

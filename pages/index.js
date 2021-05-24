@@ -1,13 +1,13 @@
 import Head from "next/head";
 import dbConnect from "../utils/dbConnect";
 import Watchlist from "../models/Watchlist";
+import { getSession } from "next-auth/client";
 
 export default function Index({ watchlists }) {
   return (
     <>
       <Head>
-        {/* For Fb sharing - change before production! */}
-        <meta property="og:url" content="http://localhost:3000/" />
+        <meta property="og:url" content={process.env.BASE_URL} />
         <meta property="og:title" content="Watchlist App" />
         <meta
           property="og:description"
@@ -15,7 +15,7 @@ export default function Index({ watchlists }) {
         />
         <meta
           property="og:image"
-          content="http://localhost:3000/android-chrome-256x256.png"
+          content={`${process.env.BASE_URL}android-chrome-256x256.png`}
         />
         <meta property="fb:app_id" content="827802261304460" />
       </Head>
@@ -31,10 +31,13 @@ export default function Index({ watchlists }) {
   );
 }
 
-export async function getServerSideProps() {
+export async function getServerSideProps(context) {
+  const session = await getSession(context);
   await dbConnect();
 
-  const results = await Watchlist.find({}).sort({ position: 1 });
+  const results = await Watchlist.find({ user: session.user }).sort({
+    position: 1,
+  });
   const watchlists = await JSON.parse(JSON.stringify(results));
 
   return { props: { watchlists } };
