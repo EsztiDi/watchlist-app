@@ -24,6 +24,7 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: "space-between",
     margin: theme.spacing(1.5),
     padding: theme.spacing(1.5),
+    textAlign: "left",
   },
   content: {
     display: "flex",
@@ -122,18 +123,15 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function MovieCard(props) {
+export default function MovieCard({
+  movie,
+  index,
+  moviesLength,
+  deleteMovie,
+  moveMovie,
+  updating,
+}) {
   const classes = useStyles();
-
-  const {
-    movie,
-    index,
-    listId,
-    moviesLength,
-    deleteMovie,
-    moveMovie,
-    loading,
-  } = props;
 
   var {
     id,
@@ -167,15 +165,11 @@ export default function MovieCard(props) {
     ? `https://image.tmdb.org/t/p/w200${poster_path}`
     : "/movieIcon.png";
 
-  // For seasons modal
-  const [open, setOpen] = React.useState(false);
+  // For Seasons modal
+  const [seasonsOpen, setSeasonsOpen] = React.useState(false);
 
-  const handleOpen = () => {
-    setOpen(true);
-  };
-
-  const handleClose = () => {
-    setOpen(false);
+  const handleSeasonsOpen = () => {
+    setSeasonsOpen((prev) => !prev);
   };
 
   return (
@@ -197,14 +191,14 @@ export default function MovieCard(props) {
           >
             {number_of_episodes > 0 && (
               <>
-                <span className={classes.external} onClick={handleOpen}>
+                <span className={classes.external} onClick={handleSeasonsOpen}>
                   {number_of_episodes +
                     (number_of_episodes === 1 ? " episode" : " episodes")}
                 </span>
                 {" ● "}
                 <Seasons
-                  open={open}
-                  onClose={handleClose}
+                  open={seasonsOpen}
+                  onClose={handleSeasonsOpen}
                   seasons={seasons}
                   lastSeason={season_number}
                 />
@@ -265,8 +259,8 @@ export default function MovieCard(props) {
                     aria-label="move to top"
                     title="Move to top"
                     className={classes.bigbutton}
-                    disabled={loading}
-                    onClick={() => moveMovie("top", index, position, listId)}
+                    disabled={updating}
+                    onClick={() => moveMovie("top", index, position)}
                   >
                     <VerticalAlignTopRoundedIcon className={classes.bigarrow} />
                   </IconButton>
@@ -275,8 +269,8 @@ export default function MovieCard(props) {
                   aria-label="move up"
                   title="Move up"
                   className={classes.button}
-                  disabled={loading}
-                  onClick={() => moveMovie("up", index, position, listId)}
+                  disabled={updating}
+                  onClick={() => moveMovie("up", index, position)}
                 >
                   <KeyboardArrowUpRoundedIcon className={classes.arrow} />
                 </IconButton>
@@ -286,8 +280,8 @@ export default function MovieCard(props) {
               aria-label="remove"
               title="Remove"
               className={classes.button}
-              disabled={loading}
-              onClick={() => deleteMovie(index, listId)}
+              disabled={updating}
+              onClick={() => deleteMovie(index)}
             >
               <HighlightOffRoundedIcon className={classes.delete} />
             </IconButton>
@@ -297,8 +291,11 @@ export default function MovieCard(props) {
                   aria-label="move down"
                   title="Move down"
                   className={classes.button}
-                  disabled={loading}
-                  onClick={() => moveMovie("down", index, position, listId)}
+                  disabled={updating}
+                  onClick={() => {
+                    console.log(index, position);
+                    moveMovie("down", index, position);
+                  }}
                 >
                   <KeyboardArrowDownRoundedIcon className={classes.arrow} />
                 </IconButton>
@@ -307,8 +304,8 @@ export default function MovieCard(props) {
                     aria-label="move to bottom"
                     title="Move to bottom"
                     className={classes.bigbutton}
-                    disabled={loading}
-                    onClick={() => moveMovie("bottom", index, position, listId)}
+                    disabled={updating}
+                    onClick={() => moveMovie("bottom", index, position)}
                   >
                     <VerticalAlignBottomRoundedIcon
                       className={classes.bigarrow}

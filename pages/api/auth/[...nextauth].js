@@ -30,11 +30,5 @@ export default NextAuth({
     signIn: "/login",
   },
 
-  callbacks: {
-    async redirect(url, baseUrl) {
-      return "/lists";
-    },
-  },
-
   database: process.env.MONGODB_URI,
 });

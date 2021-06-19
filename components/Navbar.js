@@ -43,6 +43,7 @@ export default function Navbar() {
   const classes = useStyles();
 
   const [session, loading] = useSession();
+  const user = session?.user;
 
   return (
     <div className={classes.navbar}>
@@ -57,7 +58,7 @@ export default function Navbar() {
           <Link href="/">
             <Button size="large">Discover</Button>
           </Link>
-          {session ? (
+          {user ? (
             <>
               <Link href="/create">
                 <Button size="large">Create</Button>
@@ -71,9 +72,7 @@ export default function Navbar() {
               <Link href="/">
                 <IconButton size="medium" className={classes.profile}>
                   <Image
-                    src={
-                      session.user.image ? session.user.image : "/avatar.jpg"
-                    }
+                    src={user.image ? user.image : "/avatar.jpg"}
                     alt=""
                     width={48}
                     height={48}

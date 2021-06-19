@@ -118,20 +118,22 @@ export default function Seasons({ open, onClose, seasons, lastSeason }) {
             </Tabs>
           </AppBar>
           <div id="modal-description">
-            {seasons
-              .sort((a, b) => a.season_number - b.season_number)
-              .map((season, index) => (
-                <TabPanel
-                  key={index}
-                  value={value}
-                  index={index}
-                  className={classes.tabpanel}
-                >
-                  {season.episodes &&
-                    season.episodes.length > 0 &&
-                    season.episodes.map((episode) => episode)}
-                </TabPanel>
-              ))}
+            {seasons &&
+              seasons.length > 0 &&
+              seasons
+                .sort((a, b) => a.season_number - b.season_number)
+                .map((season, index) => (
+                  <TabPanel
+                    key={index}
+                    value={value}
+                    index={index}
+                    className={classes.tabpanel}
+                  >
+                    {season.episodes &&
+                      season.episodes.length > 0 &&
+                      season.episodes.map((episode) => episode)}
+                  </TabPanel>
+                ))}
           </div>
         </div>
       </Fade>

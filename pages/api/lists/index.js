@@ -11,7 +11,12 @@ export default async function handler(req, res) {
   switch (method) {
     case "GET":
       try {
-        const lists = await Watchlist.find({}).sort({ position: 1 });
+        const lists = await Watchlist.find(
+          { user: session.user },
+          "_id title position"
+        ).sort({
+          position: 1,
+        });
         res.status(200).json({ success: true, data: lists });
       } catch (error) {
         res.status(400).json({ success: false });
@@ -19,7 +24,9 @@ export default async function handler(req, res) {
       break;
     case "POST":
       try {
-        const lists = await Watchlist.find({}).sort({ position: 1 });
+        const lists = await Watchlist.find({ user: session.user }).sort({
+          position: 1,
+        });
 
         if (lists.length > 0) {
           req.body.position = lists[lists.length - 1].position + 1;
@@ -39,3 +46,11 @@ export default async function handler(req, res) {
       break;
   }
 }
+
+export const config = {
+  api: {
+    bodyParser: {
+      sizeLimit: "50mb",
+    },
+  },
+};

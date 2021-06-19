@@ -1,19 +1,15 @@
+import Image from "next/image";
+
 import Typography from "@material-ui/core/Typography";
 
 export default function Custom500() {
-  console.error("Error: 500 (Internal Server Error)");
-
   return (
     <div style={{ textAlign: "center", paddingTop: "1rem" }}>
       <Typography variant="h5">Server Error</Typography>
-      <Typography variant="h6">
+      <Typography variant="h6" style={{ paddingBottom: "1rem" }}>
         We're sorry, something went wrong. Please try again or contact ...
       </Typography>
-      <img
-        src="/puppy1.jpg"
-        alt="Error 500"
-        style={{ maxWidth: "60%", paddingTop: "1rem" }}
-      />
+      <Image src="/puppy1.jpg" alt="Error 500" width={360} height={480} />
       <br />
       <a
         href="https://www.pexels.com/photo/adult-black-pug-1851164/"

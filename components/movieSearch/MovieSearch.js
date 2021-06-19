@@ -7,13 +7,22 @@ import Alert from "@material-ui/lab/Alert";
 
 import Dropdown from "./Dropdown";
 
-export default function MovieSearch(props) {
-  const { listId, addMovie } = props;
+const unloadAlert = (ev) => {
+  ev.preventDefault();
+  ev.returnValue = "";
+};
 
+export default function MovieSearch({ addMovie }) {
   const [loading, setLoading] = React.useState(false);
   const [query, setQuery] = React.useState("");
   const [results, setResults] = React.useState([]);
   const [message, setMessage] = React.useState("");
+
+  React.useEffect(() => {
+    loading
+      ? window.addEventListener("beforeunload", unloadAlert)
+      : window.removeEventListener("beforeunload", unloadAlert);
+  }, [loading]);
 
   const handleMessage = () => {
     setMessage("");
@@ -174,10 +183,10 @@ export default function MovieSearch(props) {
               });
           }
 
-          addMovie({ ...newMovie, seasons }, listId);
+          addMovie({ ...newMovie, seasons });
           setLoading(false);
         } else {
-          addMovie(newMovie, listId);
+          addMovie(newMovie);
           setLoading(false);
         }
 
@@ -195,7 +204,7 @@ export default function MovieSearch(props) {
           details: {},
         };
         console.error("Movie details error: ", err);
-        addMovie(newMovie, listId);
+        addMovie(newMovie);
         setMessage("Couldn't get details, please try again.");
         setLoading(false);
       });

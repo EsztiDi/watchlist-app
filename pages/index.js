@@ -1,9 +1,8 @@
 import Head from "next/head";
-import dbConnect from "../utils/dbConnect";
-import Watchlist from "../models/Watchlist";
-import { getSession } from "next-auth/client";
+// import dbConnect from "../utils/dbConnect";
+// import Watchlist from "../models/Watchlist";
 
-export default function Index({ watchlists }) {
+export default function Index() {
   return (
     <>
       <Head>
@@ -15,30 +14,31 @@ export default function Index({ watchlists }) {
         />
         <meta
           property="og:image"
-          content={`${process.env.BASE_URL}android-chrome-256x256.png`}
+          content={`${process.env.BASE_URL}/android-chrome-256x256.png`}
         />
         <meta property="fb:app_id" content="827802261304460" />
       </Head>
 
-      {watchlists.map((list) => (
-        <div key={list._id}>
-          <div>
-            {list.title} - {list.position}
-          </div>
-        </div>
-      ))}
+      <div>Hello there!</div>
     </>
   );
 }
 
-export async function getServerSideProps(context) {
-  const session = await getSession(context);
-  await dbConnect();
+// export async function getServerSideProps(context) {
+//   const session = await getSession(context);
+//   await dbConnect();
+//   var results;
 
-  const results = await Watchlist.find({ user: session.user }).sort({
-    position: 1,
-  });
-  const watchlists = await JSON.parse(JSON.stringify(results));
+//   if (session) {
+//     results = await Watchlist.find({ user: session.user }).sort({
+//       position: 1,
+//     });
+//   } else {
+//     results = await Watchlist.find({}, "_id title position").sort({
+//       position: 1,
+//     });
+//   }
+//   const watchlists = await JSON.parse(JSON.stringify(results));
 
-  return { props: { watchlists } };
-}
+//   return { props: { watchlists } };
+// }

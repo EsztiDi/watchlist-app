@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { useRouter } from "next/router";
 import { mutate } from "swr";
 
@@ -15,6 +14,8 @@ import Paper from "@material-ui/core/Paper";
 
 import MovieSearch from "./movieSearch/MovieSearch";
 import Movies from "./Movies";
+import TabPanel from "./tabs/TabPanel";
+import ListTabs from "./tabs/ListTabs";
 
 const useStyles = makeStyles((theme) => ({
   form: {
@@ -41,24 +42,77 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function Form({ setMessage, list, newList = true }) {
-  const classes = useStyles();
-  const router = useRouter();
-  const contentType = "application/json";
-  const [loading, setLoading] = React.useState(false);
+const unloadAlert = (ev) => {
+  ev.preventDefault();
+  ev.returnValue = "";
+};
 
+export default function Form({
+  lists,
+  list,
+  setMessage,
+  newList = true,
+  newTab = false,
+}) {
+  const classes = useStyles();
+  const contentType = "application/json";
+  const router = useRouter();
+  var { id } = router.query;
+  if (Array.isArray(id)) id = id[0];
+
+  const [updating, setUpdating] = React.useState(false);
+  const newMovie = React.useRef(false);
   const [form, setForm] = React.useState({
     title: list.title,
     movies: list.movies,
     private: list.private,
     emails: list.emails,
   });
-
   var { movies } = form;
 
-  console.log("form:", form);
+  React.useEffect(() => {
+    if (!newList) {
+      setForm({
+        title: list.title,
+        movies: list.movies,
+        private: list.private,
+        emails: list.emails,
+      });
 
-  const postData = async (form) => {
+      // if (!newTab) mutate("/api/lists");
+      console.log("list effect");
+
+      if (newMovie.current) {
+        var panel =
+          document.getElementById(`tabpanel-${id}`) ||
+          document.querySelector("html");
+        panel.style = "scroll-behavior: smooth;";
+        panel.scrollTop = panel.scrollHeight;
+        newMovie.current = false;
+      }
+    }
+  }, [list]);
+
+  React.useEffect(() => {
+    if (
+      !newList &&
+      (form.private !== list.private ||
+        form.emails !== list.emails ||
+        movies !== list.movies)
+    ) {
+      console.log("putData effect", form);
+      setUpdating(true);
+      putData(form);
+    }
+  }, [form.private, form.emails, movies]);
+
+  React.useEffect(() => {
+    updating
+      ? window.addEventListener("beforeunload", unloadAlert)
+      : window.removeEventListener("beforeunload", unloadAlert);
+  }, [updating]);
+
+  const postData = async (newForm) => {
     try {
       const res = await fetch("/api/lists", {
         method: "POST",
@@ -66,24 +120,22 @@ export default function Form({ setMessage, list, newList = true }) {
           Accept: contentType,
           "Content-Type": contentType,
         },
-        body: JSON.stringify(form),
+        body: JSON.stringify(newForm),
       });
 
       if (!res.ok) {
         throw new Error(res.status);
       }
 
-      setLoading(false);
-      router.push("/");
+      setUpdating(false);
+      router.push("/lists");
     } catch (error) {
       setMessage(error.message + " - Failed to add list");
-      setLoading(false);
+      setUpdating(false);
     }
   };
 
-  const putData = async (form, id) => {
-    // const { id } = router.query
-
+  const putData = async (newForm) => {
     try {
       const res = await fetch(`/api/lists/${id}`, {
         method: "PUT",
@@ -91,86 +143,69 @@ export default function Form({ setMessage, list, newList = true }) {
           Accept: contentType,
           "Content-Type": contentType,
         },
-        body: JSON.stringify(form),
+        body: JSON.stringify(newForm),
       });
 
       if (!res.ok) {
         throw new Error(res.status);
       }
 
-      const { data } = await res.json();
-
-      mutate(`/api/lists/${id}`, data, false); // Update the local data without a revalidation
-      setLoading(false);
-      router.push("/");
+      // mutate("/api/lists");
+      // mutate(`/api/lists/${id}`);
+      setTimeout(() => {
+        setUpdating(false);
+      }, 500);
     } catch (error) {
       setMessage(error.message + " - Failed to update list");
-      setLoading(false);
+      setUpdating(false);
     }
   };
 
-  const handleChange = async (e) => {
-    setLoading(true);
-
-    const target = e.target;
+  const handleChange = (ev) => {
+    const target = ev.target;
     const value =
       target.name === "private" || target.name === "emails"
         ? target.checked
         : target.value;
     const name = target.name;
 
-    await setForm({
+    setForm({
       ...form,
       [name]: value,
     });
-
-    setLoading(false);
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    setLoading(true);
-
-    newList ? postData(form) : putData(form);
+  const handleSubmit = (ev) => {
+    ev.preventDefault();
+    setUpdating(true);
+    postData(form);
   };
 
-  const addMovie = async (movie) => {
-    setLoading(true);
-
+  const addMovie = (movie) => {
     if (movies.length > 0) {
       movie.position =
         movies.sort((a, b) => a.position - b.position)[movies.length - 1]
           .position + 1;
-      //   let max = movies.reduce((a, b) =>
-      //     a.position > b.position ? a : b
-      //   ).position;
-      //   movie.position = max + 1;
     } else {
       movie.position = 0;
     }
 
-    await setForm({
+    setForm({
       ...form,
       movies: [...movies, movie],
     });
 
-    setLoading(false);
+    newMovie.current = true;
   };
 
-  const deleteMovie = async (index) => {
-    setLoading(true);
-
-    await setForm({
+  const deleteMovie = (index) => {
+    setForm({
       ...form,
       movies: [...movies.filter((movie, i) => i !== index)],
     });
-
-    setLoading(false);
   };
 
-  const moveMovie = async (action, index, position) => {
-    setLoading(true);
-
+  const moveMovie = (action, index, position) => {
     // Getting adjacent position
     switch (action) {
       case "up":
@@ -213,16 +248,36 @@ export default function Form({ setMessage, list, newList = true }) {
         }),
     ];
 
-    await setForm({
+    setForm({
       ...form,
       movies: updatedMovies,
     });
-
-    setLoading(false);
   };
 
-  return (
-    // add tabpanel here, move form out to a new component
+  return !newList ? (
+    <>
+      {!newTab && (
+        <ListTabs
+          id={id}
+          lists={lists}
+          updating={updating}
+          setUpdating={setUpdating}
+          putData={putData}
+        />
+      )}
+      <TabPanel
+        list={list}
+        newTab={newTab}
+        updating={updating}
+        setUpdating={setUpdating}
+        setMessage={setMessage}
+        onChange={handleChange}
+        addMovie={addMovie}
+        deleteMovie={deleteMovie}
+        moveMovie={moveMovie}
+      />
+    </>
+  ) : (
     <Container maxWidth="md">
       <Paper elevation={4} className={classes.create}>
         <Typography variant="h5" className={classes.title}>
@@ -257,7 +312,7 @@ export default function Form({ setMessage, list, newList = true }) {
                   movies={movies}
                   deleteMovie={deleteMovie}
                   moveMovie={moveMovie}
-                  loading={loading}
+                  updating={updating}
                 />
               </Grid>
             )}
@@ -267,10 +322,10 @@ export default function Form({ setMessage, list, newList = true }) {
                 labelPlacement="start"
                 control={
                   <Switch
+                    color="primary"
                     name="private"
                     checked={form.private}
                     onChange={handleChange}
-                    color="primary"
                   />
                 }
               />
@@ -285,10 +340,10 @@ export default function Form({ setMessage, list, newList = true }) {
                 labelPlacement="start"
                 control={
                   <Switch
+                    color="primary"
                     name="emails"
                     checked={form.emails}
                     onChange={handleChange}
-                    color="primary"
                   />
                 }
               />
@@ -303,19 +358,14 @@ export default function Form({ setMessage, list, newList = true }) {
                 size="large"
                 variant="contained"
                 color="primary"
-                disabled={loading}
+                disabled={updating}
               >
-                {loading ? (
+                {updating ? (
                   <CircularProgress size="1.5rem" thickness={5} />
                 ) : (
                   "Save"
                 )}
               </Button>
-              <Link href="/lists">
-                <Button size="large" variant="contained" color="secondary">
-                  Cancel
-                </Button>
-              </Link>
             </Grid>
           </Grid>
         </form>
