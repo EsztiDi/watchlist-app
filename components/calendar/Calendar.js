@@ -52,6 +52,9 @@ const useStyles = makeStyles((theme) => ({
   header: {
     textAlign: "center",
     padding: theme.spacing(1),
+    "& span": {
+      fontSize: "1.3rem",
+    },
   },
   buttons: {
     position: "relative",
@@ -140,7 +143,13 @@ export default function Calendar({ movies, newTab = false }) {
         Back
       </Button>
       <Paper elevation={1} className={classes.container}>
-        <CardHeader title="Calendar" className={classes.header} />
+        {newTab && (
+          <CardHeader
+            // titleTypographyProps={{ variant: "h6" }}
+            title="Release Calendar"
+            className={classes.header}
+          />
+        )}
         <TableContainer component={Paper}>
           <Table className={classes.table} aria-label="calendar current month">
             <TableHead>

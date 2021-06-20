@@ -111,14 +111,13 @@ export default function MyApp({ Component, pageProps }) {
         <link rel="manifest" href="/site.webmanifest" />
         <meta
           name="description"
-          content="A web app to create watchlists for films and tv shows"
+          content="An app to create watchlists for films and tv shows"
         />
         <title>Watchlists</title>
       </Head>
       <Provider session={pageProps.session}>
         <SWRConfig
           value={{
-            refreshInterval: 1000,
             fetcher: (resource, init) =>
               fetch(resource, init)
                 .then((res) => res.json())

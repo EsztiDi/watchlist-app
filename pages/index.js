@@ -16,7 +16,12 @@ export default function Index() {
           property="og:image"
           content={`${process.env.BASE_URL}/android-chrome-256x256.png`}
         />
+        <meta property="og:image:width" content="256" />
+        <meta property="og:image:height" content="256" />
         <meta property="fb:app_id" content="827802261304460" />
+        <meta name="twitter:card" content="summary" />
+        <link rel="canonical" href={process.env.BASE_URL} />
+        <meta name="robots" content="noimageindex, nofollow" />
       </Head>
 
       <div>Hello there!</div>

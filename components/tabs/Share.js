@@ -48,8 +48,7 @@ const useStyles = makeStyles((theme) => ({
   title: {
     textAlign: "center",
     backgroundColor: theme.palette.background.paper,
-    paddingTop: theme.spacing(1),
-    paddingBottom: theme.spacing(1),
+    padding: `${theme.spacing(0.5)}px 0`,
     marginBottom: theme.spacing(1.5),
   },
   buttons: {
@@ -79,6 +78,8 @@ const useStyles = makeStyles((theme) => ({
 export default function Share({ listID, uid, title, open, onClose }) {
   const classes = useStyles();
 
+  const iconSize = 48;
+  const textVariant = "caption";
   const shareUrl = `${window.location.origin}/list/${listID}`;
   const editableUrl = `${window.location.origin}/list/${listID}/${uid}`;
   const [shareLink, setShareLink] = React.useState(shareUrl);
@@ -124,37 +125,40 @@ export default function Share({ listID, uid, title, open, onClose }) {
           </Typography>
           <div className={classes.buttons}>
             <FacebookShareButton url={shareLink}>
-              <FacebookIcon round />
-              <Typography variant="subtitle2">Facebook</Typography>
+              <FacebookIcon size={iconSize} round />
+              <Typography variant={textVariant}>Facebook</Typography>
             </FacebookShareButton>
-            <FacebookMessengerShareButton url={shareLink}>
-              <FacebookMessengerIcon round />
-              <Typography variant="subtitle2">Messenger</Typography>
+            <FacebookMessengerShareButton
+              appId="827802261304460"
+              url={shareLink}
+            >
+              <FacebookMessengerIcon size={iconSize} round />
+              <Typography variant={textVariant}>Messenger</Typography>
             </FacebookMessengerShareButton>
             <WhatsappShareButton url={shareLink}>
-              <WhatsappIcon round />
-              <Typography variant="subtitle2">WhatsApp</Typography>
+              <WhatsappIcon size={iconSize} round />
+              <Typography variant={textVariant}>WhatsApp</Typography>
             </WhatsappShareButton>
             <TwitterShareButton url={shareLink}>
-              <TwitterIcon round />
-              <Typography variant="subtitle2">Twitter</Typography>
+              <TwitterIcon size={iconSize} round />
+              <Typography variant={textVariant}>Twitter</Typography>
             </TwitterShareButton>
             <RedditShareButton url={shareLink}>
-              <RedditIcon round />
-              <Typography variant="subtitle2">Reddit</Typography>
+              <RedditIcon size={iconSize} round />
+              <Typography variant={textVariant}>Reddit</Typography>
             </RedditShareButton>
             <LinkedinShareButton url={shareLink}>
-              <LinkedinIcon round />
-              <Typography variant="subtitle2">LinkedIn</Typography>
+              <LinkedinIcon size={iconSize} round />
+              <Typography variant={textVariant}>LinkedIn</Typography>
             </LinkedinShareButton>
 
             <EmailShareButton
               url={shareLink}
               subject={title}
-              body={`Hi,${"\n\n"}Check out this watchlist I have:${"\n"}${"\n"}${title}${"\n"}`}
+              body={`Hi,${"\n\n"}Look what I have created!${"\n"}${"\n"}${title}${"\n"}`}
             >
-              <EmailIcon round />
-              <Typography variant="subtitle2">Email</Typography>
+              <EmailIcon size={iconSize} round />
+              <Typography variant={textVariant}>Email</Typography>
             </EmailShareButton>
           </div>
           <TextField

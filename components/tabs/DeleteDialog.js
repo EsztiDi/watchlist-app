@@ -14,7 +14,7 @@ const useStyles = makeStyles((theme) => ({
     textAlign: "center",
   },
   buttons: {
-    justifyContent: "center",
+    justifyContent: "space-evenly",
     paddingBottom: theme.spacing(2),
   },
 }));
@@ -60,6 +60,7 @@ export default function DeleteDialog({
         <Button
           variant="contained"
           color="primary"
+          size="large"
           disableFocusRipple
           onClick={onOpenDelete}
         >
@@ -68,6 +69,7 @@ export default function DeleteDialog({
         <Button
           variant="contained"
           color="secondary"
+          size="large"
           disableFocusRipple
           autoFocus
           onClick={handleDelete}

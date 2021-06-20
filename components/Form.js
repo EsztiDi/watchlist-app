@@ -19,10 +19,11 @@ import ListTabs from "./tabs/ListTabs";
 
 const useStyles = makeStyles((theme) => ({
   form: {
-    flexGrow: 1,
-    textAlign: "center",
+    // flexGrow: 1,
+    // textAlign: "center",
   },
   create: {
+    textAlign: "center",
     padding: theme.spacing(2.5),
   },
   grid: {
@@ -31,7 +32,6 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   title: {
-    textAlign: "center",
     marginBottom: theme.spacing(2),
   },
   relative: {
@@ -150,7 +150,7 @@ export default function Form({
         throw new Error(res.status);
       }
 
-      // mutate("/api/lists");
+      mutate("/api/lists");
       // mutate(`/api/lists/${id}`);
       setTimeout(() => {
         setUpdating(false);
@@ -283,7 +283,7 @@ export default function Form({
         <Typography variant="h5" className={classes.title}>
           New Watchlist
         </Typography>
-        <form onSubmit={handleSubmit} className={classes.form}>
+        <form onSubmit={handleSubmit}>
           <Grid
             container
             direction="column"

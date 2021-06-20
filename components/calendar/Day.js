@@ -14,7 +14,6 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(1),
   },
   poster: {
-    // height: "90px",
     width: "60px",
     borderRadius: "5px",
   },
@@ -46,7 +45,14 @@ export default function Day({ date, movies }) {
       className={classes.posterCell}
     >
       {date}
-      <div>
+      <div
+        style={{
+          width:
+            movies.length > 1 && sameSeries.length !== movies.length
+              ? "126px"
+              : "94px",
+        }}
+      >
         {sameSeries.length > 0 && (
           <Tooltip
             key={sameSeries[0].id}
@@ -62,7 +68,7 @@ export default function Day({ date, movies }) {
             <img
               src={
                 sameSeries[0].poster_path
-                  ? "https://image.tmdb.org/t/p/w92" + sameSeries[0].poster_path
+                  ? `https://image.tmdb.org/t/p/w92${sameSeries[0].poster_path}`
                   : "/movieIcon.png"
               }
               onError={(ev) => {
@@ -110,7 +116,7 @@ export default function Day({ date, movies }) {
                 <img
                   src={
                     movie.poster_path
-                      ? "https://image.tmdb.org/t/p/w92" + movie.poster_path
+                      ? `https://image.tmdb.org/t/p/w92${movie.poster_path}`
                       : "/movieIcon.png"
                   }
                   onError={(ev) => {

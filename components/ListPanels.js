@@ -40,6 +40,7 @@ export default function ListPanels({
   const { id } = router.query;
 
   const { data: list, error } = useSWR(id ? `/api/lists/${id}` : null, {
+    refreshInterval: 1000,
     initialData: initialList,
   });
   const { data: lists, error: error2 } = useSWR("/api/lists", {

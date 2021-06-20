@@ -1,3 +1,9 @@
 # https://www.robotstxt.org/robotstxt.html
 User-agent: *
-Disallow:
+Disallow: /api/
+Disallow: /list/
+Disallow: /lists/
+Disallow: /*.png$
+Disallow: /*.jpg$
+Disallow: /*.svg$
+Disallow: /*.ico$

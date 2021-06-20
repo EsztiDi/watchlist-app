@@ -30,11 +30,14 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     flexDirection: "column",
     minWidth: "70%",
-    // flex: "1 0 auto",
+    padding: `0 ${theme.spacing(1.5)}px`,
+    "&:last-child": {
+      paddingBottom: 0,
+    },
   },
   image: {
-    minWidth: "20%",
-    paddingTop: "30%",
+    minWidth: "16%",
+    paddingTop: "24%",
     backgroundSize: "contain",
   },
   title: {
