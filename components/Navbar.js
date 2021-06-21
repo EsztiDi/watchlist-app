@@ -104,15 +104,21 @@ export default function Navbar() {
             </a>
           </Link>
           <Link href="/">
-            <Button size="large">Discover</Button>
+            <a>
+              <Button size="large">Discover</Button>
+            </a>
           </Link>
           {user ? (
             <>
               <Link href="/create">
-                <Button size="large">Create</Button>
+                <a>
+                  <Button size="large">Create</Button>
+                </a>
               </Link>
               <Link href="/lists">
-                <Button size="large">Lists</Button>
+                <a>
+                  <Button size="large">Lists</Button>
+                </a>
               </Link>
               <IconButton
                 size="medium"
@@ -152,13 +158,13 @@ export default function Navbar() {
                           id="menu-list"
                           onKeyDown={handleListKeyDown}
                         >
-                          <Link href="/settings">
+                          <Link href="/account">
                             <MenuItem onClick={handleMenuClose}>
                               <Typography
                                 variant="button"
                                 className={classes.menuItem}
                               >
-                                Settings
+                                Account
                               </Typography>
                             </MenuItem>
                           </Link>
@@ -179,7 +185,9 @@ export default function Navbar() {
             </>
           ) : (
             <Link href="/login">
-              <Button size="large">Login</Button>
+              <a>
+                <Button size="large">Login</Button>
+              </a>
             </Link>
           )}
         </Toolbar>

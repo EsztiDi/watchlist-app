@@ -26,6 +26,15 @@ const theme = createMuiTheme({
       dark: "#FF5C7A",
     },
   },
+  overrides: {
+    MuiCssBaseline: {
+      "@global": {
+        a: {
+          textDecoration: "none",
+        },
+      },
+    },
+  },
 });
 
 const useStyles = makeStyles((theme) => ({
@@ -131,7 +140,12 @@ export default function MyApp({ Component, pageProps }) {
               <ClickAwayListener onClickAway={handleMessage}>
                 <Fade in={message.length > 0}>
                   <Alert
-                    severity="error"
+                    severity={
+                      message.includes("saved") ||
+                      message.includes("All lists deleted")
+                        ? "success"
+                        : "error"
+                    }
                     variant="filled"
                     onClose={handleMessage}
                     className={classes.message}
