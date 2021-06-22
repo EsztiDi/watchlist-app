@@ -25,7 +25,7 @@ const useStyles = makeStyles((theme) => ({
       alignItems: "center",
       justifyContent: "space-between",
       flexWrap: "wrap",
-      padding: `${theme.spacing(2.5)}px 0`,
+      padding: `${theme.spacing(3.5)}px 0`,
       "& > button": {
         flex: "40%",
         marginLeft: theme.spacing(2.5),
@@ -44,6 +44,11 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+const unloadAlert = (ev) => {
+  ev.preventDefault();
+  ev.returnValue = "";
+};
+
 export default function Account({ setMessage }) {
   const classes = useStyles();
   const router = useRouter();
@@ -51,6 +56,15 @@ export default function Account({ setMessage }) {
   const [updatingPrivate, setUpdatingPrivate] = React.useState(false);
   const [updatingEmails, setUpdatingEmails] = React.useState(false);
   const [deletingLists, setDeletingLists] = React.useState(false);
+  const [deletingAccount, setDeletingAccount] = React.useState(false);
+  var updating =
+    updatingPrivate || updatingEmails || deletingLists || deletingAccount;
+
+  React.useEffect(() => {
+    updating
+      ? window.addEventListener("beforeunload", unloadAlert)
+      : window.removeEventListener("beforeunload", unloadAlert);
+  }, [updating]);
 
   if (loading) return null;
 
@@ -74,7 +88,6 @@ export default function Account({ setMessage }) {
         success ? "Changes saved!" : "There was an error, please try again"
       );
       emails ? setUpdatingEmails(false) : setUpdatingPrivate(false);
-      console.log(emails);
     } catch (error) {
       setMessage(error.message + " - Failed to update lists");
       emails ? setUpdatingEmails(false) : setUpdatingPrivate(false);
@@ -86,11 +99,14 @@ export default function Account({ setMessage }) {
     updateLists(emails);
   };
 
-  const deleteLists = async () => {
+  const deleteLists = async (lists) => {
     try {
-      const res = await fetch("api/account/lists", {
-        method: "Delete",
-      });
+      const res = await fetch(
+        lists ? "api/account/lists" : "api/account/delete",
+        {
+          method: "Delete",
+        }
+      );
 
       if (!res.ok) {
         throw new Error(res.status);
@@ -99,19 +115,32 @@ export default function Account({ setMessage }) {
       const { success } = await res.json();
 
       setMessage(
-        success ? "All lists deleted!" : "There was an error, please try again"
+        success
+          ? lists
+            ? "All lists deleted!"
+            : "Account deleted!"
+          : "There was an error, please try again"
       );
-      setDeletingLists(false);
+      lists ? setDeletingLists(false) : setDeletingAccount(false);
+      if (!lists) {
+        setTimeout(() => {
+          router.reload();
+        }, 1000);
+      }
     } catch (error) {
-      setMessage(error.message + " - Failed to delete lists");
-      setDeletingLists(false);
+      setMessage(
+        `${error.message}${
+          lists ? " - Failed to delete lists" : " - Failed to delete account"
+        }`
+      );
+      lists ? setDeletingLists(false) : setDeletingAccount(false);
     }
   };
 
-  const handleDelete = () => {
+  const handleDelete = (lists) => {
     if (confirm("Are you absoluuuuutely sure?")) {
-      setDeletingLists(true);
-      deleteLists();
+      lists ? setDeletingLists(true) : setDeletingAccount(true);
+      deleteLists(lists);
     }
   };
 
@@ -180,12 +209,36 @@ export default function Account({ setMessage }) {
                   color="secondary"
                   disableFocusRipple
                   disabled={deletingLists}
-                  onClick={handleDelete}
+                  onClick={() => handleDelete(true)}
                 >
                   {deletingLists ? (
                     <CircularProgress size="1.5rem" thickness={5} />
                   ) : (
-                    <em>Delete everything</em>
+                    <em>Delete all lists</em>
+                  )}
+                </Button>
+              </Grid>
+              <Grid item>
+                <Typography component="span">
+                  <b>Delete your account:</b>
+                  <Typography variant="caption" component="p">
+                    (Deletes ALL your details and ALL your lists from our
+                    database.)
+                  </Typography>
+                </Typography>
+                <Button
+                  variant="contained"
+                  color="secondary"
+                  disableFocusRipple
+                  disabled={deletingAccount}
+                  onClick={() => handleDelete(false)}
+                >
+                  {deletingAccount ? (
+                    <CircularProgress size="1.5rem" thickness={5} />
+                  ) : (
+                    <b>
+                      <em>Delete account</em>
+                    </b>
                   )}
                 </Button>
               </Grid>

@@ -1,0 +1,86 @@
+import { getSession } from "next-auth/client";
+import mongoose from "mongoose";
+import dbConnect from "../../../utils/dbConnect";
+import Watchlist from "../../../models/Watchlist";
+
+export default async function handler(req, res) {
+  const { method } = req;
+  const session = await getSession({ req });
+
+  await dbConnect();
+
+  switch (method) {
+    case "DELETE":
+      try {
+        return new Promise((resolve, reject) => {
+          mongoose.connection.db.collection("users", async (err, users) => {
+            try {
+              const user = await users.findOne({
+                email: session.user.email,
+              });
+              const { _id: userID } = user;
+
+              await Watchlist.deleteMany({
+                user: session.user,
+              }).catch((err) => {
+                console.error(`Couldn't delete lists - ${user} - ${err}`);
+                return res.status(400).json({ success: false });
+              });
+
+              mongoose.connection.db.collection("sessions", (err, sessions) => {
+                sessions
+                  .deleteMany({
+                    userId: userID,
+                  })
+                  .catch((err) => {
+                    console.error(
+                      `Couldn't delete sessions - ${user} - ${err}`
+                    );
+                    return res.status(400).json({ success: false });
+                  });
+              });
+              mongoose.connection.db.collection("accounts", (err, accounts) => {
+                accounts
+                  .findOneAndDelete({
+                    userId: userID,
+                  })
+                  .catch((err) => {
+                    console.error(
+                      `Couldn't delete from accounts collection - ${user} - ${err}`
+                    );
+                    return res.status(400).json({ success: false });
+                  });
+              });
+
+              const deletedUser = await users.findOneAndDelete({
+                _id: userID,
+              });
+              if (!deletedUser.value) {
+                console.error(`User was not found - ${user} - ${err}`);
+                return res.status(400).json({ success: false });
+              }
+
+              res.status(200).json({
+                success: deletedUser.ok,
+                data: deletedUser.value,
+              });
+              resolve();
+            } catch (error) {
+              console.error(`Error finding user - ${error}`);
+              res.status(400).json({ success: false });
+              return resolve();
+            }
+          });
+        });
+      } catch (error) {
+        console.error(`Error in users collection - ${error}`);
+        res.status(400).json({ success: false });
+      }
+      break;
+
+    default:
+      console.error("Wrong fetch method used for api/account/delete");
+      res.status(400).json({ success: false });
+      break;
+  }
+}

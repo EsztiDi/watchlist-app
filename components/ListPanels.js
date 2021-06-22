@@ -47,13 +47,14 @@ export default function ListPanels({
     initialData: initialLists,
   });
 
+  const auth = session && list.user.email === session.user.email;
   const hasLists = lists && lists.length > 0;
 
   if (loading) return null;
 
   if (!loading && !session) {
     router.replace("/login");
-  } else if (list && session && list.user.email !== session.user.email) {
+  } else if (list && !auth) {
     router.replace("/lists");
   }
 
@@ -65,7 +66,7 @@ export default function ListPanels({
   if (!list || !lists) return <CircularProgress size="3rem" thickness={3} />;
 
   return (
-    session &&
+    auth &&
     list &&
     hasLists && (
       <Paper elevation={4} className={classes.container}>

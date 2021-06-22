@@ -1,7 +1,7 @@
-import dbConnect from "../../../utils/dbConnect";
-import Watchlist from "../../../models/Watchlist";
+import dbConnect from "../../utils/dbConnect";
+import Watchlist from "../../models/Watchlist";
 
-import ListPage from "../../../components/ListPage";
+import ListPage from "../../components/ListPage";
 
 export default function List({ initialList, setMessage }) {
   return <ListPage initialList={initialList} setMessage={setMessage} />;

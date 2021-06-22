@@ -20,6 +20,9 @@ export default async function handler(req, res) {
         );
 
         if (!update) {
+          console.error(
+            `Couldn't perform updateMany() for emails in MongoDB - ${session.user}`
+          );
           return res.status(400).json({ success: false });
         }
 
@@ -27,11 +30,17 @@ export default async function handler(req, res) {
           .status(200)
           .json({ success: update.n === update.nModified, data: update });
       } catch (error) {
+        console.error(
+          `Couldn't perform updateMany() for emails in MongoDB - ${session.user} - ${error}`
+        );
         res.status(400).json({ success: false });
       }
       break;
 
     default:
+      console.error(
+        `Wrong fetch method used for api/account/emails - ${session.user}`
+      );
       res.status(400).json({ success: false });
       break;
   }

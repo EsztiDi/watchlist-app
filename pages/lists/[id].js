@@ -1,8 +1,8 @@
 import { getSession } from "next-auth/client";
-import dbConnect from "../../../utils/dbConnect";
-import Watchlist from "../../../models/Watchlist";
+import dbConnect from "../../utils/dbConnect";
+import Watchlist from "../../models/Watchlist";
 
-import ListPanels from "../../../components/ListPanels";
+import ListPanels from "../../components/ListPanels";
 
 export default function Lists({ initialList, initialLists, setMessage }) {
   return (

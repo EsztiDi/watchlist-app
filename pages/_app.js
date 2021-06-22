@@ -141,8 +141,7 @@ export default function MyApp({ Component, pageProps }) {
                 <Fade in={message.length > 0}>
                   <Alert
                     severity={
-                      message.includes("saved") ||
-                      message.includes("All lists deleted")
+                      message.includes("saved!") || message.includes("deleted!")
                         ? "success"
                         : "error"
                     }
