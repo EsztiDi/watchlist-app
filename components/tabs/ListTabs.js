@@ -117,7 +117,7 @@ export default function ListTabs({
             putData={putData}
           />
         ) : (
-          <Link key={list._id} href={`/lists/${list._id}`} replace>
+          <Link key={list._id} href={`/lists/${list._id}`} replace passHref>
             <Tab
               label={list.title}
               wrapped

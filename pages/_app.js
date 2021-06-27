@@ -122,7 +122,7 @@ export default function MyApp({ Component, pageProps }) {
           name="description"
           content="An app to create watchlists for films and tv shows"
         />
-        <title>Watchlists</title>
+        <title>My Watchlists</title>
       </Head>
       <Provider session={pageProps.session}>
         <SWRConfig
@@ -134,8 +134,8 @@ export default function MyApp({ Component, pageProps }) {
           }}
         >
           <ThemeProvider theme={theme}>
-            <Navbar />
             <CssBaseline />
+            <Navbar />
             {message && (
               <ClickAwayListener onClickAway={handleMessage}>
                 <Fade in={message.length > 0}>

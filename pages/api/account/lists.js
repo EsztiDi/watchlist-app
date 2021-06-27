@@ -21,7 +21,7 @@ export default async function handler(req, res) {
 
         if (!update) {
           console.error(
-            `Couldn't perform updateMany() for public lists in MongoDB - ${session.user}`
+            `Couldn't perform updateMany() for public lists in MongoDB - user: ${session.user}`
           );
           return res.status(400).json({ success: false });
         }
@@ -29,9 +29,9 @@ export default async function handler(req, res) {
         res
           .status(200)
           .json({ success: update.n === update.nModified, data: update });
-      } catch (error) {
+      } catch (err) {
         console.error(
-          `Couldn't perform updateMany() for public lists in MongoDB - ${session.user} - ${error}`
+          `Couldn't perform updateMany() for public lists in MongoDB - user: ${session.user} - ${err}`
         );
         res.status(400).json({ success: false });
       }
@@ -44,7 +44,7 @@ export default async function handler(req, res) {
         });
         if (!deletedLists) {
           console.error(
-            `Couldn't perform deleteMany() in MongoDB - ${session.user}`
+            `Couldn't perform deleteMany() in MongoDB - user: ${session.user}`
           );
           return res.status(400).json({ success: false });
         }
@@ -52,9 +52,9 @@ export default async function handler(req, res) {
           success: deletedLists.n === deletedLists.deletedCount,
           data: deletedLists,
         });
-      } catch (error) {
+      } catch (err) {
         console.error(
-          `Couldn't perform deleteMany() in MongoDB - ${session.user} - ${error}`
+          `Couldn't perform deleteMany() in MongoDB - user: ${session.user} - ${err}`
         );
         res.status(400).json({ success: false });
       }
@@ -62,7 +62,7 @@ export default async function handler(req, res) {
 
     default:
       console.error(
-        `Wrong fetch method used for api/account/lists - ${session.user}`
+        `Wrong fetch method used for api/account/lists - user: ${session.user}`
       );
       res.status(400).json({ success: false });
       break;

@@ -91,8 +91,6 @@ export default function Navbar() {
     prevOpen.current = menuOpen;
   }, [menuOpen]);
 
-  if (loading) return null;
-
   return (
     <div className={classes.navbar}>
       <AppBar color="default" position="fixed">
@@ -158,7 +156,7 @@ export default function Navbar() {
                           id="menu-list"
                           onKeyDown={handleListKeyDown}
                         >
-                          <Link href="/account">
+                          <Link href="/account" passHref>
                             <MenuItem onClick={handleMenuClose}>
                               <Typography
                                 variant="button"

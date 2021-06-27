@@ -145,6 +145,7 @@ export default function TabPanel(props) {
           href={
             newTab ? `/list/calendar/${listID}` : `/lists/calendar/${listID}`
           }
+          passHref
         >
           <IconButton
             aria-label="calendar view"

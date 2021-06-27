@@ -1,3 +1,5 @@
+import Image from "next/image";
+
 import { makeStyles } from "@material-ui/core/styles";
 import TableCell from "@material-ui/core/TableCell";
 import Tooltip from "@material-ui/core/Tooltip";
@@ -8,13 +10,13 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(1),
   },
   posterCell: {
-    "& img:nth-of-type(even)": {
+    "& span:nth-of-type(even)": {
       marginLeft: "5px",
     },
     padding: theme.spacing(1),
   },
   poster: {
-    width: "60px",
+    // width: "60px",
     borderRadius: "5px",
   },
   tooltip: {
@@ -65,19 +67,23 @@ export default function Day({ date, movies }) {
               </p>
             }
           >
-            <img
-              src={
-                sameSeries[0].poster_path
-                  ? `https://image.tmdb.org/t/p/w92${sameSeries[0].poster_path}`
-                  : "/movieIcon.png"
-              }
-              onError={(ev) => {
-                ev.target.onerror = null;
-                ev.target.src = "/movieIcon.png";
-              }}
-              alt="Poster"
-              className={classes.poster}
-            ></img>
+            <span>
+              <Image
+                width={60}
+                height={90}
+                src={
+                  sameSeries[0].poster_path
+                    ? `https://image.tmdb.org/t/p/w92${sameSeries[0].poster_path}`
+                    : "/movieIcon.png"
+                }
+                onError={(ev) => {
+                  ev.target.onerror = null;
+                  ev.target.src = "/movieIcon.png";
+                }}
+                alt="Poster"
+                className={classes.poster}
+              />
+            </span>
           </Tooltip>
         )}
         {movies
@@ -93,39 +99,27 @@ export default function Day({ date, movies }) {
                       ? movie.title
                       : movie.mainName
                       ? `${movie.mainName} S${movie.season_number} E${movie.episode_number}`
-                      : // : movie.name
-                        // ? `${movie.name}${
-                        //     movie.details?.next_episode_to_air
-                        //       ? " S" +
-                        //         movie.details?.next_episode_to_air
-                        //           ?.season_number +
-                        //         " E" +
-                        //         movie.details?.next_episode_to_air?.episode_number
-                        //       : movie.details?.last_episode_to_air
-                        //       ? " S" +
-                        //         movie.details?.last_episode_to_air
-                        //           ?.season_number +
-                        //         " E" +
-                        //         movie.details?.last_episode_to_air?.episode_number
-                        //       : ""
-                        //   }`
-                        "-"}
+                      : "-"}
                   </p>
                 }
               >
-                <img
-                  src={
-                    movie.poster_path
-                      ? `https://image.tmdb.org/t/p/w92${movie.poster_path}`
-                      : "/movieIcon.png"
-                  }
-                  onError={(ev) => {
-                    ev.target.onerror = null;
-                    ev.target.src = "/movieIcon.png";
-                  }}
-                  alt="Poster"
-                  className={classes.poster}
-                ></img>
+                <span>
+                  <Image
+                    width={60}
+                    height={90}
+                    src={
+                      movie.poster_path
+                        ? `https://image.tmdb.org/t/p/w92${movie.poster_path}`
+                        : "/movieIcon.png"
+                    }
+                    onError={(ev) => {
+                      ev.target.onerror = null;
+                      ev.target.src = "/movieIcon.png";
+                    }}
+                    alt="Poster"
+                    className={classes.poster}
+                  />
+                </span>
               </Tooltip>
             );
           })}

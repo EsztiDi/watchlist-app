@@ -1,6 +1,7 @@
-import Head from "next/head";
 import { useRouter } from "next/router";
 import useSWR from "swr";
+import Head from "next/head";
+import Image from "next/image";
 
 import { makeStyles } from "@material-ui/core/styles";
 import CircularProgress from "@material-ui/core/CircularProgress";
@@ -25,13 +26,13 @@ const useStyles = makeStyles((theme) => ({
     fontSize: "1.8rem",
   },
   backdrop: {
-    position: "fixed",
-    top: "72px",
-    left: "0",
+    position: "fixed!important",
     zIndex: "-99",
-    minWidth: "100vw",
-    minHeight: "100vh",
     opacity: "0.2",
+    // top: "72px",
+    // left: "0",
+    // minWidth: "100vw",
+    // minHeight: "100vh",
   },
 }));
 
@@ -47,6 +48,7 @@ export default function ListPage({
   var { id } = router.query;
   id = calendar ? id : id[0];
 
+  const [backdrop, setBackdrop] = React.useState("");
   var movies = (list) => list?.movies.sort((a, b) => a.position - b.position);
 
   const { data: list, error } = useSWR(id ? `/api/lists/${id}` : null, {
@@ -54,19 +56,17 @@ export default function ListPage({
     initialData: initialList,
   });
 
+  React.useEffect(() => {
+    list?.movies && list.movies.length > 0 && movies(list)[0].backdrop_path
+      ? setBackdrop(
+          `https://image.tmdb.org/t/p/w1280${movies(list)[0].backdrop_path}`
+        )
+      : setBackdrop("");
+  }, [list]);
+
   if (error) setMessage(`${error.message} - Please try again or contact ...`);
 
   if (!list) return <CircularProgress size="3rem" thickness={3} />;
-
-  const [backdrop, setBackdrop] = React.useState("");
-
-  React.useEffect(() => {
-    setBackdrop(
-      list?.movies && list.movies.length > 0 && movies(list)[0].backdrop_path
-        ? `https://image.tmdb.org/t/p/w1280${movies(list)[0].backdrop_path}`
-        : ""
-    );
-  }, [list]);
 
   return (
     list && (
@@ -78,7 +78,7 @@ export default function ListPage({
           <meta
             property="og:image"
             content={
-              backdrop
+              backdrop.length
                 ? backdrop
                 : `${process.env.BASE_URL}/android-chrome-256x256.png`
             }
@@ -89,8 +89,11 @@ export default function ListPage({
           <title>{list.title}</title>
         </Head>
         <Container maxWidth="md">
-          {Object.keys(list).length !== 0 && (
-            <img
+          {Object.keys(list).length !== 0 && backdrop.length && (
+            <Image
+              layout="fill"
+              objectPosition="center 72px"
+              objectFit="cover"
               src={backdrop}
               alt=""
               className={classes.backdrop}

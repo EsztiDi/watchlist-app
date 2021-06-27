@@ -36,8 +36,8 @@ export default function MovieSearch({ addMovie }) {
   const getResults = (keyword) => {
     setLoading(true);
 
-    var baseURL = "https://api.themoviedb.org/3/";
-    var url = "search/multi/";
+    var baseURL = "https://api.themoviedb.org/3";
+    var url = "/search/multi";
     var api_key = process.env.TMDB_API_KEY;
     var params = "&include_adult=false";
     var fullUrl = `${baseURL}${url}?api_key=${api_key}&query=${encodeURIComponent(
@@ -107,7 +107,7 @@ export default function MovieSearch({ addMovie }) {
   const getDetails = (movie) => {
     setLoading(true);
 
-    var baseURL = "https://api.themoviedb.org/3/";
+    var baseURL = "https://api.themoviedb.org/3";
     var url = `/${movie.media_type}/${movie.id}`;
     var api_key = process.env.TMDB_API_KEY;
     var params = "&append_to_response=credits,external_ids&include_adult=false";
@@ -134,7 +134,7 @@ export default function MovieSearch({ addMovie }) {
                 overview: movie.overview,
                 details: {
                   genres: data.genres,
-                  runtime: data.runtime,
+                  // runtime: data.runtime,
                   episode_run_time: data.episode_run_time,
                   next_episode_to_air: data.next_episode_to_air,
                   last_episode_to_air: data.last_episode_to_air,

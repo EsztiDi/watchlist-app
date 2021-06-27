@@ -1,8 +1,9 @@
+import React from "react";
+
 import { makeStyles } from "@material-ui/core/styles";
+import Popper from "@material-ui/core/Popper";
 import ClickAwayListener from "@material-ui/core/ClickAwayListener";
 import Paper from "@material-ui/core/Paper";
-import Popper from "@material-ui/core/Popper";
-import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import Divider from "@material-ui/core/Divider";
 
@@ -30,6 +31,7 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   list: {
+    paddingTop: 0,
     paddingBottom: 0,
   },
 }));
@@ -81,31 +83,23 @@ export default function Dropdown({ dropdownProps, results }) {
       role={undefined}
       disablePortal
     >
-      <Paper>
-        <ClickAwayListener onClickAway={handleClose}>
-          <List
-            id="movie-list"
-            className={classes.list}
-            onClick={handleClose}
-            onKeyDown={handleKeys}
-          >
-            {results.map((movie, index) => (
-              <React.Fragment key={index}>
-                <ListItem
-                  // key={index + "-L"}
-                  button
-                  onClick={() => handleListItemClick(index)}
-                >
-                  <MovieListItem movie={movie} />
-                </ListItem>
-                <Divider
-                // key={index + "-D"}
-                />
-              </React.Fragment>
-            ))}
-          </List>
-        </ClickAwayListener>
-      </Paper>
+      <ClickAwayListener onClickAway={handleClose}>
+        <Paper
+          id="movie-list"
+          className={classes.list}
+          onClick={handleClose}
+          onKeyDown={handleKeys}
+        >
+          {results.map((movie, index) => (
+            <React.Fragment key={index}>
+              <ListItem button onClick={() => handleListItemClick(index)}>
+                <MovieListItem movie={movie} />
+              </ListItem>
+              <Divider />
+            </React.Fragment>
+          ))}
+        </Paper>
+      </ClickAwayListener>
     </Popper>
   );
 }

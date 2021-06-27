@@ -7,7 +7,7 @@ export default function Custom404() {
     <div style={{ textAlign: "center", paddingTop: "1rem" }}>
       <Typography variant="h5">404 - Not Found</Typography>
       <Typography variant="h6" style={{ paddingBottom: "1rem" }}>
-        We're sorry, this page can't be found.
+        We&apos;re sorry, this page can&apos;t be found.
       </Typography>
       <Image src="/puppy2.jpg" alt="Error 404" width={360} height={480} />
       <br />

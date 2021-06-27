@@ -18,8 +18,8 @@ export default async function handler(req, res) {
           position: 1,
         });
         res.status(200).json({ success: true, data: lists });
-      } catch (error) {
-        console.error(`Lists not found -  ${session} - ${error}`);
+      } catch (err) {
+        console.error(`Lists not found -  user: ${session.user} - ${err}`);
         res.status(400).json({ success: false });
       }
       break;
@@ -38,13 +38,15 @@ export default async function handler(req, res) {
 
         const list = await Watchlist.create(req.body);
         res.status(201).json({ success: true, data: list });
-      } catch (error) {
-        console.error(`Couldn't create list -  ${session} - ${error}`);
+      } catch (err) {
+        console.error(`Couldn't create list -  user: ${session.user} - ${err}`);
         res.status(400).json({ success: false });
       }
       break;
     default:
-      console.error(`Wrong fetch method used for api/lists - ${session}`);
+      console.error(
+        `Wrong fetch method used for api/lists - user: ${session.user}`
+      );
       res.status(400).json({ success: false });
       break;
   }

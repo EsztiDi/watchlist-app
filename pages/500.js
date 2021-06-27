@@ -7,7 +7,7 @@ export default function Custom500() {
     <div style={{ textAlign: "center", paddingTop: "1rem" }}>
       <Typography variant="h5">Server Error</Typography>
       <Typography variant="h6" style={{ paddingBottom: "1rem" }}>
-        We're sorry, something went wrong. Please try again or contact ...
+        We&apos;re sorry, something went wrong. Please try again or contact ...
       </Typography>
       <Image src="/puppy1.jpg" alt="Error 500" width={360} height={480} />
       <br />

@@ -17,12 +17,12 @@ export default async function handler(req, res) {
       try {
         const list = await Watchlist.findById(id);
         if (!list) {
-          console.error(`List ${id} not found - ${session.user}`);
+          console.error(`List ${id} not found - user: ${session.user}`);
           return res.status(400).json({ success: false });
         }
         res.status(200).json({ success: true, data: list });
-      } catch (error) {
-        console.error(`List ${id} not found - ${session.user} - ${error}`);
+      } catch (err) {
+        console.error(`List ${id} not found - user: ${session.user} - ${err}`);
         res.status(400).json({ success: false });
       }
       break;
@@ -61,7 +61,7 @@ export default async function handler(req, res) {
 
           if (!list2) {
             console.error(
-              `Adjacent list not found for ${id} - ${session.user}`
+              `Adjacent list not found for ${id} - user: ${session.user}`
             );
             return res.status(400).json({ success: false });
           }
@@ -72,13 +72,13 @@ export default async function handler(req, res) {
           });
         }
         if (!list) {
-          console.error(`List ${id} not found - ${session.user}`);
+          console.error(`List ${id} not found - user: ${session.user}`);
           return res.status(400).json({ success: false });
         }
         res.status(200).json({ success: true, data: list });
-      } catch (error) {
+      } catch (err) {
         console.error(
-          `Couldn't update lists - ${id} - ${session.user} - ${error}`
+          `Couldn't update lists - ${id} - user: ${session.user} - ${err}`
         );
         res.status(400).json({ success: false });
       }
@@ -88,13 +88,13 @@ export default async function handler(req, res) {
       try {
         const deletedList = await Watchlist.findByIdAndDelete(id);
         if (!deletedList) {
-          console.error(`List ${id} not found - ${session.user}`);
+          console.error(`List ${id} not found - user: ${session.user}`);
           return res.status(400).json({ success: false });
         }
         res.status(200).json({ success: true, data: deletedList });
-      } catch (error) {
+      } catch (err) {
         console.error(
-          `Couldn't delete list ${id} - ${session.user} - ${error}`
+          `Couldn't delete list ${id} - user: ${session.user} - ${err}`
         );
         res.status(400).json({ success: false });
       }
@@ -102,7 +102,7 @@ export default async function handler(req, res) {
 
     default:
       console.error(
-        `Wrong fetch method used for api/lists/[id] - ${session.user}`
+        `Wrong fetch method used for api/lists/[id] - user: ${session.user}`
       );
       res.status(400).json({ success: false });
       break;

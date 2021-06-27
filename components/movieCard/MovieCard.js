@@ -23,12 +23,13 @@ const useStyles = makeStyles((theme) => ({
     alignItems: "center",
     justifyContent: "space-between",
     margin: theme.spacing(1.5),
-    padding: theme.spacing(1.5),
+    padding: `${theme.spacing(2)}px ${theme.spacing(1.5)}px`,
     textAlign: "left",
   },
   content: {
     display: "flex",
     flexDirection: "column",
+    flexGrow: 1,
     minWidth: "70%",
     padding: `0 ${theme.spacing(1.5)}px`,
     "&:last-child": {
@@ -296,7 +297,6 @@ export default function MovieCard({
                   className={classes.button}
                   disabled={updating}
                   onClick={() => {
-                    console.log(index, position);
                     moveMovie("down", index, position);
                   }}
                 >

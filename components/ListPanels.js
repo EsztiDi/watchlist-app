@@ -43,7 +43,7 @@ export default function ListPanels({
     refreshInterval: 1000,
     initialData: initialList,
   });
-  const { data: lists, error: error2 } = useSWR("/api/lists", {
+  const { data: lists, error: error2 } = useSWR(session ? "/api/lists" : null, {
     initialData: initialLists,
   });
 

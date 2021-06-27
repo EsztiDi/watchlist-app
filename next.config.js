@@ -15,6 +15,12 @@ module.exports = {
       "pbs.twimg.com",
       "avatars.githubusercontent.com",
       "media-exp3.licdn.com",
+      "image.tmdb.org",
     ],
+  },
+  // Temporary fix for react import
+  webpack: (config, { buildId, dev, isServer, defaultLoaders, webpack }) => {
+    config.plugins.push(new webpack.ProvidePlugin({ React: "react" }));
+    return config;
   },
 };

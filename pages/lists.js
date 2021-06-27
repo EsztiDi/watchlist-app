@@ -37,6 +37,7 @@ export default function Lists({ hasLists, id }) {
 
   React.useEffect(() => {
     router.prefetch(`/lists/${id}`);
+    // eslint-disable-next-line
   }, []);
 
   if (loading) return null;
@@ -54,7 +55,7 @@ export default function Lists({ hasLists, id }) {
       <Paper elevation={4} className={classes.container}>
         <>
           <Typography variant="h5">Create a watchlist</Typography>
-          <Link href="/create">
+          <Link href="/create" passHref>
             <IconButton className={classes.button}>
               <AddCircleRoundedIcon className={classes.add} />
             </IconButton>

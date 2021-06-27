@@ -4,7 +4,7 @@ import Typography from "@material-ui/core/Typography";
 const useStyles = makeStyles((theme) => ({
   overview: {
     fontSize: "0.95rem",
-    maxHeight: "68px",
+    maxHeight: "46px",
     overflow: "auto",
     "&::-webkit-scrollbar": {
       width: "6px",

@@ -2,7 +2,98 @@ import Head from "next/head";
 // import dbConnect from "../utils/dbConnect";
 // import Watchlist from "../models/Watchlist";
 
-export default function Index() {
+import { makeStyles } from "@material-ui/core/styles";
+import Container from "@material-ui/core/Container";
+import Paper from "@material-ui/core/Paper";
+
+import MoviesCarousel from "../components/carousel/MoviesCarousel";
+
+const useStyles = makeStyles((theme) => ({
+  paper: {
+    display: "flex",
+    flexWrap: "wrap",
+    justifyContent: "space-evenly",
+    padding: theme.spacing(2.5),
+  },
+}));
+
+export default function Discover() {
+  const classes = useStyles();
+
+  const [thisMonthMovies, setThisMonthMovies] = React.useState([]);
+  const [nextMonthMovies, setNextMonthMovies] = React.useState([]);
+  const [popularMovies, setPopularMovies] = React.useState([]);
+  const [thisMonthTV, setThisMonthTV] = React.useState([]);
+  const [nextMonthTV, setNextMonthTV] = React.useState([]);
+  const [popularTV, setPopularTV] = React.useState([]);
+
+  const year = new Date().getFullYear();
+  const month = new Date().getMonth() + 1;
+  const thisMonth = month < 10 ? `0${month}` : month;
+  const nextMonth =
+    month === 12 ? "01" : month < 9 ? `0${month + 1}` : month + 1;
+
+  React.useEffect(() => {
+    var baseURL = "https://api.themoviedb.org/3";
+    var url = "/discover/movie";
+    var api_key = process.env.TMDB_API_KEY;
+    var params = `&include_adult=false&primary_release_date.gte=${year}-${thisMonth}-01&primary_release_date.lte=${year}-${thisMonth}-31&sort_by=popularity.desc`;
+    var fullUrl = `${baseURL}${url}?api_key=${api_key}${params}`;
+    var options = {
+      headers: {
+        Authorization: process.env.TMDB_BEARER,
+        "Content-Type": "application/json;charset=utf-8",
+      },
+    };
+
+    fetch(fullUrl, options)
+      .then((res) => res.json())
+      .then((data) => {
+        setThisMonthMovies(data.results);
+      });
+
+    params = `&include_adult=false&primary_release_date.gte=${year}-${nextMonth}-01&primary_release_date.lte=${year}-${nextMonth}-31&sort_by=popularity.desc`;
+    fullUrl = `${baseURL}${url}?api_key=${api_key}${params}`;
+    fetch(fullUrl, options)
+      .then((res) => res.json())
+      .then((data) => {
+        setNextMonthMovies(data.results);
+      });
+
+    params = `&include_adult=false&sort_by=popularity.desc`;
+    fullUrl = `${baseURL}${url}?api_key=${api_key}${params}`;
+    fetch(fullUrl, options)
+      .then((res) => res.json())
+      .then((data) => {
+        setPopularMovies(data.results);
+      });
+
+    url = "/discover/tv";
+    params = `&include_adult=false&first_air_date.gte=${year}-${thisMonth}-01&first_air_date.lte=${year}-${thisMonth}-31&sort_by=popularity.desc`;
+    fullUrl = `${baseURL}${url}?api_key=${api_key}${params}`;
+    fetch(fullUrl, options)
+      .then((res) => res.json())
+      .then((data) => {
+        setThisMonthTV(data.results);
+      });
+
+    params = `&include_adult=false&first_air_date.gte=${year}-${nextMonth}-01&first_air_date.lte=${year}-${nextMonth}-31&sort_by=popularity.desc`;
+    fullUrl = `${baseURL}${url}?api_key=${api_key}${params}`;
+    fetch(fullUrl, options)
+      .then((res) => res.json())
+      .then((data) => {
+        setNextMonthTV(data.results);
+      });
+
+    params = `&include_adult=false&sort_by=popularity.desc`;
+    fullUrl = `${baseURL}${url}?api_key=${api_key}${params}`;
+    fetch(fullUrl, options)
+      .then((res) => res.json())
+      .then((data) => {
+        setPopularTV(data.results);
+      });
+  }, []);
+
   return (
     <>
       <Head>
@@ -23,8 +114,28 @@ export default function Index() {
         <link rel="canonical" href={process.env.BASE_URL} />
         <meta name="robots" content="noimageindex, nofollow" />
       </Head>
-
-      <div>Hello there!</div>
+      <Container disableGutters maxWidth="xl">
+        <Paper elevation={4} className={classes.paper}>
+          <MoviesCarousel
+            title="New movies this month"
+            movies={thisMonthMovies}
+          />
+          <MoviesCarousel
+            title="New movies next month"
+            movies={nextMonthMovies}
+          />
+          <MoviesCarousel
+            title="New TV shows this month"
+            movies={thisMonthTV}
+          />
+          <MoviesCarousel
+            title="New TV shows next month"
+            movies={nextMonthTV}
+          />
+          <MoviesCarousel title="Popular movies" movies={popularMovies} />
+          <MoviesCarousel title="Popular TV shows" movies={popularTV} />
+        </Paper>
+      </Container>
     </>
   );
 }

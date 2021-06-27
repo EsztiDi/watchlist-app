@@ -8,21 +8,20 @@ const useStyles = makeStyles((theme) => ({
     marginBottom: theme.spacing(1),
   },
   image: {
-    minWidth: "20%",
-    paddingTop: "30%",
+    minWidth: "14%",
+    paddingTop: "21%",
     backgroundSize: "contain",
   },
-  details: {
-    display: "flex",
-    flexDirection: "column",
-    minWidth: "70%",
-  },
   content: {
-    flex: "1 0 auto",
+    minWidth: "70%",
+    padding: `0 ${theme.spacing(1.5)}px`,
+    "&:last-child": {
+      paddingBottom: 0,
+    },
   },
   overview: {
     fontSize: "0.95rem",
-    maxHeight: "113.2px",
+    maxHeight: "90.56px",
     overflow: "auto",
     "&::-webkit-scrollbar": {
       width: "6px",
@@ -69,14 +68,12 @@ export default function MovieListItem({ movie }) {
   return (
     <>
       <CardMedia className={classes.image} image={poster} />
-      <div className={classes.details}>
-        <CardContent className={classes.content}>
-          <Typography component="h6" variant="h6" className={classes.title}>
-            {title} ({year}, {media_type || "-"})
-          </Typography>
-          <Typography className={classes.overview}>{overview || ""}</Typography>
-        </CardContent>
-      </div>
+      <CardContent className={classes.content}>
+        <Typography component="h6" variant="h6" className={classes.title}>
+          {title} ({year}, {media_type || "-"})
+        </Typography>
+        <Typography className={classes.overview}>{overview || ""}</Typography>
+      </CardContent>
     </>
   );
 }

@@ -80,7 +80,7 @@ export default function Form({
       });
 
       // if (!newTab) mutate("/api/lists");
-      console.log("list effect");
+      console.log("Form list effect");
 
       if (newMovie.current) {
         var panel =
@@ -91,6 +91,7 @@ export default function Form({
         newMovie.current = false;
       }
     }
+    // eslint-disable-next-line
   }, [list]);
 
   React.useEffect(() => {
@@ -100,10 +101,11 @@ export default function Form({
         form.emails !== list.emails ||
         movies !== list.movies)
     ) {
-      console.log("putData effect", form);
+      console.log("Form putData effect");
       setUpdating(true);
       putData(form);
     }
+    // eslint-disable-next-line
   }, [form.private, form.emails, movies]);
 
   React.useEffect(() => {
@@ -151,7 +153,7 @@ export default function Form({
       }
 
       mutate("/api/lists");
-      // mutate(`/api/lists/${id}`);
+      mutate(`/api/lists/${id}`);
       setTimeout(() => {
         setUpdating(false);
       }, 500);

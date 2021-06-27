@@ -23,7 +23,7 @@ export default async function handler(req, res) {
               await Watchlist.deleteMany({
                 user: session.user,
               }).catch((err) => {
-                console.error(`Couldn't delete lists - ${user} - ${err}`);
+                console.error(`Couldn't delete lists - user: ${user} - ${err}`);
                 return res.status(400).json({ success: false });
               });
 
@@ -34,7 +34,7 @@ export default async function handler(req, res) {
                   })
                   .catch((err) => {
                     console.error(
-                      `Couldn't delete sessions - ${user} - ${err}`
+                      `Couldn't delete sessions - user: ${user} - ${err}`
                     );
                     return res.status(400).json({ success: false });
                   });
@@ -46,7 +46,7 @@ export default async function handler(req, res) {
                   })
                   .catch((err) => {
                     console.error(
-                      `Couldn't delete from accounts collection - ${user} - ${err}`
+                      `Couldn't delete from accounts collection - user: ${user} - ${err}`
                     );
                     return res.status(400).json({ success: false });
                   });
@@ -56,7 +56,7 @@ export default async function handler(req, res) {
                 _id: userID,
               });
               if (!deletedUser.value) {
-                console.error(`User was not found - ${user} - ${err}`);
+                console.error(`User was not found - user: ${user} - ${err}`);
                 return res.status(400).json({ success: false });
               }
 
@@ -65,15 +65,15 @@ export default async function handler(req, res) {
                 data: deletedUser.value,
               });
               resolve();
-            } catch (error) {
-              console.error(`Error finding user - ${error}`);
+            } catch (err) {
+              console.error(`Error finding user - ${err}`);
               res.status(400).json({ success: false });
               return resolve();
             }
           });
         });
-      } catch (error) {
-        console.error(`Error in users collection - ${error}`);
+      } catch (err) {
+        console.error(`Error in users collection - ${err}`);
         res.status(400).json({ success: false });
       }
       break;
