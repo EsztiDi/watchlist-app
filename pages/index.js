@@ -34,69 +34,73 @@ export default function Discover() {
   const nextMonth =
     month === 12 ? "01" : month < 9 ? `0${month + 1}` : month + 1;
 
-  React.useEffect(async () => {
-    setLoading(true);
+  React.useEffect(() => {
+    const getMovies = async () => {
+      setLoading(true);
 
-    var baseURL = "https://api.themoviedb.org/3";
-    var url = "/discover/movie";
-    var api_key = process.env.TMDB_API_KEY;
-    var params = `&include_adult=false&primary_release_date.gte=${year}-${thisMonth}-01&primary_release_date.lte=${year}-${thisMonth}-31&sort_by=popularity.desc`;
-    var fullUrl = `${baseURL}${url}?api_key=${api_key}${params}`;
-    var options = {
-      headers: {
-        Authorization: process.env.TMDB_BEARER,
-        "Content-Type": "application/json;charset=utf-8",
-      },
+      var baseURL = "https://api.themoviedb.org/3";
+      var url = "/discover/movie";
+      var api_key = process.env.TMDB_API_KEY;
+      var params = `&include_adult=false&primary_release_date.gte=${year}-${thisMonth}-01&primary_release_date.lte=${year}-${thisMonth}-31&sort_by=popularity.desc`;
+      var fullUrl = `${baseURL}${url}?api_key=${api_key}${params}`;
+      var options = {
+        headers: {
+          Authorization: process.env.TMDB_BEARER,
+          "Content-Type": "application/json;charset=utf-8",
+        },
+      };
+
+      await fetch(fullUrl, options)
+        .then((res) => res.json())
+        .then((data) => {
+          setThisMonthMovies(data.results);
+        });
+
+      params = `&include_adult=false&primary_release_date.gte=${year}-${nextMonth}-01&primary_release_date.lte=${year}-${nextMonth}-31&sort_by=popularity.desc`;
+      fullUrl = `${baseURL}${url}?api_key=${api_key}${params}`;
+      await fetch(fullUrl, options)
+        .then((res) => res.json())
+        .then((data) => {
+          setNextMonthMovies(data.results);
+        });
+
+      params = `&include_adult=false&sort_by=popularity.desc`;
+      fullUrl = `${baseURL}${url}?api_key=${api_key}${params}`;
+      await fetch(fullUrl, options)
+        .then((res) => res.json())
+        .then((data) => {
+          setPopularMovies(data.results);
+        });
+
+      url = "/discover/tv";
+      params = `&include_adult=false&first_air_date.gte=${year}-${thisMonth}-01&first_air_date.lte=${year}-${thisMonth}-31&sort_by=popularity.desc`;
+      fullUrl = `${baseURL}${url}?api_key=${api_key}${params}`;
+      await fetch(fullUrl, options)
+        .then((res) => res.json())
+        .then((data) => {
+          setThisMonthTV(data.results);
+        });
+
+      params = `&include_adult=false&first_air_date.gte=${year}-${nextMonth}-01&first_air_date.lte=${year}-${nextMonth}-31&sort_by=popularity.desc`;
+      fullUrl = `${baseURL}${url}?api_key=${api_key}${params}`;
+      await fetch(fullUrl, options)
+        .then((res) => res.json())
+        .then((data) => {
+          setNextMonthTV(data.results);
+        });
+
+      params = `&include_adult=false&sort_by=popularity.desc`;
+      fullUrl = `${baseURL}${url}?api_key=${api_key}${params}`;
+      await fetch(fullUrl, options)
+        .then((res) => res.json())
+        .then((data) => {
+          setPopularTV(data.results);
+        });
+
+      setLoading(false);
     };
 
-    await fetch(fullUrl, options)
-      .then((res) => res.json())
-      .then((data) => {
-        setThisMonthMovies(data.results);
-      });
-
-    params = `&include_adult=false&primary_release_date.gte=${year}-${nextMonth}-01&primary_release_date.lte=${year}-${nextMonth}-31&sort_by=popularity.desc`;
-    fullUrl = `${baseURL}${url}?api_key=${api_key}${params}`;
-    await fetch(fullUrl, options)
-      .then((res) => res.json())
-      .then((data) => {
-        setNextMonthMovies(data.results);
-      });
-
-    params = `&include_adult=false&sort_by=popularity.desc`;
-    fullUrl = `${baseURL}${url}?api_key=${api_key}${params}`;
-    await fetch(fullUrl, options)
-      .then((res) => res.json())
-      .then((data) => {
-        setPopularMovies(data.results);
-      });
-
-    url = "/discover/tv";
-    params = `&include_adult=false&first_air_date.gte=${year}-${thisMonth}-01&first_air_date.lte=${year}-${thisMonth}-31&sort_by=popularity.desc`;
-    fullUrl = `${baseURL}${url}?api_key=${api_key}${params}`;
-    await fetch(fullUrl, options)
-      .then((res) => res.json())
-      .then((data) => {
-        setThisMonthTV(data.results);
-      });
-
-    params = `&include_adult=false&first_air_date.gte=${year}-${nextMonth}-01&first_air_date.lte=${year}-${nextMonth}-31&sort_by=popularity.desc`;
-    fullUrl = `${baseURL}${url}?api_key=${api_key}${params}`;
-    await fetch(fullUrl, options)
-      .then((res) => res.json())
-      .then((data) => {
-        setNextMonthTV(data.results);
-      });
-
-    params = `&include_adult=false&sort_by=popularity.desc`;
-    fullUrl = `${baseURL}${url}?api_key=${api_key}${params}`;
-    await fetch(fullUrl, options)
-      .then((res) => res.json())
-      .then((data) => {
-        setPopularTV(data.results);
-      });
-
-    setLoading(false);
+    getMovies();
     // eslint-disable-next-line
   }, []);
 
