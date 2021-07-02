@@ -134,7 +134,6 @@ export default function MovieSearch({ addMovie }) {
                 overview: movie.overview,
                 details: {
                   genres: data.genres,
-                  // runtime: data.runtime,
                   episode_run_time: data.episode_run_time,
                   next_episode_to_air: data.next_episode_to_air,
                   last_episode_to_air: data.last_episode_to_air,
@@ -262,7 +261,7 @@ export default function MovieSearch({ addMovie }) {
         label="Add movies / TV shows"
         type="search"
         variant="outlined"
-        // autoComplete="off"
+        autoComplete="off"
         fullWidth
         onChange={updateQuery}
         onKeyDown={handleKeys}

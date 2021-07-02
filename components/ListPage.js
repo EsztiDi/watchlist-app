@@ -1,7 +1,6 @@
 import { useRouter } from "next/router";
 import useSWR from "swr";
 import Head from "next/head";
-import Image from "next/image";
 
 import { makeStyles } from "@material-ui/core/styles";
 import CircularProgress from "@material-ui/core/CircularProgress";
@@ -26,13 +25,13 @@ const useStyles = makeStyles((theme) => ({
     fontSize: "1.8rem",
   },
   backdrop: {
-    position: "fixed!important",
+    position: "fixed",
     zIndex: "-99",
     opacity: "0.2",
-    // top: "72px",
-    // left: "0",
-    // minWidth: "100vw",
-    // minHeight: "100vh",
+    top: "72px",
+    left: "0",
+    minWidth: "100vw",
+    minHeight: "100vh",
   },
 }));
 
@@ -90,15 +89,14 @@ export default function ListPage({
         </Head>
         <Container maxWidth="md">
           {Object.keys(list).length !== 0 && backdrop.length && (
-            <Image
-              layout="fill"
-              objectPosition="center 72px"
-              objectFit="cover"
-              src={backdrop}
+            <div
+              style={{
+                background: `url(${backdrop}) center / cover no-repeat`,
+              }}
               alt=""
               className={classes.backdrop}
               data-background="backdrop"
-            />
+            ></div>
           )}
           <Paper elevation={4} className={classes.paper}>
             <Paper elevation={1} className={classes.titleContainer}>

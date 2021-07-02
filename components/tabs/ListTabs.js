@@ -28,7 +28,6 @@ const useStyles = makeStyles((theme) => ({
     top: "50%",
     right: "12px",
     transform: "translateY(-50%)",
-    // marginRight: theme.spacing(2),
     padding: theme.spacing(0.5),
     borderRadius: "50%",
     fontSize: "2rem",
@@ -44,7 +43,6 @@ const useStyles = makeStyles((theme) => ({
     left: "12px",
     display: "flex",
     flexDirection: "column",
-    // marginLeft: theme.spacing(2),
     color: theme.palette.primary.light,
     "& > *": {
       height: "1.8rem",

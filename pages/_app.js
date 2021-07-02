@@ -31,6 +31,7 @@ const theme = createMuiTheme({
       "@global": {
         a: {
           textDecoration: "none",
+          color: "inherit",
         },
       },
     },

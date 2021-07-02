@@ -204,16 +204,17 @@ export default function TabPanel(props) {
                 onClose={handleOpenShare}
               />
             </IconButton>
-            <IconButton
-              href={`/list/${listID}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="open in new tab"
-              title="Open in new tab"
-              className={classes.button}
-            >
-              <OpenInNewRoundedIcon className={classes.topIcon} />
-            </IconButton>
+            <Link href={`/list/${listID}`} passHref>
+              <IconButton
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="open in new tab"
+                title="Open in new tab"
+                className={classes.button}
+              >
+                <OpenInNewRoundedIcon className={classes.topIcon} />
+              </IconButton>
+            </Link>
             <IconButton
               aria-label="delete watchlist"
               title="Delete"

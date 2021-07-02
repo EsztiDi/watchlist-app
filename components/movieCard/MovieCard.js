@@ -25,6 +25,7 @@ const useStyles = makeStyles((theme) => ({
     margin: theme.spacing(1.5),
     padding: `${theme.spacing(2)}px ${theme.spacing(1.5)}px`,
     textAlign: "left",
+    cursor: "default",
   },
   content: {
     display: "flex",
@@ -185,7 +186,7 @@ export default function MovieCard({
           image={poster}
         />
         <CardContent className={classes.content}>
-          <Typography component="h6" variant="h6" className={classes.title}>
+          <Typography variant="h6" className={classes.title}>
             {title || "Untitled"} ({year}, {media_type || "-"})
           </Typography>
           <Typography

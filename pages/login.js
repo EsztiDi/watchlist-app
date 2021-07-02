@@ -1,6 +1,9 @@
 import { signIn, useSession } from "next-auth/client";
 import { useRouter } from "next/router";
 
+import { makeStyles } from "@material-ui/core/styles";
+import Container from "@material-ui/core/Container";
+import Paper from "@material-ui/core/Paper";
 import {
   FacebookLoginButton,
   GoogleLoginButton,
@@ -8,22 +11,24 @@ import {
   TwitterLoginButton,
   GithubLoginButton,
 } from "react-social-login-buttons";
-import Container from "@material-ui/core/Container";
 
-const styles = {
-  message: {
-    position: "fixed",
-    top: "58px",
-    zIndex: "9999",
-  },
-  button: {
-    marginTop: "1rem",
+const useStyles = makeStyles((theme) => ({
+  paper: {
+    padding: theme.spacing(6),
     display: "flex",
-    justifyContent: "center",
+    flexDirection: "column",
+    alignItems: "center",
   },
+}));
+const buttonStyle = {
+  margin: "0.5rem 0",
+  display: "flex",
+  justifyContent: "center",
+  width: "50%",
 };
 
 export default function Login() {
+  const classes = useStyles();
   const [session, loading] = useSession();
   const router = useRouter();
 
@@ -36,43 +41,30 @@ export default function Login() {
   return (
     !loading &&
     !session && (
-      <Container maxWidth="xs">
-        <GoogleLoginButton
-          style={styles.button}
-          onClick={() => signIn("google")}
-        />
-        <FacebookLoginButton
-          style={styles.button}
-          onClick={() => signIn("facebook")}
-        />
-        <LinkedInLoginButton
-          style={styles.button}
-          onClick={() => signIn("linkedin")}
-        />
-        <TwitterLoginButton
-          style={styles.button}
-          onClick={() => signIn("twitter")}
-        />
-        <GithubLoginButton
-          style={styles.button}
-          onClick={() => signIn("github")}
-        />
+      <Container maxWidth="md">
+        <Paper elevation={4} className={classes.paper}>
+          <GoogleLoginButton
+            style={buttonStyle}
+            onClick={() => signIn("google")}
+          />
+          <FacebookLoginButton
+            style={buttonStyle}
+            onClick={() => signIn("facebook")}
+          />
+          <LinkedInLoginButton
+            style={buttonStyle}
+            onClick={() => signIn("linkedin")}
+          />
+          <TwitterLoginButton
+            style={buttonStyle}
+            onClick={() => signIn("twitter")}
+          />
+          <GithubLoginButton
+            style={buttonStyle}
+            onClick={() => signIn("github")}
+          />
+        </Paper>
       </Container>
     )
   );
 }
-
-// export async function getServerSideProps(context) {
-//   const session = await getSession(context);
-//   if (session) {
-//     return {
-//       redirect: {
-//         destination: "/lists",
-//         permanent: false,
-//       },
-//     };
-//   }
-//   return {
-//     props: { session },
-//   };
-// }

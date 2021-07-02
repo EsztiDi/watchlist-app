@@ -3,6 +3,8 @@ import Image from "next/image";
 import { makeStyles } from "@material-ui/core/styles";
 import Paper from "@material-ui/core/Paper";
 import Typography from "@material-ui/core/Typography";
+import Divider from "@material-ui/core/Divider";
+import CircularProgress from "@material-ui/core/CircularProgress";
 import Carousel from "react-material-ui-carousel";
 
 import MovieDetails from "./MovieDetails";
@@ -12,11 +14,15 @@ const useStyles = makeStyles((theme) => ({
   moviesCard: {
     minWidth: "500px",
     minHeight: "410px",
-    margin: theme.spacing(2),
+    margin: `${theme.spacing(4)}px ${theme.spacing(2)}px`,
     padding: theme.spacing(2),
     textAlign: "center",
-    "& > *:first-child": {
-      paddingBottom: theme.spacing(2),
+    "& > :first-child": {
+      marginBottom: theme.spacing(1),
+      fontFamily: "'Bangers', cursive",
+    },
+    "& > :nth-child(2)": {
+      marginBottom: theme.spacing(2.5),
     },
     "& .CarouselItem > div > div:first-child": {
       marginRight: `${theme.spacing(2)}px !important`,
@@ -28,7 +34,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function MoviesCarousel({ title, movies }) {
+export default function MoviesCarousel({ title, movies, media_type, loading }) {
   const classes = useStyles();
   var sliced = [];
 
@@ -38,11 +44,13 @@ export default function MoviesCarousel({ title, movies }) {
 
   return (
     <Paper elevation={1} className={classes.moviesCard}>
-      <Typography variant="h5">{title}</Typography>
-      {movies.length ? (
+      <Typography variant="h4">{title}</Typography>
+      <Divider />
+      {loading && movies.length === 0 ? (
+        <CircularProgress size="3rem" thickness={3} />
+      ) : movies.length ? (
         <Carousel
           autoPlay={false}
-          // animation="slide"
           interval={5000}
           timeout={300}
           indicatorContainerProps={{
@@ -73,7 +81,11 @@ export default function MoviesCarousel({ title, movies }) {
                     alt="Poster"
                     className={classes.poster}
                   />
-                  <MovieDetails left={index % 2 === 0} />
+                  <MovieDetails
+                    movie={movie}
+                    media_type={media_type}
+                    left={index % 2 === 0}
+                  />
                 </React.Fragment>
               );
             });

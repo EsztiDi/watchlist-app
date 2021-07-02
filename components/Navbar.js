@@ -27,13 +27,16 @@ const useStyles = makeStyles((theme) => ({
     marginRight: "auto",
     display: "flex",
     alignItems: "center",
-    textDecoration: "none",
+    outline: "none",
     userSelect: "none",
-    "& h5": {
-      color: theme.palette.text.primary,
+    "& :last-child": {
+      color: theme.palette.primary.dark,
+      textShadow: `1px 1px 1px ${theme.palette.text.primary}`,
       marginLeft: theme.spacing(2),
       letterSpacing: "0.02857em",
       textTransform: "uppercase",
+      fontSize: "1.8rem",
+      fontFamily: "'Carter One', cursive",
     },
   },
   menu: {
@@ -47,6 +50,9 @@ const useStyles = makeStyles((theme) => ({
     width: "100%",
     textAlign: "center",
     fontSize: "15px",
+  },
+  popup: {
+    backgroundColor: "#f5f5f5",
   },
 }));
 
@@ -98,7 +104,7 @@ export default function Navbar() {
           <Link href="/lists">
             <a className={classes.title}>
               <Image src="/logo.png" alt="Logo" width={56} height={56} />
-              <Typography variant="h5">My Watchlists</Typography>
+              <Typography variant="h4">My Watchlists</Typography>
             </a>
           </Link>
           <Link href="/">
@@ -149,7 +155,7 @@ export default function Navbar() {
                         placement === "bottom" ? "center top" : "center bottom",
                     }}
                   >
-                    <Paper>
+                    <Paper className={classes.popup}>
                       <ClickAwayListener onClickAway={handleMenuClose}>
                         <MenuList
                           autoFocus={menuOpen}

@@ -20,6 +20,7 @@ const useStyles = makeStyles((theme) => ({
 export default function Discover() {
   const classes = useStyles();
 
+  const [loading, setLoading] = React.useState(false);
   const [thisMonthMovies, setThisMonthMovies] = React.useState([]);
   const [nextMonthMovies, setNextMonthMovies] = React.useState([]);
   const [popularMovies, setPopularMovies] = React.useState([]);
@@ -33,7 +34,9 @@ export default function Discover() {
   const nextMonth =
     month === 12 ? "01" : month < 9 ? `0${month + 1}` : month + 1;
 
-  React.useEffect(() => {
+  React.useEffect(async () => {
+    setLoading(true);
+
     var baseURL = "https://api.themoviedb.org/3";
     var url = "/discover/movie";
     var api_key = process.env.TMDB_API_KEY;
@@ -46,7 +49,7 @@ export default function Discover() {
       },
     };
 
-    fetch(fullUrl, options)
+    await fetch(fullUrl, options)
       .then((res) => res.json())
       .then((data) => {
         setThisMonthMovies(data.results);
@@ -54,7 +57,7 @@ export default function Discover() {
 
     params = `&include_adult=false&primary_release_date.gte=${year}-${nextMonth}-01&primary_release_date.lte=${year}-${nextMonth}-31&sort_by=popularity.desc`;
     fullUrl = `${baseURL}${url}?api_key=${api_key}${params}`;
-    fetch(fullUrl, options)
+    await fetch(fullUrl, options)
       .then((res) => res.json())
       .then((data) => {
         setNextMonthMovies(data.results);
@@ -62,7 +65,7 @@ export default function Discover() {
 
     params = `&include_adult=false&sort_by=popularity.desc`;
     fullUrl = `${baseURL}${url}?api_key=${api_key}${params}`;
-    fetch(fullUrl, options)
+    await fetch(fullUrl, options)
       .then((res) => res.json())
       .then((data) => {
         setPopularMovies(data.results);
@@ -71,7 +74,7 @@ export default function Discover() {
     url = "/discover/tv";
     params = `&include_adult=false&first_air_date.gte=${year}-${thisMonth}-01&first_air_date.lte=${year}-${thisMonth}-31&sort_by=popularity.desc`;
     fullUrl = `${baseURL}${url}?api_key=${api_key}${params}`;
-    fetch(fullUrl, options)
+    await fetch(fullUrl, options)
       .then((res) => res.json())
       .then((data) => {
         setThisMonthTV(data.results);
@@ -79,7 +82,7 @@ export default function Discover() {
 
     params = `&include_adult=false&first_air_date.gte=${year}-${nextMonth}-01&first_air_date.lte=${year}-${nextMonth}-31&sort_by=popularity.desc`;
     fullUrl = `${baseURL}${url}?api_key=${api_key}${params}`;
-    fetch(fullUrl, options)
+    await fetch(fullUrl, options)
       .then((res) => res.json())
       .then((data) => {
         setNextMonthTV(data.results);
@@ -87,11 +90,14 @@ export default function Discover() {
 
     params = `&include_adult=false&sort_by=popularity.desc`;
     fullUrl = `${baseURL}${url}?api_key=${api_key}${params}`;
-    fetch(fullUrl, options)
+    await fetch(fullUrl, options)
       .then((res) => res.json())
       .then((data) => {
         setPopularTV(data.results);
       });
+
+    setLoading(false);
+    // eslint-disable-next-line
   }, []);
 
   return (
@@ -119,21 +125,39 @@ export default function Discover() {
           <MoviesCarousel
             title="New movies this month"
             movies={thisMonthMovies}
+            media_type={"movie"}
+            loading={loading}
           />
           <MoviesCarousel
             title="New movies next month"
             movies={nextMonthMovies}
+            media_type={"movie"}
+            loading={loading}
           />
           <MoviesCarousel
             title="New TV shows this month"
             movies={thisMonthTV}
+            media_type={"tv"}
+            loading={loading}
           />
           <MoviesCarousel
             title="New TV shows next month"
             movies={nextMonthTV}
+            media_type={"tv"}
+            loading={loading}
           />
-          <MoviesCarousel title="Popular movies" movies={popularMovies} />
-          <MoviesCarousel title="Popular TV shows" movies={popularTV} />
+          <MoviesCarousel
+            title="Popular movies"
+            movies={popularMovies}
+            media_type={"movie"}
+            loading={loading}
+          />
+          <MoviesCarousel
+            title="Popular TV shows"
+            movies={popularTV}
+            media_type={"tv"}
+            loading={loading}
+          />
         </Paper>
       </Container>
     </>

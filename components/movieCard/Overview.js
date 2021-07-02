@@ -23,8 +23,15 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function Overview({ overview }) {
+export default function Overview({ overview, height }) {
   const classes = useStyles();
 
-  return <Typography className={classes.overview}>{overview || ""}</Typography>;
+  return (
+    <Typography
+      className={classes.overview}
+      style={height ? { maxHeight: height, margin: "0.5rem 0" } : undefined}
+    >
+      {overview || ""}
+    </Typography>
+  );
 }

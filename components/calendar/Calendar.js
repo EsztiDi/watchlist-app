@@ -93,7 +93,6 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
-// const months = ["Jan", "Feb","Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 const today = new Date();
 
 export default function Calendar({ movies, newTab = false }) {
@@ -144,11 +143,7 @@ export default function Calendar({ movies, newTab = false }) {
       </Button>
       <Paper elevation={1} className={classes.container}>
         {newTab && (
-          <CardHeader
-            // titleTypographyProps={{ variant: "h6" }}
-            title="Release Calendar"
-            className={classes.header}
-          />
+          <CardHeader title="Release Calendar" className={classes.header} />
         )}
         <TableContainer component={Paper}>
           <Table className={classes.table} aria-label="calendar current month">

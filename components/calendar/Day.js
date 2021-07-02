@@ -16,7 +16,6 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(1),
   },
   poster: {
-    // width: "60px",
     borderRadius: "5px",
   },
   tooltip: {

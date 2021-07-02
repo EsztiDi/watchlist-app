@@ -16,12 +16,9 @@ import MovieSearch from "./movieSearch/MovieSearch";
 import Movies from "./Movies";
 import TabPanel from "./tabs/TabPanel";
 import ListTabs from "./tabs/ListTabs";
+import { useSession } from "next-auth/client";
 
 const useStyles = makeStyles((theme) => ({
-  form: {
-    // flexGrow: 1,
-    // textAlign: "center",
-  },
   create: {
     textAlign: "center",
     padding: theme.spacing(2.5),
@@ -60,8 +57,11 @@ export default function Form({
   var { id } = router.query;
   if (Array.isArray(id)) id = id[0];
 
-  const [updating, setUpdating] = React.useState(false);
+  const [session, loading] = useSession();
+  const email = session?.user?.email;
+
   const newMovie = React.useRef(false);
+  const [updating, setUpdating] = React.useState(false);
   const [form, setForm] = React.useState({
     title: list.title,
     movies: list.movies,
@@ -78,9 +78,6 @@ export default function Form({
         private: list.private,
         emails: list.emails,
       });
-
-      // if (!newTab) mutate("/api/lists");
-      console.log("Form list effect");
 
       if (newMovie.current) {
         var panel =
@@ -101,7 +98,6 @@ export default function Form({
         form.emails !== list.emails ||
         movies !== list.movies)
     ) {
-      console.log("Form putData effect");
       setUpdating(true);
       putData(form);
     }
@@ -350,8 +346,8 @@ export default function Form({
                 }
               />
               <Typography variant="subtitle1" color="textSecondary">
-                Receive weekly emails of any upcoming releases from your
-                watchlist.
+                Receive weekly emails to {email} of any upcoming releases from
+                your watchlist.
               </Typography>
             </Grid>
             <Grid item className={classes.grid}>

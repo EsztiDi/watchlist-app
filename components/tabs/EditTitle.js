@@ -10,8 +10,6 @@ import CircularProgress from "@material-ui/core/CircularProgress";
 const useStyles = makeStyles((theme) => ({
   editTitle: {
     padding: theme.spacing(1),
-    // width: "100%",
-    // maxWidth: "264px",
   },
   button: {
     padding: theme.spacing(0.5),
