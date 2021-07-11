@@ -100,6 +100,7 @@ export default function TabPanel(props) {
     addMovie,
     deleteMovie,
     moveMovie,
+    addingMovie,
     ...other
   } = props;
   const {
@@ -155,11 +156,11 @@ export default function TabPanel(props) {
             <TodayRoundedIcon className={classes.topIcon} />
           </IconButton>
         </Link>
-        {updating && (
+        {newTab && updating && (
           <CircularProgress
             size="1.5rem"
             thickness={5}
-            className={newTab ? classes.updating : null}
+            className={classes.updating}
           />
         )}
         {!newTab && (
@@ -242,7 +243,7 @@ export default function TabPanel(props) {
 
       {editable && (
         <div className={classes.search}>
-          <MovieSearch addMovie={addMovie} />
+          <MovieSearch addMovie={addMovie} addingMovie={addingMovie} />
         </div>
       )}
     </Box>

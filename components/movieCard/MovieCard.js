@@ -179,7 +179,7 @@ export default function MovieCard({
 
   return (
     <>
-      <Card className={classes.moviecard}>
+      <Card id={id} className={classes.moviecard}>
         <CardMedia
           data-image="background"
           className={classes.image}
@@ -297,9 +297,7 @@ export default function MovieCard({
                   title="Move down"
                   className={classes.button}
                   disabled={updating}
-                  onClick={() => {
-                    moveMovie("down", index, position);
-                  }}
+                  onClick={() => moveMovie("down", index, position)}
                 >
                   <KeyboardArrowDownRoundedIcon className={classes.arrow} />
                 </IconButton>

@@ -79,6 +79,7 @@ export default function EditTitle({
                 <IconButton
                   aria-label="cancel"
                   onClick={onEditTitle}
+                  disabled={updating}
                   className={classes.button}
                 >
                   <HighlightOffRoundedIcon

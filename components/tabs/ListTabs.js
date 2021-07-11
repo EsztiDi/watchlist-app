@@ -6,6 +6,7 @@ import Tab from "@material-ui/core/Tab";
 import EditRoundedIcon from "@material-ui/icons/EditRounded";
 import KeyboardArrowUpRoundedIcon from "@material-ui/icons/KeyboardArrowUpRounded";
 import KeyboardArrowDownRoundedIcon from "@material-ui/icons/KeyboardArrowDownRounded";
+import CircularProgress from "@material-ui/core/CircularProgress";
 
 import EditTitle from "./EditTitle";
 
@@ -18,9 +19,12 @@ const useStyles = makeStyles((theme) => ({
     fontSize: "1rem",
     minWidth: "100%",
     minHeight: "3.6rem",
-    "& > *:first-child": {
+    "& > :first-child": {
       width: "80%",
       flexDirection: "row",
+      "& > :first-child": {
+        marginBottom: "3px",
+      },
     },
   },
   edit: {
@@ -37,6 +41,10 @@ const useStyles = makeStyles((theme) => ({
       color: theme.palette.primary.main,
       backgroundColor: "rgba(0, 0, 0, 0.04)",
     },
+  },
+  updating: {
+    position: "absolute",
+    right: "12px",
   },
   arrows: {
     position: "absolute",
@@ -129,13 +137,21 @@ export default function ListTabs({
                 putData &&
                 value === index && (
                   <>
-                    <span title="Edit title">
-                      <EditRoundedIcon
-                        aria-label="edit title"
-                        className={classes.edit}
-                        onClick={handleEditTitle}
+                    {updating ? (
+                      <CircularProgress
+                        size="1.5rem"
+                        thickness={5}
+                        className={classes.updating}
                       />
-                    </span>
+                    ) : (
+                      <span title="Edit title">
+                        <EditRoundedIcon
+                          aria-label="edit title"
+                          className={classes.edit}
+                          onClick={handleEditTitle}
+                        />
+                      </span>
+                    )}
                     <span className={classes.arrows}>
                       {index !== 0 && (
                         <span title="Move up">

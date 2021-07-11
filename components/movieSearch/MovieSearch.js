@@ -12,7 +12,7 @@ const unloadAlert = (ev) => {
   ev.returnValue = "";
 };
 
-export default function MovieSearch({ addMovie }) {
+export default function MovieSearch({ addMovie, addingMovie }) {
   const [loading, setLoading] = React.useState(false);
   const [query, setQuery] = React.useState("");
   const [results, setResults] = React.useState([]);
@@ -269,7 +269,7 @@ export default function MovieSearch({ addMovie }) {
           endAdornment: (
             <InputAdornment position="end">
               <Button onClick={handleSearch}>
-                {loading ? (
+                {loading || addingMovie ? (
                   <CircularProgress size="1.5rem" thickness={5} />
                 ) : (
                   "Search"

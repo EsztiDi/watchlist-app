@@ -4,6 +4,12 @@ import StarRoundedIcon from "@material-ui/icons/StarRounded";
 import TheatersRoundedIcon from "@material-ui/icons/TheatersRounded";
 import Button from "@material-ui/core/Button";
 import AddRoundedIcon from "@material-ui/icons/AddRounded";
+import ClickAwayListener from "@material-ui/core/ClickAwayListener";
+import Grow from "@material-ui/core/Grow";
+import Paper from "@material-ui/core/Paper";
+import Popper from "@material-ui/core/Popper";
+import MenuItem from "@material-ui/core/MenuItem";
+import MenuList from "@material-ui/core/MenuList";
 
 import Overview from "../movieCard/Overview";
 
@@ -23,8 +29,18 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(1),
     color: "#fff",
     cursor: "default",
+    "& a": {
+      position: "relative",
+      zIndex: "-99",
+    },
     "&:hover": {
       opacity: 1,
+      "& a": {
+        zIndex: "0",
+      },
+      "& button": {
+        zIndex: "0",
+      },
     },
     "& > :nth-child(2)": {
       marginBottom: theme.spacing(1),
@@ -33,6 +49,8 @@ const useStyles = makeStyles((theme) => ({
       margin: `auto 0 ${theme.spacing(1)}px`,
       padding: `${theme.spacing(0.5)}px ${theme.spacing(1.5)}px`,
       fontWeight: "bold",
+      position: "relative",
+      zIndex: "-99",
     },
   },
   miniIcon: {
@@ -101,6 +119,41 @@ export default function MovieDetails({ movie, media_type, left }) {
       })
     : "No release date";
 
+  const [menuOpen, setMenuOpen] = React.useState(false);
+  const anchorRef = React.useRef(null);
+
+  const handleMenuToggle = () => {
+    setMenuOpen((prevOpen) => !prevOpen);
+  };
+
+  const handleMenuClose = (ev) => {
+    if (anchorRef.current && anchorRef.current.contains(ev.target)) {
+      return;
+    }
+    setMenuOpen(false);
+  };
+
+  const handleListKeyDown = (ev) => {
+    if (ev.key === "Tab") {
+      ev.preventDefault();
+      setMenuOpen(false);
+    }
+
+    if (ev.key === "Enter") {
+      document.activeElement.click();
+    }
+  };
+
+  // Return focus to button when menu is closed
+  const prevOpen = React.useRef(menuOpen);
+  React.useEffect(() => {
+    if (prevOpen.current === true && menuOpen === false) {
+      anchorRef.current.focus();
+    }
+
+    prevOpen.current = menuOpen;
+  }, [menuOpen]);
+
   return (
     <div
       className={classes.details}
@@ -137,9 +190,55 @@ export default function MovieDetails({ movie, media_type, left }) {
         )}
       </span>
       <Overview overview={overview} height={"92px"} />
-      <Button size="medium" color="primary" variant="contained">
+      <Button
+        size="medium"
+        color="primary"
+        variant="contained"
+        ref={anchorRef}
+        aria-controls={menuOpen ? "menu-list" : undefined}
+        aria-haspopup="true"
+        onClick={handleMenuToggle}
+      >
         <AddRoundedIcon /> Add
       </Button>
+      <Popper
+        open={menuOpen}
+        anchorEl={anchorRef.current}
+        role={undefined}
+        transition
+        disablePortal
+      >
+        {({ TransitionProps, placement }) => (
+          <Grow
+            {...TransitionProps}
+            style={{
+              transformOrigin:
+                placement === "bottom" ? "center top" : "center bottom",
+            }}
+          >
+            <Paper className={classes.popup}>
+              <ClickAwayListener onClickAway={handleMenuClose}>
+                <MenuList
+                  autoFocus={menuOpen}
+                  id="menu-list"
+                  onKeyDown={handleListKeyDown}
+                >
+                  <MenuItem onClick={handleMenuClose}>
+                    <Typography variant="button" className={classes.menuItem}>
+                      List1
+                    </Typography>
+                  </MenuItem>
+                  <MenuItem>
+                    <Typography variant="button" className={classes.menuItem}>
+                      List2
+                    </Typography>
+                  </MenuItem>
+                </MenuList>
+              </ClickAwayListener>
+            </Paper>
+          </Grow>
+        )}
+      </Popper>
     </div>
   );
 }

@@ -28,6 +28,9 @@ const useStyles = makeStyles((theme) => ({
       marginRight: `${theme.spacing(2)}px !important`,
     },
   },
+  carousel: {
+    overflow: "visible",
+  },
   poster: {
     borderRadius: "10px",
     position: "relative",
@@ -53,6 +56,7 @@ export default function MoviesCarousel({ title, movies, media_type, loading }) {
           autoPlay={false}
           interval={5000}
           timeout={300}
+          className={classes.carousel}
           indicatorContainerProps={{
             style: {
               display: "flex",

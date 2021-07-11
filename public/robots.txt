@@ -1,4 +1,12 @@
 # https://www.robotstxt.org/robotstxt.html
+User-agent: Twitterbot
+Disallow: /api/
+Disallow: /lists/
+Disallow: /*.png$
+Disallow: /*.jpg$
+Disallow: /*.svg$
+Disallow: /*.ico$
+
 User-agent: *
 Disallow: /api/
 Disallow: /list/

@@ -1,4 +1,3 @@
-import Head from "next/head";
 // import dbConnect from "../utils/dbConnect";
 // import Watchlist from "../models/Watchlist";
 
@@ -105,66 +104,46 @@ export default function Discover() {
   }, []);
 
   return (
-    <>
-      <Head>
-        <meta property="og:url" content={process.env.BASE_URL} />
-        <meta property="og:title" content="Watchlist App" />
-        <meta
-          property="og:description"
-          content="An app to create watchlists for films and tv shows"
+    <Container disableGutters maxWidth="xl">
+      <Paper elevation={4} className={classes.paper}>
+        <MoviesCarousel
+          title="New movies this month"
+          movies={thisMonthMovies}
+          media_type={"movie"}
+          loading={loading}
         />
-        <meta
-          property="og:image"
-          content={`${process.env.BASE_URL}/android-chrome-256x256.png`}
+        <MoviesCarousel
+          title="New movies next month"
+          movies={nextMonthMovies}
+          media_type={"movie"}
+          loading={loading}
         />
-        <meta property="og:image:width" content="256" />
-        <meta property="og:image:height" content="256" />
-        <meta property="fb:app_id" content="827802261304460" />
-        <meta name="twitter:card" content="summary" />
-        <link rel="canonical" href={process.env.BASE_URL} />
-        <meta name="robots" content="noimageindex, nofollow" />
-      </Head>
-      <Container disableGutters maxWidth="xl">
-        <Paper elevation={4} className={classes.paper}>
-          <MoviesCarousel
-            title="New movies this month"
-            movies={thisMonthMovies}
-            media_type={"movie"}
-            loading={loading}
-          />
-          <MoviesCarousel
-            title="New movies next month"
-            movies={nextMonthMovies}
-            media_type={"movie"}
-            loading={loading}
-          />
-          <MoviesCarousel
-            title="New TV shows this month"
-            movies={thisMonthTV}
-            media_type={"tv"}
-            loading={loading}
-          />
-          <MoviesCarousel
-            title="New TV shows next month"
-            movies={nextMonthTV}
-            media_type={"tv"}
-            loading={loading}
-          />
-          <MoviesCarousel
-            title="Popular movies"
-            movies={popularMovies}
-            media_type={"movie"}
-            loading={loading}
-          />
-          <MoviesCarousel
-            title="Popular TV shows"
-            movies={popularTV}
-            media_type={"tv"}
-            loading={loading}
-          />
-        </Paper>
-      </Container>
-    </>
+        <MoviesCarousel
+          title="New TV shows this month"
+          movies={thisMonthTV}
+          media_type={"tv"}
+          loading={loading}
+        />
+        <MoviesCarousel
+          title="New TV shows next month"
+          movies={nextMonthTV}
+          media_type={"tv"}
+          loading={loading}
+        />
+        <MoviesCarousel
+          title="Popular movies"
+          movies={popularMovies}
+          media_type={"movie"}
+          loading={loading}
+        />
+        <MoviesCarousel
+          title="Popular TV shows"
+          movies={popularTV}
+          media_type={"tv"}
+          loading={loading}
+        />
+      </Paper>
+    </Container>
   );
 }
 

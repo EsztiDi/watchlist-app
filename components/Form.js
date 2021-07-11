@@ -188,12 +188,17 @@ export default function Form({
       movie.position = 0;
     }
 
-    setForm({
-      ...form,
-      movies: [...movies, movie],
-    });
-
-    newMovie.current = true;
+    var ids = movies.map((mov) => mov.id);
+    if (ids.includes(movie.id)) {
+      setMessage("It's already on your list.");
+      document.getElementById(movie.id).scrollIntoView({ behavior: "smooth" });
+    } else {
+      setForm({
+        ...form,
+        movies: [...movies, movie],
+      });
+      newMovie.current = true;
+    }
   };
 
   const deleteMovie = (index) => {
@@ -273,6 +278,7 @@ export default function Form({
         addMovie={addMovie}
         deleteMovie={deleteMovie}
         moveMovie={moveMovie}
+        addingMovie={newMovie.current}
       />
     </>
   ) : (
@@ -302,7 +308,7 @@ export default function Form({
               />
             </Grid>
             <Grid item className={classes.relative}>
-              <MovieSearch addMovie={addMovie} />
+              <MovieSearch addMovie={addMovie} addingMovie={newMovie.current} />
             </Grid>
             {movies.length > 0 && (
               <Grid item className={classes.list}>

@@ -116,13 +116,26 @@ export default function MyApp({ Component, pageProps }) {
         <meta name="apple-mobile-web-app-title" content="Watchlists" />
         <meta name="application-name" content="Watchlists" />
         <meta name="msapplication-TileColor" content="#ffc40d" />
-
         <meta name="msapplication-config" content="/browserconfig.xml" />
         <link rel="manifest" href="/site.webmanifest" />
+        <meta name="robots" content="noimageindex, nofollow" />
+
+        <meta property="og:url" content={process.env.BASE_URL} />
+        <meta property="og:title" content="Watchlist App" />
         <meta
-          name="description"
-          content="An app to create watchlists for films and tv shows"
+          property="og:description"
+          content="Create, share and edit watchlists for films and tv shows with anyone"
         />
+        <meta
+          property="og:image"
+          content={`${process.env.BASE_URL}/android-chrome-256x256.png`}
+        />
+        <meta property="og:image:width" content="256" />
+        <meta property="og:image:height" content="256" />
+        <meta property="og:type" content="website" />
+        <meta property="fb:app_id" content="827802261304460" />
+        <meta name="twitter:card" content="summary" />
+        <link rel="canonical" href={process.env.BASE_URL} />
         <title>My Watchlists</title>
       </Head>
       <Provider session={pageProps.session}>
@@ -144,6 +157,8 @@ export default function MyApp({ Component, pageProps }) {
                     severity={
                       message.includes("saved!") || message.includes("deleted!")
                         ? "success"
+                        : message.includes("already on your list")
+                        ? "warning"
                         : "error"
                     }
                     variant="filled"
