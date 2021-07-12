@@ -20,6 +20,7 @@ import Typography from "@material-ui/core/Typography";
 import Modal from "@material-ui/core/Modal";
 import Backdrop from "@material-ui/core/Backdrop";
 import Fade from "@material-ui/core/Fade";
+import Divider from "@material-ui/core/Divider";
 import TextField from "@material-ui/core/TextField";
 import InputAdornment from "@material-ui/core/InputAdornment";
 import Button from "@material-ui/core/Button";
@@ -40,22 +41,21 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     flexDirection: "column",
     padding: theme.spacing(2),
-    backgroundColor: theme.palette.background.default,
+    backgroundColor: theme.palette.background.paper,
     border: "1px solid #FFF",
     borderRadius: "8px",
     boxShadow: theme.shadows[5],
   },
   title: {
     textAlign: "center",
-    backgroundColor: theme.palette.background.paper,
-    padding: `${theme.spacing(0.5)}px 0`,
-    marginBottom: theme.spacing(1.5),
+    padding: `${theme.spacing(0.5)}px 0 ${theme.spacing(1.5)}px`,
   },
   buttons: {
     display: "flex",
     justifyContent: "center",
     flexWrap: "wrap",
-    marginBottom: theme.spacing(2),
+    paddingTop: theme.spacing(2.5),
+    paddingBottom: theme.spacing(2.5),
     "& > *": {
       margin: theme.spacing(1),
       display: "flex",
@@ -82,9 +82,14 @@ export default function Share({ listID, uid, title, open, onClose }) {
   const textVariant = "caption";
   const shareUrl = `${window.location.origin}/list/${listID}`;
   const editableUrl = `${window.location.origin}/list/${listID}/${uid}`;
-  const [shareLink, setShareLink] = React.useState(shareUrl);
+  const [shareLink, setShareLink] = React.useState("");
   const [editable, setEditable] = React.useState("false");
   const [copied, setCopied] = React.useState(false);
+
+  React.useEffect(() => {
+    setShareLink(`${window.location.origin}/list/${listID}`);
+    setEditable("false");
+  }, [listID]);
 
   const handleEditableChange = (ev) => {
     setEditable(ev.target.value);
@@ -123,6 +128,7 @@ export default function Share({ listID, uid, title, open, onClose }) {
           <Typography variant="h6" id="modal-title" className={classes.title}>
             Share
           </Typography>
+          <Divider />
           <div className={classes.buttons}>
             <FacebookShareButton url={shareLink}>
               <FacebookIcon size={iconSize} round />
@@ -200,7 +206,8 @@ export default function Share({ listID, uid, title, open, onClose }) {
           </FormControl>
           <Collapse in={editable === "true"}>
             <Typography variant="subtitle1" className={classes.info}>
-              Everyone with this link will be able to edit your list.
+              Everyone with this link will be able to edit the movies on your
+              list.
             </Typography>
           </Collapse>
         </div>

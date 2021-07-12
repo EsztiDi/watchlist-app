@@ -20,6 +20,8 @@ const useStyles = makeStyles((theme) => ({
   },
   tooltip: {
     fontSize: "0.9rem",
+    textAlign: "center",
+    whiteSpace: "nowrap",
     margin: theme.spacing(0.8),
   },
 }));

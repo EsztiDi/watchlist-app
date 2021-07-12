@@ -13,39 +13,51 @@ export default async function handler(req, res) {
       try {
         const lists = await Watchlist.find(
           { user: session.user },
-          "_id title position"
+          "_id title movies position"
         ).sort({
           position: 1,
         });
         res.status(200).json({ success: true, data: lists });
       } catch (err) {
-        console.error(`Lists not found -  user: ${session.user} - ${err}`);
+        console.error(
+          `Lists not found -  user: ${JSON.stringify(
+            session.user
+          )} - ${JSON.stringify(err)}`
+        );
         res.status(400).json({ success: false });
       }
       break;
     case "POST":
       try {
-        const lists = await Watchlist.find({ user: session.user }).sort({
-          position: 1,
-        });
+        if (session) {
+          const lists = await Watchlist.find({ user: session.user }).sort({
+            position: 1,
+          });
 
-        if (lists.length > 0) {
-          req.body.position = lists[lists.length - 1].position + 1;
-        } else {
-          req.body.position = 0;
+          if (lists.length > 0) {
+            req.body.position = lists[lists.length - 1].position + 1;
+          } else {
+            req.body.position = 0;
+          }
+          req.body.user = session.user;
         }
-        req.body.user = session.user;
 
         const list = await Watchlist.create(req.body);
         res.status(201).json({ success: true, data: list });
       } catch (err) {
-        console.error(`Couldn't create list -  user: ${session.user} - ${err}`);
+        console.error(
+          `Couldn't create list -  user: ${JSON.stringify(
+            session.user
+          )} - ${JSON.stringify(err)}`
+        );
         res.status(400).json({ success: false });
       }
       break;
     default:
       console.error(
-        `Wrong fetch method used for api/lists - user: ${session.user}`
+        `Wrong fetch method used for api/lists - user: ${JSON.stringify(
+          session.user
+        )}`
       );
       res.status(400).json({ success: false });
       break;

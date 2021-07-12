@@ -8,7 +8,6 @@ import Container from "@material-ui/core/Container";
 import Paper from "@material-ui/core/Paper";
 import Typography from "@material-ui/core/Typography";
 
-import Calendar from "./calendar/Calendar";
 import Form from "./Form";
 
 const useStyles = makeStyles((theme) => ({
@@ -52,7 +51,7 @@ export default function ListPage({
   var movies = (list) => list?.movies.sort((a, b) => a.position - b.position);
 
   const { data: list, error } = useSWR(id ? `/api/lists/${id}` : null, {
-    refreshInterval: 1000,
+    refreshInterval: 2000,
     initialData: initialList,
   });
 
@@ -76,16 +75,24 @@ export default function ListPage({
     list && (
       <>
         <Head>
-          <meta property="og:title" content={list.title} />
-          <meta property="og:description" content="Look what I have created!" />
-          <meta property="og:url" content={url} />
-          <meta property="og:image" content={image?.url} />
-          <meta property="og:image:width" content={image?.width} />
-          <meta property="og:image:height" content={image?.height} />
-          <meta property="og:type" content="website" />
-          <meta property="fb:app_id" content="827802261304460" />
+          <meta property="og:url" content={url} key="url" />
+          <meta property="og:title" content={list.title} key="title" />
+          <meta
+            property="og:description"
+            content="Look what I have created!"
+            key="description"
+          />
+          <meta property="og:image" content={image?.url} key="image" />
+          <meta property="og:image:width" content={image?.width} key="width" />
+          <meta
+            property="og:image:height"
+            content={image?.height}
+            key="height"
+          />
+          <meta property="og:type" content="website" key="type" />
+          <meta property="fb:app_id" content="827802261304460" key="app_id" />
           <meta name="twitter:card" content="summary_large_image" />
-          <link rel="canonical" href={url} />
+          <link rel="canonical" href={url} key="canonical" />
           <title>{list.title}</title>
         </Head>
         <Container maxWidth="md">
@@ -105,16 +112,13 @@ export default function ListPage({
                 {list.title}
               </Typography>
             </Paper>
-            {calendar ? (
-              <Calendar movies={list.movies} newTab={true} />
-            ) : (
-              <Form
-                list={list}
-                setMessage={setMessage}
-                newList={false}
-                newTab={true}
-              />
-            )}
+            <Form
+              list={list}
+              setMessage={setMessage}
+              calendar={calendar}
+              newList={false}
+              newTab={true}
+            />
           </Paper>
         </Container>
       </>

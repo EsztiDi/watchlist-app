@@ -6,8 +6,6 @@ import { makeStyles } from "@material-ui/core/styles";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import Paper from "@material-ui/core/Paper";
 
-import ListTabs from "./tabs/ListTabs";
-import Calendar from "./calendar/Calendar";
 import Form from "./Form";
 
 const useStyles = makeStyles((theme) => ({
@@ -40,14 +38,15 @@ export default function ListPanels({
   const { id } = router.query;
 
   const { data: list, error } = useSWR(id ? `/api/lists/${id}` : null, {
-    refreshInterval: 1000,
+    refreshInterval: 2000,
     initialData: initialList,
   });
   const { data: lists, error: error2 } = useSWR(session ? "/api/lists" : null, {
+    refreshInterval: 2000,
     initialData: initialLists,
   });
 
-  const auth = session && list.user.email === session.user.email;
+  const auth = session && list?.user?.email === session?.user?.email;
   const hasLists = lists && lists.length > 0;
 
   if (loading) return null;
@@ -60,7 +59,7 @@ export default function ListPanels({
 
   if (error || error2)
     setMessage(
-      `${error.message || error2.message} - Please try again or contact ...`
+      `${error?.message || error2?.message} - Please try again or contact ...`
     );
 
   if (!list || !lists) return <CircularProgress size="3rem" thickness={3} />;
@@ -71,19 +70,13 @@ export default function ListPanels({
     hasLists && (
       <Paper elevation={4} className={classes.container}>
         <div className={classes.watchlists}>
-          {calendar ? (
-            <>
-              <ListTabs id={id} lists={lists} />
-              <Calendar movies={list.movies} />
-            </>
-          ) : (
-            <Form
-              lists={lists}
-              list={list}
-              setMessage={setMessage}
-              newList={false}
-            />
-          )}
+          <Form
+            lists={lists}
+            list={list}
+            setMessage={setMessage}
+            calendar={calendar}
+            newList={false}
+          />
         </div>
       </Paper>
     )

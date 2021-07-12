@@ -3,7 +3,7 @@ import { useRouter } from "next/router";
 import { Provider } from "next-auth/client";
 import { SWRConfig } from "swr";
 
-import { makeStyles, createMuiTheme } from "@material-ui/core/styles";
+import { makeStyles, createTheme } from "@material-ui/core/styles";
 import { ThemeProvider } from "@material-ui/styles";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import Container from "@material-ui/core/Container";
@@ -13,7 +13,7 @@ import Alert from "@material-ui/lab/Alert";
 
 import Navbar from "../components/Navbar";
 
-const theme = createMuiTheme({
+const theme = createTheme({
   palette: {
     primary: {
       light: "#F8D070",
@@ -113,29 +113,35 @@ export default function MyApp({ Component, pageProps }) {
           href="/favicon-16x16.png"
         />
         <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#f8d070" />
-        <meta name="apple-mobile-web-app-title" content="Watchlists" />
-        <meta name="application-name" content="Watchlists" />
+        <meta name="apple-mobile-web-app-title" content="Watchlist App" />
+        <meta name="application-name" content="Watchlist App" />
         <meta name="msapplication-TileColor" content="#ffc40d" />
         <meta name="msapplication-config" content="/browserconfig.xml" />
         <link rel="manifest" href="/site.webmanifest" />
         <meta name="robots" content="noimageindex, nofollow" />
 
-        <meta property="og:url" content={process.env.BASE_URL} />
-        <meta property="og:title" content="Watchlist App" />
+        <meta property="og:url" content={process.env.BASE_URL} key="url" />
+        <meta property="og:title" content="Watchlist App" key="title" />
         <meta
           property="og:description"
-          content="Create, share and edit watchlists for films and tv shows with anyone"
+          content="Create, share and edit watchlists with anyone"
+          key="description"
         />
         <meta
           property="og:image"
           content={`${process.env.BASE_URL}/android-chrome-256x256.png`}
+          key="image"
         />
-        <meta property="og:image:width" content="256" />
-        <meta property="og:image:height" content="256" />
-        <meta property="og:type" content="website" />
-        <meta property="fb:app_id" content="827802261304460" />
+        <meta property="og:image:width" content="256" key="width" />
+        <meta property="og:image:height" content="256" key="height" />
+        <meta property="og:type" content="website" key="type" />
+        <meta property="fb:app_id" content="827802261304460" key="app_id" />
         <meta name="twitter:card" content="summary" />
-        <link rel="canonical" href={process.env.BASE_URL} />
+        <link rel="canonical" href={process.env.BASE_URL} key="canonical" />
+        <meta
+          name="description"
+          content="Create, share and edit watchlists for films and TV shows with anyone"
+        />
         <title>My Watchlists</title>
       </Head>
       <Provider session={pageProps.session}>

@@ -1,5 +1,6 @@
-// import dbConnect from "../utils/dbConnect";
-// import Watchlist from "../models/Watchlist";
+import { getSession } from "next-auth/client";
+import dbConnect from "../utils/dbConnect";
+import Watchlist from "../models/Watchlist";
 
 import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
@@ -16,7 +17,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function Discover() {
+export default function Discover({ userLists, publicLists, setMessage }) {
   const classes = useStyles();
 
   const [loading, setLoading] = React.useState(false);
@@ -34,6 +35,9 @@ export default function Discover() {
     month === 12 ? "01" : month < 9 ? `0${month + 1}` : month + 1;
 
   React.useEffect(() => {
+    const controller = new AbortController();
+    const signal = controller.signal;
+
     const getMovies = async () => {
       setLoading(true);
 
@@ -47,6 +51,7 @@ export default function Discover() {
           Authorization: process.env.TMDB_BEARER,
           "Content-Type": "application/json;charset=utf-8",
         },
+        signal,
       };
 
       await fetch(fullUrl, options)
@@ -100,6 +105,10 @@ export default function Discover() {
     };
 
     getMovies();
+
+    return () => {
+      controller.abort();
+    };
     // eslint-disable-next-line
   }, []);
 
@@ -111,57 +120,79 @@ export default function Discover() {
           movies={thisMonthMovies}
           media_type={"movie"}
           loading={loading}
+          userLists={userLists}
+          setMessage={setMessage}
         />
         <MoviesCarousel
           title="New movies next month"
           movies={nextMonthMovies}
           media_type={"movie"}
           loading={loading}
+          userLists={userLists}
+          setMessage={setMessage}
         />
         <MoviesCarousel
           title="New TV shows this month"
           movies={thisMonthTV}
           media_type={"tv"}
           loading={loading}
+          userLists={userLists}
+          setMessage={setMessage}
         />
         <MoviesCarousel
           title="New TV shows next month"
           movies={nextMonthTV}
           media_type={"tv"}
           loading={loading}
+          userLists={userLists}
+          setMessage={setMessage}
         />
         <MoviesCarousel
           title="Popular movies"
           movies={popularMovies}
           media_type={"movie"}
           loading={loading}
+          userLists={userLists}
+          setMessage={setMessage}
         />
         <MoviesCarousel
           title="Popular TV shows"
           movies={popularTV}
           media_type={"tv"}
           loading={loading}
+          userLists={userLists}
+          setMessage={setMessage}
         />
       </Paper>
     </Container>
   );
 }
 
-// export async function getServerSideProps(context) {
-//   const session = await getSession(context);
-//   await dbConnect();
-//   var results;
+export async function getServerSideProps(context) {
+  const session = await getSession(context);
+  await dbConnect();
 
-//   if (session) {
-//     results = await Watchlist.find({ user: session.user }).sort({
-//       position: 1,
-//     });
-//   } else {
-//     results = await Watchlist.find({}, "_id title position").sort({
-//       position: 1,
-//     });
-//   }
-//   const watchlists = await JSON.parse(JSON.stringify(results));
+  var userLists = [];
+  var publicLists = [];
 
-//   return { props: { watchlists } };
-// }
+  if (session) {
+    var userResults = await Watchlist.find(
+      { user: session.user },
+      "_id title movies"
+    ).sort({
+      position: 1,
+    });
+    userLists = await JSON.parse(JSON.stringify(userResults));
+  }
+
+  var results = await Watchlist.find({ private: false }, "_id title movies", {
+    skip: 0,
+    limit: 10,
+    sort: {
+      updatedAt: -1,
+    },
+  });
+  publicLists = await JSON.parse(JSON.stringify(results));
+
+  return { props: { userLists, publicLists } };
+}

@@ -48,6 +48,7 @@ export default function Form({
   lists,
   list,
   setMessage,
+  calendar,
   newList = true,
   newTab = false,
 }) {
@@ -128,7 +129,7 @@ export default function Form({
       setUpdating(false);
       router.push("/lists");
     } catch (error) {
-      setMessage(error.message + " - Failed to add list");
+      setMessage(error.message + " - Failed to add list, please try again.");
       setUpdating(false);
     }
   };
@@ -154,7 +155,7 @@ export default function Form({
         setUpdating(false);
       }, 500);
     } catch (error) {
-      setMessage(error.message + " - Failed to update list");
+      setMessage(error.message + " - Failed to update list, please try again.");
       setUpdating(false);
     }
   };
@@ -190,6 +191,7 @@ export default function Form({
 
     var ids = movies.map((mov) => mov.id);
     if (ids.includes(movie.id)) {
+      newMovie.current = false;
       setMessage("It's already on your list.");
       document.getElementById(movie.id).scrollIntoView({ behavior: "smooth" });
     } else {
@@ -197,7 +199,7 @@ export default function Form({
         ...form,
         movies: [...movies, movie],
       });
-      newMovie.current = true;
+      if (!newList) newMovie.current = true;
     }
   };
 
@@ -266,11 +268,13 @@ export default function Form({
           updating={updating}
           setUpdating={setUpdating}
           putData={putData}
+          calendar={calendar}
         />
       )}
       <TabPanel
         list={list}
         newTab={newTab}
+        newList={newList}
         updating={updating}
         setUpdating={setUpdating}
         setMessage={setMessage}
@@ -279,6 +283,7 @@ export default function Form({
         deleteMovie={deleteMovie}
         moveMovie={moveMovie}
         addingMovie={newMovie.current}
+        calendar={calendar}
       />
     </>
   ) : (
@@ -291,7 +296,7 @@ export default function Form({
           <Grid
             container
             direction="column"
-            justify="flex-start"
+            justifyContent="flex-start"
             wrap="nowrap"
             className={classes.grid}
           >
@@ -308,7 +313,12 @@ export default function Form({
               />
             </Grid>
             <Grid item className={classes.relative}>
-              <MovieSearch addMovie={addMovie} addingMovie={newMovie.current} />
+              <MovieSearch
+                addMovie={addMovie}
+                addingMovie={newMovie.current}
+                newList={newList}
+                setUpdating={setUpdating}
+              />
             </Grid>
             {movies.length > 0 && (
               <Grid item className={classes.list}>

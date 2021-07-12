@@ -7,11 +7,13 @@ import CircularProgress from "@material-ui/core/CircularProgress";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Switch from "@material-ui/core/Switch";
 import IconButton from "@material-ui/core/IconButton";
+import FormatListBulletedRoundedIcon from "@material-ui/icons/FormatListBulletedRounded";
 import TodayRoundedIcon from "@material-ui/icons/TodayRounded";
 import ShareRoundedIcon from "@material-ui/icons/ShareRounded";
 import OpenInNewRoundedIcon from "@material-ui/icons/OpenInNewRounded";
 import HighlightOffRoundedIcon from "@material-ui/icons/HighlightOffRounded";
 
+import Calendar from "../calendar/Calendar";
 import Movies from "../Movies";
 import MovieSearch from "../movieSearch/MovieSearch";
 import DeleteDialog from "./DeleteDialog";
@@ -56,7 +58,7 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(0.5),
   },
   topIcon: {
-    fontSize: "2rem",
+    fontSize: "1.9rem",
     color: theme.palette.primary.light,
     "&:hover": {
       color: theme.palette.primary.main,
@@ -74,7 +76,7 @@ const useStyles = makeStyles((theme) => ({
     left: "30px",
   },
   delete: {
-    fontSize: "2rem",
+    fontSize: "1.9rem",
     color: theme.palette.secondary.light,
     "&:hover": {
       color: theme.palette.secondary.main,
@@ -93,6 +95,7 @@ export default function TabPanel(props) {
   const {
     list,
     newTab,
+    newList,
     updating,
     setUpdating,
     setMessage,
@@ -101,6 +104,7 @@ export default function TabPanel(props) {
     deleteMovie,
     moveMovie,
     addingMovie,
+    calendar,
     ...other
   } = props;
   const {
@@ -142,20 +146,37 @@ export default function TabPanel(props) {
       {...other}
     >
       <div className={classes.buttons}>
-        <Link
-          href={
-            newTab ? `/list/calendar/${listID}` : `/lists/calendar/${listID}`
-          }
-          passHref
-        >
-          <IconButton
-            aria-label="calendar view"
-            title="Calendar view"
-            className={newTab ? classes.calendar : classes.button}
+        {calendar ? (
+          <Link
+            href={newTab ? `/list/${listID}` : `/lists/${listID}`}
+            replace={newTab ? false : true}
+            passHref
           >
-            <TodayRoundedIcon className={classes.topIcon} />
-          </IconButton>
-        </Link>
+            <IconButton
+              aria-label="list view"
+              title="List view"
+              className={newTab ? classes.calendar : classes.button}
+            >
+              <FormatListBulletedRoundedIcon className={classes.topIcon} />
+            </IconButton>
+          </Link>
+        ) : (
+          <Link
+            href={
+              newTab ? `/list/calendar/${listID}` : `/lists/calendar/${listID}`
+            }
+            replace={newTab ? false : true}
+            passHref
+          >
+            <IconButton
+              aria-label="calendar view"
+              title="Calendar view"
+              className={newTab ? classes.calendar : classes.button}
+            >
+              <TodayRoundedIcon className={classes.topIcon} />
+            </IconButton>
+          </Link>
+        )}
         {newTab && updating && (
           <CircularProgress
             size="1.5rem"
@@ -205,7 +226,10 @@ export default function TabPanel(props) {
                 onClose={handleOpenShare}
               />
             </IconButton>
-            <Link href={`/list/${listID}`} passHref>
+            <Link
+              href={calendar ? `/list/calendar/${listID}` : `/list/${listID}`}
+              passHref
+            >
               <IconButton
                 target="_blank"
                 rel="noopener noreferrer"
@@ -234,16 +258,24 @@ export default function TabPanel(props) {
         )}
       </div>
 
-      <Movies
-        movies={movies}
-        deleteMovie={editable ? deleteMovie : undefined}
-        moveMovie={editable ? moveMovie : undefined}
-        updating={updating}
-      />
-
-      {editable && (
+      {calendar ? (
+        <Calendar movies={movies} newTab={newTab} />
+      ) : (
+        <Movies
+          movies={movies}
+          deleteMovie={editable ? deleteMovie : undefined}
+          moveMovie={editable ? moveMovie : undefined}
+          updating={updating}
+        />
+      )}
+      {editable && !calendar && (
         <div className={classes.search}>
-          <MovieSearch addMovie={addMovie} addingMovie={addingMovie} />
+          <MovieSearch
+            addMovie={addMovie}
+            addingMovie={addingMovie}
+            newList={newList}
+            setUpdating={setUpdating}
+          />
         </div>
       )}
     </Box>

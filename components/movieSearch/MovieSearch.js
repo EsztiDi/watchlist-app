@@ -12,7 +12,12 @@ const unloadAlert = (ev) => {
   ev.returnValue = "";
 };
 
-export default function MovieSearch({ addMovie, addingMovie }) {
+export default function MovieSearch({
+  addMovie,
+  addingMovie,
+  newList,
+  setUpdating,
+}) {
   const [loading, setLoading] = React.useState(false);
   const [query, setQuery] = React.useState("");
   const [results, setResults] = React.useState([]);
@@ -35,6 +40,7 @@ export default function MovieSearch({ addMovie, addingMovie }) {
 
   const getResults = (keyword) => {
     setLoading(true);
+    if (newList) setUpdating(true);
 
     var baseURL = "https://api.themoviedb.org/3";
     var url = "/search/multi";
@@ -94,18 +100,21 @@ export default function MovieSearch({ addMovie, addingMovie }) {
       .then(() => {
         setTimeout(() => {
           setLoading(false);
+          if (newList) setUpdating(false);
         }, 500);
         setQuery("");
       })
       .catch((err) => {
         console.error("Multi search error: ", err);
         setLoading(false);
+        if (newList) setUpdating(false);
         setQuery("");
       });
   };
 
   const getDetails = (movie) => {
     setLoading(true);
+    if (newList) setUpdating(true);
 
     var baseURL = "https://api.themoviedb.org/3";
     var url = `/${movie.media_type}/${movie.id}`;
@@ -182,11 +191,13 @@ export default function MovieSearch({ addMovie, addingMovie }) {
               });
           }
 
+          setLoading(false);
+          if (newList) setUpdating(false);
           addMovie({ ...newMovie, seasons });
-          setLoading(false);
         } else {
-          addMovie(newMovie);
           setLoading(false);
+          if (newList) setUpdating(false);
+          addMovie(newMovie);
         }
 
         if (!data || data.length === 0)
@@ -203,9 +214,10 @@ export default function MovieSearch({ addMovie, addingMovie }) {
           details: {},
         };
         console.error("Movie details error: ", err);
-        addMovie(newMovie);
-        setMessage("Couldn't get details, please try again.");
         setLoading(false);
+        if (newList) setUpdating(false);
+        setMessage("Couldn't get details, please try again.");
+        addMovie(newMovie);
       });
   };
 
@@ -268,7 +280,7 @@ export default function MovieSearch({ addMovie, addingMovie }) {
         InputProps={{
           endAdornment: (
             <InputAdornment position="end">
-              <Button onClick={handleSearch}>
+              <Button onClick={handleSearch} disabled={loading || addingMovie}>
                 {loading || addingMovie ? (
                   <CircularProgress size="1.5rem" thickness={5} />
                 ) : (

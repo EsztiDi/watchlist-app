@@ -1,5 +1,6 @@
 # https://www.robotstxt.org/robotstxt.html
 User-agent: Twitterbot
+Allow: /android-chrome-256x256.png
 Disallow: /api/
 Disallow: /lists/
 Disallow: /*.png$

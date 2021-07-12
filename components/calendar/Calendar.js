@@ -8,7 +8,6 @@ import TableBody from "@material-ui/core/TableBody";
 import TableContainer from "@material-ui/core/TableContainer";
 import Paper from "@material-ui/core/Paper";
 import IconButton from "@material-ui/core/IconButton";
-import KeyboardArrowLeftRoundedIcon from "@material-ui/icons/KeyboardArrowLeftRounded";
 import ArrowBackIosRoundedIcon from "@material-ui/icons/ArrowBackIosRounded";
 import ArrowForwardIosRoundedIcon from "@material-ui/icons/ArrowForwardIosRounded";
 import TableRow from "@material-ui/core/TableRow";
@@ -20,6 +19,7 @@ import Month from "./Month";
 
 const useStyles = makeStyles((theme) => ({
   panel: {
+    padding: theme.spacing(1.5),
     width: "100%",
     overflow: "auto",
     "&::-webkit-scrollbar": {
@@ -39,15 +39,6 @@ const useStyles = makeStyles((theme) => ({
   },
   newTab: {
     padding: theme.spacing(1.5),
-    position: "relative",
-  },
-  back: {
-    marginBottom: theme.spacing(1),
-  },
-  back2: {
-    position: "absolute",
-    top: "-57px",
-    right: "24px",
   },
   header: {
     textAlign: "center",
@@ -55,6 +46,9 @@ const useStyles = makeStyles((theme) => ({
     "& span": {
       fontSize: "1.3rem",
     },
+  },
+  table: {
+    overflowX: "visible",
   },
   buttons: {
     position: "relative",
@@ -122,10 +116,6 @@ export default function Calendar({ movies, newTab = false }) {
     setMonth(currentMonth);
   };
 
-  const handleBack = () => {
-    window.history.back();
-  };
-
   const handleDateChange = (date) => {
     setYear(date._d.getFullYear());
     setMonth(date._d.getMonth());
@@ -133,20 +123,12 @@ export default function Calendar({ movies, newTab = false }) {
 
   return (
     <Box p={2} className={!newTab ? classes.panel : classes.newTab}>
-      <Button
-        aria-label="back"
-        onClick={handleBack}
-        className={!newTab ? classes.back : classes.back2}
-      >
-        <KeyboardArrowLeftRoundedIcon />
-        Back
-      </Button>
       <Paper elevation={1} className={classes.container}>
         {newTab && (
           <CardHeader title="Release Calendar" className={classes.header} />
         )}
-        <TableContainer component={Paper}>
-          <Table className={classes.table} aria-label="calendar current month">
+        <TableContainer component={Paper} className={classes.table}>
+          <Table aria-label="calendar view">
             <TableHead>
               <TableRow>
                 <TableCell

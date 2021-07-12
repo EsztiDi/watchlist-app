@@ -81,6 +81,7 @@ export default function ListTabs({
   updating,
   setUpdating,
   putData,
+  calendar,
 }) {
   const classes = useStyles();
   const [editTitle, setEditTitle] = React.useState(false);
@@ -109,7 +110,7 @@ export default function ListTabs({
       variant="scrollable"
       indicatorColor="secondary"
       aria-label="list tabs"
-      value={value}
+      value={value > -1 ? value : 0}
       className={classes.tabs}
     >
       {lists.map((list, index) =>
@@ -123,7 +124,14 @@ export default function ListTabs({
             putData={putData}
           />
         ) : (
-          <Link key={list._id} href={`/lists/${list._id}`} replace passHref>
+          <Link
+            key={list._id}
+            href={
+              calendar ? `/lists/calendar/${list._id}` : `/lists/${list._id}`
+            }
+            replace
+            passHref
+          >
             <Tab
               label={list.title}
               wrapped

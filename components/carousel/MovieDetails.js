@@ -1,3 +1,6 @@
+import { useRouter } from "next/router";
+import { useSession } from "next-auth/client";
+
 import { makeStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 import StarRoundedIcon from "@material-ui/icons/StarRounded";
@@ -8,10 +11,10 @@ import ClickAwayListener from "@material-ui/core/ClickAwayListener";
 import Grow from "@material-ui/core/Grow";
 import Paper from "@material-ui/core/Paper";
 import Popper from "@material-ui/core/Popper";
-import MenuItem from "@material-ui/core/MenuItem";
 import MenuList from "@material-ui/core/MenuList";
 
 import Overview from "../movieCard/Overview";
+import ListsMenu from "./ListsMenu";
 
 const useStyles = makeStyles((theme) => ({
   details: {
@@ -41,6 +44,9 @@ const useStyles = makeStyles((theme) => ({
       "& button": {
         zIndex: "0",
       },
+      "& button + div": {
+        zIndex: "1",
+      },
     },
     "& > :nth-child(2)": {
       marginBottom: theme.spacing(1),
@@ -68,8 +74,16 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function MovieDetails({ movie, media_type, left }) {
+export default function MovieDetails({
+  movie,
+  media_type,
+  left,
+  userLists,
+  setMessage,
+}) {
   const classes = useStyles();
+  const [session, loading] = useSession();
+  const router = useRouter();
   const [external_ids, setExternalIDs] = React.useState({});
   var {
     id,
@@ -82,6 +96,9 @@ export default function MovieDetails({ movie, media_type, left }) {
   } = movie;
 
   React.useEffect(() => {
+    const controller = new AbortController();
+    const signal = controller.signal;
+
     var baseURL = "https://api.themoviedb.org/3";
     var url = `/${media_type}/${id}/external_ids`;
     var api_key = process.env.TMDB_API_KEY;
@@ -91,6 +108,7 @@ export default function MovieDetails({ movie, media_type, left }) {
         Authorization: process.env.TMDB_BEARER,
         "Content-Type": "application/json;charset=utf-8",
       },
+      signal,
     };
 
     fetch(fullUrl, options)
@@ -98,6 +116,10 @@ export default function MovieDetails({ movie, media_type, left }) {
       .then((data) => {
         setExternalIDs(data);
       });
+
+    return () => {
+      controller.abort();
+    };
     // eslint-disable-next-line
   }, []);
 
@@ -122,8 +144,14 @@ export default function MovieDetails({ movie, media_type, left }) {
   const [menuOpen, setMenuOpen] = React.useState(false);
   const anchorRef = React.useRef(null);
 
-  const handleMenuToggle = () => {
-    setMenuOpen((prevOpen) => !prevOpen);
+  const handleButtonClick = () => {
+    if (!loading && !session) {
+      router.push("/login");
+    } else if (userLists.length === 0) {
+      router.push("/create");
+    } else {
+      setMenuOpen((prevOpen) => !prevOpen);
+    }
   };
 
   const handleMenuClose = (ev) => {
@@ -197,7 +225,7 @@ export default function MovieDetails({ movie, media_type, left }) {
         ref={anchorRef}
         aria-controls={menuOpen ? "menu-list" : undefined}
         aria-haspopup="true"
-        onClick={handleMenuToggle}
+        onClick={handleButtonClick}
       >
         <AddRoundedIcon /> Add
       </Button>
@@ -223,16 +251,14 @@ export default function MovieDetails({ movie, media_type, left }) {
                   id="menu-list"
                   onKeyDown={handleListKeyDown}
                 >
-                  <MenuItem onClick={handleMenuClose}>
-                    <Typography variant="button" className={classes.menuItem}>
-                      List1
-                    </Typography>
-                  </MenuItem>
-                  <MenuItem>
-                    <Typography variant="button" className={classes.menuItem}>
-                      List2
-                    </Typography>
-                  </MenuItem>
+                  {session && (
+                    <ListsMenu
+                      movieID={id}
+                      media_type={media_type}
+                      userLists={userLists}
+                      setMessage={setMessage}
+                    />
+                  )}
                 </MenuList>
               </ClickAwayListener>
             </Paper>

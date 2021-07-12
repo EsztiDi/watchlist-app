@@ -23,7 +23,11 @@ export default async function handler(req, res) {
               await Watchlist.deleteMany({
                 user: session.user,
               }).catch((err) => {
-                console.error(`Couldn't delete lists - user: ${user} - ${err}`);
+                console.error(
+                  `Couldn't delete lists - user: ${JSON.stringify(
+                    user
+                  )} - ${JSON.stringify(err)}`
+                );
                 return res.status(400).json({ success: false });
               });
 
@@ -34,7 +38,9 @@ export default async function handler(req, res) {
                   })
                   .catch((err) => {
                     console.error(
-                      `Couldn't delete sessions - user: ${user} - ${err}`
+                      `Couldn't delete sessions - user: ${JSON.stringify(
+                        user
+                      )} - ${JSON.stringify(err)}`
                     );
                     return res.status(400).json({ success: false });
                   });
@@ -46,7 +52,9 @@ export default async function handler(req, res) {
                   })
                   .catch((err) => {
                     console.error(
-                      `Couldn't delete from accounts collection - user: ${user} - ${err}`
+                      `Couldn't delete from accounts collection - user: ${JSON.stringify(
+                        user
+                      )} - ${JSON.stringify(err)}`
                     );
                     return res.status(400).json({ success: false });
                   });
@@ -56,7 +64,11 @@ export default async function handler(req, res) {
                 _id: userID,
               });
               if (!deletedUser.value) {
-                console.error(`User was not found - user: ${user} - ${err}`);
+                console.error(
+                  `User was not found - user: ${JSON.stringify(
+                    user
+                  )} - ${JSON.stringify(err)}`
+                );
                 return res.status(400).json({ success: false });
               }
 
@@ -66,14 +78,14 @@ export default async function handler(req, res) {
               });
               resolve();
             } catch (err) {
-              console.error(`Error finding user - ${err}`);
+              console.error(`Error finding user - ${JSON.stringify(err)}`);
               res.status(400).json({ success: false });
               return resolve();
             }
           });
         });
       } catch (err) {
-        console.error(`Error in users collection - ${err}`);
+        console.error(`Error in users collection - ${JSON.stringify(err)}`);
         res.status(400).json({ success: false });
       }
       break;

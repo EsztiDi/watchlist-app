@@ -37,12 +37,21 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function MoviesCarousel({ title, movies, media_type, loading }) {
+export default function MoviesCarousel({
+  title,
+  movies,
+  media_type,
+  loading,
+  userLists,
+  setMessage,
+}) {
   const classes = useStyles();
   var sliced = [];
 
-  for (var i = 0; i < movies.length; i += 2) {
-    sliced.push(movies.slice(i, i + 2));
+  if (movies.length > 0) {
+    for (var i = 0; i < movies.length; i += 2) {
+      sliced.push(movies.slice(i, i + 2));
+    }
   }
 
   return (
@@ -51,7 +60,7 @@ export default function MoviesCarousel({ title, movies, media_type, loading }) {
       <Divider />
       {loading && movies.length === 0 ? (
         <CircularProgress size="3rem" thickness={3} />
-      ) : movies.length ? (
+      ) : movies.length > 0 ? (
         <Carousel
           autoPlay={false}
           interval={5000}
@@ -74,8 +83,8 @@ export default function MoviesCarousel({ title, movies, media_type, loading }) {
                     height={300}
                     objectFit="contain"
                     src={
-                      movie.poster_path
-                        ? `https://image.tmdb.org/t/p/w500${movie.poster_path}`
+                      movie?.poster_path
+                        ? `https://image.tmdb.org/t/p/w500${movie?.poster_path}`
                         : "/movieIcon.png"
                     }
                     onError={(ev) => {
@@ -89,6 +98,8 @@ export default function MoviesCarousel({ title, movies, media_type, loading }) {
                     movie={movie}
                     media_type={media_type}
                     left={index % 2 === 0}
+                    userLists={userLists}
+                    setMessage={setMessage}
                   />
                 </React.Fragment>
               );
@@ -96,7 +107,8 @@ export default function MoviesCarousel({ title, movies, media_type, loading }) {
           })}
         </Carousel>
       ) : (
-        <Typography>No new movies</Typography>
+        !loading &&
+        movies.length === 0 && <Typography>No new movies</Typography>
       )}
     </Paper>
   );
