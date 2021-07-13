@@ -183,8 +183,7 @@ export default function Form({
   const addMovie = (movie) => {
     if (movies.length > 0) {
       movie.position =
-        movies.sort((a, b) => a.position - b.position)[movies.length - 1]
-          .position + 1;
+        movies.sort((a, b) => b.position - a.position)[0].position + 1;
     } else {
       movie.position = 0;
     }
@@ -289,7 +288,7 @@ export default function Form({
   ) : (
     <Container maxWidth="md">
       <Paper elevation={4} className={classes.create}>
-        <Typography variant="h5" className={classes.title}>
+        <Typography variant="h4" className={classes.title}>
           New Watchlist
         </Typography>
         <form onSubmit={handleSubmit}>

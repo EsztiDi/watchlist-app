@@ -29,7 +29,7 @@ export async function getServerSideProps(context) {
         { user: session.user },
         "_id title position"
       ).sort({
-        position: 1,
+        position: -1,
       });
     } catch (error) {
       return {

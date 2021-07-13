@@ -35,6 +35,7 @@ export default function Discover({ userLists, publicLists, setMessage }) {
     month === 12 ? "01" : month < 9 ? `0${month + 1}` : month + 1;
 
   React.useEffect(() => {
+    var isMounted = true;
     const controller = new AbortController();
     const signal = controller.signal;
 
@@ -57,7 +58,7 @@ export default function Discover({ userLists, publicLists, setMessage }) {
       await fetch(fullUrl, options)
         .then((res) => res.json())
         .then((data) => {
-          setThisMonthMovies(data.results);
+          if (isMounted) setThisMonthMovies(data.results);
         });
 
       params = `&include_adult=false&primary_release_date.gte=${year}-${nextMonth}-01&primary_release_date.lte=${year}-${nextMonth}-31&sort_by=popularity.desc`;
@@ -65,7 +66,7 @@ export default function Discover({ userLists, publicLists, setMessage }) {
       await fetch(fullUrl, options)
         .then((res) => res.json())
         .then((data) => {
-          setNextMonthMovies(data.results);
+          if (isMounted) setNextMonthMovies(data.results);
         });
 
       params = `&include_adult=false&sort_by=popularity.desc`;
@@ -73,7 +74,7 @@ export default function Discover({ userLists, publicLists, setMessage }) {
       await fetch(fullUrl, options)
         .then((res) => res.json())
         .then((data) => {
-          setPopularMovies(data.results);
+          if (isMounted) setPopularMovies(data.results);
         });
 
       url = "/discover/tv";
@@ -82,7 +83,7 @@ export default function Discover({ userLists, publicLists, setMessage }) {
       await fetch(fullUrl, options)
         .then((res) => res.json())
         .then((data) => {
-          setThisMonthTV(data.results);
+          if (isMounted) setThisMonthTV(data.results);
         });
 
       params = `&include_adult=false&first_air_date.gte=${year}-${nextMonth}-01&first_air_date.lte=${year}-${nextMonth}-31&sort_by=popularity.desc`;
@@ -90,7 +91,7 @@ export default function Discover({ userLists, publicLists, setMessage }) {
       await fetch(fullUrl, options)
         .then((res) => res.json())
         .then((data) => {
-          setNextMonthTV(data.results);
+          if (isMounted) setNextMonthTV(data.results);
         });
 
       params = `&include_adult=false&sort_by=popularity.desc`;
@@ -98,71 +99,78 @@ export default function Discover({ userLists, publicLists, setMessage }) {
       await fetch(fullUrl, options)
         .then((res) => res.json())
         .then((data) => {
-          setPopularTV(data.results);
+          if (isMounted) setPopularTV(data.results);
         });
 
-      setLoading(false);
+      if (isMounted) setLoading(false);
     };
 
     getMovies();
 
     return () => {
       controller.abort();
+      isMounted = false;
     };
     // eslint-disable-next-line
   }, []);
 
+  const carousels = [
+    {
+      position: 1,
+      title: "New movies this month",
+      movies: thisMonthMovies,
+      media_type: "movie",
+    },
+    {
+      position: 2,
+      title: "New movies next month",
+      movies: nextMonthMovies,
+      media_type: "movie",
+    },
+    {
+      position: 3,
+      title: "New TV shows this month",
+      movies: thisMonthTV,
+      media_type: "tv",
+    },
+    {
+      position: 4,
+      title: "New TV shows next month",
+      movies: nextMonthTV,
+      media_type: "tv",
+    },
+    {
+      position: 5,
+      title: "Popular movies",
+      movies: popularMovies,
+      media_type: "movie",
+    },
+    {
+      position: 6,
+      title: "Popular TV shows",
+      movies: popularTV,
+      media_type: "tv",
+    },
+  ];
+
   return (
     <Container disableGutters maxWidth="xl">
       <Paper elevation={4} className={classes.paper}>
-        <MoviesCarousel
-          title="New movies this month"
-          movies={thisMonthMovies}
-          media_type={"movie"}
-          loading={loading}
-          userLists={userLists}
-          setMessage={setMessage}
-        />
-        <MoviesCarousel
-          title="New movies next month"
-          movies={nextMonthMovies}
-          media_type={"movie"}
-          loading={loading}
-          userLists={userLists}
-          setMessage={setMessage}
-        />
-        <MoviesCarousel
-          title="New TV shows this month"
-          movies={thisMonthTV}
-          media_type={"tv"}
-          loading={loading}
-          userLists={userLists}
-          setMessage={setMessage}
-        />
-        <MoviesCarousel
-          title="New TV shows next month"
-          movies={nextMonthTV}
-          media_type={"tv"}
-          loading={loading}
-          userLists={userLists}
-          setMessage={setMessage}
-        />
-        <MoviesCarousel
-          title="Popular movies"
-          movies={popularMovies}
-          media_type={"movie"}
-          loading={loading}
-          userLists={userLists}
-          setMessage={setMessage}
-        />
-        <MoviesCarousel
-          title="Popular TV shows"
-          movies={popularTV}
-          media_type={"tv"}
-          loading={loading}
-          userLists={userLists}
-          setMessage={setMessage}
-        />
+        {carousels
+          .sort((a, b) => a.position - b.position)
+          .map((carousel, index) => {
+            return (
+              <MoviesCarousel
+                key={index}
+                title={carousel.title}
+                movies={carousel.movies}
+                media_type={carousel.media_type}
+                loading={loading}
+                userLists={userLists}
+                setMessage={setMessage}
+              />
+            );
+          })}
       </Paper>
     </Container>
   );
@@ -180,7 +188,7 @@ export async function getServerSideProps(context) {
       { user: session.user },
       "_id title movies"
     ).sort({
-      position: 1,
+      position: -1,
     });
     userLists = await JSON.parse(JSON.stringify(userResults));
   }

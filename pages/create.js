@@ -7,7 +7,7 @@ export default function Create({ setMessage }) {
   const router = useRouter();
 
   const list = {
-    title: "My Watchlist",
+    title: "",
     movies: [],
     private: true,
     emails: false,

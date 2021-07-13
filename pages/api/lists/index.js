@@ -15,7 +15,7 @@ export default async function handler(req, res) {
           { user: session.user },
           "_id title movies position"
         ).sort({
-          position: 1,
+          position: -1,
         });
         res.status(200).json({ success: true, data: lists });
       } catch (err) {
@@ -31,11 +31,11 @@ export default async function handler(req, res) {
       try {
         if (session) {
           const lists = await Watchlist.find({ user: session.user }).sort({
-            position: 1,
+            position: -1,
           });
 
           if (lists.length > 0) {
-            req.body.position = lists[lists.length - 1].position + 1;
+            req.body.position = lists[0].position + 1;
           } else {
             req.body.position = 0;
           }

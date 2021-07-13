@@ -27,27 +27,9 @@ const useStyles = makeStyles((theme) => ({
     position: "absolute",
     top: 0,
     background: "rgba(0,0,0,0.6)",
-    opacity: 0,
     transition: "0.2s",
     padding: theme.spacing(1),
     color: "#fff",
-    cursor: "default",
-    "& a": {
-      position: "relative",
-      zIndex: "-99",
-    },
-    "&:hover": {
-      opacity: 1,
-      "& a": {
-        zIndex: "0",
-      },
-      "& button": {
-        zIndex: "0",
-      },
-      "& button + div": {
-        zIndex: "1",
-      },
-    },
     "& > :nth-child(2)": {
       marginBottom: theme.spacing(1),
     },
@@ -55,8 +37,9 @@ const useStyles = makeStyles((theme) => ({
       margin: `auto 0 ${theme.spacing(1)}px`,
       padding: `${theme.spacing(0.5)}px ${theme.spacing(1.5)}px`,
       fontWeight: "bold",
-      position: "relative",
-      zIndex: "-99",
+    },
+    "& button + div": {
+      zIndex: "1",
     },
   },
   miniIcon: {
@@ -80,6 +63,8 @@ export default function MovieDetails({
   left,
   userLists,
   setMessage,
+  show,
+  handleShowDetails,
 }) {
   const classes = useStyles();
   const [session, loading] = useSession();
@@ -166,26 +151,24 @@ export default function MovieDetails({
       ev.preventDefault();
       setMenuOpen(false);
     }
-
-    if (ev.key === "Enter") {
-      document.activeElement.click();
-    }
   };
 
-  // Return focus to button when menu is closed
-  const prevOpen = React.useRef(menuOpen);
-  React.useEffect(() => {
-    if (prevOpen.current === true && menuOpen === false) {
-      anchorRef.current.focus();
-    }
-
-    prevOpen.current = menuOpen;
-  }, [menuOpen]);
+  const handleMouse = (ev) => {
+    handleShowDetails();
+    handleMenuClose(ev);
+  };
 
   return (
     <div
       className={classes.details}
-      style={left ? { left: "26px" } : { right: "26px" }}
+      style={
+        !show
+          ? { zIndex: "-99", opacity: 0 }
+          : left
+          ? { left: "26px" }
+          : { right: "26px" }
+      }
+      onMouseLeave={handleMouse}
     >
       <Typography variant="h6">{title}</Typography>
       <Typography variant="subtitle1">{release_date}</Typography>
@@ -257,6 +240,7 @@ export default function MovieDetails({
                       media_type={media_type}
                       userLists={userLists}
                       setMessage={setMessage}
+                      show={show}
                     />
                   )}
                 </MenuList>

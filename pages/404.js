@@ -5,7 +5,7 @@ import Typography from "@material-ui/core/Typography";
 export default function Custom404() {
   return (
     <div style={{ textAlign: "center", paddingTop: "1rem" }}>
-      <Typography variant="h5">404 - Not Found</Typography>
+      <Typography variant="h4">404 - Not Found</Typography>
       <Typography variant="h6" style={{ paddingBottom: "1rem" }}>
         We&apos;re sorry, this page can&apos;t be found.
       </Typography>

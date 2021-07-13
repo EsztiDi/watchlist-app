@@ -19,25 +19,41 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+const unloadAlert = (ev) => {
+  ev.preventDefault();
+  ev.returnValue = "";
+};
+
 export default function ListsMenu({
   movieID,
   media_type,
   userLists,
   setMessage,
+  show,
 }) {
   const classes = useStyles();
   const contentType = "application/json";
   const [updating, setUpdating] = React.useState(false);
   const [added, setAdded] = React.useState(false);
   const [value, setValue] = React.useState("");
+  const isMounted = React.useRef(null);
 
-  const { data: lists, error: error2 } = useSWR("/api/lists", {
+  const { data: lists, error } = useSWR("/api/lists", {
+    refreshInterval: 1000,
     initialData: userLists,
   });
+
+  React.useEffect(() => {
+    isMounted.current = true;
+    return () => {
+      isMounted.current = false;
+    };
+  }, []);
 
   const add = async (id, idx) => {
     setUpdating(true);
     setValue(idx);
+    window.addEventListener("beforeunload", unloadAlert);
 
     try {
       const res = await fetch(`/api/lists/add/${id}`, {
@@ -52,16 +68,18 @@ export default function ListsMenu({
       if (!res.ok) {
         throw new Error(res.status);
       }
+      const { success, data } = await res.json();
 
-      mutate("/api/lists");
-      mutate(`/api/lists/${id}`);
+      window.removeEventListener("beforeunload", unloadAlert);
 
-      const { success } = await res.json();
-      if (success) setAdded(true);
+      mutate(`/api/lists/${id}`, data);
+      await mutate("/api/lists");
 
-      setUpdating(false);
+      if (isMounted.current && success) setAdded(true);
+      if (isMounted.current) setUpdating(false);
     } catch (error) {
-      setMessage(error.message + " - Failed to add, please try again.");
+      window.removeEventListener("beforeunload", unloadAlert);
+      setMessage(error.message + " - Failed to update, please try again.");
       setUpdating(false);
     }
   };
@@ -82,7 +100,10 @@ export default function ListsMenu({
           }
         >
           {list.title}
-          {added && index === value && " ✔"}
+          {index === value &&
+            list?.movies?.map((mov) => mov.id).includes(movieID) &&
+            added &&
+            " ✔"}
         </Typography>
       </MenuItem>
     );

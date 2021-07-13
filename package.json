@@ -4,6 +4,10 @@
   "description": "An app to create watchlists for movies and TV shows",
   "author": "Eszter Diana Toth",
   "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/EsztiDi/watchlist-app"
+  },
   "scripts": {
     "dev": "next dev",
     "build": "next build",
@@ -15,6 +19,7 @@
     "@material-ui/icons": "^4.11.2",
     "@material-ui/lab": "^4.0.0-alpha.58",
     "@material-ui/pickers": "^3.3.10",
+    "@prisma/client": "^2.26.0",
     "moment": "^2.29.1",
     "mongoose": "^5.13.2",
     "next": "^11.0.1",
@@ -24,10 +29,14 @@
     "react-material-ui-carousel": "^2.2.7",
     "react-share": "^4.4.0",
     "react-social-login-buttons": "^3.5.0",
-    "swr": "^0.5.6"
+    "swr": "^0.5.6",
+    "typescript": "^4.3.5"
   },
   "devDependencies": {
     "eslint": "^7.30.0",
     "eslint-config-next": "^11.0.1"
+  },
+  "optionalDependencies": {
+    "fsevents": "*"
   }
 }

@@ -47,7 +47,7 @@ export async function getServerSideProps(context) {
     initialList = await JSON.parse(JSON.stringify(result));
     if (
       initialList?.movies &&
-      initialList.movies.length > 0 &&
+      initialList?.movies.length > 0 &&
       movies(initialList)[0].backdrop_path
     ) {
       image = {

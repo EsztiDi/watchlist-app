@@ -148,7 +148,7 @@ export default function Account({ setMessage }) {
     session && (
       <Container maxWidth="md" className={classes.container}>
         <Paper elevation={4} className={classes.paper}>
-          <Typography variant="h5">Settings</Typography>
+          <Typography variant="h4">Settings</Typography>
           <Typography variant="subtitle2" className={classes.subtitle}>
             Clicking any of these buttons cannot be taken back
           </Typography>

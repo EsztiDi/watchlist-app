@@ -148,7 +148,13 @@ export default function TabPanel(props) {
       <div className={classes.buttons}>
         {calendar ? (
           <Link
-            href={newTab ? `/list/${listID}` : `/lists/${listID}`}
+            href={
+              editable && newTab
+                ? `/list/${listID}/${uid}`
+                : newTab
+                ? `/list/${listID}`
+                : `/lists/${listID}`
+            }
             replace={newTab ? false : true}
             passHref
           >
@@ -163,7 +169,11 @@ export default function TabPanel(props) {
         ) : (
           <Link
             href={
-              newTab ? `/list/calendar/${listID}` : `/lists/calendar/${listID}`
+              editable && newTab
+                ? `/list/calendar/${listID}/${uid}`
+                : newTab
+                ? `/list/calendar/${listID}`
+                : `/lists/calendar/${listID}`
             }
             replace={newTab ? false : true}
             passHref

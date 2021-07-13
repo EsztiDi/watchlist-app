@@ -25,7 +25,6 @@ const useStyles = makeStyles((theme) => ({
     margin: theme.spacing(1.5),
     padding: `${theme.spacing(2)}px ${theme.spacing(1.5)}px`,
     textAlign: "left",
-    cursor: "default",
   },
   content: {
     display: "flex",

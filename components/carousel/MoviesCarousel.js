@@ -19,7 +19,6 @@ const useStyles = makeStyles((theme) => ({
     textAlign: "center",
     "& > :first-child": {
       marginBottom: theme.spacing(1),
-      fontFamily: "'Bangers', cursive",
     },
     "& > :nth-child(2)": {
       marginBottom: theme.spacing(2.5),
@@ -46,8 +45,14 @@ export default function MoviesCarousel({
   setMessage,
 }) {
   const classes = useStyles();
-  var sliced = [];
+  const [data, setData] = React.useState("");
 
+  const handleShowDetails = (ev) => {
+    const index = ev?.target?.dataset?.index;
+    setData(index);
+  };
+
+  var sliced = [];
   if (movies.length > 0) {
     for (var i = 0; i < movies.length; i += 2) {
       sliced.push(movies.slice(i, i + 2));
@@ -79,6 +84,8 @@ export default function MoviesCarousel({
               return (
                 <React.Fragment key={index}>
                   <Image
+                    onMouseEnter={handleShowDetails}
+                    data-index={index}
                     width={200}
                     height={300}
                     objectFit="contain"
@@ -100,6 +107,8 @@ export default function MoviesCarousel({
                     left={index % 2 === 0}
                     userLists={userLists}
                     setMessage={setMessage}
+                    show={index.toString() === data}
+                    handleShowDetails={handleShowDetails}
                   />
                 </React.Fragment>
               );
@@ -107,8 +116,7 @@ export default function MoviesCarousel({
           })}
         </Carousel>
       ) : (
-        !loading &&
-        movies.length === 0 && <Typography>No new movies</Typography>
+        <Typography>No new movies</Typography>
       )}
     </Paper>
   );

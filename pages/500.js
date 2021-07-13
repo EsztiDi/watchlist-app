@@ -5,7 +5,7 @@ import Typography from "@material-ui/core/Typography";
 export default function Custom500() {
   return (
     <div style={{ textAlign: "center", paddingTop: "1rem" }}>
-      <Typography variant="h5">Server Error</Typography>
+      <Typography variant="h4">Server Error</Typography>
       <Typography variant="h6" style={{ paddingBottom: "1rem" }}>
         We&apos;re sorry, something went wrong. Please try again or contact ...
       </Typography>

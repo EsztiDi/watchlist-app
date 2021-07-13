@@ -22,17 +22,17 @@ export default async function handler(req, res) {
 
         if (movies.length > 0) {
           movie.position =
-            movies.sort((a, b) => a.position - b.position)[movies.length - 1]
-              .position + 1;
+            movies.sort((a, b) => b.position - a.position)[0].position + 1;
         } else {
           movie.position = 0;
         }
 
         var ids = movies.map((mov) => mov.id);
         if (ids.includes(movie.id)) {
-          return res
-            .status(200)
-            .json({ success: true, data: "It's already on your list." });
+          list = {
+            ...list,
+            movies: [...movies.filter((mov) => mov.id !== movie.id)],
+          };
         } else {
           list = { ...list, movies: [...movies, movie] };
         }

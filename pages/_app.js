@@ -26,6 +26,31 @@ const theme = createTheme({
       dark: "#FF5C7A",
     },
   },
+  typography: {
+    h4: {
+      fontFamily: "'Bangers', cursive",
+      letterSpacing: "1px",
+      cursor: "default",
+    },
+    h6: {
+      cursor: "default",
+    },
+    // body1: {
+    //   cursor: "default",
+    // },
+    body2: {
+      cursor: "default",
+    },
+    subtitle1: {
+      cursor: "default",
+    },
+    subtitle2: {
+      cursor: "default",
+    },
+    caption: {
+      cursor: "default",
+    },
+  },
   overrides: {
     MuiCssBaseline: {
       "@global": {

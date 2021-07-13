@@ -21,7 +21,6 @@ const useStyles = makeStyles((theme) => ({
   },
   title: {
     textAlign: "center",
-    fontSize: "1.8rem",
   },
   backdrop: {
     position: "fixed",
@@ -45,12 +44,11 @@ export default function ListPage({
   const router = useRouter();
 
   var { id } = router.query;
-  id = calendar ? id : id[0];
 
   const [backdrop, setBackdrop] = React.useState("");
   var movies = (list) => list?.movies.sort((a, b) => a.position - b.position);
 
-  const { data: list, error } = useSWR(id ? `/api/lists/${id}` : null, {
+  const { data: list, error } = useSWR(id[0] ? `/api/lists/${id[0]}` : null, {
     refreshInterval: 2000,
     initialData: initialList,
   });
@@ -108,7 +106,7 @@ export default function ListPage({
           )}
           <Paper elevation={4} className={classes.paper}>
             <Paper elevation={1} className={classes.titleContainer}>
-              <Typography variant="h5" className={classes.title}>
+              <Typography variant="h4" className={classes.title}>
                 {list.title}
               </Typography>
             </Paper>

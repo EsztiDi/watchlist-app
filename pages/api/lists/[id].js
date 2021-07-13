@@ -41,7 +41,7 @@ export default async function handler(req, res) {
             { user: session.user },
             "_id position"
           ).sort({
-            position: 1,
+            position: -1,
           });
 
           var { position } = req.body;

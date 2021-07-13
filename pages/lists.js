@@ -24,9 +24,10 @@ const useStyles = makeStyles((theme) => ({
   button: {
     padding: theme.spacing(0.5),
     margin: theme.spacing(1),
+    marginTop: theme.spacing(2),
   },
   add: {
-    fontSize: "2.5rem",
+    fontSize: "3rem",
     color: theme.palette.primary.main,
   },
 }));
@@ -55,7 +56,7 @@ export default function Lists({ hasLists, id }) {
     !hasLists && (
       <Paper elevation={4} className={classes.container}>
         <>
-          <Typography variant="h5">Create a watchlist</Typography>
+          <Typography variant="h4">Create a watchlist</Typography>
           <Link href="/create" passHref>
             <IconButton className={classes.button}>
               <AddCircleRoundedIcon className={classes.add} />
@@ -77,7 +78,7 @@ export async function getServerSideProps(context) {
 
   if (session) {
     var results = await Watchlist.find({ user: session.user }, "_id").sort({
-      position: 1,
+      position: -1,
     });
     hasLists = results.length > 0;
     if (hasLists) {
@@ -119,7 +120,7 @@ export async function getServerSideProps(context) {
             private: true,
             emails: false,
             user: session.user,
-            position: 0,
+            position: 1,
           }),
         });
 
@@ -135,7 +136,7 @@ export async function getServerSideProps(context) {
             private: true,
             emails: false,
             user: session.user,
-            position: 1,
+            position: 0,
           }),
         });
 
@@ -149,7 +150,7 @@ export async function getServerSideProps(context) {
         console.error(err.message + " - Failed to add first lists");
       }
       var results = await Watchlist.find({ user: session.user }, "_id").sort({
-        position: 1,
+        position: -1,
       });
       hasLists = results.length > 0;
       if (hasLists) {
