@@ -1,5 +1,5 @@
 import { useRouter } from "next/router";
-import { mutate } from "swr";
+import useSWR, { mutate } from "swr";
 
 import { makeStyles } from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
@@ -8,6 +8,7 @@ import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
+import CircularProgress from "@material-ui/core/CircularProgress";
 
 const useStyles = makeStyles((theme) => ({
   delete: {
@@ -24,19 +25,33 @@ export default function DeleteDialog({
   listID,
   onOpenDelete,
   setMessage,
+  updating,
+  setUpdating,
 }) {
   const classes = useStyles();
   const router = useRouter();
+  // const [updating, setUpdating] = React.useState(false);
+
+  const { data: lists, error } = useSWR("/api/lists");
 
   const handleDelete = async () => {
+    setUpdating(true);
     try {
       await fetch(`/api/lists/${listID}`, {
         method: "Delete",
       });
+
+      mutate(
+        "/api/lists",
+        [...lists.filter((list) => list._id !== listID)],
+        false
+      );
       mutate("/api/lists");
+      setUpdating(false);
       router.push("/lists");
     } catch (error) {
       setMessage(error.message + " - Failed to delete list");
+      setUpdating(false);
     }
   };
 
@@ -62,6 +77,7 @@ export default function DeleteDialog({
           color="primary"
           size="large"
           disableFocusRipple
+          disabled={updating}
           onClick={onOpenDelete}
         >
           Cancel
@@ -72,9 +88,14 @@ export default function DeleteDialog({
           size="large"
           disableFocusRipple
           autoFocus
+          disabled={updating}
           onClick={handleDelete}
         >
-          Delete
+          {updating ? (
+            <CircularProgress size="1.5rem" thickness={5} />
+          ) : (
+            "Delete"
+          )}
         </Button>
       </DialogActions>
     </Dialog>

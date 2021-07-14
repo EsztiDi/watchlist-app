@@ -25,7 +25,6 @@ export default async function getDetails(movie) {
               overview: data.overview,
               details: {
                 genres: data.genres,
-                // runtime: data.runtime,
                 episode_run_time: data.episode_run_time,
                 next_episode_to_air: data.next_episode_to_air,
                 last_episode_to_air: data.last_episode_to_air,

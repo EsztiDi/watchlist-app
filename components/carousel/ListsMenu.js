@@ -29,7 +29,7 @@ export default function ListsMenu({
   media_type,
   userLists,
   setMessage,
-  show,
+  session,
 }) {
   const classes = useStyles();
   const contentType = "application/json";
@@ -38,7 +38,7 @@ export default function ListsMenu({
   const [value, setValue] = React.useState("");
   const isMounted = React.useRef(null);
 
-  const { data: lists, error } = useSWR("/api/lists", {
+  const { data: lists, error } = useSWR(session ? "/api/lists" : null, {
     refreshInterval: 1000,
     initialData: userLists,
   });
@@ -72,7 +72,7 @@ export default function ListsMenu({
 
       window.removeEventListener("beforeunload", unloadAlert);
 
-      mutate(`/api/lists/${id}`, data);
+      await mutate(`/api/lists/${id}`, data);
       await mutate("/api/lists");
 
       if (isMounted.current && success) setAdded(true);

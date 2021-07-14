@@ -91,7 +91,7 @@ export default function ListPage({
           <meta property="fb:app_id" content="827802261304460" key="app_id" />
           <meta name="twitter:card" content="summary_large_image" />
           <link rel="canonical" href={url} key="canonical" />
-          <title>{list.title}</title>
+          <title>{list.title} - My Watchlists</title>
         </Head>
         <Container maxWidth="md">
           {Object.keys(list).length !== 0 && backdrop.length > 0 && (

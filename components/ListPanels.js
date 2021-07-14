@@ -15,7 +15,7 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
-    padding: theme.spacing(2.5),
+    padding: theme.spacing(2),
   },
   watchlists: {
     width: "100%",

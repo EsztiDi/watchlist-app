@@ -240,7 +240,7 @@ export default function MovieDetails({
                       media_type={media_type}
                       userLists={userLists}
                       setMessage={setMessage}
-                      show={show}
+                      session={session}
                     />
                   )}
                 </MenuList>

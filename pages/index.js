@@ -1,6 +1,7 @@
 import { getSession } from "next-auth/client";
 import dbConnect from "../utils/dbConnect";
 import Watchlist from "../models/Watchlist";
+import Head from "next/head";
 
 import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
@@ -154,25 +155,30 @@ export default function Discover({ userLists, publicLists, setMessage }) {
   ];
 
   return (
-    <Container disableGutters maxWidth="xl">
-      <Paper elevation={4} className={classes.paper}>
-        {carousels
-          .sort((a, b) => a.position - b.position)
-          .map((carousel, index) => {
-            return (
-              <MoviesCarousel
-                key={index}
-                title={carousel.title}
-                movies={carousel.movies}
-                media_type={carousel.media_type}
-                loading={loading}
-                userLists={userLists}
-                setMessage={setMessage}
-              />
-            );
-          })}
-      </Paper>
-    </Container>
+    <>
+      <Head>
+        <title>Discover - My Watchlists</title>
+      </Head>
+      <Container disableGutters maxWidth="xl">
+        <Paper elevation={4} className={classes.paper}>
+          {carousels
+            .sort((a, b) => a.position - b.position)
+            .map((carousel, index) => {
+              return (
+                <MoviesCarousel
+                  key={index}
+                  title={carousel.title}
+                  movies={carousel.movies}
+                  media_type={carousel.media_type}
+                  loading={loading}
+                  userLists={userLists}
+                  setMessage={setMessage}
+                />
+              );
+            })}
+        </Paper>
+      </Container>
+    </>
   );
 }
 

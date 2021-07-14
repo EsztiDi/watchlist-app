@@ -1,5 +1,7 @@
 import { useSession } from "next-auth/client";
 import { useRouter } from "next/router";
+import Head from "next/head";
+
 import Form from "../components/Form";
 
 export default function Create({ setMessage }) {
@@ -19,5 +21,14 @@ export default function Create({ setMessage }) {
     router.replace("/login");
   }
 
-  return session && <Form list={list} setMessage={setMessage} />;
+  return (
+    session && (
+      <>
+        <Head>
+          <title>Create - My Watchlists</title>
+        </Head>
+        <Form list={list} setMessage={setMessage} />
+      </>
+    )
+  );
 }

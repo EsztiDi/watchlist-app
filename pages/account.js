@@ -1,5 +1,6 @@
 import { useSession } from "next-auth/client";
 import { useRouter } from "next/router";
+import Head from "next/head";
 
 import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
@@ -8,6 +9,7 @@ import Typography from "@material-ui/core/Typography";
 import Grid from "@material-ui/core/Grid";
 import Button from "@material-ui/core/Button";
 import CircularProgress from "@material-ui/core/CircularProgress";
+import Divider from "@material-ui/core/Divider";
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -20,7 +22,7 @@ const useStyles = makeStyles((theme) => ({
     width: "60%",
     margin: "auto",
     textAlign: "left",
-    "& > *": {
+    "& > div": {
       display: "flex",
       alignItems: "center",
       justifyContent: "space-between",
@@ -146,106 +148,114 @@ export default function Account({ setMessage }) {
 
   return (
     session && (
-      <Container maxWidth="md" className={classes.container}>
-        <Paper elevation={4} className={classes.paper}>
-          <Typography variant="h4">Settings</Typography>
-          <Typography variant="subtitle2" className={classes.subtitle}>
-            Clicking any of these buttons cannot be taken back
-          </Typography>
-          <Paper elevation={1} className={classes.mainGrid}>
-            <Grid
-              container
-              direction="column"
-              wrap="nowrap"
-              className={classes.grid}
-            >
-              <Grid item>
-                <Typography component="span">
-                  Set <b>ALL</b> your lists private:
-                  <Typography variant="caption" component="p">
-                    (Removes them from the public Discover page.)
+      <>
+        <Head>
+          <title>Account - My Watchlists</title>
+        </Head>
+        <Container maxWidth="md" className={classes.container}>
+          <Paper elevation={4} className={classes.paper}>
+            <Typography variant="h4">Settings</Typography>
+            <Typography variant="subtitle2" className={classes.subtitle}>
+              Clicking any of these buttons cannot be taken back
+            </Typography>
+            <Paper elevation={1} className={classes.mainGrid}>
+              <Grid
+                container
+                direction="column"
+                wrap="nowrap"
+                className={classes.grid}
+              >
+                <Grid item>
+                  <Typography component="span">
+                    Set <b>ALL</b> your lists private:
+                    <Typography variant="caption" component="p">
+                      (Removes them from the public Discover page.)
+                    </Typography>
                   </Typography>
-                </Typography>
-                <Button
-                  variant="contained"
-                  color="secondary"
-                  disableFocusRipple
-                  disabled={updatingPrivate}
-                  onClick={() => handleUpdate(false)}
-                >
-                  Set all private
-                </Button>
-              </Grid>
-              <Grid item>
-                <Typography component="span">
-                  Unsubscribe from <b>ALL</b> emails:
-                  <Typography variant="caption" component="p">
-                    (The weekly release summaries.)
+                  <Button
+                    variant="contained"
+                    color="secondary"
+                    disableFocusRipple
+                    disabled={updatingPrivate}
+                    onClick={() => handleUpdate(false)}
+                  >
+                    Set all private
+                  </Button>
+                </Grid>
+                <Divider />
+                <Grid item>
+                  <Typography component="span">
+                    Unsubscribe from <b>ALL</b> emails:
+                    <Typography variant="caption" component="p">
+                      (The weekly release summaries.)
+                    </Typography>
                   </Typography>
-                </Typography>
-                <Button
-                  variant="contained"
-                  color="secondary"
-                  disableFocusRipple
-                  disabled={updatingEmails}
-                  onClick={() => handleUpdate(true)}
-                >
-                  {updatingEmails ? (
-                    <CircularProgress size="1.5rem" thickness={5} />
-                  ) : (
-                    "Unsubscribe from all"
-                  )}
-                </Button>
-              </Grid>
-              <Grid item>
-                <Typography component="span">
-                  Delete <b>ALL</b> your lists:
-                  <Typography variant="caption" component="p">
-                    (Aaaaall of them.)
+                  <Button
+                    variant="contained"
+                    color="secondary"
+                    disableFocusRipple
+                    disabled={updatingEmails}
+                    onClick={() => handleUpdate(true)}
+                  >
+                    {updatingEmails ? (
+                      <CircularProgress size="1.5rem" thickness={5} />
+                    ) : (
+                      "Unsubscribe all"
+                    )}
+                  </Button>
+                </Grid>
+                <Divider />
+                <Grid item>
+                  <Typography component="span">
+                    Delete <b>ALL</b> your lists:
+                    <Typography variant="caption" component="p">
+                      (Aaaaall of them.)
+                    </Typography>
                   </Typography>
-                </Typography>
-                <Button
-                  variant="contained"
-                  color="secondary"
-                  disableFocusRipple
-                  disabled={deletingLists}
-                  onClick={() => handleDelete(true)}
-                >
-                  {deletingLists ? (
-                    <CircularProgress size="1.5rem" thickness={5} />
-                  ) : (
-                    <em>Delete all lists</em>
-                  )}
-                </Button>
-              </Grid>
-              <Grid item>
-                <Typography component="span">
-                  <b>Delete your account:</b>
-                  <Typography variant="caption" component="p">
-                    (Deletes ALL your details and ALL your lists from our
-                    database.)
+                  <Button
+                    variant="contained"
+                    color="secondary"
+                    disableFocusRipple
+                    disabled={deletingLists}
+                    onClick={() => handleDelete(true)}
+                  >
+                    {deletingLists ? (
+                      <CircularProgress size="1.5rem" thickness={5} />
+                    ) : (
+                      <em>Delete all lists</em>
+                    )}
+                  </Button>
+                </Grid>
+                <Divider />
+                <Grid item>
+                  <Typography component="span">
+                    <b>Delete your account:</b>
+                    <Typography variant="caption" component="p">
+                      (Deletes ALL your details and ALL your lists from our
+                      database.)
+                    </Typography>
                   </Typography>
-                </Typography>
-                <Button
-                  variant="contained"
-                  color="secondary"
-                  disableFocusRipple
-                  disabled={deletingAccount}
-                  onClick={() => handleDelete(false)}
-                >
-                  {deletingAccount ? (
-                    <CircularProgress size="1.5rem" thickness={5} />
-                  ) : (
-                    <b>
-                      <em>Delete account</em>
-                    </b>
-                  )}
-                </Button>
+                  <Button
+                    variant="contained"
+                    color="secondary"
+                    disableFocusRipple
+                    disabled={deletingAccount}
+                    onClick={() => handleDelete(false)}
+                  >
+                    {deletingAccount ? (
+                      <CircularProgress size="1.5rem" thickness={5} />
+                    ) : (
+                      <b>
+                        <em>Delete account</em>
+                      </b>
+                    )}
+                  </Button>
+                </Grid>
               </Grid>
-            </Grid>
+            </Paper>
           </Paper>
-        </Paper>
-      </Container>
+        </Container>
+      </>
     )
   );
 }

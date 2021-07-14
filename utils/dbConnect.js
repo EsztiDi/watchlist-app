@@ -28,7 +28,13 @@ export default async function dbConnect() {
       bufferMaxEntries: 0,
       useFindAndModify: false,
       useCreateIndex: true,
-      writeConcern: { w: null, wtimeout: null, j: null, fsync: null },
+      // For "Warning: Top-level use of w, wtimeout, j, and fsync is deprecated. Use writeConcern instead."
+      writeConcern: {
+        w: null,
+        wtimeout: null,
+        j: null,
+        fsync: null,
+      },
     };
 
     cached.promise = mongoose.connect(MONGODB_URI, opts).then((mongoose) => {

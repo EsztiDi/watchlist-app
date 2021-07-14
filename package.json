@@ -38,5 +38,8 @@
   },
   "optionalDependencies": {
     "fsevents": "*"
+  },
+  "engines": {
+    "node": ">=14.x"
   }
 }

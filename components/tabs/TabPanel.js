@@ -18,11 +18,12 @@ import Movies from "../Movies";
 import MovieSearch from "../movieSearch/MovieSearch";
 import DeleteDialog from "./DeleteDialog";
 import Share from "./Share";
+import React from "react";
 
 const useStyles = makeStyles((theme) => ({
   panel: {
+    paddingTop: 0,
     width: "100%",
-    scrollBehavior: "smooth",
     overflow: "auto",
     "&::-webkit-scrollbar": {
       width: "7px",
@@ -115,6 +116,10 @@ export default function TabPanel(props) {
     movies,
     createdAt,
   } = list;
+
+  React.useEffect(() => {
+    if (!newTab) document.getElementById(`tabpanel-${listID}`).scrollTop = 0;
+  }, [listID, newTab]);
 
   // For DeleteDialog
   const [openDelete, setOpenDelete] = React.useState(false);
@@ -253,6 +258,7 @@ export default function TabPanel(props) {
             <IconButton
               aria-label="delete watchlist"
               title="Delete"
+              disabled={updating}
               onClick={handleOpenDelete}
               className={classes.button}
             >
@@ -263,6 +269,8 @@ export default function TabPanel(props) {
               listID={listID}
               onOpenDelete={handleOpenDelete}
               setMessage={setMessage}
+              updating={updating}
+              setUpdating={setUpdating}
             />
           </>
         )}

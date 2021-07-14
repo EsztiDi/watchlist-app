@@ -85,7 +85,10 @@ export default function ListTabs({
 }) {
   const classes = useStyles();
   const [editTitle, setEditTitle] = React.useState(false);
-  const value = lists.map((list) => list._id).indexOf(id);
+  var value =
+    lists.map((list) => list._id).indexOf(id) === -1
+      ? 0
+      : lists.map((list) => list._id).indexOf(id);
 
   const handleEditTitle = () => {
     setEditTitle((prev) => !prev);
@@ -110,7 +113,7 @@ export default function ListTabs({
       variant="scrollable"
       indicatorColor="secondary"
       aria-label="list tabs"
-      value={value > -1 ? value : 0}
+      value={value}
       className={classes.tabs}
     >
       {lists.map((list, index) =>

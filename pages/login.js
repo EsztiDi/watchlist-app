@@ -1,5 +1,6 @@
 import { signIn, useSession } from "next-auth/client";
 import { useRouter } from "next/router";
+import Head from "next/head";
 
 import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
@@ -41,30 +42,35 @@ export default function Login() {
   return (
     !loading &&
     !session && (
-      <Container maxWidth="md">
-        <Paper elevation={4} className={classes.paper}>
-          <GoogleLoginButton
-            style={buttonStyle}
-            onClick={() => signIn("google")}
-          />
-          <FacebookLoginButton
-            style={buttonStyle}
-            onClick={() => signIn("facebook")}
-          />
-          <LinkedInLoginButton
-            style={buttonStyle}
-            onClick={() => signIn("linkedin")}
-          />
-          <TwitterLoginButton
-            style={buttonStyle}
-            onClick={() => signIn("twitter")}
-          />
-          <GithubLoginButton
-            style={buttonStyle}
-            onClick={() => signIn("github")}
-          />
-        </Paper>
-      </Container>
+      <>
+        <Head>
+          <title>Login - My Watchlists</title>
+        </Head>
+        <Container maxWidth="md">
+          <Paper elevation={4} className={classes.paper}>
+            <GoogleLoginButton
+              style={buttonStyle}
+              onClick={() => signIn("google")}
+            />
+            <FacebookLoginButton
+              style={buttonStyle}
+              onClick={() => signIn("facebook")}
+            />
+            <LinkedInLoginButton
+              style={buttonStyle}
+              onClick={() => signIn("linkedin")}
+            />
+            <TwitterLoginButton
+              style={buttonStyle}
+              onClick={() => signIn("twitter")}
+            />
+            <GithubLoginButton
+              style={buttonStyle}
+              onClick={() => signIn("github")}
+            />
+          </Paper>
+        </Container>
+      </>
     )
   );
 }

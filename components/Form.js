@@ -1,5 +1,5 @@
 import { useRouter } from "next/router";
-import { mutate } from "swr";
+import useSWR, { mutate } from "swr";
 
 import { makeStyles } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
@@ -58,6 +58,8 @@ export default function Form({
   var { id } = router.query;
   if (Array.isArray(id)) id = id[0];
 
+  const { data: lists2, error } = useSWR(newList ? "/api/lists" : null);
+
   const [session, loading] = useSession();
   const email = session?.user?.email;
 
@@ -80,14 +82,12 @@ export default function Form({
         emails: list.emails,
       });
 
-      if (newMovie.current) {
-        var panel =
-          document.getElementById(`tabpanel-${id}`) ||
-          document.querySelector("html");
-        panel.style = "scroll-behavior: smooth;";
-        panel.scrollTop = panel.scrollHeight;
-        newMovie.current = false;
-      }
+      if (newMovie.current) newMovie.current = false;
+      //   var panel =
+      //     document.getElementById(`tabpanel-${id}`) ||
+      //     document.querySelector("html");
+      //   panel.style = "scroll-behavior: smooth;";
+      //   panel.scrollTop = panel.scrollHeight;
     }
     // eslint-disable-next-line
   }, [list]);
@@ -126,6 +126,8 @@ export default function Form({
         throw new Error(res.status);
       }
 
+      mutate("/api/lists", [newForm, ...lists2], false);
+      mutate("/api/lists");
       setUpdating(false);
       router.push("/lists");
     } catch (error) {
@@ -149,8 +151,8 @@ export default function Form({
         throw new Error(res.status);
       }
 
-      mutate("/api/lists");
-      mutate(`/api/lists/${id}`);
+      await mutate("/api/lists");
+      await mutate(`/api/lists/${id}`);
       setTimeout(() => {
         setUpdating(false);
       }, 500);

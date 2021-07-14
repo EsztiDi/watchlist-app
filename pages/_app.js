@@ -28,7 +28,7 @@ const theme = createTheme({
   },
   typography: {
     h4: {
-      fontFamily: "'Bangers', cursive",
+      fontFamily: "'Bangers','Roboto', cursive",
       letterSpacing: "1px",
       cursor: "default",
     },
