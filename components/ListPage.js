@@ -51,6 +51,9 @@ export default function ListPage({
   const { data: list, error } = useSWR(id[0] ? `/api/lists/${id[0]}` : null, {
     refreshInterval: 2000,
     initialData: initialList,
+    isPaused: () => {
+      if (error) return true;
+    },
   });
 
   React.useEffect(() => {
@@ -65,9 +68,14 @@ export default function ListPage({
     }
   }, [list]);
 
-  if (error) setMessage(`${error.message} - Please try again or contact ...`);
+  React.useEffect(() => {
+    if (error) {
+      setMessage(error.message);
+      router.push("/");
+    }
+  }, [error]);
 
-  if (!list) return <CircularProgress size="3rem" thickness={3} />;
+  if (!list && !error) return <CircularProgress size="3rem" thickness={3} />;
 
   return (
     list && (

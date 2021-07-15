@@ -40,10 +40,16 @@ export default function ListPanels({
   const { data: list, error } = useSWR(id ? `/api/lists/${id}` : null, {
     refreshInterval: 2000,
     initialData: initialList,
+    isPaused: () => {
+      if (error) return true;
+    },
   });
   const { data: lists, error: error2 } = useSWR(session ? "/api/lists" : null, {
     refreshInterval: 2000,
     initialData: initialLists,
+    isPaused: () => {
+      if (error) return true;
+    },
   });
 
   const auth = session && list?.user?.email === session?.user?.email;
@@ -53,16 +59,12 @@ export default function ListPanels({
 
   if (!loading && !session) {
     router.replace("/login");
-  } else if (list && !auth) {
+  } else if ((list && !auth) || error || error2) {
     router.replace("/lists");
   }
 
-  if (error || error2)
-    setMessage(
-      `${error?.message || error2?.message} - Please try again or contact ...`
-    );
-
-  if (!list || !lists) return <CircularProgress size="3rem" thickness={3} />;
+  if ((!list || !lists) && (!error || !error2))
+    return <CircularProgress size="3rem" thickness={3} />;
 
   return (
     auth &&

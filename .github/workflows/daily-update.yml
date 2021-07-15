@@ -1,0 +1,12 @@
+name: Daily Update
+on:
+  schedule:
+    - cron: "23 14 * * *"
+jobs:
+  cron:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Call api/cron/daily
+        run: |
+          curl --request GET \
+          --url 'https://mywatchlists.vercel.app/api/cron/daily' \

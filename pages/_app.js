@@ -175,7 +175,12 @@ export default function MyApp({ Component, pageProps }) {
             fetcher: (resource, init) =>
               fetch(resource, init)
                 .then((res) => res.json())
-                .then((json) => json.data),
+                .then((json) => {
+                  if (!json.success) {
+                    throw new Error("This list has been deleted.");
+                  }
+                  return json.data;
+                }),
           }}
         >
           <ThemeProvider theme={theme}>

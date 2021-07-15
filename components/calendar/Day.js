@@ -29,6 +29,7 @@ const useStyles = makeStyles((theme) => ({
 export default function Day({ date, movies }) {
   const classes = useStyles();
 
+  // Series episodes released on the same day to appear under one image on the calendar
   const names =
     movies &&
     movies.reduce(
@@ -92,7 +93,7 @@ export default function Day({ date, movies }) {
           .map((movie, index) => {
             return (
               <Tooltip
-                key={`${movie.id}-${index}`}
+                key={movie.id}
                 arrow
                 title={
                   <p className={classes.tooltip}>

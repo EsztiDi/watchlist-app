@@ -1,5 +1,5 @@
 import { useRouter } from "next/router";
-import useSWR, { mutate } from "swr";
+import { mutate } from "swr";
 
 import { makeStyles } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
@@ -57,8 +57,6 @@ export default function Form({
   const router = useRouter();
   var { id } = router.query;
   if (Array.isArray(id)) id = id[0];
-
-  const { data: lists2, error } = useSWR(newList ? "/api/lists" : null);
 
   const [session, loading] = useSession();
   const email = session?.user?.email;
@@ -126,7 +124,6 @@ export default function Form({
         throw new Error(res.status);
       }
 
-      mutate("/api/lists", [newForm, ...lists2], false);
       mutate("/api/lists");
       setUpdating(false);
       router.push("/lists");

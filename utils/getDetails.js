@@ -31,9 +31,16 @@ export default async function getDetails(movie) {
                 last_air_date: data.last_air_date,
                 number_of_episodes: data.number_of_episodes,
                 created_by: data.created_by,
-                credits: data.credits,
+                credits: {
+                  crew:
+                    data.credits?.crew?.filter(
+                      (member) =>
+                        member.job === "Director" || member.job === "Comic Book"
+                    ) || [],
+                  cast: data.credits?.cast || [],
+                },
                 vote_average: data.vote_average,
-                external_ids: data.external_ids,
+                external_ids: { imdb_id: data.external_ids?.imdb_id || "" },
               },
             }
           : {
@@ -46,9 +53,16 @@ export default async function getDetails(movie) {
               details: {
                 genres: data.genres,
                 runtime: data.runtime,
-                credits: data.credits,
+                credits: {
+                  crew:
+                    data.credits?.crew?.filter(
+                      (member) =>
+                        member.job === "Director" || member.job === "Comic Book"
+                    ) || [],
+                  cast: data.credits?.cast || [],
+                },
                 vote_average: data.vote_average,
-                external_ids: data.external_ids,
+                external_ids: { imdb_id: data.external_ids?.imdb_id || "" },
               },
             };
 
@@ -63,7 +77,21 @@ export default async function getDetails(movie) {
           await fetch(fullUrl, options)
             .then((res) => res.json())
             .then((data) => {
-              seasons.push(data);
+              seasons.push({
+                episodes:
+                  data?.episodes?.map((ep) => {
+                    return {
+                      id: ep.id,
+                      episode_number: ep.episode_number,
+                      air_date: ep.air_date,
+                      name: ep.name,
+                      overview: ep.overview,
+                      still_path: ep.still_path,
+                      season_number: ep.season_number,
+                    };
+                  }) || [],
+                season_number: data?.season_number,
+              });
             })
             .catch((err) => {
               console.error(

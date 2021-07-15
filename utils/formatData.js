@@ -14,8 +14,8 @@ export default function formatData(movie) {
     } = details;
   }
 
-  var hasArray = (obj, prop) =>
-    obj && obj.hasOwnProperty(prop) && obj[prop].length > 0;
+  // var hasArray = (obj, prop) =>
+  //   obj && obj.hasOwnProperty(prop) && obj[prop].length > 0;
 
   // Getting the last season's number for Season modal
   if (next_episode_to_air || last_episode_to_air)
@@ -45,9 +45,9 @@ export default function formatData(movie) {
     : "";
 
   // Getting directors or creators
-  if (hasArray(credits, "crew")) {
-    var directors = credits.crew.filter((member) => member.job === "Director");
-  }
+  // if (hasArray(credits, "crew")) {
+  var directors = credits.crew.filter((member) => member.job === "Director");
+  // }
   directors = getNames(directors); // Returns an array with the names
 
   var creators, cast;
@@ -60,7 +60,8 @@ export default function formatData(movie) {
   creators = getNames(creators);
 
   // Getting cast
-  hasArray(credits, "cast")
+  // hasArray(credits, "cast");
+  credits.cast.length > 0
     ? (cast = credits.cast.map((member, index) =>
         index === credits.cast.length - 1 ? member.name : member.name + ", "
       ))

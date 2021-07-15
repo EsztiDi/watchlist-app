@@ -99,7 +99,7 @@ export default function MovieDetails({
     fetch(fullUrl, options)
       .then((res) => res.json())
       .then((data) => {
-        setExternalIDs(data);
+        setExternalIDs({ imdb_id: data.imdb_id || "" });
       });
 
     return () => {
