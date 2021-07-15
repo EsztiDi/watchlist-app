@@ -19,9 +19,6 @@ const useStyles = makeStyles((theme) => ({
     margin: theme.spacing(1.5),
     padding: theme.spacing(1),
   },
-  title: {
-    textAlign: "center",
-  },
   backdrop: {
     position: "fixed",
     zIndex: "-99",
@@ -73,6 +70,7 @@ export default function ListPage({
       setMessage(error.message);
       router.push("/");
     }
+    // eslint-disable-next-line
   }, [error]);
 
   if (!list && !error) return <CircularProgress size="3rem" thickness={3} />;
@@ -114,9 +112,7 @@ export default function ListPage({
           )}
           <Paper elevation={4} className={classes.paper}>
             <Paper elevation={1} className={classes.titleContainer}>
-              <Typography variant="h4" className={classes.title}>
-                {list.title}
-              </Typography>
+              <Typography variant="h4">{list.title}</Typography>
             </Paper>
             <Form
               list={list}

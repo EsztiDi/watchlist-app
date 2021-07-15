@@ -30,7 +30,9 @@ const theme = createTheme({
     h4: {
       fontFamily: "'Bangers','Roboto', cursive",
       letterSpacing: "1px",
+      textAlign: "center",
       cursor: "default",
+      userSelect: "none",
     },
     h6: {
       cursor: "default",
@@ -57,6 +59,9 @@ const theme = createTheme({
         a: {
           textDecoration: "none",
           color: "inherit",
+        },
+        img: {
+          userSelect: "none",
         },
       },
     },

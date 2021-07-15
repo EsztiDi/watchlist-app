@@ -81,11 +81,6 @@ export default function Form({
       });
 
       if (newMovie.current) newMovie.current = false;
-      //   var panel =
-      //     document.getElementById(`tabpanel-${id}`) ||
-      //     document.querySelector("html");
-      //   panel.style = "scroll-behavior: smooth;";
-      //   panel.scrollTop = panel.scrollHeight;
     }
     // eslint-disable-next-line
   }, [list]);

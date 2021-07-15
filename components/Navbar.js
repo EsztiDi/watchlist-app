@@ -28,7 +28,6 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     alignItems: "center",
     outline: "none",
-    userSelect: "none",
     "& :last-child": {
       cursor: "pointer",
       color: theme.palette.primary.dark,
@@ -101,28 +100,22 @@ export default function Navbar() {
     <div className={classes.navbar}>
       <AppBar color="default" position="fixed">
         <Toolbar className={classes.toolbar}>
-          <Link href="/lists">
+          <Link href="/lists" passHref>
             <a className={classes.title}>
               <Image src="/logo.png" alt="Logo" width={56} height={56} />
               <Typography variant="h4">My Watchlists</Typography>
             </a>
           </Link>
-          <Link href="/">
-            <a>
-              <Button size="large">Discover</Button>
-            </a>
+          <Link href="/" passHref>
+            <Button size="large">Discover</Button>
           </Link>
           {user ? (
             <>
-              <Link href="/create">
-                <a>
-                  <Button size="large">Create</Button>
-                </a>
+              <Link href="/create" passHref>
+                <Button size="large">Create</Button>
               </Link>
-              <Link href="/lists">
-                <a>
-                  <Button size="large">Lists</Button>
-                </a>
+              <Link href="/lists" passHref>
+                <Button size="large">Lists</Button>
               </Link>
               <IconButton
                 size="medium"
@@ -163,14 +156,16 @@ export default function Navbar() {
                           onKeyDown={handleListKeyDown}
                         >
                           <Link href="/account" passHref>
-                            <MenuItem onClick={handleMenuClose}>
-                              <Typography
-                                variant="button"
-                                className={classes.menuItem}
-                              >
-                                Account
-                              </Typography>
-                            </MenuItem>
+                            <a>
+                              <MenuItem onClick={handleMenuClose}>
+                                <Typography
+                                  variant="button"
+                                  className={classes.menuItem}
+                                >
+                                  Account
+                                </Typography>
+                              </MenuItem>
+                            </a>
                           </Link>
                           <MenuItem onClick={() => signOut()}>
                             <Typography
@@ -188,10 +183,8 @@ export default function Navbar() {
               </Popper>
             </>
           ) : (
-            <Link href="/login">
-              <a>
-                <Button size="large">Login</Button>
-              </a>
+            <Link href="/login" passHref>
+              <Button size="large">Login</Button>
             </Link>
           )}
         </Toolbar>

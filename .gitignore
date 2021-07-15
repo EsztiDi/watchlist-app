@@ -9,7 +9,6 @@
 # next.js
 /.next/
 /out/
-.eslintrc
 
 # production
 /build
