@@ -1,7 +1,7 @@
 {
   "name": "watchlist-app",
   "version": "2.0.0",
-  "description": "An app to create watchlists for movies and TV shows",
+  "description": "An app to create watchlists for movies and TV shows with a 'share to edit' option",
   "author": "Eszter Diana Toth",
   "license": "ISC",
   "repository": {

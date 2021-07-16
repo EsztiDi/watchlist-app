@@ -15,7 +15,7 @@ import CircularProgress from "@material-ui/core/CircularProgress";
 const useStyles = makeStyles((theme) => ({
   container: {
     width: "100%",
-    height: "calc(100vh - 24px - 24px - 72px)",
+    height: "calc(100vh - 16px - 16px - 56px)",
     display: "flex",
     flexDirection: "column",
     alignItems: "center",

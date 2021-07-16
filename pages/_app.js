@@ -12,6 +12,7 @@ import Fade from "@material-ui/core/Fade";
 import Alert from "@material-ui/lab/Alert";
 
 import Navbar from "../components/Navbar";
+import Footer from "../components/Footer";
 
 const theme = createTheme({
   palette: {
@@ -28,7 +29,7 @@ const theme = createTheme({
   },
   typography: {
     h4: {
-      fontFamily: "'Bangers','Roboto', cursive",
+      fontFamily: "'Bangers', cursive",
       letterSpacing: "1px",
       textAlign: "center",
       cursor: "default",
@@ -56,6 +57,9 @@ const theme = createTheme({
   overrides: {
     MuiCssBaseline: {
       "@global": {
+        "html, body, #__next": {
+          height: "100%",
+        },
         a: {
           textDecoration: "none",
           color: "inherit",
@@ -70,12 +74,13 @@ const theme = createTheme({
 
 const useStyles = makeStyles((theme) => ({
   mainContainer: {
+    height: "calc(100% - 56px)",
     display: "flex",
     flexDirection: "column",
     justifyContent: "flex-start",
     alignItems: "center",
-    paddingTop: theme.spacing(3),
-    paddingBottom: theme.spacing(3),
+    paddingTop: theme.spacing(2),
+    paddingBottom: theme.spacing(2),
     "& a": {
       textDecoration: "none",
     },
@@ -83,10 +88,10 @@ const useStyles = makeStyles((theme) => ({
   message: {
     position: "fixed",
     zIndex: "9999",
-    top: "58px",
+    top: "29px",
     left: "50%",
     transform: "translateX(-50%)",
-    minWidth: "45%",
+    minWidth: "fit-content",
     fontSize: "1rem",
   },
 }));
@@ -109,7 +114,9 @@ export default function MyApp({ Component, pageProps }) {
     if (router.query.error === "OAuthAccountNotLinked") {
       setMessage("Please sign in with the same account you used originally.");
     } else if (router.query.error) {
-      setMessage(`${router.query.error} – Please try again or contact ...`);
+      setMessage(
+        `${router.query.error} – Please try again or contact thewatchlistapp@gmail.com`
+      );
     }
   }, [router.query]);
 
@@ -198,7 +205,7 @@ export default function MyApp({ Component, pageProps }) {
                     severity={
                       message.includes("saved!") || message.includes("deleted!")
                         ? "success"
-                        : message.includes("already on your list")
+                        : message.includes("already on the list")
                         ? "warning"
                         : "error"
                     }
@@ -213,6 +220,7 @@ export default function MyApp({ Component, pageProps }) {
             )}
             <Container className={classes.mainContainer}>
               <Component {...pageProps} setMessage={setMessage} />
+              <Footer />
             </Container>
           </ThemeProvider>
         </SWRConfig>

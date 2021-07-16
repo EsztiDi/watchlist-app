@@ -18,7 +18,6 @@ import Movies from "../Movies";
 import MovieSearch from "../movieSearch/MovieSearch";
 import DeleteDialog from "./DeleteDialog";
 import Share from "./Share";
-import React from "react";
 
 const useStyles = makeStyles((theme) => ({
   panel: {

@@ -67,10 +67,16 @@ const useStyles = makeStyles((theme) => ({
 export default function Seasons({ open, onClose, seasons, lastSeason }) {
   const classes = useStyles();
 
-  const [value, setValue] = React.useState(lastSeason ? lastSeason - 1 : 0);
+  const [seasonTab, setSeasonTab] = React.useState(
+    lastSeason ? lastSeason - 1 : 0
+  );
+
+  React.useEffect(() => {
+    setSeasonTab(lastSeason ? lastSeason - 1 : 0);
+  }, [open, lastSeason]);
 
   const handleChange = (event, newValue) => {
-    setValue(newValue);
+    setSeasonTab(newValue);
 
     document.getElementById("seasons").scrollTop = 0;
   };
@@ -95,7 +101,7 @@ export default function Seasons({ open, onClose, seasons, lastSeason }) {
               id="modal-title"
               variant="scrollable"
               indicatorColor="secondary"
-              value={value}
+              value={seasonTab}
               onChange={handleChange}
               aria-label="season tabs"
             >
@@ -125,7 +131,7 @@ export default function Seasons({ open, onClose, seasons, lastSeason }) {
                 .map((season, index) => (
                   <TabPanel
                     key={index}
-                    value={value}
+                    seasonTab={seasonTab}
                     index={index}
                     className={classes.tabpanel}
                   >
@@ -144,17 +150,17 @@ export default function Seasons({ open, onClose, seasons, lastSeason }) {
 function TabPanel(props) {
   const classes = useStyles();
 
-  const { children, value, index, ...other } = props;
+  const { children, seasonTab, index, ...other } = props;
 
   return (
     <div
       role="tabpanel"
-      hidden={value !== index}
+      hidden={seasonTab !== index}
       id={`season-tabpanel-${index}`}
       aria-labelledby={`season-tab-${index}`}
       {...other}
     >
-      {value === index && (
+      {seasonTab === index && (
         <Box p={3}>
           {children ? (
             children
@@ -175,5 +181,5 @@ function TabPanel(props) {
 
 TabPanel.propTypes = {
   index: PropTypes.any.isRequired,
-  value: PropTypes.any.isRequired,
+  seasonTab: PropTypes.any.isRequired,
 };

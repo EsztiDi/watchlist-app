@@ -185,8 +185,19 @@ export default function Form({
     var ids = movies.map((mov) => mov.id);
     if (ids.includes(movie.id)) {
       newMovie.current = false;
-      setMessage("It's already on your list.");
-      document.getElementById(movie.id).scrollIntoView({ behavior: "smooth" });
+      setMessage("It's already on the list.");
+      if (newTab || newList) {
+        const yOffset = -56 - 12 + 1;
+        const y =
+          document.getElementById(movie.id).getBoundingClientRect().top +
+          window.pageYOffset +
+          yOffset;
+        window.scrollTo({ top: y, behavior: "smooth" });
+      } else {
+        document
+          .getElementById(movie.id)
+          .scrollIntoView({ behavior: "smooth" });
+      }
     } else {
       setForm({
         ...form,

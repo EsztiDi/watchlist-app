@@ -18,10 +18,10 @@ import MenuList from "@material-ui/core/MenuList";
 const useStyles = makeStyles((theme) => ({
   navbar: {
     flexGrow: 1,
-    minHeight: 72,
+    minHeight: 56,
   },
   toolbar: {
-    minHeight: 72,
+    minHeight: 56,
   },
   title: {
     marginRight: "auto",
@@ -34,7 +34,7 @@ const useStyles = makeStyles((theme) => ({
       textShadow: `1px 1px 1px ${theme.palette.text.primary}`,
       marginLeft: theme.spacing(2),
       textTransform: "uppercase",
-      fontSize: "1.9rem",
+      fontSize: "1.8rem",
       fontFamily: "'Carter One', cursive",
     },
   },
@@ -100,9 +100,9 @@ export default function Navbar() {
     <div className={classes.navbar}>
       <AppBar color="default" position="fixed">
         <Toolbar className={classes.toolbar}>
-          <Link href="/lists" passHref>
+          <Link href="/lists">
             <a className={classes.title}>
-              <Image src="/logo.png" alt="Logo" width={56} height={56} />
+              <Image src="/logo.png" alt="" width={48} height={48} />
               <Typography variant="h4">My Watchlists</Typography>
             </a>
           </Link>
@@ -128,8 +128,8 @@ export default function Navbar() {
                 <Image
                   src={user.image ? user.image : "/avatar.jpg"}
                   alt=""
-                  width={48}
-                  height={48}
+                  width={46}
+                  height={46}
                   className={classes.avatar}
                 />
               </IconButton>
@@ -155,7 +155,7 @@ export default function Navbar() {
                           id="menu-list"
                           onKeyDown={handleListKeyDown}
                         >
-                          <Link href="/account" passHref>
+                          <Link href="/account">
                             <a>
                               <MenuItem onClick={handleMenuClose}>
                                 <Typography

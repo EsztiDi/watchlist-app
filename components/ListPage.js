@@ -23,7 +23,7 @@ const useStyles = makeStyles((theme) => ({
     position: "fixed",
     zIndex: "-99",
     opacity: "0.2",
-    top: "72px",
+    top: "56px",
     left: "0",
     minWidth: "100vw",
     minHeight: "100vh",

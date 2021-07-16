@@ -125,7 +125,7 @@ export default function Share({ listID, uid, title, open, onClose }) {
     >
       <Fade in={open}>
         <div className={classes.share}>
-          <Typography variant="h6" id="modal-title" className={classes.title}>
+          <Typography variant="h5" id="modal-title" className={classes.title}>
             Share
           </Typography>
           <Divider />

@@ -9,4 +9,4 @@ jobs:
       - name: Call api/cron/daily
         run: |
           curl --request GET \
-          --url 'https://mywatchlists.vercel.app/api/cron/daily' \
+          --url 'https://mywatchlists.ml/api/cron/daily' \

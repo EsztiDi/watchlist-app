@@ -1,3 +1,4 @@
+import React from "react";
 import Image from "next/image";
 
 import { makeStyles } from "@material-ui/core/styles";
@@ -8,7 +9,6 @@ import CircularProgress from "@material-ui/core/CircularProgress";
 import Carousel from "react-material-ui-carousel";
 
 import MovieDetails from "./MovieDetails";
-import React from "react";
 
 const useStyles = makeStyles((theme) => ({
   moviesCard: {
@@ -98,7 +98,7 @@ export default function MoviesCarousel({
                       ev.target.onerror = null;
                       ev.target.src = "/movieIcon.png";
                     }}
-                    alt="Poster"
+                    alt=""
                     className={classes.poster}
                   />
                   <MovieDetails

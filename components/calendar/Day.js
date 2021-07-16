@@ -82,7 +82,7 @@ export default function Day({ date, movies }) {
                   ev.target.onerror = null;
                   ev.target.src = "/movieIcon.png";
                 }}
-                alt="Poster"
+                alt=""
                 className={classes.poster}
               />
             </span>
@@ -118,7 +118,7 @@ export default function Day({ date, movies }) {
                       ev.target.onerror = null;
                       ev.target.src = "/movieIcon.png";
                     }}
-                    alt="Poster"
+                    alt=""
                     className={classes.poster}
                   />
                 </span>

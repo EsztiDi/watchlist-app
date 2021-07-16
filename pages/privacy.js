@@ -1,5 +1,6 @@
 import Head from "next/head";
 import Link from "next/link";
+import { useRouter } from "next/router";
 
 import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
@@ -23,10 +24,10 @@ const useStyles = makeStyles((theme) => ({
     "& > ul, a": {
       fontSize: "1rem",
     },
-    "& a": {
-      textDecoration: "underline",
-      // margin: theme.spacing(2),
-    },
+  },
+  link: {
+    textDecoration: "underline",
+    cursor: "pointer",
   },
   bold: {
     fontWeight: "bold",
@@ -36,9 +37,34 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function PrivacyPolicy() {
+export default function Privacy() {
   const classes = useStyles();
   const variant = "h5";
+  const router = useRouter();
+
+  const titles = [
+    "1. What information do we collect?",
+    "2. How do we use your information?",
+    "3. How can you update or delete the data we collect from you?",
+    "4. Will your information be shared with anyone?",
+    "5. How do we handle your social logins?",
+    "6. How long do we keep your information?",
+    "7. How do we keep your information safe?",
+    "8. What are your privacy rights?",
+    "9. Controls for Do-Not-Track features",
+    "10. The specific privacy rights of California residents",
+    "11. Do we make updates to this notice?",
+    "12. How can you contact us about this notice?",
+  ];
+
+  const handleClick = (id) => {
+    const yOffset = -56 - 20;
+    const y =
+      document.getElementById(id).getBoundingClientRect().top +
+      window.pageYOffset +
+      yOffset;
+    window.scrollTo({ top: y, behavior: "smooth" });
+  };
 
   return (
     <>
@@ -85,46 +111,17 @@ export default function PrivacyPolicy() {
           </Typography>
 
           <Typography variant={variant}>Table of contents</Typography>
-          <Typography>
-            <a href="#1">1. What information do we collect?</a>
-          </Typography>
-          <Typography>
-            <a href="#2">2. How do we use your information?</a>
-          </Typography>
-          <Typography>
-            <a href="#3">
-              3. How can you update or delete the data we collect from you?
-            </a>
-          </Typography>
-          <Typography>
-            <a href="#4">4. Will your information be shared with anyone?</a>
-          </Typography>
-          <Typography>
-            <a href="#5">5. How do we handle your social logins?</a>
-          </Typography>
-          <Typography>
-            <a href="#6">6. How long do we keep your information?</a>
-          </Typography>
-          <Typography>
-            <a href="#7">7. How do we keep your information safe?</a>
-          </Typography>
-          <Typography>
-            <a href="#8">8. What are your privacy rights?</a>
-          </Typography>
-          <Typography>
-            <a href="#9">9. Controls for Do-Not-Track features</a>
-          </Typography>
-          <Typography>
-            <a href="#10">
-              10. The specific privacy rights of California residents
-            </a>
-          </Typography>
-          <Typography>
-            <a href="#11">11. Do we make updates to this notice?</a>
-          </Typography>
-          <Typography>
-            <a href="#12">12. How can you contact us about this notice?</a>
-          </Typography>
+          {titles.map((title, index) => {
+            return (
+              <Typography
+                key={index}
+                onClick={() => handleClick((index + 1).toString())}
+                className={classes.link}
+              >
+                {title}
+              </Typography>
+            );
+          })}
 
           <Typography variant={variant} id="1">
             1. What information do we collect?
@@ -219,7 +216,7 @@ export default function PrivacyPolicy() {
             change that information, or delete it in some circumstances. To
             request to review, update, or delete your personal information,
             please visit:{" "}
-            <Link href="/account" passHref>
+            <Link href="/account">
               <a>{process.env.BASE_URL}/account</a>
             </Link>
             .
