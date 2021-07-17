@@ -292,6 +292,7 @@ export default function TabPanel(props) {
             addingMovie={addingMovie}
             newList={newList}
             setUpdating={setUpdating}
+            listID={listID}
           />
         </div>
       )}

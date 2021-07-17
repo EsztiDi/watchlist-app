@@ -65,58 +65,59 @@ export default function MoviesCarousel({
       <Divider />
       {loading && movies.length === 0 ? (
         <CircularProgress size="3rem" thickness={3} />
-      ) : movies.length > 0 ? (
-        <Carousel
-          autoPlay={false}
-          interval={5000}
-          timeout={300}
-          className={classes.carousel}
-          indicatorContainerProps={{
-            style: {
-              display: "flex",
-              flexWrap: "wrap",
-              justifyContent: "center",
-            },
-          }}
-        >
-          {sliced.map((page) => {
-            return page.map((movie, index) => {
-              return (
-                <React.Fragment key={index}>
-                  <Image
-                    onMouseEnter={handleShowDetails}
-                    data-index={index}
-                    width={200}
-                    height={300}
-                    objectFit="contain"
-                    src={
-                      movie?.poster_path
-                        ? `https://image.tmdb.org/t/p/w500${movie?.poster_path}`
-                        : "/movieIcon.png"
-                    }
-                    onError={(ev) => {
-                      ev.target.onerror = null;
-                      ev.target.src = "/movieIcon.png";
-                    }}
-                    alt=""
-                    className={classes.poster}
-                  />
-                  <MovieDetails
-                    movie={movie}
-                    media_type={media_type}
-                    left={index % 2 === 0}
-                    userLists={userLists}
-                    setMessage={setMessage}
-                    show={index.toString() === data}
-                    handleShowDetails={handleShowDetails}
-                  />
-                </React.Fragment>
-              );
-            });
-          })}
-        </Carousel>
       ) : (
-        <Typography>No new movies</Typography>
+        !loading &&
+        movies.length > 0 && (
+          <Carousel
+            autoPlay={false}
+            interval={5000}
+            timeout={300}
+            className={classes.carousel}
+            indicatorContainerProps={{
+              style: {
+                display: "flex",
+                flexWrap: "wrap",
+                justifyContent: "center",
+              },
+            }}
+          >
+            {sliced.map((page) => {
+              return page.map((movie, index) => {
+                return (
+                  <React.Fragment key={index}>
+                    <Image
+                      onMouseEnter={handleShowDetails}
+                      data-index={index}
+                      width={200}
+                      height={300}
+                      objectFit="contain"
+                      src={
+                        movie?.poster_path
+                          ? `https://image.tmdb.org/t/p/w500${movie?.poster_path}`
+                          : "/movieIcon.png"
+                      }
+                      onError={(ev) => {
+                        ev.target.onerror = null;
+                        ev.target.src = "/movieIcon.png";
+                      }}
+                      alt=""
+                      className={classes.poster}
+                    />
+                    <MovieDetails
+                      movie={movie}
+                      media_type={media_type}
+                      left={index % 2 === 0}
+                      userLists={userLists}
+                      setMessage={setMessage}
+                      show={index.toString() === data}
+                      handleShowDetails={handleShowDetails}
+                    />
+                  </React.Fragment>
+                );
+              });
+            })}
+          </Carousel>
+        )
       )}
     </Paper>
   );

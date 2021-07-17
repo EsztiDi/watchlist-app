@@ -20,13 +20,17 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: "column",
     alignItems: "center",
   },
+  button: {
+    margin: "0.5rem 0 !important",
+    display: "flex !important",
+    justifyContent: "center !important",
+    width: "50% !important",
+    fontFamily: "inherit !important",
+    "& > div > div:nth-child(2)": {
+      width: "24px !important",
+    },
+  },
 }));
-const buttonStyle = {
-  margin: "0.5rem 0",
-  display: "flex",
-  justifyContent: "center",
-  width: "50%",
-};
 
 export default function Login() {
   const classes = useStyles();
@@ -49,23 +53,23 @@ export default function Login() {
         <Container maxWidth="md">
           <Paper elevation={4} className={classes.paper}>
             <GoogleLoginButton
-              style={buttonStyle}
+              className={classes.button}
               onClick={() => signIn("google")}
             />
             <FacebookLoginButton
-              style={buttonStyle}
+              className={classes.button}
               onClick={() => signIn("facebook")}
             />
             <LinkedInLoginButton
-              style={buttonStyle}
+              className={classes.button}
               onClick={() => signIn("linkedin")}
             />
             <TwitterLoginButton
-              style={buttonStyle}
+              className={classes.button}
               onClick={() => signIn("twitter")}
             />
             <GithubLoginButton
-              style={buttonStyle}
+              className={classes.button}
               onClick={() => signIn("github")}
             />
           </Paper>

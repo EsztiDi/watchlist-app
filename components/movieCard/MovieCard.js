@@ -250,7 +250,7 @@ export default function MovieCard({
           </Typography>
           <Typography className={classes.cast}>
             <b>Cast: </b>
-            {cast}
+            {cast || "-"}
           </Typography>
           <Overview overview={overview} />
         </CardContent>

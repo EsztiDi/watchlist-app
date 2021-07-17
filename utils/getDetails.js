@@ -11,6 +11,35 @@ export default async function getDetails(movie) {
     },
   };
 
+  var getCrew = (obj) =>
+    obj?.credits?.crew
+      ?.filter(
+        (member) => member.job === "Director" || member.job === "Comic Book"
+      )
+      ?.map((member) => {
+        return { job: member.job, name: member.name };
+      });
+  var getCast = (obj) =>
+    obj?.credits?.cast?.map((member) => {
+      return { name: member.name };
+    });
+  var getCreators = (obj) =>
+    obj?.created_by.map((member) => {
+      return { name: member.name };
+    });
+  var getEpisodes = (obj) =>
+    obj?.episodes?.map((ep) => {
+      return {
+        id: ep.id,
+        episode_number: ep.episode_number,
+        air_date: ep.air_date,
+        name: ep.name,
+        overview: ep.overview,
+        still_path: ep.still_path,
+        season_number: ep.season_number,
+      };
+    });
+
   return await fetch(fullUrl, options)
     .then((res) => res.json())
     .then(async (data) => {
@@ -30,14 +59,10 @@ export default async function getDetails(movie) {
                 last_episode_to_air: data.last_episode_to_air,
                 last_air_date: data.last_air_date,
                 number_of_episodes: data.number_of_episodes,
-                created_by: data.created_by,
+                created_by: getCreators(data) || [],
                 credits: {
-                  crew:
-                    data.credits?.crew?.filter(
-                      (member) =>
-                        member.job === "Director" || member.job === "Comic Book"
-                    ) || [],
-                  cast: data.credits?.cast || [],
+                  crew: getCrew(data) || [],
+                  cast: getCast(data) || [],
                 },
                 vote_average: data.vote_average,
                 external_ids: { imdb_id: data.external_ids?.imdb_id || "" },
@@ -54,19 +79,15 @@ export default async function getDetails(movie) {
                 genres: data.genres,
                 runtime: data.runtime,
                 credits: {
-                  crew:
-                    data.credits?.crew?.filter(
-                      (member) =>
-                        member.job === "Director" || member.job === "Comic Book"
-                    ) || [],
-                  cast: data.credits?.cast || [],
+                  crew: getCrew(data) || [],
+                  cast: getCast(data) || [],
                 },
                 vote_average: data.vote_average,
                 external_ids: { imdb_id: data.external_ids?.imdb_id || "" },
               },
             };
 
-      if (movie.media_type === "tv" && data.number_of_seasons) {
+      if (movie.media_type === "tv" && data.number_of_seasons > 0) {
         var seasons = [];
 
         for (let season = 1; season <= data.number_of_seasons; season++) {
@@ -78,18 +99,7 @@ export default async function getDetails(movie) {
             .then((res) => res.json())
             .then((data) => {
               seasons.push({
-                episodes:
-                  data?.episodes?.map((ep) => {
-                    return {
-                      id: ep.id,
-                      episode_number: ep.episode_number,
-                      air_date: ep.air_date,
-                      name: ep.name,
-                      overview: ep.overview,
-                      still_path: ep.still_path,
-                      season_number: ep.season_number,
-                    };
-                  }) || [],
+                episodes: getEpisodes(data) || [],
                 season_number: data?.season_number,
               });
             })

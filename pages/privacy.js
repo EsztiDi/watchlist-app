@@ -152,8 +152,11 @@ export default function Privacy() {
               option to register with us using your existing social media
               account details, like your Facebook, Twitter or other social media
               account. If you choose to register in this way, we will collect
-              the information described in the section called &quot;How do we
-              handle your Social logins?&quot; below.
+              the information described in the section called &quot;
+              <span onClick={() => handleClick("5")} className={classes.link}>
+                How do we handle your social logins?
+              </span>
+              &quot; below.
             </li>
           </ul>
           <Typography variant={variant} id="2">
@@ -192,8 +195,11 @@ export default function Privacy() {
               as your Google or Facebook account), we use the information you
               allowed us to collect from those third parties to facilitate
               account creation and logon process for the performance of the
-              contract. See the section below headed &quot;How do we handle your
-              Social logins?&quot; for further information.
+              contract. See the section below headed &quot;
+              <span onClick={() => handleClick("5")} className={classes.link}>
+                How do we handle your social logins?
+              </span>
+              &quot; for further information.
             </li>
             <li>
               <b>For other business purposes</b> - We may use your information
@@ -458,7 +464,7 @@ export default function Privacy() {
             personal information in the immediately preceding calendar year. If
             you are a California resident and would like to make such a request,
             please submit your request in writing to us using the contact
-            information provided below
+            information provided below.
           </Typography>
           <Typography>
             If you are under 18 years of age, reside in California, and have a

@@ -111,7 +111,7 @@ export default function MyApp({ Component, pageProps }) {
   }, []);
 
   React.useEffect(() => {
-    if (router.query.error === "OAuthAccountNotLinked") {
+    if (router.query.error?.includes("OAuthAccountNotLinked")) {
       setMessage("Please sign in with the same account you used originally.");
     } else if (router.query.error) {
       setMessage(
@@ -119,6 +119,12 @@ export default function MyApp({ Component, pageProps }) {
       );
     }
   }, [router.query]);
+
+  React.useEffect(() => {
+    return () => {
+      setMessage("");
+    };
+  }, [router.query.error]);
 
   const handleMessage = () => {
     setMessage("");

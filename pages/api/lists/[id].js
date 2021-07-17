@@ -57,7 +57,7 @@ export default async function handler(req, res) {
           });
           // Adjacent list, id depends on the direction
           list2 = await Watchlist.findByIdAndUpdate(
-            position < 0 ? lists[index + 1].id : lists[index - 1].id,
+            position < 0 ? lists[index - 1].id : lists[index + 1].id,
             data2,
             {
               new: true,

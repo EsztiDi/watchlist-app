@@ -17,17 +17,28 @@ export default function MovieSearch({
   addingMovie,
   newList,
   setUpdating,
+  listID,
 }) {
   const [loading, setLoading] = React.useState(false);
   const [query, setQuery] = React.useState("");
   const [results, setResults] = React.useState([]);
   const [message, setMessage] = React.useState("");
+  const [render, setRender] = React.useState(true);
 
   React.useEffect(() => {
     loading
       ? window.addEventListener("beforeunload", unloadAlert)
       : window.removeEventListener("beforeunload", unloadAlert);
   }, [loading]);
+
+  React.useEffect(() => {
+    var input = document.getElementById(`${listID}-input`);
+    if (listID) {
+      return () => {
+        input.value = "";
+      };
+    }
+  }, [listID]);
 
   const handleMessage = () => {
     setMessage("");
@@ -127,6 +138,34 @@ export default function MovieSearch({
         "Content-Type": "application/json;charset=utf-8",
       },
     };
+    var getCrew = (obj) =>
+      obj?.credits?.crew
+        ?.filter(
+          (member) => member.job === "Director" || member.job === "Comic Book"
+        )
+        ?.map((member) => {
+          return { job: member.job, name: member.name };
+        });
+    var getCast = (obj) =>
+      obj?.credits?.cast?.map((member) => {
+        return { name: member.name };
+      });
+    var getCreators = (obj) =>
+      obj?.created_by.map((member) => {
+        return { name: member.name };
+      });
+    var getEpisodes = (obj) =>
+      obj?.episodes?.map((ep) => {
+        return {
+          id: ep.id,
+          episode_number: ep.episode_number,
+          air_date: ep.air_date,
+          name: ep.name,
+          overview: ep.overview,
+          still_path: ep.still_path,
+          season_number: ep.season_number,
+        };
+      });
 
     fetch(fullUrl, options)
       .then((res) => res.json())
@@ -148,15 +187,10 @@ export default function MovieSearch({
                   last_episode_to_air: data.last_episode_to_air,
                   last_air_date: data.last_air_date,
                   number_of_episodes: data.number_of_episodes,
-                  created_by: data.created_by,
+                  created_by: getCreators(data) || [],
                   credits: {
-                    crew:
-                      data.credits?.crew?.filter(
-                        (member) =>
-                          member.job === "Director" ||
-                          member.job === "Comic Book"
-                      ) || [],
-                    cast: data.credits?.cast || [],
+                    crew: getCrew(data) || [],
+                    cast: getCast(data) || [],
                   },
                   vote_average: data.vote_average,
                   external_ids: { imdb_id: data.external_ids?.imdb_id || "" },
@@ -174,13 +208,8 @@ export default function MovieSearch({
                   genres: data.genres,
                   runtime: data.runtime,
                   credits: {
-                    crew:
-                      data.credits?.crew?.filter(
-                        (member) =>
-                          member.job === "Director" ||
-                          member.job === "Comic Book"
-                      ) || [],
-                    cast: data.credits?.cast || [],
+                    crew: getCrew(data) || [],
+                    cast: getCast(data) || [],
                   },
                   vote_average: data.vote_average,
                   external_ids: { imdb_id: data.external_ids?.imdb_id || "" },
@@ -199,18 +228,7 @@ export default function MovieSearch({
               .then((res) => res.json())
               .then((data) => {
                 seasons.push({
-                  episodes:
-                    data?.episodes?.map((ep) => {
-                      return {
-                        id: ep.id,
-                        episode_number: ep.episode_number,
-                        air_date: ep.air_date,
-                        name: ep.name,
-                        overview: ep.overview,
-                        still_path: ep.still_path,
-                        season_number: ep.season_number,
-                      };
-                    }) || [],
+                  episodes: getEpisodes(data) || [],
                   season_number: data?.season_number,
                 });
               })
@@ -299,6 +317,7 @@ export default function MovieSearch({
   return (
     <>
       <TextField
+        id={`${listID}-input`}
         name="movies"
         label="Add movies / TV shows"
         type="search"
@@ -347,8 +366,7 @@ export default function MovieSearch({
             severity="warning"
             variant="filled"
             style={{
-              fontSize: "1.2rem",
-              lineHeight: 1.8,
+              fontSize: "1rem",
               alignItems: "center",
             }}
           >

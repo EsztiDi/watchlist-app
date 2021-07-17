@@ -98,13 +98,13 @@ export default function ListTabs({
   const moveListUp = (idx) => {
     setUpdating(true);
     const prevPos = lists[idx - 1].position;
-    putData({ position: prevPos });
+    putData({ position: -prevPos });
   };
 
   const moveListDown = (idx) => {
     setUpdating(true);
     const nextPos = lists[idx + 1].position;
-    putData({ position: -nextPos });
+    putData({ position: nextPos });
   };
 
   return (

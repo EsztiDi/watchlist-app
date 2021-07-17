@@ -17,25 +17,30 @@ export default async function handler(req, res) {
             return await Promise.all(
               lists.map(async (list) => {
                 if (list.movies.length > 0) {
+                  var originalList = JSON.stringify(list);
                   list.movies = await Promise.all(
                     list.movies.map(async (movie) => {
                       return await getDetails(movie);
                     })
                   );
 
-                  return await list
-                    .save()
-                    .then(() => {
-                      console.log(`${list._id} - saved`);
-                      return 1;
-                    })
-                    .catch((err) => {
-                      console.error(
-                        `Error saving watchlist - ${
-                          list._id
-                        } - ${JSON.stringify(err)}`
-                      );
-                    });
+                  if (originalList !== JSON.stringify(list)) {
+                    return await list
+                      .save()
+                      .then(() => {
+                        console.log(`${list._id} - saved`);
+                        return 1;
+                      })
+                      .catch((err) => {
+                        console.error(
+                          `Error saving watchlist - ${
+                            list._id
+                          } - ${JSON.stringify(err)}`
+                        );
+                      });
+                  } else {
+                    return 0;
+                  }
                 } else {
                   return 0;
                 }

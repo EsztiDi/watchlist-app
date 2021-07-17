@@ -32,7 +32,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function Lists({ hasLists, id }) {
+export default function Lists({ hasLists, id, newUser }) {
   const classes = useStyles();
   const [session, loading] = useSession();
   const router = useRouter();
@@ -159,5 +159,5 @@ export async function getServerSideProps(context) {
     }
   }
 
-  return { props: { hasLists, id } };
+  return { props: { hasLists, id, newUser } };
 }
