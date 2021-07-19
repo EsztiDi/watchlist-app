@@ -15,7 +15,6 @@ const useStyles = makeStyles((theme) => ({
     width: "100%",
     textAlign: "center",
     color: "#009688",
-    // color: "#00695f",
   },
 }));
 
@@ -24,13 +23,7 @@ const unloadAlert = (ev) => {
   ev.returnValue = "";
 };
 
-export default function ListsMenu({
-  movieID,
-  media_type,
-  userLists,
-  setMessage,
-  session,
-}) {
+export default function ListsMenu({ movieID, media_type, setMessage }) {
   const classes = useStyles();
   const contentType = "application/json";
   const [updating, setUpdating] = React.useState(false);
@@ -38,10 +31,7 @@ export default function ListsMenu({
   const [value, setValue] = React.useState("");
   const isMounted = React.useRef(null);
 
-  const { data: lists, error } = useSWR(session ? "/api/lists" : null, {
-    refreshInterval: 1000,
-    initialData: userLists,
-  });
+  const { data: lists, error } = useSWR("/api/lists");
 
   React.useEffect(() => {
     isMounted.current = true;
@@ -68,11 +58,11 @@ export default function ListsMenu({
       if (!res.ok) {
         throw new Error(res.status);
       }
-      const { success, data } = await res.json();
+      const { success } = await res.json();
 
       window.removeEventListener("beforeunload", unloadAlert);
 
-      await mutate(`/api/lists/${id}`, data);
+      await mutate(`/api/lists/${id}`);
       await mutate("/api/lists");
 
       if (isMounted.current && success) setAdded(true);
@@ -84,28 +74,35 @@ export default function ListsMenu({
     }
   };
 
-  return lists.map((list, index) => {
-    return (
-      <MenuItem
-        key={index}
-        disabled={updating}
-        onClick={() => add(list._id, index)}
-      >
-        <Typography
-          variant="button"
-          className={
-            list?.movies?.map((mov) => mov.id).includes(movieID)
-              ? classes.added
-              : classes.menuItem
-          }
+  if (!lists) {
+    return null;
+  }
+
+  return (
+    lists &&
+    lists.map((list, index) => {
+      return (
+        <MenuItem
+          key={index}
+          disabled={updating}
+          onClick={() => add(list._id, index)}
         >
-          {list.title}
-          {index === value &&
-            list?.movies?.map((mov) => mov.id).includes(movieID) &&
-            added &&
-            " ✔"}
-        </Typography>
-      </MenuItem>
-    );
-  });
+          <Typography
+            variant="button"
+            className={
+              list?.movies?.map((mov) => mov.id).includes(movieID)
+                ? classes.added
+                : classes.menuItem
+            }
+          >
+            {list.title}
+            {index === value &&
+              list?.movies?.map((mov) => mov.id).includes(movieID) &&
+              added &&
+              " ✔"}
+          </Typography>
+        </MenuItem>
+      );
+    })
+  );
 }

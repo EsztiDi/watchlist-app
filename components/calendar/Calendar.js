@@ -1,3 +1,5 @@
+import useSWR from "swr";
+
 import { makeStyles } from "@material-ui/core/styles";
 import Box from "@material-ui/core/Box";
 import CardHeader from "@material-ui/core/CardHeader";
@@ -14,6 +16,7 @@ import TableRow from "@material-ui/core/TableRow";
 import TableCell from "@material-ui/core/TableCell";
 import { MuiPickersUtilsProvider, DatePicker } from "@material-ui/pickers";
 import MomentUtils from "@date-io/moment";
+import CircularProgress from "@material-ui/core/CircularProgress";
 
 import Month from "./Month";
 
@@ -89,8 +92,13 @@ const useStyles = makeStyles((theme) => ({
 const days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 const today = new Date();
 
-export default function Calendar({ movies, newTab = false }) {
+export default function Calendar({ listID, newTab = false }) {
   const classes = useStyles();
+
+  const { data: list, error } = useSWR(listID ? `/api/lists/${listID}` : null, {
+    refreshInterval: 2000,
+  });
+  const { movies } = list;
 
   var [year, setYear] = React.useState(today.getFullYear());
   var [month, setMonth] = React.useState(today.getMonth());

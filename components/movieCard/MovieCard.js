@@ -148,7 +148,8 @@ export default function MovieCard({
     details,
     seasons,
     position,
-  } = formatData(movie);
+  } = movie;
+  // } = formatData(movie);
 
   if (details) {
     var {
@@ -245,7 +246,7 @@ export default function MovieCard({
             )}
           </Typography>
           <Typography className={classes.director}>
-            {creators ? <b>Created by: </b> : <b>Director: </b>}
+            {media_type === "tv" ? <b>Created by: </b> : <b>Director: </b>}
             {creators || directors || "-"}
           </Typography>
           <Typography className={classes.cast}>

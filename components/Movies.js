@@ -1,3 +1,5 @@
+import useSWR from "swr";
+
 import { makeStyles } from "@material-ui/core/styles";
 
 import MovieCard from "./movieCard/MovieCard";
@@ -12,8 +14,21 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function Movies({ movies, deleteMovie, moveMovie, updating }) {
+export default function Movies({
+  listID,
+  movies,
+  deleteMovie,
+  moveMovie,
+  updating,
+}) {
   const classes = useStyles();
+
+  const { data: list, error } = useSWR(listID ? `/api/lists/${listID}` : null, {
+    refreshInterval: 2000,
+  });
+  if (list) {
+    movies = list.movies;
+  }
 
   return movies
     .sort((a, b) => a.position - b.position)

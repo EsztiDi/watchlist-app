@@ -1,3 +1,5 @@
+import getDetails from "../../utils/getDetails";
+
 import TextField from "@material-ui/core/TextField";
 import InputAdornment from "@material-ui/core/InputAdornment";
 import CircularProgress from "@material-ui/core/CircularProgress";
@@ -123,150 +125,27 @@ export default function MovieSearch({
       });
   };
 
-  const getDetails = (movie) => {
+  const getMovieDetails = async (movie) => {
     setLoading(true);
     if (newList) setUpdating(true);
 
-    var baseURL = "https://api.themoviedb.org/3";
-    var url = `/${movie.media_type}/${movie.id}`;
-    var api_key = process.env.TMDB_API_KEY;
-    var params = "&append_to_response=credits,external_ids&include_adult=false";
-    var fullUrl = `${baseURL}${url}?api_key=${api_key}${params}`;
-    var options = {
-      headers: {
-        Authorization: process.env.TMDB_BEARER,
-        "Content-Type": "application/json;charset=utf-8",
-      },
-    };
-    var getCrew = (obj) =>
-      obj?.credits?.crew
-        ?.filter(
-          (member) => member.job === "Director" || member.job === "Comic Book"
-        )
-        ?.map((member) => {
-          return { job: member.job, name: member.name };
-        });
-    var getCast = (obj) =>
-      obj?.credits?.cast?.map((member) => {
-        return { name: member.name };
-      });
-    var getCreators = (obj) =>
-      obj?.created_by.map((member) => {
-        return { name: member.name };
-      });
-    var getEpisodes = (obj) =>
-      obj?.episodes?.map((ep) => {
-        return {
-          id: ep.id,
-          episode_number: ep.episode_number,
-          air_date: ep.air_date,
-          name: ep.name,
-          overview: ep.overview,
-          still_path: ep.still_path,
-          season_number: ep.season_number,
-        };
+    try {
+      var newMovie = await getDetails({
+        id: movie.id,
+        media_type: movie.media_type,
       });
 
-    fetch(fullUrl, options)
-      .then((res) => res.json())
-      .then(async (data) => {
-        var newMovie =
-          movie.media_type === "tv"
-            ? {
-                id: movie.id,
-                poster_path: movie.poster_path,
-                backdrop_path: movie.backdrop_path,
-                title: movie.name,
-                release_date: movie.first_air_date,
-                media_type: movie.media_type,
-                overview: movie.overview,
-                details: {
-                  genres: data.genres,
-                  episode_run_time: data.episode_run_time,
-                  next_episode_to_air: data.next_episode_to_air,
-                  last_episode_to_air: data.last_episode_to_air,
-                  last_air_date: data.last_air_date,
-                  number_of_episodes: data.number_of_episodes,
-                  created_by: getCreators(data) || [],
-                  credits: {
-                    crew: getCrew(data) || [],
-                    cast: getCast(data) || [],
-                  },
-                  vote_average: data.vote_average,
-                  external_ids: { imdb_id: data.external_ids?.imdb_id || "" },
-                },
-              }
-            : {
-                id: movie.id,
-                poster_path: movie.poster_path,
-                backdrop_path: movie.backdrop_path,
-                title: movie.title,
-                release_date: movie.release_date,
-                media_type: movie.media_type,
-                overview: movie.overview,
-                details: {
-                  genres: data.genres,
-                  runtime: data.runtime,
-                  credits: {
-                    crew: getCrew(data) || [],
-                    cast: getCast(data) || [],
-                  },
-                  vote_average: data.vote_average,
-                  external_ids: { imdb_id: data.external_ids?.imdb_id || "" },
-                },
-              };
-
-        if (movie.media_type === "tv" && data.number_of_seasons) {
-          var seasons = [];
-
-          for (let season = 1; season <= data.number_of_seasons; season++) {
-            url = `/tv/${movie.id}/season/${season}`;
-            params = "";
-            fullUrl = `${baseURL}${url}?api_key=${api_key}${params}`;
-
-            await fetch(fullUrl, options)
-              .then((res) => res.json())
-              .then((data) => {
-                seasons.push({
-                  episodes: getEpisodes(data) || [],
-                  season_number: data?.season_number,
-                });
-              })
-              .catch((err) => {
-                console.error("Season details error: ", err);
-                (!data || data.length === 0) &&
-                  setMessage("Couldn't get details, please try again.");
-              });
-          }
-
-          setLoading(false);
-          if (newList) setUpdating(false);
-          addMovie({ ...newMovie, seasons });
-        } else {
-          setLoading(false);
-          if (newList) setUpdating(false);
-          addMovie(newMovie);
-        }
-
-        if (!data || data.length === 0)
-          setMessage("Couldn't get details, please try again.");
-      })
-      .catch((err) => {
-        var newMovie = {
-          id: movie.id,
-          poster_path: movie.poster_path,
-          title: movie.title || movie.name,
-          release_date: movie.release_date || movie.first_air_date,
-          media_type: movie.media_type,
-          overview: movie.overview,
-          details: {},
-        };
-        console.error("Movie details error: ", err);
-        setLoading(false);
-        if (newList) setUpdating(false);
-        setMessage("Couldn't get details, please try again.");
-        addMovie(newMovie);
-      });
+      addMovie(newMovie);
+      setLoading(false);
+      if (newList) setUpdating(false);
+    } catch (err) {
+      console.error(
+        `Couldn't get details - movie: ${movie.id} - ${JSON.stringify(err)}`
+      );
+      setLoading(false);
+      if (newList) setUpdating(false);
+      setMessage("Couldn't fetch the details, please try again.");
+    }
   };
 
   // For dropdown search list
@@ -311,7 +190,7 @@ export default function MovieSearch({
   };
 
   const handleListItemClick = (index) => {
-    getDetails(results[index]);
+    getMovieDetails(results[index]);
   };
 
   return (

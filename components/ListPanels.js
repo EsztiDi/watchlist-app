@@ -26,54 +26,32 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function ListPanels({
-  initialList,
-  initialLists,
-  setMessage,
-  calendar = false,
-}) {
+export default function ListPanels({ setMessage, calendar = false }) {
   const classes = useStyles();
   const [session, loading] = useSession();
   const router = useRouter();
   const { id } = router.query;
 
-  const { data: list, error } = useSWR(id ? `/api/lists/${id}` : null, {
-    refreshInterval: 2000,
-    initialData: initialList,
-    isPaused: () => {
-      if (error) return true;
-    },
-  });
-  const { data: lists, error: error2 } = useSWR(session ? "/api/lists" : null, {
-    refreshInterval: 2000,
-    initialData: initialLists,
-    isPaused: () => {
-      if (error) return true;
-    },
-  });
+  const { data: list, error } = useSWR(id ? `/api/lists/${id}` : null);
 
   const auth = session && list?.user?.email === session?.user?.email;
-  const hasLists = lists && lists.length > 0;
 
   if (loading) return null;
 
   if (!loading && !session) {
     router.replace("/login");
-  } else if ((list && !auth) || error || error2) {
+  } else if ((list && !auth) || error) {
     router.replace("/lists");
   }
 
-  if ((!list || !lists) && (!error || !error2))
-    return <CircularProgress size="3rem" thickness={3} />;
+  if (!list) return <CircularProgress size="3rem" thickness={3} />;
 
   return (
     auth &&
-    list &&
-    hasLists && (
-      <Paper elevation={4} className={classes.container}>
+    list && (
+      <Paper elevation={4} className={classes.container} id="watchlists">
         <div className={classes.watchlists}>
           <Form
-            lists={lists}
             list={list}
             setMessage={setMessage}
             calendar={calendar}

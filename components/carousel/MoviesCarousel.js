@@ -41,7 +41,6 @@ export default function MoviesCarousel({
   movies,
   media_type,
   loading,
-  userLists,
   setMessage,
 }) {
   const classes = useStyles();
@@ -107,7 +106,6 @@ export default function MoviesCarousel({
                       movie={movie}
                       media_type={media_type}
                       left={index % 2 === 0}
-                      userLists={userLists}
                       setMessage={setMessage}
                       show={index.toString() === data}
                       handleShowDetails={handleShowDetails}

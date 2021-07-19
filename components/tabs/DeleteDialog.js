@@ -1,5 +1,5 @@
 import { useRouter } from "next/router";
-import useSWR, { mutate } from "swr";
+import { mutate } from "swr";
 
 import { makeStyles } from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
@@ -30,9 +30,6 @@ export default function DeleteDialog({
 }) {
   const classes = useStyles();
   const router = useRouter();
-  // const [updating, setUpdating] = React.useState(false);
-
-  const { data: lists, error } = useSWR("/api/lists");
 
   const handleDelete = async () => {
     setUpdating(true);
@@ -41,11 +38,6 @@ export default function DeleteDialog({
         method: "Delete",
       });
 
-      mutate(
-        "/api/lists",
-        [...lists.filter((list) => list._id !== listID)],
-        false
-      );
       mutate("/api/lists");
       setUpdating(false);
       router.push("/lists");

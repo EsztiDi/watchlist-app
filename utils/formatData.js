@@ -3,6 +3,7 @@ export default function formatData(movie) {
 
   if (details) {
     var {
+      genres,
       runtime,
       episode_run_time,
       next_episode_to_air,
@@ -10,7 +11,6 @@ export default function formatData(movie) {
       last_air_date,
       created_by,
       credits,
-      genres,
     } = details;
   }
 
@@ -48,9 +48,14 @@ export default function formatData(movie) {
 
   var creators, cast;
 
-  // Fallback option for comic book series without created_by array
+  // Fallback option for tv shows without created_by array
   created_by && created_by.length === 0
-    ? (creators = credits.crew.filter((member) => member.job === "Comic Book"))
+    ? (creators =
+        credits.crew.filter((member) => member.job === "Comic Book").length > 0
+          ? credits.crew.filter((member) => member.job === "Comic Book")
+          : credits.crew.filter(
+              (member) => member.job === "Executive Producer"
+            ))
     : (creators = created_by);
 
   creators = getNames(creators);
@@ -80,6 +85,9 @@ export default function formatData(movie) {
         )
         .join(""))
     : (genres = "");
+
+  delete movie.details.created_by;
+  delete movie.details.credits;
 
   return {
     ...movie,

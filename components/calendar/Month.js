@@ -4,18 +4,11 @@ const isSameDay = (date, moviesList) => {
   let dayMovies = [];
   moviesList.length > 0 &&
     moviesList.forEach((movie) => {
-      if (movie.media_type === "movie") {
-        let releaseDate = new Date(movie.release_date);
-        releaseDate.getDate() === date && dayMovies.push(movie);
-      } else if (movie.air_date) {
+      if (movie.air_date) {
         let releaseDate = new Date(movie.air_date);
         releaseDate.getDate() === date && dayMovies.push(movie);
-      } else if (movie.media_type === "tv") {
-        let releaseDate = new Date(
-          movie.details?.next_episode_to_air?.air_date
-            ? movie.details?.next_episode_to_air?.air_date
-            : movie.details?.last_episode_to_air?.air_date
-        );
+      } else {
+        let releaseDate = new Date(movie.release_date);
         releaseDate.getDate() === date && dayMovies.push(movie);
       }
     });
@@ -26,15 +19,7 @@ const getDays = (year, month, moviesList) => {
   let monthMovies = [];
   moviesList.length > 0 &&
     moviesList.forEach((movie) => {
-      if (movie.media_type === "movie") {
-        let releaseDate = new Date(movie.release_date);
-        if (
-          releaseDate.getFullYear() === year &&
-          releaseDate.getMonth() === month
-        ) {
-          monthMovies.push(movie);
-        }
-      } else if (movie.media_type === "tv" && movie.seasons.length > 0) {
+      if (movie.media_type === "tv" && movie.seasons.length > 0) {
         movie.seasons.forEach((season) => {
           season.episodes.length > 0 &&
             season.episodes.forEach((episode) => {
@@ -51,13 +36,8 @@ const getDays = (year, month, moviesList) => {
               }
             });
         });
-      } else if (movie.media_type === "tv") {
-        let releaseDate = new Date(
-          movie.details?.next_episode_to_air?.air_date
-            ? movie.details?.next_episode_to_air?.air_date
-            : movie.details?.last_episode_to_air?.air_date
-        );
-
+      } else {
+        let releaseDate = new Date(movie.release_date);
         if (
           releaseDate.getFullYear() === year &&
           releaseDate.getMonth() === month

@@ -45,7 +45,6 @@ const unloadAlert = (ev) => {
 };
 
 export default function Form({
-  lists,
   list,
   setMessage,
   calendar,
@@ -185,7 +184,7 @@ export default function Form({
     var ids = movies.map((mov) => mov.id);
     if (ids.includes(movie.id)) {
       newMovie.current = false;
-      setMessage("It's already on the list.");
+      setMessage("It's already on the list \\(^-^)/");
       if (newTab || newList) {
         const yOffset = -56 - 12 + 1;
         const y =
@@ -194,9 +193,11 @@ export default function Form({
           yOffset;
         window.scrollTo({ top: y, behavior: "smooth" });
       } else {
+        const yOffset = -40 - 32 - 16;
+        const y = document.getElementById(movie.id).offsetTop + yOffset;
         document
-          .getElementById(movie.id)
-          .scrollIntoView({ behavior: "smooth" });
+          .getElementById(`tabpanel-${id}`)
+          .scrollTo({ top: y, behavior: "smooth" });
       }
     } else {
       setForm({
@@ -268,7 +269,6 @@ export default function Form({
       {!newTab && (
         <ListTabs
           id={id}
-          lists={lists}
           updating={updating}
           setUpdating={setUpdating}
           putData={putData}
@@ -276,7 +276,7 @@ export default function Form({
         />
       )}
       <TabPanel
-        list={list}
+        id={id}
         newTab={newTab}
         newList={newList}
         updating={updating}

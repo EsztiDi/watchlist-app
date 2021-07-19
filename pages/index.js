@@ -18,7 +18,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function Discover({ userLists, publicLists, setMessage }) {
+export default function Discover({ publicLists, setMessage }) {
   const classes = useStyles();
 
   const [loading, setLoading] = React.useState(false);
@@ -171,7 +171,6 @@ export default function Discover({ userLists, publicLists, setMessage }) {
                   movies={carousel.movies}
                   media_type={carousel.media_type}
                   loading={loading}
-                  userLists={userLists}
                   setMessage={setMessage}
                 />
               );
@@ -186,18 +185,18 @@ export async function getServerSideProps(context) {
   const session = await getSession(context);
   await dbConnect();
 
-  var userLists = [];
+  // var userLists = [];
   var publicLists = [];
 
-  if (session) {
-    var userResults = await Watchlist.find(
-      { user: session.user },
-      "_id title movies"
-    ).sort({
-      position: -1,
-    });
-    userLists = await JSON.parse(JSON.stringify(userResults));
-  }
+  // if (session) {
+  //   var userResults = await Watchlist.find(
+  //     { user: session.user },
+  //     "_id title movies"
+  //   ).sort({
+  //     position: -1,
+  //   });
+  //   userLists = await JSON.parse(JSON.stringify(userResults));
+  // }
 
   var results = await Watchlist.find({ private: false }, "_id title movies", {
     skip: 0,
@@ -208,5 +207,5 @@ export async function getServerSideProps(context) {
   });
   publicLists = await JSON.parse(JSON.stringify(results));
 
-  return { props: { userLists, publicLists } };
+  return { props: { publicLists } };
 }

@@ -194,7 +194,7 @@ export default function MyApp({ Component, pageProps }) {
               fetch(resource, init)
                 .then((res) => res.json())
                 .then((json) => {
-                  if (!json.success) {
+                  if (!json?.success) {
                     throw new Error("This list has been deleted.");
                   }
                   return json.data;

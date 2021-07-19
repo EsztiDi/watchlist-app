@@ -1,3 +1,5 @@
+import formatData from "./formatData";
+
 export default async function getDetails(movie) {
   var baseURL = "https://api.themoviedb.org/3";
   var url = `/${movie.media_type}/${movie.id}`;
@@ -14,7 +16,10 @@ export default async function getDetails(movie) {
   var getCrew = (obj) =>
     obj?.credits?.crew
       ?.filter(
-        (member) => member.job === "Director" || member.job === "Comic Book"
+        (member) =>
+          member.job === "Director" ||
+          member.job === "Comic Book" ||
+          member.job === "Executive Producer"
       )
       ?.map((member) => {
         return { job: member.job, name: member.name };
@@ -55,8 +60,13 @@ export default async function getDetails(movie) {
               details: {
                 genres: data.genres,
                 episode_run_time: data.episode_run_time,
-                next_episode_to_air: data.next_episode_to_air,
-                last_episode_to_air: data.last_episode_to_air,
+                next_episode_to_air: {
+                  season_number: data.next_episode_to_air?.season_number,
+                  air_date: data.next_episode_to_air?.air_date,
+                },
+                last_episode_to_air: {
+                  season_number: data.last_episode_to_air?.season_number,
+                },
                 last_air_date: data.last_air_date,
                 number_of_episodes: data.number_of_episodes,
                 created_by: getCreators(data) || [],
@@ -115,9 +125,9 @@ export default async function getDetails(movie) {
                 );
             });
         }
-        return { ...updatedMovie, seasons };
+        return formatData({ ...updatedMovie, seasons });
       } else {
-        return updatedMovie;
+        return formatData(updatedMovie);
       }
     })
     .catch((err) => {

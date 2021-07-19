@@ -21,7 +21,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function EditTitle({
   title,
-  onEditTitle,
+  closeEditTitle,
   updating,
   setUpdating,
   putData,
@@ -40,14 +40,18 @@ export default function EditTitle({
     setUpdating(true);
 
     if (newTitle.title !== title) {
-      putData(newTitle).then(() => onEditTitle());
+      putData(newTitle).then(() => {
+        closeEditTitle();
+        setUpdating(false);
+      });
     } else {
-      onEditTitle();
+      closeEditTitle();
+      setUpdating(false);
     }
   };
 
   return (
-    <ClickAwayListener onClickAway={onEditTitle}>
+    <ClickAwayListener onClickAway={closeEditTitle}>
       <form onSubmit={handleSubmit} className={classes.editTitle}>
         <TextField
           name="title"
@@ -78,7 +82,7 @@ export default function EditTitle({
                 </IconButton>
                 <IconButton
                   aria-label="cancel"
-                  onClick={onEditTitle}
+                  onClick={closeEditTitle}
                   disabled={updating}
                   className={classes.button}
                 >

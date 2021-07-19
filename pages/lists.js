@@ -37,10 +37,10 @@ export default function Lists({ hasLists, id, newUser }) {
   const [session, loading] = useSession();
   const router = useRouter();
 
-  React.useEffect(() => {
-    router.prefetch(`/lists/${id}`);
-    // eslint-disable-next-line
-  }, []);
+  // React.useEffect(() => {
+  //   router.prefetch(`/lists/${id}`);
+  //   // eslint-disable-next-line
+  // }, []);
 
   if (loading) return null;
 
@@ -115,7 +115,7 @@ export async function getServerSideProps(context) {
             "Content-Type": contentType,
           },
           body: JSON.stringify({
-            title: "Must-Watch",
+            title: "To Watch",
             movies: [],
             private: true,
             emails: false,

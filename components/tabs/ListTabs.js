@@ -1,4 +1,5 @@
 import Link from "next/link";
+import useSWR from "swr";
 
 import { makeStyles } from "@material-ui/core/styles";
 import Tabs from "@material-ui/core/Tabs";
@@ -15,12 +16,20 @@ const useStyles = makeStyles((theme) => ({
     borderRight: `1px solid ${theme.palette.divider}`,
     minWidth: "25%",
   },
+  loader: {
+    paddingTop: theme.spacing(2),
+    borderRight: `1px solid ${theme.palette.divider}`,
+    minWidth: "25%",
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+  },
   tab: {
     fontSize: "1rem",
     minWidth: "100%",
     minHeight: "3.6rem",
     "& > :first-child": {
-      width: "80%",
+      width: "76%",
       flexDirection: "row",
       "& > :first-child": {
         marginBottom: "3px",
@@ -77,7 +86,6 @@ function a11yProps(id, idx, val) {
 
 export default function ListTabs({
   id,
-  lists,
   updating,
   setUpdating,
   putData,
@@ -85,14 +93,20 @@ export default function ListTabs({
 }) {
   const classes = useStyles();
   const [editTitle, setEditTitle] = React.useState(false);
-  var value =
-    lists.map((list) => list._id).indexOf(id) === -1
-      ? 0
-      : lists.map((list) => list._id).indexOf(id);
 
-  const handleEditTitle = () => {
-    setEditTitle((prev) => !prev);
-    setUpdating(false);
+  const { data: lists, error } = useSWR("/api/lists");
+  const hasLists = lists && lists.length > 0;
+
+  var value =
+    lists?.map((list) => list._id).indexOf(id) === -1
+      ? 0
+      : lists?.map((list) => list._id).indexOf(id);
+
+  const openEditTitle = () => {
+    setEditTitle(true);
+  };
+  const closeEditTitle = () => {
+    setEditTitle(false);
   };
 
   const moveListUp = (idx) => {
@@ -107,89 +121,98 @@ export default function ListTabs({
     putData({ position: nextPos });
   };
 
+  if (!lists)
+    return (
+      <div className={classes.loader}>
+        <CircularProgress size="3rem" thickness={3} />
+      </div>
+    );
+
   return (
-    <Tabs
-      orientation="vertical"
-      variant="scrollable"
-      indicatorColor="secondary"
-      aria-label="list tabs"
-      value={value}
-      className={classes.tabs}
-    >
-      {lists.map((list, index) =>
-        editTitle && value === index ? (
-          <EditTitle
-            key={list._id}
-            title={list.title}
-            onEditTitle={handleEditTitle}
-            updating={updating}
-            setUpdating={setUpdating}
-            putData={putData}
-          />
-        ) : (
-          <Link
-            key={list._id}
-            href={
-              calendar ? `/lists/calendar/${list._id}` : `/lists/${list._id}`
-            }
-            replace
-            passHref
-          >
-            <Tab
-              label={list.title}
-              wrapped
-              disableFocusRipple
-              disabled={updating}
-              onClick={editTitle ? handleEditTitle : null}
-              className={classes.tab}
-              style={value === index ? { opacity: 1 } : null}
-              {...a11yProps(id, index, value)}
-              icon={
-                putData &&
-                value === index && (
-                  <>
-                    {updating ? (
-                      <CircularProgress
-                        size="1.5rem"
-                        thickness={5}
-                        className={classes.updating}
-                      />
-                    ) : (
-                      <span title="Edit title">
-                        <EditRoundedIcon
-                          aria-label="edit title"
-                          className={classes.edit}
-                          onClick={handleEditTitle}
-                        />
-                      </span>
-                    )}
-                    <span className={classes.arrows}>
-                      {index !== 0 && (
-                        <span title="Move up">
-                          <KeyboardArrowUpRoundedIcon
-                            aria-label="move list up"
-                            className={classes.arrow}
-                            onClick={() => moveListUp(index)}
-                          />
-                        </span>
-                      )}
-                      {index !== lists.length - 1 && (
-                        <span title="Move down">
-                          <KeyboardArrowDownRoundedIcon
-                            aria-label="move list down"
-                            className={classes.arrow}
-                            onClick={() => moveListDown(index)}
-                          />
-                        </span>
-                      )}
-                    </span>
-                  </>
-                )
-              }
+    hasLists && (
+      <Tabs
+        orientation="vertical"
+        variant="scrollable"
+        indicatorColor="secondary"
+        aria-label="list tabs"
+        value={value}
+        className={classes.tabs}
+      >
+        {lists.map((list, index) =>
+          editTitle && value === index ? (
+            <EditTitle
+              key={list._id}
+              title={list.title}
+              closeEditTitle={closeEditTitle}
+              updating={updating}
+              setUpdating={setUpdating}
+              putData={putData}
             />
-          </Link>
-        )
-      )}
-    </Tabs>
+          ) : (
+            <Link
+              key={list._id}
+              href={
+                calendar ? `/lists/calendar/${list._id}` : `/lists/${list._id}`
+              }
+              replace
+              passHref
+            >
+              <Tab
+                label={list.title}
+                wrapped
+                disableFocusRipple
+                disabled={updating}
+                onClick={editTitle ? closeEditTitle : null}
+                className={classes.tab}
+                style={value === index ? { opacity: 1 } : null}
+                {...a11yProps(id, index, value)}
+                icon={
+                  putData &&
+                  value === index && (
+                    <>
+                      {updating ? (
+                        <CircularProgress
+                          size="1.5rem"
+                          thickness={5}
+                          className={classes.updating}
+                        />
+                      ) : (
+                        <span title="Edit title">
+                          <EditRoundedIcon
+                            aria-label="edit title"
+                            className={classes.edit}
+                            onClick={openEditTitle}
+                          />
+                        </span>
+                      )}
+                      <span className={classes.arrows}>
+                        {index !== 0 && (
+                          <span title="Move up">
+                            <KeyboardArrowUpRoundedIcon
+                              aria-label="move list up"
+                              className={classes.arrow}
+                              onClick={() => moveListUp(index)}
+                            />
+                          </span>
+                        )}
+                        {index !== lists.length - 1 && (
+                          <span title="Move down">
+                            <KeyboardArrowDownRoundedIcon
+                              aria-label="move list down"
+                              className={classes.arrow}
+                              onClick={() => moveListDown(index)}
+                            />
+                          </span>
+                        )}
+                      </span>
+                    </>
+                  )
+                }
+              />
+            </Link>
+          )
+        )}
+      </Tabs>
+    )
   );
 }

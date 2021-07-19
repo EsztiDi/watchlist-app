@@ -1,5 +1,6 @@
 import { useRouter } from "next/router";
 import { useSession } from "next-auth/client";
+import useSWR from "swr";
 
 import { makeStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
@@ -61,14 +62,16 @@ export default function MovieDetails({
   movie,
   media_type,
   left,
-  userLists,
   setMessage,
   show,
   handleShowDetails,
 }) {
   const classes = useStyles();
+
   const [session, loading] = useSession();
   const router = useRouter();
+  const { data: lists, error } = useSWR(session ? "/api/lists" : null);
+
   const [external_ids, setExternalIDs] = React.useState({});
   var {
     id,
@@ -132,7 +135,7 @@ export default function MovieDetails({
   const handleButtonClick = () => {
     if (!loading && !session) {
       router.push("/login");
-    } else if (userLists.length === 0) {
+    } else if (lists && lists.length === 0) {
       router.push("/create");
     } else {
       setMenuOpen((prevOpen) => !prevOpen);
@@ -238,9 +241,7 @@ export default function MovieDetails({
                     <ListsMenu
                       movieID={id}
                       media_type={media_type}
-                      userLists={userLists}
                       setMessage={setMessage}
-                      session={session}
                     />
                   )}
                 </MenuList>

@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { useRouter } from "next/router";
+import useSWR from "swr";
 
 import { makeStyles } from "@material-ui/core/styles";
 import Box from "@material-ui/core/Box";
@@ -93,7 +94,7 @@ const useStyles = makeStyles((theme) => ({
 export default function TabPanel(props) {
   const classes = useStyles();
   const {
-    list,
+    id: listID,
     newTab,
     newList,
     updating,
@@ -107,14 +108,10 @@ export default function TabPanel(props) {
     calendar,
     ...other
   } = props;
-  const {
-    _id: listID,
-    title,
-    private: privateList,
-    emails,
-    movies,
-    createdAt,
-  } = list;
+
+  const { data: list, error } = useSWR(listID ? `/api/lists/${listID}` : null);
+
+  const { title, private: privateList, emails, createdAt } = list;
 
   React.useEffect(() => {
     if (!newTab) document.getElementById(`tabpanel-${listID}`).scrollTop = 0;
@@ -137,8 +134,8 @@ export default function TabPanel(props) {
 
   // For new tab (ListPage)
   const router = useRouter();
-  const { id } = router.query;
-  const editable = newTab ? id[1] === uid : true;
+  const { id: ids } = router.query;
+  const editable = newTab ? ids[1] === uid : true;
 
   return (
     <Box
@@ -276,10 +273,10 @@ export default function TabPanel(props) {
       </div>
 
       {calendar ? (
-        <Calendar movies={movies} newTab={newTab} />
+        <Calendar listID={listID} newTab={newTab} />
       ) : (
         <Movies
-          movies={movies}
+          listID={listID}
           deleteMovie={editable ? deleteMovie : undefined}
           moveMovie={editable ? moveMovie : undefined}
           updating={updating}

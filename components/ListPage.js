@@ -1,6 +1,6 @@
 import { useRouter } from "next/router";
-import useSWR from "swr";
 import Head from "next/head";
+import useSWR from "swr";
 
 import { makeStyles } from "@material-ui/core/styles";
 import CircularProgress from "@material-ui/core/CircularProgress";
@@ -47,10 +47,6 @@ export default function ListPage({
 
   const { data: list, error } = useSWR(id[0] ? `/api/lists/${id[0]}` : null, {
     refreshInterval: 2000,
-    initialData: initialList,
-    isPaused: () => {
-      if (error) return true;
-    },
   });
 
   React.useEffect(() => {
@@ -73,14 +69,18 @@ export default function ListPage({
     // eslint-disable-next-line
   }, [error]);
 
-  if (!list && !error) return <CircularProgress size="3rem" thickness={3} />;
+  if (!list) return <CircularProgress size="3rem" thickness={3} />;
 
   return (
-    list && (
+    (initialList || list) && (
       <>
         <Head>
           <meta property="og:url" content={url} key="url" />
-          <meta property="og:title" content={list.title} key="title" />
+          <meta
+            property="og:title"
+            content={list ? list.title : initialList.title}
+            key="title"
+          />
           <meta
             property="og:description"
             content="Look what I have created!"
@@ -97,7 +97,7 @@ export default function ListPage({
           <meta property="fb:app_id" content="827802261304460" key="app_id" />
           <meta name="twitter:card" content="summary_large_image" />
           <link rel="canonical" href={url} key="canonical" />
-          <title>{list.title} - My Watchlists</title>
+          <title>{list ? list.title : initialList.title} - My Watchlists</title>
         </Head>
         <Container maxWidth="md">
           {Object.keys(list).length !== 0 && backdrop.length > 0 && (
@@ -115,7 +115,7 @@ export default function ListPage({
               <Typography variant="h4">{list.title}</Typography>
             </Paper>
             <Form
-              list={list}
+              list={list ? list : initialList}
               setMessage={setMessage}
               calendar={calendar}
               newList={false}
