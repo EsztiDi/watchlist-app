@@ -18,6 +18,7 @@ export default async function handler(req, res) {
               lists.map(async (list) => {
                 if (list.movies.length > 0) {
                   var originalList = JSON.stringify(list);
+
                   list.movies = await Promise.all(
                     list.movies.map(async (movie) => {
                       return await getDetails(movie);
@@ -37,6 +38,7 @@ export default async function handler(req, res) {
                             list._id
                           } - ${JSON.stringify(err)}`
                         );
+                        return 0;
                       });
                   } else {
                     return 0;
@@ -66,7 +68,9 @@ export default async function handler(req, res) {
         console.error(
           `Couldn't perform daily cron update - ${JSON.stringify(err)}`
         );
-        res.status(400).json({ success: false });
+        res
+          .status(400)
+          .json({ success: false, data: `${JSON.stringify(err)}` });
       }
       break;
 

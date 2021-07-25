@@ -98,7 +98,11 @@ export default function Calendar({ listID, newTab = false }) {
   const { data: list, error } = useSWR(listID ? `/api/lists/${listID}` : null, {
     refreshInterval: 2000,
   });
-  const { movies } = list;
+  var movies = [];
+  if (list) {
+    ({ movies } = list);
+    movies = movies.sort((a, b) => a.position - b.position);
+  }
 
   var [year, setYear] = React.useState(today.getFullYear());
   var [month, setMonth] = React.useState(today.getMonth());

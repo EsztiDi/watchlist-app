@@ -14,6 +14,7 @@ const useStyles = makeStyles((theme) => ({
       marginLeft: "5px",
     },
     padding: theme.spacing(1),
+    verticalAlign: "text-top",
   },
   poster: {
     borderRadius: "5px",
@@ -21,7 +22,8 @@ const useStyles = makeStyles((theme) => ({
   tooltip: {
     fontSize: "0.9rem",
     textAlign: "center",
-    whiteSpace: "nowrap",
+    lineHeight: 1.2,
+    // whiteSpace: "nowrap",
     margin: theme.spacing(0.8),
   },
 }));
@@ -39,61 +41,76 @@ export default function Day({ date, movies }) {
   const sameSeries =
     movies && movies.filter(({ mainName }) => mainName && names.get(mainName));
 
+  var same = {};
+  if (sameSeries && sameSeries.length > 0) {
+    same = sameSeries.reduce((r, a) => {
+      r[a.mainName] = r[a.mainName] || [];
+      r[a.mainName].push(a);
+      return r;
+    }, same);
+  }
+  const cellWidth =
+    movies &&
+    movies.length > 1 &&
+    (sameSeries.length !== movies.length || Object.entries(same).length > 1)
+      ? "142px"
+      : "110px";
+
+  const divWidth =
+    movies &&
+    movies.length > 1 &&
+    (sameSeries.length !== movies.length || Object.entries(same).length > 1)
+      ? "126px"
+      : "94px";
+
   return movies ? (
-    <TableCell
-      width={
-        movies.length > 1 && sameSeries.length !== movies.length
-          ? "142px"
-          : "110px"
-      }
-      className={classes.posterCell}
-    >
+    <TableCell width={cellWidth} className={classes.posterCell}>
       {date}
       <div
         style={{
-          width:
-            movies.length > 1 && sameSeries.length !== movies.length
-              ? "126px"
-              : "94px",
+          width: divWidth,
         }}
       >
-        {sameSeries.length > 0 && (
-          <Tooltip
-            key={sameSeries[0].id}
-            arrow
-            title={
-              <p className={classes.tooltip}>
-                {`${sameSeries[0].mainName} S${sameSeries[0].season_number} E${
-                  sameSeries[0].episode_number
-                }-${sameSeries[sameSeries.length - 1].episode_number}`}
-              </p>
-            }
-          >
-            <span>
-              <Image
-                width={60}
-                height={90}
-                src={
-                  sameSeries[0].poster_path
-                    ? `https://image.tmdb.org/t/p/w92${sameSeries[0].poster_path}`
-                    : "/movieIcon.png"
+        {sameSeries.length > 0 &&
+          Object.entries(same).map((series, index) => {
+            return (
+              <Tooltip
+                key={index}
+                arrow
+                title={
+                  <p className={classes.tooltip}>
+                    {`${series[0]} S${series[1][0].season_number} E${
+                      series[1][0].episode_number
+                    }-${series[1][series[1].length - 1].episode_number}`}
+                  </p>
                 }
-                onError={(ev) => {
-                  ev.target.onerror = null;
-                  ev.target.src = "/movieIcon.png";
-                }}
-                alt=""
-                className={classes.poster}
-              />
-            </span>
-          </Tooltip>
-        )}
+              >
+                <span>
+                  <Image
+                    width={60}
+                    height={90}
+                    src={
+                      series[1][0].poster_path
+                        ? `https://image.tmdb.org/t/p/w92${series[1][0].poster_path}`
+                        : "/movieIcon.png"
+                    }
+                    onError={(ev) => {
+                      ev.target.onerror = null;
+                      ev.target.src = "/movieIcon.png";
+                    }}
+                    alt=""
+                    className={classes.poster}
+                  />
+                </span>
+              </Tooltip>
+            );
+          })}
         {movies
           .filter((episode) => !sameSeries.includes(episode))
           .map((movie, index) => {
             return (
               <Tooltip
-                key={movie.id}
+                key={`${movie.id}-${index}`}
                 arrow
                 title={
                   <p className={classes.tooltip}>

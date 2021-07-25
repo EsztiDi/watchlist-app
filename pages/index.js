@@ -185,18 +185,7 @@ export async function getServerSideProps(context) {
   const session = await getSession(context);
   await dbConnect();
 
-  // var userLists = [];
   var publicLists = [];
-
-  // if (session) {
-  //   var userResults = await Watchlist.find(
-  //     { user: session.user },
-  //     "_id title movies"
-  //   ).sort({
-  //     position: -1,
-  //   });
-  //   userLists = await JSON.parse(JSON.stringify(userResults));
-  // }
 
   var results = await Watchlist.find({ private: false }, "_id title movies", {
     skip: 0,
@@ -205,7 +194,7 @@ export async function getServerSideProps(context) {
       updatedAt: -1,
     },
   });
-  publicLists = await JSON.parse(JSON.stringify(results));
+  if (results) publicLists = await JSON.parse(JSON.stringify(results));
 
   return { props: { publicLists } };
 }

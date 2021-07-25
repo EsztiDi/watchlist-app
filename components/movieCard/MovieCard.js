@@ -149,7 +149,6 @@ export default function MovieCard({
     seasons,
     position,
   } = movie;
-  // } = formatData(movie);
 
   if (details) {
     var {

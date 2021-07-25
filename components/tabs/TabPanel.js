@@ -111,7 +111,11 @@ export default function TabPanel(props) {
 
   const { data: list, error } = useSWR(listID ? `/api/lists/${listID}` : null);
 
-  const { title, private: privateList, emails, createdAt } = list;
+  var title, privateList, emails, createdAt;
+
+  if (list) {
+    ({ title, private: privateList, emails, createdAt } = list);
+  }
 
   React.useEffect(() => {
     if (!newTab) document.getElementById(`tabpanel-${listID}`).scrollTop = 0;

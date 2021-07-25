@@ -87,7 +87,7 @@ export default function Account({ setMessage }) {
       const { success } = await res.json();
 
       setMessage(
-        success ? "Changes saved!" : "There was an error, please try again"
+        success ? "Changes saved!" : "There was an error, please try again."
       );
       emails ? setUpdatingEmails(false) : setUpdatingPrivate(false);
     } catch (error) {
@@ -121,7 +121,7 @@ export default function Account({ setMessage }) {
           ? lists
             ? "All lists deleted!"
             : "Account deleted!"
-          : "There was an error, please try again"
+          : "There was an error, please try again."
       );
       lists ? setDeletingLists(false) : setDeletingAccount(false);
       if (!lists) {

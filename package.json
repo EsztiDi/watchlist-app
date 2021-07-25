@@ -19,6 +19,7 @@
     "@material-ui/icons": "^4.11.2",
     "@material-ui/lab": "^4.0.0-alpha.58",
     "@material-ui/pickers": "^3.3.10",
+    "mailersend": "^1.1.0",
     "moment": "^2.29.1",
     "mongoose": "^5.13.2",
     "next": "^11.0.1",

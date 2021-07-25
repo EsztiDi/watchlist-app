@@ -29,7 +29,7 @@ export default async function getDetails(movie) {
       return { name: member.name };
     });
   var getCreators = (obj) =>
-    obj?.created_by.map((member) => {
+    obj?.created_by?.map((member) => {
       return { name: member.name };
     });
   var getEpisodes = (obj) =>
@@ -52,55 +52,56 @@ export default async function getDetails(movie) {
         movie.media_type === "tv"
           ? {
               ...movie,
-              poster_path: data.poster_path,
-              backdrop_path: data.backdrop_path,
-              title: data.name,
-              release_date: data.first_air_date,
-              overview: data.overview,
+              poster_path: data?.poster_path,
+              backdrop_path: data?.backdrop_path,
+              title: data?.name,
+              release_date: data?.first_air_date,
+              overview: data?.overview,
               details: {
-                genres: data.genres,
-                episode_run_time: data.episode_run_time,
+                genres: data?.genres,
+                episode_run_time: data?.episode_run_time,
                 next_episode_to_air: {
-                  season_number: data.next_episode_to_air?.season_number,
-                  air_date: data.next_episode_to_air?.air_date,
+                  season_number: data?.next_episode_to_air?.season_number,
+                  episode_number: data?.next_episode_to_air?.episode_number,
+                  air_date: data?.next_episode_to_air?.air_date,
                 },
                 last_episode_to_air: {
-                  season_number: data.last_episode_to_air?.season_number,
+                  season_number: data?.last_episode_to_air?.season_number,
                 },
-                last_air_date: data.last_air_date,
-                number_of_episodes: data.number_of_episodes,
+                last_air_date: data?.last_air_date,
+                number_of_episodes: data?.number_of_episodes,
                 created_by: getCreators(data) || [],
                 credits: {
                   crew: getCrew(data) || [],
                   cast: getCast(data) || [],
                 },
-                vote_average: data.vote_average,
-                external_ids: { imdb_id: data.external_ids?.imdb_id || "" },
+                vote_average: data?.vote_average,
+                external_ids: { imdb_id: data?.external_ids?.imdb_id || "" },
               },
             }
           : {
               ...movie,
-              poster_path: data.poster_path,
-              backdrop_path: data.backdrop_path,
-              title: data.title,
-              release_date: data.release_date,
-              overview: data.overview,
+              poster_path: data?.poster_path,
+              backdrop_path: data?.backdrop_path,
+              title: data?.title,
+              release_date: data?.release_date,
+              overview: data?.overview,
               details: {
-                genres: data.genres,
-                runtime: data.runtime,
+                genres: data?.genres,
+                runtime: data?.runtime,
                 credits: {
                   crew: getCrew(data) || [],
                   cast: getCast(data) || [],
                 },
-                vote_average: data.vote_average,
-                external_ids: { imdb_id: data.external_ids?.imdb_id || "" },
+                vote_average: data?.vote_average,
+                external_ids: { imdb_id: data?.external_ids?.imdb_id || "" },
               },
             };
 
-      if (movie.media_type === "tv" && data.number_of_seasons > 0) {
+      if (movie.media_type === "tv" && data?.number_of_seasons > 0) {
         var seasons = [];
 
-        for (let season = 1; season <= data.number_of_seasons; season++) {
+        for (let season = 1; season <= data?.number_of_seasons; season++) {
           url = `/tv/${movie.id}/season/${season}`;
           params = "";
           fullUrl = `${baseURL}${url}?api_key=${api_key}${params}`;

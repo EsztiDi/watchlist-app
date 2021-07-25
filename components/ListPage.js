@@ -43,10 +43,11 @@ export default function ListPage({
   var { id } = router.query;
 
   const [backdrop, setBackdrop] = React.useState("");
-  var movies = (list) => list?.movies.sort((a, b) => a.position - b.position);
+  var movies = (list) => list?.movies?.sort((a, b) => a.position - b.position);
 
   const { data: list, error } = useSWR(id[0] ? `/api/lists/${id[0]}` : null, {
     refreshInterval: 2000,
+    initialData: initialList, // For og metatags
   });
 
   React.useEffect(() => {
@@ -63,7 +64,7 @@ export default function ListPage({
 
   React.useEffect(() => {
     if (error) {
-      setMessage(error.message);
+      setMessage(`${error.message} - Please try again.`);
       router.push("/");
     }
     // eslint-disable-next-line
