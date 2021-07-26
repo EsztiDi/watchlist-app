@@ -11,11 +11,6 @@ export default NextAuth({
       clientId: process.env.FACEBOOK_APP_ID,
       clientSecret: process.env.FACEBOOK_APP_SECRET,
     }),
-    Providers.LinkedIn({
-      clientId: process.env.LINKEDIN_CLIENT_ID,
-      clientSecret: process.env.LINKEDIN_CLIENT_SECRET,
-      scope: "r_emailaddress",
-    }),
     Providers.Twitter({
       clientId: process.env.TWITTER_APP_KEY,
       clientSecret: process.env.TWITTER_APP_KEY_SECRET,

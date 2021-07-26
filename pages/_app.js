@@ -156,15 +156,15 @@ export default function MyApp({ Component, pageProps }) {
           href="/favicon-16x16.png"
         />
         <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#f8d070" />
-        <meta name="apple-mobile-web-app-title" content="Watchlist App" />
-        <meta name="application-name" content="Watchlist App" />
+        <meta name="apple-mobile-web-app-title" content="The Watchlist App" />
+        <meta name="application-name" content="The Watchlist App" />
         <meta name="msapplication-TileColor" content="#ffc40d" />
         <meta name="msapplication-config" content="/browserconfig.xml" />
         <link rel="manifest" href="/site.webmanifest" />
         <meta name="robots" content="noimageindex, nofollow" />
 
         <meta property="og:url" content={process.env.BASE_URL} key="url" />
-        <meta property="og:title" content="Watchlist App" key="title" />
+        <meta property="og:title" content="The Watchlist App" key="title" />
         <meta
           property="og:description"
           content="Create, share and edit watchlists with anyone"

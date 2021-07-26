@@ -8,7 +8,6 @@ import Paper from "@material-ui/core/Paper";
 import {
   FacebookLoginButton,
   GoogleLoginButton,
-  LinkedInLoginButton,
   TwitterLoginButton,
   GithubLoginButton,
 } from "react-social-login-buttons";
@@ -59,10 +58,6 @@ export default function Login() {
             <FacebookLoginButton
               className={classes.button}
               onClick={() => signIn("facebook")}
-            />
-            <LinkedInLoginButton
-              className={classes.button}
-              onClick={() => signIn("linkedin")}
             />
             <TwitterLoginButton
               className={classes.button}
