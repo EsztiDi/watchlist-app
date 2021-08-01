@@ -47,7 +47,7 @@ export default function About() {
           </Typography>
           <Typography>
             <b>Email: </b>
-            thewatchlistapp@gmail.com
+            contact@mywatchlists.watch
           </Typography>
           <Typography>
             <b>GitHub: </b>

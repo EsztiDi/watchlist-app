@@ -64,7 +64,7 @@ export default function ListPage({
 
   React.useEffect(() => {
     if (error) {
-      setMessage(`${error.message} - Please try again.`);
+      setMessage(`${JSON.stringify(error.message)} - Please try again.`);
       router.push("/");
     }
     // eslint-disable-next-line

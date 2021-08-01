@@ -1,0 +1,12 @@
+name: Weekly Emails
+on:
+  schedule:
+    - cron: "12 7 * * 4"
+jobs:
+  cron:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Call api/cron/emails
+        run: |
+          curl --request GET \
+          --url 'https://mywatchlists.watch/api/cron/emails' \

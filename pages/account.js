@@ -91,7 +91,7 @@ export default function Account({ setMessage }) {
       );
       emails ? setUpdatingEmails(false) : setUpdatingPrivate(false);
     } catch (error) {
-      setMessage(error.message + " - Failed to update lists");
+      setMessage(`${JSON.stringify(error.message)} - Failed to update lists`);
       emails ? setUpdatingEmails(false) : setUpdatingPrivate(false);
     }
   };
@@ -131,7 +131,7 @@ export default function Account({ setMessage }) {
       }
     } catch (error) {
       setMessage(
-        `${error.message}${
+        `${JSON.stringify(error.message)}${
           lists ? " - Failed to delete lists" : " - Failed to delete account"
         }`
       );

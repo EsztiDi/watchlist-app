@@ -69,7 +69,9 @@ export default function ListsMenu({ movieID, media_type, setMessage }) {
       if (isMounted.current) setUpdating(false);
     } catch (error) {
       window.removeEventListener("beforeunload", unloadAlert);
-      setMessage(error.message + " - Failed to update, please try again.");
+      setMessage(
+        `${JSON.stringify(error.message)} - Failed to update, please try again.`
+      );
       setUpdating(false);
     }
   };

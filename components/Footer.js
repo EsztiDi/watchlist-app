@@ -11,14 +11,22 @@ const useStyles = makeStyles((theme) => ({
     paddingTop: theme.spacing(4),
     paddingBottom: theme.spacing(1),
     textAlign: "center",
+    color: theme.palette.text.secondary,
     "& > *": {
       margin: `0 ${theme.spacing(1)}px ${theme.spacing(1)}px`,
       fontSize: "0.88rem",
+    },
+    "& a": {
+      transition: "color 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms",
+      "&:hover": {
+        color: theme.palette.text.primary,
+      },
     },
   },
   tmdb: {
     display: "flex",
     alignItems: "center",
+    justifyContent: "center",
     "& > *": {
       lineHeight: 0,
       marginLeft: theme.spacing(1),
@@ -42,8 +50,8 @@ export default function Footer() {
         </a>
       </Typography>
       <Typography component="span">
-        Copyright &copy; 2021-
-        {year > 2021 ? year : ""} by Eszter Diana Toth
+        Copyright &copy; 2021{year > 2021 ? `-${year}` : ""} The Watchlist App
+        by Eszter Diana Toth
       </Typography>
       {" | "}
       <Link href="/about">

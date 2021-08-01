@@ -12,8 +12,8 @@ export default function Custom500() {
       <div style={{ textAlign: "center", paddingTop: "1rem" }}>
         <Typography variant="h4">Server Error</Typography>
         <Typography variant="h6" style={{ paddingBottom: "1rem" }}>
-          We&apos;re sorry, something went wrong. Please try again or contact
-          thewatchlistapp@gmail.com
+          We&apos;re sorry, something went wrong. Please try again or email
+          contact@mywatchlists.watch
         </Typography>
         <Image src="/puppy1.jpg" alt="" width={360} height={480} />
         <br />

@@ -74,7 +74,6 @@ const theme = createTheme({
 
 const useStyles = makeStyles((theme) => ({
   mainContainer: {
-    height: "calc(100% - 56px)",
     display: "flex",
     flexDirection: "column",
     justifyContent: "flex-start",
@@ -115,7 +114,7 @@ export default function MyApp({ Component, pageProps }) {
       setMessage("Please sign in with the same account you used originally.");
     } else if (router.query.error) {
       setMessage(
-        `${router.query.error} – Please try again or contact thewatchlistapp@gmail.com`
+        `${router.query.error} – Please try again or email contact@mywatchlists.watch`
       );
     }
   }, [router.query]);
@@ -224,7 +223,14 @@ export default function MyApp({ Component, pageProps }) {
                 </Fade>
               </ClickAwayListener>
             )}
-            <Container className={classes.mainContainer}>
+            <Container
+              className={classes.mainContainer}
+              style={{
+                height: router.pathname.includes("/lists")
+                  ? "auto"
+                  : "calc(100% - 56px)",
+              }}
+            >
               <Component {...pageProps} setMessage={setMessage} />
               <Footer />
             </Container>

@@ -6,6 +6,7 @@ import mongoose from "mongoose";
 
 import dbConnect from "../../../utils/dbConnect";
 import Watchlist from "../../../models/Watchlist";
+import weeklyHTML from "../../../templates/weekly";
 
 export default async function handler(req, res) {
   const { method } = req;
@@ -22,14 +23,24 @@ export default async function handler(req, res) {
         return new Promise(async (resolve, reject) => {
           console.log("Sending weekly emails");
 
-          var recipients = [];
-          var personalization = [];
+          var recipient = [];
+          // var personalization = [];
+          var response = {
+            success: true,
+            data: {
+              status: [],
+              statusText: [],
+              error: [],
+              emails: 0,
+              recipients: [],
+            },
+          };
 
           await new Promise((resolve, reject) => {
             mongoose.connection.db.collection("users", async (err, users) => {
               try {
                 var cursor = users.find();
-                await cursor.forEach(async (user) => {
+                for await (const user of cursor) {
                   var upcoming = [];
                   await Watchlist.find({
                     "user.email": user.email,
@@ -65,47 +76,88 @@ export default async function handler(req, res) {
                         }
                       });
                       if (upcoming.length > 0) {
-                        recipients.push(new Recipient(user.email, user.name));
-                        personalization.push({
-                          email: user.email,
-                          data: [
-                            {
-                              lists: upcoming,
-                            },
-                          ],
-                        });
-                        resolve();
+                        recipient = [new Recipient(user.email, user.name)];
+                        response.data.recipients.push(user.email);
+                        // personalization.push({
+                        //   email: user.email,
+                        //   data: [
+                        //     {
+                        //       lists: upcoming,
+                        //     },
+                        //   ],
+                        // });
+                        // resolve();
                       }
+                      //  else {
+                      // resolve();
+                      // }
                     });
-                });
+
+                  if (recipient.length > 0) {
+                    const html = weeklyHTML(upcoming);
+
+                    const emailParams = new EmailParams()
+                      .setFrom("releases@mywatchlists.watch")
+                      .setFromName("The Watchlist App")
+                      .setRecipients(recipient)
+                      .setSubject("Upcoming releases from your watchlists")
+                      .setHtml(html)
+                      .setText("Upcoming releases from your watchlists");
+
+                    await mailersend
+                      .send(emailParams)
+                      .then((data) => {
+                        response = {
+                          ...response,
+                          success: data?.error ? false : true,
+                          data: {
+                            ...response.data,
+                            ...data,
+                            status: [...response.data.status, data?.status],
+                            statusText: [
+                              ...response.data.statusText,
+                              data?.statusText,
+                            ],
+                            error: [...response.data.error, data?.error],
+                            emails: (response.data.emails += 1),
+                          },
+                        };
+                        resolve();
+                      })
+                      .catch((err) => {
+                        console.error(
+                          `MailerSend couldn't send the email - ${JSON.stringify(
+                            err
+                          )}`
+                        );
+                        response = {
+                          success: false,
+                          data: {
+                            ...response.data,
+                            error: `${JSON.stringify(err)}`,
+                          },
+                        };
+                        return resolve();
+                      });
+                  }
+                }
+                resolve();
               } catch (err) {
                 console.error(`Error finding users - ${JSON.stringify(err)}`);
-                res
-                  .status(400)
-                  .json({ success: false, data: `${JSON.stringify(err)}` });
+                response = {
+                  success: false,
+                  data: {
+                    ...response.data,
+                    error: `${JSON.stringify(err)}`,
+                  },
+                };
                 return resolve();
               }
             });
           });
-
-          const emailParams = new EmailParams()
-            .setFrom("thewatchlistapp@gmail.com")
-            .setFromName("The Watchlist App")
-            .setRecipients(recipients)
-            .setPersonalization(personalization)
-            .setTemplateId("jy7zpl93krl5vx6k");
-
-          mailersend
-            .send(emailParams)
-            .then((response) => response.json())
-            .then((data) => {
-              res.status(200).json({
-                success: data.errors ? false : true,
-                data: data,
-              });
-              console.log("Emails sent");
-              resolve();
-            });
+          console.log("Done - ", response);
+          res.status(200).json(response);
+          resolve();
         });
       } catch (err) {
         console.error(`Couldn't send emails - ${JSON.stringify(err)}`);
