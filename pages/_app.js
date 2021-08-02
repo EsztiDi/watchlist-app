@@ -226,9 +226,11 @@ export default function MyApp({ Component, pageProps }) {
             <Container
               className={classes.mainContainer}
               style={{
-                height: router.pathname.includes("/lists")
-                  ? "auto"
-                  : "calc(100% - 56px)",
+                height:
+                  router.pathname.includes("/lists/[id]") ||
+                  router.pathname.includes("/lists/calendar/[id]")
+                    ? "auto"
+                    : "calc(100% - 56px)",
               }}
             >
               <Component {...pageProps} setMessage={setMessage} />

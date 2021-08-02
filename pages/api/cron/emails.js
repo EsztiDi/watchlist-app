@@ -24,7 +24,6 @@ export default async function handler(req, res) {
           console.log("Sending weekly emails");
 
           var recipient = [];
-          // var personalization = [];
           var response = {
             success: true,
             data: {
@@ -69,28 +68,19 @@ export default async function handler(req, res) {
                             upcoming.push({
                               title: list.title,
                               movies: movies.sort(
-                                (a, b) => a.release_date - b.release_date
+                                (a, b) =>
+                                  new Date(a.release_date) -
+                                  new Date(b.release_date)
                               ),
                             });
                           }
+                          console.log(upcoming[0]?.movies);
                         }
                       });
                       if (upcoming.length > 0) {
                         recipient = [new Recipient(user.email, user.name)];
                         response.data.recipients.push(user.email);
-                        // personalization.push({
-                        //   email: user.email,
-                        //   data: [
-                        //     {
-                        //       lists: upcoming,
-                        //     },
-                        //   ],
-                        // });
-                        // resolve();
                       }
-                      //  else {
-                      // resolve();
-                      // }
                     });
 
                   if (recipient.length > 0) {
