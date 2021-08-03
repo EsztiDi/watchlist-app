@@ -111,7 +111,11 @@ export default function Seasons({ open, onClose, seasons, lastSeason }) {
                   .map((season, index) => (
                     <Tab
                       key={index}
-                      label={"Season " + season.season_number}
+                      label={`Season ${
+                        season.season_number
+                          ? season.season_number
+                          : lastSeason - 1 || ""
+                      }`}
                       disableFocusRipple
                       {...a11yProps(index)}
                     />
@@ -170,7 +174,7 @@ function TabPanel(props) {
               ))
           ) : (
             <Typography variant="h6" className={classes.none}>
-              No episodes yet
+              No episodes to show
             </Typography>
           )}
         </Box>

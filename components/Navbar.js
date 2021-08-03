@@ -167,7 +167,9 @@ export default function Navbar() {
                               </MenuItem>
                             </a>
                           </Link>
-                          <MenuItem onClick={() => signOut()}>
+                          <MenuItem
+                            onClick={() => signOut({ callbackUrl: "/" })}
+                          >
                             <Typography
                               variant="button"
                               className={classes.menuItem}

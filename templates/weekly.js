@@ -205,12 +205,13 @@ export default function weeklyHTML(lists) {
   </head>
   <body class="clean-body" style="margin: 0; padding: 0; -webkit-text-size-adjust: 100%; background-color: #f8d070;">
   <!--[if IE]><div class="ie-browser"><![endif]-->
-  <table bgcolor="#f8d070" cellpadding="0" cellspacing="0" class="nl-container" role="presentation" style="table-layout: fixed; vertical-align: top; min-width: 320px; border-spacing: 0; border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #f8d070; width: 100%;" valign="top" width="100%">
+  <table bgcolor="#f8d070" cellpadding="0" cellspacing="0" class="nl-container" role="presentation" style="table-layout: fixed; vertical-align: top; min-width: 320px; border-spacing: 0; border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt; 
+  background-color: #f8d070; background-image:url('https://mywatchlists.watch/popcorn.png'); background-position: center top; background-repeat: repeat; width: 100%;" valign="top" width="100%">
   <tbody>
   <tr style="vertical-align: top;" valign="top">
   <td style="word-break: break-word; vertical-align: top;" valign="top">
   <!--[if (mso)|(IE)]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td align="center" style="background-color:#f8d070"><![endif]-->
-  <div style="background-color:transparent;">
+  <div style="background-color:#f8d070;">
   <div class="block-grid" style="min-width: 320px; max-width: 600px; overflow-wrap: break-word; word-wrap: break-word; word-break: break-word; Margin: 0 auto; background-color: transparent;">
   <div style="border-collapse: collapse;display: table;width: 100%;background-color:transparent;background-image:url('https://mywatchlists.watch/top.png');background-position:top left;background-repeat:repeat">
   <!--[if (mso)|(IE)]><table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:transparent;"><tr><td align="center"><table cellpadding="0" cellspacing="0" border="0" style="width:600px"><tr class="layout-full-width" style="background-color:transparent"><![endif]-->
@@ -233,10 +234,10 @@ export default function weeklyHTML(lists) {
   </div>
   </div>
   </div>
-  <div style="background-image:url('https://mywatchlists.watch/popcorn2.png');background-position:top left;background-repeat:repeat;background-color:#f8d070;">
+  <div>
   <div class="block-grid three-up" style="min-width: 320px; max-width: 600px; overflow-wrap: break-word; word-wrap: break-word; word-break: break-word; Margin: 0 auto; background-color: #fff;">
   <div style="border-collapse: collapse;display: table;width: 100%;background-color:#fff;">
-  <!--[if (mso)|(IE)]><table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-image:url('https://mywatchlists.watch/popcorn2.png');background-position:top left;background-repeat:repeat;background-color:#f8d070;"><tr><td align="center"><table cellpadding="0" cellspacing="0" border="0" style="width:600px"><tr class="layout-full-width" style="background-color:#fff"><![endif]-->
+  <!--[if (mso)|(IE)]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td align="center"><table cellpadding="0" cellspacing="0" border="0" style="width:600px"><tr class="layout-full-width" style="background-color:#fff"><![endif]-->
   <!--[if (mso)|(IE)]><td align="center" width="150" style="background-color:#fff;width:150px; border-top: 0px solid transparent; border-left: 0px solid transparent; border-bottom: 0px solid transparent; border-right: 0px solid transparent;" valign="top"><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="padding-right: 5px; padding-left: 5px; padding-top:20px; padding-bottom:5px;"><![endif]-->
   <div class="col num3" style="display: table-cell; vertical-align: top; max-width: 320px; min-width: 150px; width: 150px;">
   <div class="col_cont" style="width:100% !important;">
@@ -295,10 +296,10 @@ export default function weeklyHTML(lists) {
   </div>
   </div>
   </div>
-  <div style="background-image:url('https://mywatchlists.watch/popcorn3.png');background-position:top left;background-repeat:repeat;background-color:#f8d070;">
+  <div>
   <div class="block-grid" style="min-width: 320px; max-width: 600px; overflow-wrap: break-word; word-wrap: break-word; word-break: break-word; Margin: 0 auto; background-color: #fff;">
   <div style="border-collapse: collapse;display: table;width: 100%;background-color:#fff;">
-  <!--[if (mso)|(IE)]><table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-image:url('https://mywatchlists.watch/popcorn3.png');background-position:top left;background-repeat:repeat;background-color:#f8d070;"><tr><td align="center"><table cellpadding="0" cellspacing="0" border="0" style="width:600px"><tr class="layout-full-width" style="background-color:#fff"><![endif]-->
+  <!--[if (mso)|(IE)]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td align="center"><table cellpadding="0" cellspacing="0" border="0" style="width:600px"><tr class="layout-full-width" style="background-color:#fff"><![endif]-->
   <!--[if (mso)|(IE)]><td align="center" width="600" style="background-color:#fff;width:600px; border-top: 0px solid transparent; border-left: 0px solid transparent; border-bottom: 0px solid transparent; border-right: 0px solid transparent;" valign="top"><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="padding-right: 5px; padding-left: 5px; padding-top:5px; padding-bottom:5px;"><![endif]-->
   <div class="col num12" style="min-width: 320px; max-width: 600px; display: table-cell; vertical-align: top; width: 600px;">
   <div class="col_cont" style="width:100% !important;">
@@ -384,18 +385,10 @@ export default function weeklyHTML(lists) {
     </div>`;
 
     for (const [index, movie] of list.movies.entries()) {
-      movies += `<div style="background-image:url(${
-        index % 2 === 0
-          ? "https://mywatchlists.watch/popcorn1.png"
-          : "https://mywatchlists.watch/popcorn2.png"
-      });background-position:center top;background-repeat:repeat;background-color:transparent;">
+      movies += `<div>
         <div class="block-grid mixed-two-up no-stack" style="min-width: 320px; max-width: 600px; overflow-wrap: break-word; word-wrap: break-word; word-break: break-word; Margin: 0 auto; background-color: #fff;">
         <div style="border-collapse: collapse;display: table;width: 100%;background-color:#fff;">
-        <!--[if (mso)|(IE)]><table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-image:url(${
-          index % 2 === 0
-            ? "https://mywatchlists.watch/popcorn1.png"
-            : "https://mywatchlists.watch/popcorn2.png"
-        });background-position:center top;background-repeat:repeat;background-color:transparent;"><tr><td align="center"><table cellpadding="0" cellspacing="0" border="0" style="width:600px"><tr class="layout-full-width" style="background-color:#fff"><![endif]-->
+        <!--[if (mso)|(IE)]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td align="center"><table cellpadding="0" cellspacing="0" border="0" style="width:600px"><tr class="layout-full-width" style="background-color:#fff"><![endif]-->
         <!--[if (mso)|(IE)]><td align="center" width="150" style="background-color:#fff;width:150px; border-top: 0px solid transparent; border-left: 0px solid transparent; border-bottom: 0px solid transparent; border-right: 0px solid transparent;" valign="top"><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="padding-right: 0px; padding-left: 20px; padding-top:10px; padding-bottom:10px;"><![endif]-->
         <div class="col num3" style="display: table-cell; vertical-align: top; max-width: 320px; min-width: 150px; width: 150px;">
         <div class="col_cont" style="width:100% !important;">
@@ -468,10 +461,10 @@ export default function weeklyHTML(lists) {
     middle += movies;
   }
 
-  const bottom = `<div style="background-image:url('https://mywatchlists.watch/popcorn1.png');background-position:center top;background-repeat:repeat;background-color:transparent;">
+  const bottom = `<div>
   <div class="block-grid" style="min-width: 320px; max-width: 600px; overflow-wrap: break-word; word-wrap: break-word; word-break: break-word; Margin: 0 auto; background-color: #fff;">
   <div style="border-collapse: collapse;display: table;width: 100%;background-color:#fff;">
-  <!--[if (mso)|(IE)]><table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-image:url('https://mywatchlists.watch/popcorn1.png');background-position:center top;background-repeat:repeat;background-color:transparent;"><tr><td align="center"><table cellpadding="0" cellspacing="0" border="0" style="width:600px"><tr class="layout-full-width" style="background-color:#fff"><![endif]-->
+  <!--[if (mso)|(IE)]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td align="center"><table cellpadding="0" cellspacing="0" border="0" style="width:600px"><tr class="layout-full-width" style="background-color:#fff"><![endif]-->
   <!--[if (mso)|(IE)]><td align="center" width="600" style="background-color:#fff;width:600px; border-top: 0px solid transparent; border-left: 0px solid transparent; border-bottom: 0px solid transparent; border-right: 0px solid transparent;" valign="top"><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="padding-right: 5px; padding-left: 5px; padding-top:5px; padding-bottom:5px;"><![endif]-->
   <div class="col num12" style="min-width: 320px; max-width: 600px; display: table-cell; vertical-align: top; width: 600px;">
   <div class="col_cont" style="width:100% !important;">
@@ -551,7 +544,7 @@ export default function weeklyHTML(lists) {
   <!--[if mso]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="padding-right: 10px; padding-left: 10px; padding-top: 10px; padding-bottom: 20px; font-family: Tahoma, sans-serif"><![endif]-->
   <div style="color:#a5a5a5;font-family:Trebuchet MS, Lucida Grande, Lucida Sans Unicode, Lucida Sans, Tahoma, sans-serif;line-height:1.5;padding-top:10px;padding-right:10px;padding-bottom:20px;padding-left:10px;">
   <div class="txtTinyMce-wrapper" style="line-height: 1.5; font-size: 12px; font-family: Trebuchet MS, Lucida Grande, Lucida Sans Unicode, Lucida Sans, Tahoma, sans-serif; color: #a5a5a5; mso-line-height-alt: 18px;">
-  <p style="margin: 0; line-height: 1.5; word-break: break-word; text-align: center; mso-line-height-alt: 18px; margin-top: 0; margin-bottom: 0;">The&nbsp;Watchlist&nbsp;App&nbsp;&nbsp;|  London,&nbsp;UK&nbsp;&nbsp;|  <a href="mailto:contact@mywatchlists.watch?subject=Enquiry" rel="noopener" style="text-decoration: none; color: #a5a5a5;" target="_blank" title="contact@mywatchlists.watch">contact@mywatchlists.watch</a></p>
+  <p style="margin: 0; line-height: 1.5; word-break: break-word; text-align: center; mso-line-height-alt: 18px; margin-top: 0; margin-bottom: 0;">The&nbsp;Watchlist&nbsp;App&nbsp;&nbsp;|  London,&nbsp;UK&nbsp;&nbsp;|  <a href="mailto:contact@mywatchlists.watch?subject=Enquiry" rel="noopener" style="text-decoration: none; color: #a5a5a5;" target="_blank">contact@mywatchlists.watch</a></p>
   </div>
   </div>
   <!--[if mso]></td></tr></table><![endif]-->
@@ -565,7 +558,7 @@ export default function weeklyHTML(lists) {
   </div>
   </div>
   </div>
-  <div style="background-color:transparent;">
+  <div style="background-color:#f8d070;">
   <div class="block-grid" style="min-width: 320px; max-width: 600px; overflow-wrap: break-word; word-wrap: break-word; word-break: break-word; Margin: 0 auto; background-color: transparent;">
   <div style="border-collapse: collapse;display: table;width: 100%;background-color:transparent;background-image:url('https://mywatchlists.watch/top.png');background-position:top left;background-repeat:repeat">
   <!--[if (mso)|(IE)]><table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:transparent;"><tr><td align="center"><table cellpadding="0" cellspacing="0" border="0" style="width:600px"><tr class="layout-full-width" style="background-color:transparent"><![endif]-->
@@ -588,7 +581,7 @@ export default function weeklyHTML(lists) {
   </div>
   </div>
   </div>
-  <div style="background-color:transparent;">
+  <div style="background-color:#f8d070;">
   <div class="block-grid" style="min-width: 320px; max-width: 600px; overflow-wrap: break-word; word-wrap: break-word; word-break: break-word; Margin: 0 auto; background-color: transparent;">
   <div style="border-collapse: collapse;display: table;width: 100%;background-color:transparent;">
   <!--[if (mso)|(IE)]><table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:transparent;"><tr><td align="center"><table cellpadding="0" cellspacing="0" border="0" style="width:600px"><tr class="layout-full-width" style="background-color:transparent"><![endif]-->

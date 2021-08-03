@@ -9,6 +9,9 @@ import Paper from "@material-ui/core/Paper";
 import Form from "./Form";
 
 const useStyles = makeStyles((theme) => ({
+  loadingContainer: {
+    height: "calc(100vh - 16px - 16px - 56px - 68px - 8px)",
+  },
   container: {
     width: "100%",
     height: "calc(100vh - 16px - 16px - 56px)",
@@ -44,7 +47,12 @@ export default function ListPanels({ setMessage, calendar = false }) {
     router.replace("/lists");
   }
 
-  if (!list) return <CircularProgress size="3rem" thickness={3} />;
+  if (!list)
+    return (
+      <div className={classes.loadingContainer}>
+        <CircularProgress size="3rem" thickness={3} />
+      </div>
+    );
 
   return (
     auth &&

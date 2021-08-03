@@ -1,7 +1,5 @@
-import { getSession } from "next-auth/client";
-import dbConnect from "../utils/dbConnect";
-import Watchlist from "../models/Watchlist";
 import Head from "next/head";
+import useSWR from "swr";
 
 import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
@@ -18,8 +16,11 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function Discover({ publicLists, setMessage }) {
+export default function Discover({ setMessage }) {
   const classes = useStyles();
+
+  const { data: publicLists, error } = useSWR("/api/lists/public");
+  if (error) console.error(error);
 
   const [loading, setLoading] = React.useState(false);
   const [thisMonthMovies, setThisMonthMovies] = React.useState([]);
@@ -179,22 +180,4 @@ export default function Discover({ publicLists, setMessage }) {
       </Container>
     </>
   );
-}
-
-export async function getServerSideProps(context) {
-  const session = await getSession(context);
-  await dbConnect();
-
-  var publicLists = [];
-
-  var results = await Watchlist.find({ private: false }, "_id title movies", {
-    skip: 0,
-    limit: 10,
-    sort: {
-      updatedAt: -1,
-    },
-  });
-  if (results) publicLists = await JSON.parse(JSON.stringify(results));
-
-  return { props: { publicLists } };
 }
