@@ -27,7 +27,7 @@ const useStyles = makeStyles((theme) => ({
     height: "300px",
     position: "absolute",
     top: 0,
-    background: "rgba(0,0,0,0.6)",
+    background: "rgba(0,0,0,0.7)",
     transition: "0.2s",
     padding: theme.spacing(1),
     color: "#fff",

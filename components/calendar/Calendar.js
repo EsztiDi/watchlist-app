@@ -16,7 +16,6 @@ import TableRow from "@material-ui/core/TableRow";
 import TableCell from "@material-ui/core/TableCell";
 import { MuiPickersUtilsProvider, DatePicker } from "@material-ui/pickers";
 import MomentUtils from "@date-io/moment";
-import CircularProgress from "@material-ui/core/CircularProgress";
 
 import Month from "./Month";
 

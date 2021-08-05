@@ -44,6 +44,9 @@ const useStyles = makeStyles((theme) => ({
   title: {
     textAlign: "center",
   },
+  media: {
+    textTransform: "capitalize",
+  },
   info: {
     textAlign: "center",
     marginBottom: theme.spacing(1),
@@ -186,13 +189,18 @@ export default function MovieCard({
         />
         <CardContent className={classes.content}>
           <Typography variant="h6" className={classes.title}>
-            {title || "Untitled"} ({year}, {media_type || "-"})
+            {title || "Untitled"} {/* ({year}, {media_type || "-"}) */}
           </Typography>
           <Typography
             variant="subtitle2"
             color="textSecondary"
             className={classes.info}
           >
+            {media_type === "tv" ? (
+              `TV series, ${year}– ● `
+            ) : (
+              <span className={classes.media}>{media_type || "–"} ● </span>
+            )}
             {number_of_episodes > 0 && (
               <>
                 <span className={classes.external} onClick={handleSeasonsOpen}>
@@ -215,9 +223,9 @@ export default function MovieCard({
             )}
             {runtime}
             {runtime && (genres || release_date) && " ● "}
-            {genres}
-            {genres && release_date && " ● "}
             <span className={classes.nowrap}>{release_date}</span>
+            {release_date && genres && " ● "}
+            {genres}
             {vote_average ? (
               <a
                 href={`https://www.themoviedb.org/${media_type}/${id}`}

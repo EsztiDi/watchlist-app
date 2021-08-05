@@ -17,6 +17,9 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     flexDirection: "column",
     minWidth: "70%",
+    "&:last-child": {
+      paddingBottom: theme.spacing(2),
+    },
   },
   image: {
     minWidth: "20%",

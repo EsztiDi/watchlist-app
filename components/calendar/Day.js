@@ -8,6 +8,7 @@ const useStyles = makeStyles((theme) => ({
   cell: {
     verticalAlign: "top",
     padding: theme.spacing(1),
+    borderBottom: "2px solid rgba(224, 224, 224, 1)",
   },
   posterCell: {
     "& span:nth-of-type(even)": {
@@ -15,6 +16,7 @@ const useStyles = makeStyles((theme) => ({
     },
     padding: theme.spacing(1),
     verticalAlign: "text-top",
+    borderBottom: "2px solid rgba(224, 224, 224, 1)",
   },
   poster: {
     borderRadius: "5px",
@@ -28,8 +30,14 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function Day({ date, movies }) {
+const today = new Date();
+
+export default function Day({ date, month, year, movies }) {
   const classes = useStyles();
+  const thisDay =
+    date === today.getDate() &&
+    month === today.getMonth() &&
+    year === today.getFullYear();
 
   // Series episodes released on the same day to appear under one image on the calendar
   const names =
@@ -64,7 +72,14 @@ export default function Day({ date, movies }) {
       : "94px";
 
   return movies ? (
-    <TableCell width={cellWidth} className={classes.posterCell}>
+    <TableCell
+      width={cellWidth}
+      className={classes.posterCell}
+      style={{
+        fontWeight: thisDay ? "bold" : "",
+        color: thisDay ? "#F5B829" : "",
+      }}
+    >
       {date}
       <div
         style={{
@@ -145,6 +160,14 @@ export default function Day({ date, movies }) {
       </div>
     </TableCell>
   ) : (
-    <TableCell className={classes.cell}>{date}</TableCell>
+    <TableCell
+      className={classes.cell}
+      style={{
+        fontWeight: thisDay ? "bold" : "",
+        color: thisDay ? "#F5B829" : "",
+      }}
+    >
+      {date}
+    </TableCell>
   );
 }

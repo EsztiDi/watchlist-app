@@ -10,7 +10,7 @@ import Form from "./Form";
 
 const useStyles = makeStyles((theme) => ({
   loadingContainer: {
-    height: "calc(100vh - 16px - 16px - 56px - 68px - 8px)",
+    height: "calc(100vh - 16px - 16px - 56px)",
   },
   container: {
     width: "100%",

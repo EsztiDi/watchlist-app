@@ -82,5 +82,5 @@ const getDays = (year, month, moviesList) => {
 export default function Month({ year, month, movies }) {
   const dates = getDays(year, month, movies);
 
-  return <Week rows={dates} />;
+  return <Week rows={dates} month={month} year={year} />;
 }
