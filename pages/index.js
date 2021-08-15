@@ -6,6 +6,7 @@ import Container from "@material-ui/core/Container";
 import Paper from "@material-ui/core/Paper";
 
 import MoviesCarousel from "../components/carousel/MoviesCarousel";
+import ListsCarousel from "../components/carousel/ListsCarousel";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -176,6 +177,9 @@ export default function Discover({ setMessage }) {
                 />
               );
             })}
+          {publicLists && publicLists.length > 0 && (
+            <ListsCarousel lists={publicLists} />
+          )}
         </Paper>
       </Container>
     </>

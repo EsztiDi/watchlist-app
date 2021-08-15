@@ -119,8 +119,8 @@ export default async function handler(req, res) {
     default:
       console.error(
         `Wrong fetch method used for api/lists/[id] - user: ${JSON.stringify(
-          session.user
-        )}`
+          session?.user
+        )} - ${method}`
       );
       res.status(400).json({ success: false });
       break;

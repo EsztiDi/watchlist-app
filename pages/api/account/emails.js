@@ -1,6 +1,7 @@
 import { getSession } from "next-auth/client";
 import dbConnect from "../../../utils/dbConnect";
 import Watchlist from "../../../models/Watchlist";
+import Releasesemail from "../../../models/Releasesemail";
 
 export default async function handler(req, res) {
   const { method } = req;
@@ -13,7 +14,7 @@ export default async function handler(req, res) {
       try {
         const update = await Watchlist.updateMany(
           {
-            user: session.user,
+            user: session?.user,
             emails: true,
           },
           { emails: false }
@@ -22,10 +23,22 @@ export default async function handler(req, res) {
         if (!update) {
           console.error(
             `Couldn't perform updateMany() for emails in MongoDB - user: ${JSON.stringify(
-              session.user
+              session?.user
             )}`
           );
           return res.status(400).json({ success: false });
+        }
+
+        const deletedEmails = await Releasesemail.deleteMany({
+          email: session?.user?.email,
+        });
+
+        if (!deletedEmails) {
+          console.error(
+            `Couldn't perform deleteMany() in MongoDB - user: ${JSON.stringify(
+              session?.user
+            )}`
+          );
         }
 
         res
@@ -34,7 +47,7 @@ export default async function handler(req, res) {
       } catch (err) {
         console.error(
           `Couldn't perform updateMany() for emails in MongoDB - user: ${
-            session.user
+            session?.user
           } - ${JSON.stringify(err)}`
         );
         res.status(400).json({ success: false });
@@ -44,8 +57,8 @@ export default async function handler(req, res) {
     default:
       console.error(
         `Wrong fetch method used for api/account/emails - user: ${JSON.stringify(
-          session.user
-        )}`
+          session?.user
+        )} - ${method}`
       );
       res.status(400).json({ success: false });
       break;

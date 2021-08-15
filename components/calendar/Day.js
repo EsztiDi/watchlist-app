@@ -72,15 +72,17 @@ export default function Day({ date, month, year, movies }) {
       : "94px";
 
   return movies ? (
-    <TableCell
-      width={cellWidth}
-      className={classes.posterCell}
-      style={{
-        fontWeight: thisDay ? "bold" : "",
-        color: thisDay ? "#F5B829" : "",
-      }}
-    >
-      {date}
+    <TableCell width={cellWidth} className={classes.posterCell}>
+      <span
+        style={{
+          fontWeight: thisDay ? "bold" : "",
+          background: thisDay ? "#F8D070" : "",
+          borderRadius: thisDay ? "50%" : "",
+          padding: "3.5px",
+        }}
+      >
+        {date}
+      </span>
       <div
         style={{
           width: divWidth,
@@ -100,7 +102,11 @@ export default function Day({ date, month, year, movies }) {
                   </p>
                 }
               >
-                <span>
+                <a
+                  href={`https://www.imdb.com/title/${series[1][0].imdb_id}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
                   <Image
                     width={60}
                     height={90}
@@ -116,7 +122,7 @@ export default function Day({ date, month, year, movies }) {
                     alt=""
                     className={classes.poster}
                   />
-                </span>
+                </a>
               </Tooltip>
             );
           })}
@@ -137,7 +143,15 @@ export default function Day({ date, month, year, movies }) {
                   </p>
                 }
               >
-                <span>
+                <a
+                  href={
+                    movie.imdb_id
+                      ? `https://www.imdb.com/title/${movie.imdb_id}`
+                      : `https://www.imdb.com/title/${movie.details?.external_ids?.imdb_id}`
+                  }
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
                   <Image
                     width={60}
                     height={90}
@@ -153,21 +167,24 @@ export default function Day({ date, month, year, movies }) {
                     alt=""
                     className={classes.poster}
                   />
-                </span>
+                </a>
               </Tooltip>
             );
           })}
       </div>
     </TableCell>
   ) : (
-    <TableCell
-      className={classes.cell}
-      style={{
-        fontWeight: thisDay ? "bold" : "",
-        color: thisDay ? "#F5B829" : "",
-      }}
-    >
-      {date}
+    <TableCell className={classes.cell}>
+      <span
+        style={{
+          fontWeight: thisDay ? "bold" : "",
+          background: thisDay ? "#F8D070" : "",
+          borderRadius: thisDay ? "50%" : "",
+          padding: "3.5px",
+        }}
+      >
+        {date}
+      </span>
     </TableCell>
   );
 }

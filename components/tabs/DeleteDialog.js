@@ -35,7 +35,7 @@ export default function DeleteDialog({
     setUpdating(true);
     try {
       await fetch(`/api/lists/${listID}`, {
-        method: "Delete",
+        method: "DELETE",
       });
 
       mutate("/api/lists");

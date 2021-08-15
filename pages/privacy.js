@@ -79,7 +79,7 @@ export default function Privacy() {
           </Typography>
 
           <Typography>
-            Thank you for using the Watchlist App created by Eszter Diana Toth
+            Thank you for using The Watchlist App created by Eszter Diana Toth
             (&quot;<b>App</b>&quot;, &quot;<b>we</b>&quot;, &quot;<b>us</b>
             &quot;, &quot;<b>our</b>&quot;). We are committed to protecting your
             personal information and your right to privacy. If you have any
@@ -504,10 +504,10 @@ export default function Privacy() {
           <Typography>
             If you are a resident in the European Economic Area or the United
             Kingdom, the &quot;data controller&quot; of your personal
-            information is the Watchlist App. The Watchlist App has appointed
+            information is The Watchlist App. The Watchlist App has appointed
             Eszter Diana Toth to be its representative in the EEA. You can
             contact them directly regarding the processing of your information
-            by the Watchlist App, by email at esztit@gmail.com
+            by The Watchlist App, by email at esztit@gmail.com
           </Typography>
         </Paper>
       </Container>

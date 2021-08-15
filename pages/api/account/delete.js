@@ -91,7 +91,9 @@ export default async function handler(req, res) {
       break;
 
     default:
-      console.error("Wrong fetch method used for api/account/delete");
+      console.error(
+        `Wrong fetch method used for api/account/delete - ${method}`
+      );
       res.status(400).json({ success: false });
       break;
   }

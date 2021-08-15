@@ -153,6 +153,54 @@ export default function Form({
     }
   };
 
+  const postEmail = async (newEmail) => {
+    try {
+      const res = await fetch("/api/emails/releases", {
+        method: "POST",
+        headers: {
+          Accept: contentType,
+          "Content-Type": contentType,
+        },
+        body: JSON.stringify(newEmail),
+      });
+
+      if (!res.ok) {
+        throw new Error(res.status);
+      }
+
+      setUpdating(false);
+    } catch (error) {
+      setMessage(
+        error.message + " - Failed to add your email, please try again."
+      );
+      setUpdating(false);
+    }
+  };
+
+  const deleteEmail = async (toDelete) => {
+    try {
+      const res = await fetch("/api/emails/releases", {
+        method: "DELETE",
+        headers: {
+          Accept: contentType,
+          "Content-Type": contentType,
+        },
+        body: JSON.stringify(toDelete),
+      });
+
+      if (!res.ok) {
+        throw new Error(res.status);
+      }
+
+      setUpdating(false);
+    } catch (error) {
+      setMessage(
+        error.message + " - Failed to remove your email, please try again."
+      );
+      setUpdating(false);
+    }
+  };
+
   const handleChange = (ev) => {
     const target = ev.target;
     const value =
@@ -165,6 +213,19 @@ export default function Form({
       ...form,
       [name]: value,
     });
+
+    if (target.name === "emails" && target.checked) {
+      setUpdating(true);
+      postEmail({
+        email: email,
+        name: session?.user?.name,
+      });
+    } else if (target.name === "emails" && !target.checked) {
+      setUpdating(true);
+      deleteEmail({
+        email: email,
+      });
+    }
   };
 
   const handleSubmit = (ev) => {

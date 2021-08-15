@@ -102,7 +102,7 @@ export async function getServerSideProps(context) {
         }
       });
     });
-    newUser = new Date(user?.createdAt) > new Date() - 2 * 60 * 1000;
+    newUser = new Date(user?.createdAt).getTime() > new Date() - 2 * 60 * 1000;
 
     if (newUser && !hasLists) {
       try {

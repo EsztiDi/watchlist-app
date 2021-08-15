@@ -280,6 +280,7 @@ export default function TabPanel(props) {
         <Calendar listID={listID} newTab={newTab} />
       ) : (
         <Movies
+          movies={[]}
           listID={listID}
           deleteMovie={editable ? deleteMovie : undefined}
           moveMovie={editable ? moveMovie : undefined}

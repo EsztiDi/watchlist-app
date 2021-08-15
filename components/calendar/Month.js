@@ -32,6 +32,7 @@ const getDays = (year, month, moviesList) => {
                   ...episode,
                   mainName: movie.title,
                   poster_path: movie.poster_path,
+                  imdb_id: movie.details?.external_ids?.imdb_id,
                 });
               }
             });

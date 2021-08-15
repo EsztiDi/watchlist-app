@@ -10,8 +10,8 @@ export default async function handler(req, res) {
     case "GET":
       try {
         const publicLists = await Watchlist.find(
-          { private: false },
-          "_id title movies",
+          { private: false, "movies.0": { $exists: true } },
+          "_id title movies user.name",
           {
             skip: 0,
             limit: 10,
@@ -27,11 +27,7 @@ export default async function handler(req, res) {
       }
       break;
     default:
-      console.error(
-        `Wrong fetch method used for api/lists/public - method: ${JSON.stringify(
-          method
-        )}`
-      );
+      console.error(`Wrong fetch method used for api/lists/public - ${method}`);
       res.status(400).json({ success: false });
       break;
   }

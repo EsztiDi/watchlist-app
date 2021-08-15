@@ -2,10 +2,9 @@ const Recipient = require("mailersend").Recipient;
 const EmailParams = require("mailersend").EmailParams;
 const MailerSend = require("mailersend");
 
-import mongoose from "mongoose";
-
 import dbConnect from "../../../utils/dbConnect";
 import Watchlist from "../../../models/Watchlist";
+import Releasesemail from "../../../models/Releasesemail";
 import weeklyHTML from "../../../templates/weekly";
 
 export default async function handler(req, res) {
@@ -35,116 +34,115 @@ export default async function handler(req, res) {
             },
           };
 
-          await new Promise((resolve, reject) => {
-            mongoose.connection.db.collection("users", async (err, users) => {
-              try {
-                var cursor = users.find();
-                for await (const user of cursor) {
-                  var upcoming = [];
-                  await Watchlist.find({
-                    "user.email": user.email,
-                    emails: true,
-                  })
-                    .sort({
-                      position: -1,
-                    })
-                    .then((lists) => {
-                      lists.forEach((list) => {
-                        if (list.movies.length > 0) {
-                          var movies = [];
-                          list.movies.forEach((movie) => {
-                            var release_date = new Date(
-                              movie.release_date
-                            ).getTime();
-                            var today = new Date().setUTCHours(0, 0, 0, 0);
-                            if (
-                              release_date > today &&
-                              release_date < today + 60000 * 60 * 24 * 7
-                            ) {
-                              movies.push(movie);
-                            }
-                          });
-                          if (movies.length > 0) {
-                            upcoming.push({
-                              title: list.title,
-                              movies: movies.sort(
-                                (a, b) =>
-                                  new Date(a.release_date) -
-                                  new Date(b.release_date)
-                              ),
-                            });
-                          }
-                          console.log(upcoming[0]?.movies);
-                        }
-                      });
-                      if (upcoming.length > 0) {
-                        recipient = [new Recipient(user.email, user.name)];
-                        response.data.recipients.push(user.email);
+          var emails = await Releasesemail.find();
+          emails = emails
+            .map((user) => user.email)
+            .filter((email, index, arr) => arr.indexOf(email) === index);
+
+          for (const email of emails) {
+            const lists = await Watchlist.find({
+              "user.email": email,
+              emails: true,
+            });
+            if (lists.length === 0) {
+              const deletedEmails = await Releasesemail.deleteMany({
+                email: email,
+              });
+              if (!deletedEmails) {
+                console.error(
+                  `Couldn't perform deleteMany() in MongoDB - ${email}`
+                );
+              }
+              continue;
+            }
+
+            var upcoming = [];
+            await Watchlist.find({
+              "user.email": email,
+              emails: true,
+            })
+              .sort({
+                position: -1,
+              })
+              .then(async (lists) => {
+                lists.forEach((list) => {
+                  if (list.movies.length > 0) {
+                    var movies = [];
+                    list.movies.forEach((movie) => {
+                      var release_date = new Date(movie.release_date).getTime();
+                      var today = new Date().setUTCHours(0, 0, 0, 0);
+                      if (
+                        release_date > today &&
+                        release_date < today + 60000 * 60 * 24 * 7
+                      ) {
+                        movies.push(movie);
                       }
                     });
-
-                  if (recipient.length > 0) {
-                    const html = weeklyHTML(upcoming);
-
-                    const emailParams = new EmailParams()
-                      .setFrom("releases@mywatchlists.watch")
-                      .setFromName("The Watchlist App")
-                      .setRecipients(recipient)
-                      .setSubject("Upcoming releases from your watchlists")
-                      .setHtml(html)
-                      .setText("Upcoming releases from your watchlists");
-
-                    await mailersend
-                      .send(emailParams)
-                      .then((data) => {
-                        response = {
-                          ...response,
-                          success: data?.error ? false : true,
-                          data: {
-                            ...response.data,
-                            ...data,
-                            status: [...response.data.status, data?.status],
-                            statusText: [
-                              ...response.data.statusText,
-                              data?.statusText,
-                            ],
-                            error: [...response.data.error, data?.error],
-                            emails: (response.data.emails += 1),
-                          },
-                        };
-                        resolve();
-                      })
-                      .catch((err) => {
-                        console.error(
-                          `MailerSend couldn't send the email - ${JSON.stringify(
-                            err
-                          )}`
-                        );
-                        response = {
-                          success: false,
-                          data: {
-                            ...response.data,
-                            error: `${JSON.stringify(err)}`,
-                          },
-                        };
-                        return resolve();
+                    if (movies.length > 0) {
+                      upcoming.push({
+                        title: list.title,
+                        movies: movies.sort(
+                          (a, b) =>
+                            new Date(a.release_date) - new Date(b.release_date)
+                        ),
                       });
+                    }
                   }
+                });
+                if (upcoming.length > 0) {
+                  var user = await Releasesemail.find({ email: email });
+
+                  recipient = [new Recipient(email, user[0].name)];
+                  response.data.recipients.push(email);
                 }
-                resolve();
-              } catch (err) {
-                console.error(`Error finding users - ${JSON.stringify(err)}`);
-                response = {
-                  success: false,
-                  data: {
-                    ...response.data,
-                    error: `${JSON.stringify(err)}`,
-                  },
-                };
-                return resolve();
-              }
-            });
-          });
+              });
+
+            if (recipient.length > 0) {
+              const html = weeklyHTML(upcoming);
+
+              const emailParams = new EmailParams()
+                .setFrom("releases@mywatchlists.watch")
+                .setFromName("Watchlist App")
+                .setRecipients(recipient)
+                .setSubject("Upcoming releases from your watchlists")
+                .setHtml(html)
+                .setText("Upcoming releases from your watchlists");
+
+              await mailersend
+                .send(emailParams)
+                .then((data) => {
+                  response = {
+                    ...response,
+                    success: data?.error ? false : true,
+                    data: {
+                      ...response.data,
+                      ...data,
+                      status: [...response.data.status, data?.status],
+                      statusText: [
+                        ...response.data.statusText,
+                        data?.statusText,
+                      ],
+                      error: [...response.data.error, data?.error],
+                      emails: (response.data.emails += 1),
+                    },
+                  };
+                })
+                .catch((err) => {
+                  console.error(
+                    `MailerSend couldn't send the email - ${JSON.stringify(
+                      err
+                    )}`
+                  );
+                  response = {
+                    success: false,
+                    data: {
+                      ...response.data,
+                      error: `${JSON.stringify(err)}`,
+                    },
+                  };
+                });
+            }
+          }
           console.log("Done - ", response);
           res.status(200).json(response);
           resolve();

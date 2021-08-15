@@ -26,7 +26,6 @@ export default function Movies({
   const { data: list, error } = useSWR(listID ? `/api/lists/${listID}` : null, {
     refreshInterval: 2000,
   });
-  var movies = [];
   if (list) {
     ({ movies } = list);
   }
