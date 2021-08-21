@@ -177,9 +177,7 @@ export default function Discover({ setMessage }) {
                 />
               );
             })}
-          {publicLists && publicLists.length > 0 && (
-            <ListsCarousel lists={publicLists} />
-          )}
+          <ListsCarousel lists={publicLists} />
         </Paper>
       </Container>
     </>

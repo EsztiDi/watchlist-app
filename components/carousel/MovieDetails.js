@@ -23,8 +23,8 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: "column",
     alignItems: "center",
     borderRadius: "10px",
-    width: "200px",
-    height: "300px",
+    width: "100%",
+    height: "100%",
     position: "absolute",
     top: 0,
     background: "rgba(0,0,0,0.7)",
@@ -61,7 +61,6 @@ const useStyles = makeStyles((theme) => ({
 export default function MovieDetails({
   movie,
   media_type,
-  left,
   setMessage,
   show,
   handleShowDetails,
@@ -164,13 +163,7 @@ export default function MovieDetails({
   return (
     <div
       className={classes.details}
-      style={
-        !show
-          ? { zIndex: "-99", opacity: 0 }
-          : left
-          ? { left: "26px" }
-          : { right: "26px" }
-      }
+      style={!show ? { zIndex: "-99", opacity: 0 } : undefined}
       onMouseLeave={handleMouse}
     >
       <Typography variant="h6">{title}</Typography>

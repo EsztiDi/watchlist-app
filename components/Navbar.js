@@ -109,7 +109,7 @@ export default function Navbar() {
           <Link href="/" passHref>
             <Button size="large">Discover</Button>
           </Link>
-          {user ? (
+          {loading ? null : user ? (
             <>
               <Link href="/create" passHref>
                 <Button size="large">Create</Button>

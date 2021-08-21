@@ -1,9 +1,7 @@
 import Link from "next/link";
-import { useSession, getSession } from "next-auth/client";
+import { useSession } from "next-auth/client";
 import { useRouter } from "next/router";
-import mongoose from "mongoose";
-import dbConnect from "../utils/dbConnect";
-import Watchlist from "../models/Watchlist";
+import useSWR from "swr";
 
 import { makeStyles } from "@material-ui/core/styles";
 import Paper from "@material-ui/core/Paper";
@@ -11,6 +9,7 @@ import Typography from "@material-ui/core/Typography";
 import IconButton from "@material-ui/core/IconButton";
 import AddCircleRoundedIcon from "@material-ui/icons/AddCircleRounded";
 import CircularProgress from "@material-ui/core/CircularProgress";
+import React from "react";
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -32,17 +31,21 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function Lists({ hasLists, id, newUser }) {
+export default function Lists() {
   const classes = useStyles();
   const [session, loading] = useSession();
   const router = useRouter();
+  var hasLists,
+    id = null;
 
-  // React.useEffect(() => {
-  //   router.prefetch(`/lists/${id}`);
-  //   // eslint-disable-next-line
-  // }, []);
+  const { data, error } = useSWR("/api/lists/newuser");
+  if (error) console.error(error);
+
+  if (data) ({ hasLists, id } = data);
 
   if (loading) return null;
+
+  if (!data) return <CircularProgress size="3rem" thickness={3} />;
 
   if (!loading && !session) {
     router.replace("/login");
@@ -53,6 +56,7 @@ export default function Lists({ hasLists, id, newUser }) {
 
   return (
     session &&
+    data &&
     !hasLists && (
       <Paper elevation={4} className={classes.container}>
         <>
@@ -66,98 +70,4 @@ export default function Lists({ hasLists, id, newUser }) {
       </Paper>
     )
   );
-}
-
-export async function getServerSideProps(context) {
-  const session = await getSession(context);
-  await dbConnect();
-
-  var hasLists = null;
-  var id = null;
-  var newUser = null;
-
-  if (session) {
-    var results = await Watchlist.find({ user: session.user }, "_id").sort({
-      position: -1,
-    });
-    hasLists = results.length > 0;
-    if (hasLists) {
-      id = await JSON.parse(JSON.stringify(results[0]._id));
-    }
-
-    const user = await new Promise((resolve, reject) => {
-      mongoose.connection.db.collection("users", async (err, users) => {
-        var user = null;
-        try {
-          const result = await users.findOne({
-            email: session.user.email,
-          });
-          if (result) {
-            user = await JSON.parse(JSON.stringify(result));
-          }
-          return resolve(user);
-        } catch (err) {
-          console.error(`Error finding user - ${err}`);
-          return resolve();
-        }
-      });
-    });
-    newUser = new Date(user?.createdAt).getTime() > new Date() - 2 * 60 * 1000;
-
-    if (newUser && !hasLists) {
-      try {
-        const contentType = "application/json";
-
-        const res1 = await fetch(`${process.env.BASE_URL}/api/lists`, {
-          method: "POST",
-          headers: {
-            Accept: contentType,
-            "Content-Type": contentType,
-          },
-          body: JSON.stringify({
-            title: "To Watch",
-            movies: [],
-            private: true,
-            emails: false,
-            user: session.user,
-            position: 1,
-          }),
-        });
-
-        const res2 = await fetch(`${process.env.BASE_URL}/api/lists`, {
-          method: "POST",
-          headers: {
-            Accept: contentType,
-            "Content-Type": contentType,
-          },
-          body: JSON.stringify({
-            title: "Watched",
-            movies: [],
-            private: true,
-            emails: false,
-            user: session.user,
-            position: 0,
-          }),
-        });
-
-        if (!res1.ok) {
-          throw new Error(res1.status);
-        }
-        if (!res2.ok) {
-          throw new Error(res2.status);
-        }
-      } catch (err) {
-        console.error(err.message + " - Failed to add first lists");
-      }
-      var results = await Watchlist.find({ user: session.user }, "_id").sort({
-        position: -1,
-      });
-      hasLists = results.length > 0;
-      if (hasLists) {
-        id = await JSON.parse(JSON.stringify(results[0]._id));
-      }
-    }
-  }
-
-  return { props: { hasLists, id, newUser } };
 }

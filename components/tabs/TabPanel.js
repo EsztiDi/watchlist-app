@@ -25,6 +25,7 @@ const useStyles = makeStyles((theme) => ({
     paddingTop: 0,
     width: "100%",
     overflow: "auto",
+    textAlign: "center",
     "&::-webkit-scrollbar": {
       width: "7px",
       height: "7px",
@@ -42,6 +43,7 @@ const useStyles = makeStyles((theme) => ({
   },
   newTab: {
     padding: 0,
+    textAlign: "center",
   },
   buttons: {
     position: "relative",
@@ -280,7 +282,6 @@ export default function TabPanel(props) {
         <Calendar listID={listID} newTab={newTab} />
       ) : (
         <Movies
-          movies={[]}
           listID={listID}
           deleteMovie={editable ? deleteMovie : undefined}
           moveMovie={editable ? moveMovie : undefined}

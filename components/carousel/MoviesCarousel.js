@@ -1,4 +1,3 @@
-import React from "react";
 import Image from "next/image";
 
 import { makeStyles } from "@material-ui/core/styles";
@@ -30,9 +29,21 @@ const useStyles = makeStyles((theme) => ({
   carousel: {
     overflow: "visible",
   },
+  movie: {
+    position: "relative",
+    display: "inline-block",
+    width: "200px",
+    height: "300px",
+  },
+  title: {
+    position: "absolute",
+    top: 0,
+    width: "100%",
+    padding: theme.spacing(1),
+    textShadow: `1px 1px 0px white`,
+  },
   poster: {
     borderRadius: "10px",
-    position: "relative",
   },
 }));
 
@@ -81,7 +92,44 @@ export default function MoviesCarousel({
           {sliced.map((page) => {
             return page.map((movie, index) => {
               return (
-                <React.Fragment key={index}>
+                <div key={index} className={classes.movie}>
+                  {!movie?.poster_path && (
+                    <div
+                      style={
+                        index.toString() !== data ? { zIndex: "1" } : undefined
+                      }
+                      className={classes.title}
+                    >
+                      <Typography variant="h6">
+                        {movie.title
+                          ? movie.title
+                          : movie.name
+                          ? movie.name
+                          : "Untitled"}
+                      </Typography>
+                      <Typography variant="subtitle1">
+                        {movie?.release_date
+                          ? new Date(movie?.release_date).toLocaleDateString(
+                              "en-GB",
+                              {
+                                day: "numeric",
+                                month: "short",
+                                year: "numeric",
+                              }
+                            )
+                          : movie?.first_air_date
+                          ? new Date(movie?.first_air_date).toLocaleDateString(
+                              "en-GB",
+                              {
+                                day: "numeric",
+                                month: "short",
+                                year: "numeric",
+                              }
+                            )
+                          : "No release date"}
+                      </Typography>
+                    </div>
+                  )}
                   <Image
                     onMouseEnter={handleShowDetails}
                     data-index={index}
@@ -103,12 +151,11 @@ export default function MoviesCarousel({
                   <MovieDetails
                     movie={movie}
                     media_type={media_type}
-                    left={index % 2 === 0}
                     setMessage={setMessage}
                     show={index.toString() === data}
                     handleShowDetails={handleShowDetails}
                   />
-                </React.Fragment>
+                </div>
               );
             });
           })}

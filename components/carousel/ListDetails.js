@@ -1,23 +1,28 @@
+import Link from "next/link";
+
 import { makeStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 
 const useStyles = makeStyles((theme) => ({
   details: {
-    borderRadius: "10px",
     width: "100%",
     height: "100%",
     position: "absolute",
     top: 0,
+    borderRadius: "10px",
     background: "rgba(0,0,0,0.7)",
     transition: "0.2s",
     padding: theme.spacing(1.5),
     color: "#fff",
-    "& > :nth-child(1)": {
+    "& > a > h6": {
       cursor: "pointer",
+      transition: "color 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms",
+      "&:hover": {
+        color: theme.palette.primary.light,
+      },
     },
     "& > :nth-child(2)": {
       fontStyle: "italic",
-      cursor: "pointer",
     },
     "& > ul": {
       fontSize: "0.95rem",
@@ -44,6 +49,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function ListDetails({
+  listID,
   title,
   name,
   movies,
@@ -62,7 +68,11 @@ export default function ListDetails({
       style={!show ? { zIndex: "-99", opacity: 0 } : undefined}
       onMouseLeave={handleMouse}
     >
-      <Typography variant="h6">{title}</Typography>
+      <Link href={`/list/${listID}`} passHref>
+        <a target="_blank" rel="noopener noreferrer">
+          <Typography variant="h6">{title}</Typography>
+        </a>
+      </Link>
       <Typography variant="subtitle1">By {name}</Typography>
       <ul>
         {movies.map((movie, index) => {
