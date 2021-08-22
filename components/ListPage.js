@@ -1,12 +1,19 @@
-import { useRouter } from "next/router";
 import Head from "next/head";
-import useSWR from "swr";
+import Link from "next/link";
+import { useRouter } from "next/router";
+import { useSession } from "next-auth/client";
+import useSWR, { mutate } from "swr";
 
 import { makeStyles } from "@material-ui/core/styles";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import Container from "@material-ui/core/Container";
 import Paper from "@material-ui/core/Paper";
 import Typography from "@material-ui/core/Typography";
+import IconButton from "@material-ui/core/IconButton";
+import StarBorderRoundedIcon from "@material-ui/icons/StarBorderRounded";
+import StarRoundedIcon from "@material-ui/icons/StarRounded";
+import FormatListBulletedRoundedIcon from "@material-ui/icons/FormatListBulletedRounded";
+import TodayRoundedIcon from "@material-ui/icons/TodayRounded";
 
 import Form from "./Form";
 
@@ -18,6 +25,13 @@ const useStyles = makeStyles((theme) => ({
   titleContainer: {
     margin: theme.spacing(1.5),
     padding: theme.spacing(1),
+    "& > h4": {
+      display: "flex",
+      justifyContent: "center",
+      "& > span": {
+        flexBasis: "95%",
+      },
+    },
   },
   backdrop: {
     position: "fixed",
@@ -27,6 +41,23 @@ const useStyles = makeStyles((theme) => ({
     left: "0",
     minWidth: "100vw",
     minHeight: "100vh",
+  },
+  button: {
+    padding: theme.spacing(0.5),
+  },
+  star: {
+    fontSize: "2.1rem",
+    color: theme.palette.primary.light,
+    "&:hover": {
+      color: theme.palette.primary.main,
+    },
+  },
+  topIcon: {
+    fontSize: "1.9rem",
+    color: theme.palette.primary.light,
+    "&:hover": {
+      color: theme.palette.primary.main,
+    },
   },
 }));
 
@@ -38,10 +69,11 @@ export default function ListPage({
   calendar = false,
 }) {
   const classes = useStyles();
+  const [session, loading] = useSession();
   const router = useRouter();
-
   var { id } = router.query;
 
+  const [updating, setUpdating] = React.useState(false);
   const [backdrop, setBackdrop] = React.useState("");
   var movies = (list) => list?.movies?.sort((a, b) => a.position - b.position);
 
@@ -49,6 +81,18 @@ export default function ListPage({
     refreshInterval: 2000,
     initialData: initialList, // For og metatags
   });
+  const { data: savedLists, error2 } = useSWR(
+    session ? "/api/lists/saved" : null
+  );
+  if (error) console.error(error);
+  if (error2) console.error(error2);
+
+  const sameUser = session && list?.user?.email === session?.user?.email;
+  const saved = savedLists?.map((list) => list.listid).includes(id[0]);
+  const contentType = "application/json";
+
+  const uid = new Date(list?.createdAt).getTime().toString().substring(0, 12);
+  const editable = id.length > 1 ? id[1] === uid : false;
 
   React.useEffect(() => {
     if (
@@ -69,6 +113,75 @@ export default function ListPage({
     }
     // eslint-disable-next-line
   }, [error]);
+
+  const saveList = async (list) => {
+    try {
+      const res = await fetch("/api/lists/saved", {
+        method: "POST",
+        headers: {
+          Accept: contentType,
+          "Content-Type": contentType,
+        },
+        body: JSON.stringify(list),
+      });
+
+      if (!res.ok) {
+        throw new Error(res.status);
+      }
+
+      mutate("/api/lists/saved");
+      setUpdating(false);
+    } catch (error) {
+      setMessage(
+        `${JSON.stringify(
+          error.message
+        )} - Failed to add list, please try again.`
+      );
+      setUpdating(false);
+    }
+  };
+
+  const deleteList = async (list) => {
+    try {
+      const res = await fetch(`/api/lists/saved`, {
+        method: "DELETE",
+        headers: {
+          Accept: contentType,
+          "Content-Type": contentType,
+        },
+        body: JSON.stringify(list),
+      });
+
+      if (!res.ok) {
+        throw new Error(res.status);
+      }
+
+      mutate("/api/lists/saved");
+      setUpdating(false);
+    } catch (error) {
+      setMessage(`${JSON.stringify(error.message)} - Failed to delete list.`);
+      setUpdating(false);
+    }
+  };
+
+  const handleButtonClick = () => {
+    if (!loading && !session) {
+      router.push("/login");
+    }
+    if (session) {
+      setUpdating(true);
+      if (saved) {
+        deleteList({ id: id[0] });
+      } else {
+        saveList({
+          listid: id[0],
+          title: list?.title,
+          creator: { name: list?.user.name, email: list?.user.email },
+          movies: list?.movies,
+        });
+      }
+    }
+  };
 
   if (!list) return <CircularProgress size="3rem" thickness={3} />;
 
@@ -113,7 +226,65 @@ export default function ListPage({
           )}
           <Paper elevation={4} className={classes.paper}>
             <Paper elevation={1} className={classes.titleContainer}>
-              <Typography variant="h4">{list.title}</Typography>
+              <Typography variant="h4">
+                {sameUser !== undefined &&
+                  !sameUser &&
+                  (saved ? (
+                    <IconButton
+                      aria-label="remove list"
+                      title="Remove list"
+                      disabled={updating}
+                      onClick={handleButtonClick}
+                      className={classes.button}
+                    >
+                      <StarRoundedIcon className={classes.star} />
+                    </IconButton>
+                  ) : (
+                    <IconButton
+                      aria-label="save list"
+                      title="Save list"
+                      disabled={updating}
+                      onClick={handleButtonClick}
+                      className={classes.button}
+                    >
+                      <StarBorderRoundedIcon className={classes.star} />
+                    </IconButton>
+                  ))}
+                <span>{list.title}</span>
+                {calendar ? (
+                  <Link
+                    href={editable ? `/list/${id[0]}/${uid}` : `/list/${id[0]}`}
+                    passHref
+                  >
+                    <IconButton
+                      aria-label="list view"
+                      title="List view"
+                      className={classes.button}
+                    >
+                      <FormatListBulletedRoundedIcon
+                        className={classes.topIcon}
+                      />
+                    </IconButton>
+                  </Link>
+                ) : (
+                  <Link
+                    href={
+                      editable
+                        ? `/list/calendar/${id[0]}/${uid}`
+                        : `/list/calendar/${id[0]}`
+                    }
+                    passHref
+                  >
+                    <IconButton
+                      aria-label="calendar view"
+                      title="Calendar view"
+                      className={classes.button}
+                    >
+                      <TodayRoundedIcon className={classes.topIcon} />
+                    </IconButton>
+                  </Link>
+                )}
+              </Typography>
             </Paper>
             <Form
               list={list ? list : initialList}

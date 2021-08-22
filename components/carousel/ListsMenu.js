@@ -23,7 +23,12 @@ const unloadAlert = (ev) => {
   ev.returnValue = "";
 };
 
-export default function ListsMenu({ movieID, media_type, setMessage }) {
+export default function ListsMenu({
+  movieID,
+  media_type,
+  setMessage,
+  handleMenuClose,
+}) {
   const classes = useStyles();
   const contentType = "application/json";
   const [updating, setUpdating] = React.useState(false);
@@ -32,6 +37,7 @@ export default function ListsMenu({ movieID, media_type, setMessage }) {
   const isMounted = React.useRef(null);
 
   const { data: lists, error } = useSWR("/api/lists");
+  if (error) console.error(error);
 
   React.useEffect(() => {
     isMounted.current = true;
@@ -40,7 +46,7 @@ export default function ListsMenu({ movieID, media_type, setMessage }) {
     };
   }, []);
 
-  const add = async (id, idx) => {
+  const add = async (id, idx, ev) => {
     setUpdating(true);
     setValue(idx);
     window.addEventListener("beforeunload", unloadAlert);
@@ -67,6 +73,11 @@ export default function ListsMenu({ movieID, media_type, setMessage }) {
 
       if (isMounted.current && success) setAdded(true);
       if (isMounted.current) setUpdating(false);
+      if (handleMenuClose && isMounted.current) {
+        setTimeout(() => {
+          handleMenuClose(ev);
+        }, 150);
+      }
     } catch (error) {
       window.removeEventListener("beforeunload", unloadAlert);
       setMessage(
@@ -76,9 +87,7 @@ export default function ListsMenu({ movieID, media_type, setMessage }) {
     }
   };
 
-  if (!lists) {
-    return null;
-  }
+  if (!lists) return null;
 
   return (
     lists &&
@@ -87,7 +96,7 @@ export default function ListsMenu({ movieID, media_type, setMessage }) {
         <MenuItem
           key={index}
           disabled={updating}
-          onClick={() => add(list._id, index)}
+          onClick={(ev) => add(list._id, index, ev)}
         >
           <Typography
             variant="button"

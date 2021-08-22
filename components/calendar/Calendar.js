@@ -1,6 +1,7 @@
 import useSWR from "swr";
 
 import { makeStyles } from "@material-ui/core/styles";
+import CircularProgress from "@material-ui/core/CircularProgress";
 import Box from "@material-ui/core/Box";
 import CardHeader from "@material-ui/core/CardHeader";
 import Button from "@material-ui/core/Button";
@@ -97,6 +98,7 @@ export default function Calendar({ listID, newTab = false }) {
   const { data: list, error } = useSWR(listID ? `/api/lists/${listID}` : null, {
     refreshInterval: 2000,
   });
+  if (error) console.error(error);
   var movies = [];
   if (list) {
     ({ movies } = list);
@@ -132,7 +134,9 @@ export default function Calendar({ listID, newTab = false }) {
     setMonth(date._d.getMonth());
   };
 
-  return (
+  return !list ? (
+    <CircularProgress size="3rem" thickness={3} />
+  ) : (
     <Box p={2} className={!newTab ? classes.panel : classes.newTab}>
       <Paper elevation={1} className={classes.container}>
         {newTab && (

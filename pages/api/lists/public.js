@@ -11,7 +11,7 @@ export default async function handler(req, res) {
       try {
         const publicLists = await Watchlist.find(
           { private: false, "movies.0": { $exists: true } },
-          "_id title movies user.name",
+          "_id title movies user",
           {
             skip: 0,
             limit: 10,

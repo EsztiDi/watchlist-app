@@ -106,7 +106,7 @@ export default function Account({ setMessage }) {
       const res = await fetch(
         lists ? "api/account/lists" : "api/account/delete",
         {
-          method: "Delete",
+          method: "DELETE",
         }
       );
 

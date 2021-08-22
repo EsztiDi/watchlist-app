@@ -1,5 +1,4 @@
 import Head from "next/head";
-import useSWR from "swr";
 
 import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
@@ -19,9 +18,6 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Discover({ setMessage }) {
   const classes = useStyles();
-
-  const { data: publicLists, error } = useSWR("/api/lists/public");
-  if (error) console.error(error);
 
   const [loading, setLoading] = React.useState(false);
   const [thisMonthMovies, setThisMonthMovies] = React.useState([]);
@@ -177,7 +173,7 @@ export default function Discover({ setMessage }) {
                 />
               );
             })}
-          <ListsCarousel lists={publicLists} />
+          <ListsCarousel setMessage={setMessage} />
         </Paper>
       </Container>
     </>

@@ -6,7 +6,8 @@ import { makeStyles } from "@material-ui/core/styles";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import Paper from "@material-ui/core/Paper";
 
-import Form from "./Form";
+import ListTabs from "../../components/tabs/ListTabs";
+import SavedPanel from "../../components/tabs/SavedPanel";
 
 const useStyles = makeStyles((theme) => ({
   loadingContainer: {
@@ -29,43 +30,50 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function ListPanels({ setMessage, calendar = false }) {
+export default function SavedLists({ setMessage }) {
   const classes = useStyles();
   const [session, loading] = useSession();
   const router = useRouter();
-  const { id } = router.query;
+  const [updating, setUpdating] = React.useState(false);
 
-  const { data: list, error } = useSWR(id ? `/api/lists/${id}` : null);
+  const { data: lists, error } = useSWR(session ? "/api/lists/saved" : null);
   if (error) console.error(error);
-
-  const auth = session && list?.user?.email === session?.user?.email;
 
   if (loading) return null;
 
   if (!loading && !session) {
     router.replace("/login");
-  } else if ((list && !auth) || error) {
-    router.replace("/lists");
   }
 
-  if (!list) {
+  if (lists && lists.length === 0) {
+    router.push("/lists");
+  }
+
+  if (!lists)
     return (
       <div className={classes.loadingContainer}>
         <CircularProgress size="3rem" thickness={3} />
       </div>
     );
-  }
 
   return (
-    auth &&
-    list && (
+    session &&
+    lists && (
       <Paper elevation={4} className={classes.container} id="watchlists">
         <div className={classes.watchlists}>
-          <Form
-            list={list}
+          <ListTabs
+            id={null}
+            updating={updating}
+            setUpdating={null}
+            putData={null}
+            calendar={false}
+            saved={true}
+          />
+          <SavedPanel
+            lists={lists}
+            updating={updating}
+            setUpdating={setUpdating}
             setMessage={setMessage}
-            calendar={calendar}
-            newList={false}
           />
         </div>
       </Paper>

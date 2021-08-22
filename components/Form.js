@@ -1,5 +1,6 @@
 import { useRouter } from "next/router";
 import { mutate } from "swr";
+import { useSession } from "next-auth/client";
 
 import { makeStyles } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
@@ -16,7 +17,6 @@ import MovieSearch from "./movieSearch/MovieSearch";
 import Movies from "./Movies";
 import TabPanel from "./tabs/TabPanel";
 import ListTabs from "./tabs/ListTabs";
-import { useSession } from "next-auth/client";
 
 const useStyles = makeStyles((theme) => ({
   create: {
@@ -392,6 +392,7 @@ export default function Form({
                   deleteMovie={deleteMovie}
                   moveMovie={moveMovie}
                   updating={updating}
+                  setMessage={setMessage}
                 />
               </Grid>
             )}

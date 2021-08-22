@@ -228,7 +228,8 @@ export default function MyApp({ Component, pageProps }) {
               style={{
                 height:
                   router.pathname.includes("/lists/[id]") ||
-                  router.pathname.includes("/lists/calendar/[id]")
+                  router.pathname.includes("/lists/calendar/[id]") ||
+                  router.pathname.includes("/lists/saved")
                     ? "auto"
                     : "calc(100% - 56px)",
               }}

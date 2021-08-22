@@ -1,5 +1,4 @@
-import React from "react";
-import Image from "next/image";
+import useSWR from "swr";
 
 import { makeStyles } from "@material-ui/core/styles";
 import Paper from "@material-ui/core/Paper";
@@ -8,7 +7,7 @@ import Divider from "@material-ui/core/Divider";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import Carousel from "react-material-ui-carousel";
 
-import ListDetails from "./ListDetails";
+import ListCard from "../listCard/ListCard";
 
 const useStyles = makeStyles((theme) => ({
   listsCard: {
@@ -28,33 +27,14 @@ const useStyles = makeStyles((theme) => ({
       justifyContent: "space-evenly",
     },
   },
-  list: {
-    position: "relative",
-    display: "inline-flex",
-    flexWrap: "wrap",
-    justifyContent: "center",
-    alignContent: "flex-start",
-    width: "200px",
-    overflow: "hidden",
-    borderRadius: "10px",
-    boxShadow:
-      "0px 2px 1px -1px rgb(0 0 0 / 20%), 0px 1px 1px 0px rgb(0 0 0 / 14%), 0px 1px 3px 0px rgb(0 0 0 / 12%)",
-    "&:not(:last-child)": {
-      marginRight: `${theme.spacing(2)}px !important`,
-    },
-  },
 }));
 
-export default function ListsCarousel({ lists }) {
+export default function ListsCarousel({ setMessage }) {
   const classes = useStyles();
-  const [data, setData] = React.useState("");
+  var [updating, setUpdating] = React.useState(false);
 
-  const handleShowDetails = (ev) => {
-    const index =
-      ev?.target?.parentElement?.parentElement?.dataset?.index ||
-      ev?.target?.dataset?.index;
-    setData(index);
-  };
+  const { data: lists, error } = useSWR("/api/lists/public");
+  if (error) console.error(error);
 
   if (lists) {
     var sliced = [];
@@ -88,44 +68,14 @@ export default function ListsCarousel({ lists }) {
           {sliced.map((page) => {
             return page.map((list, index) => {
               return (
-                <div
+                <ListCard
                   key={index}
-                  className={classes.list}
-                  onMouseEnter={handleShowDetails}
-                  data-index={index}
-                >
-                  {list.movies
-                    .sort((a, b) => a.position - b.position)
-                    .slice(0, 4)
-                    .map((movie, index) => {
-                      return (
-                        <Image
-                          key={`M-${index}`}
-                          width={100}
-                          height={150}
-                          objectFit="contain"
-                          src={
-                            movie?.poster_path
-                              ? `https://image.tmdb.org/t/p/w200${movie?.poster_path}`
-                              : "/movieIcon.png"
-                          }
-                          onError={(ev) => {
-                            ev.target.onerror = null;
-                            ev.target.src = "/movieIcon.png";
-                          }}
-                          alt=""
-                        />
-                      );
-                    })}
-                  <ListDetails
-                    listID={list._id}
-                    title={list.title}
-                    name={list.user?.name?.split(" ")[0]}
-                    movies={list.movies.map((movie) => movie.title)}
-                    show={index.toString() === data}
-                    handleShowDetails={handleShowDetails}
-                  />
-                </div>
+                  list={list}
+                  index={index}
+                  updating={updating}
+                  setUpdating={setUpdating}
+                  setMessage={setMessage}
+                />
               );
             });
           })}

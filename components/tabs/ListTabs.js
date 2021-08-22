@@ -90,15 +90,22 @@ export default function ListTabs({
   setUpdating,
   putData,
   calendar,
+  saved = false,
 }) {
   const classes = useStyles();
   const [editTitle, setEditTitle] = React.useState(false);
 
   const { data: lists, error } = useSWR("/api/lists");
+  const { data: savedLists, error2 } = useSWR("/api/lists/saved");
+  if (error) console.error(error);
+  if (error2) console.error(error2);
   const hasLists = lists && lists.length > 0;
+  const hasSavedLists = savedLists && savedLists.length > 0;
 
   var value =
-    lists?.map((list) => list._id).indexOf(id) === -1
+    saved && hasSavedLists
+      ? lists?.length
+      : lists?.map((list) => list._id).indexOf(id) === -1
       ? 0
       : lists?.map((list) => list._id).indexOf(id);
 
@@ -165,7 +172,7 @@ export default function ListTabs({
                 onClick={editTitle ? closeEditTitle : null}
                 className={classes.tab}
                 style={value === index ? { opacity: 1 } : null}
-                {...a11yProps(id, index, value)}
+                {...a11yProps(list._id, index, value)}
                 icon={
                   putData &&
                   value === index && (
@@ -211,6 +218,19 @@ export default function ListTabs({
               />
             </Link>
           )
+        )}
+        {hasSavedLists && (
+          <Link href={`/lists/saved`} replace passHref>
+            <Tab
+              label="Saved Lists"
+              wrapped
+              disableFocusRipple
+              disabled={updating}
+              className={classes.tab}
+              style={value === lists.length ? { opacity: 1 } : null}
+              {...a11yProps("saved", lists.length, lists.length)}
+            />
+          </Link>
         )}
       </Tabs>
     )

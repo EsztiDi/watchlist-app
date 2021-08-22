@@ -7,7 +7,7 @@ import Typography from "@material-ui/core/Typography";
 import StarRoundedIcon from "@material-ui/icons/StarRounded";
 import TheatersRoundedIcon from "@material-ui/icons/TheatersRounded";
 import Button from "@material-ui/core/Button";
-import AddRoundedIcon from "@material-ui/icons/AddRounded";
+import PlaylistAddRoundedIcon from "@material-ui/icons/PlaylistAddRounded";
 import ClickAwayListener from "@material-ui/core/ClickAwayListener";
 import Grow from "@material-ui/core/Grow";
 import Paper from "@material-ui/core/Paper";
@@ -22,11 +22,11 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
-    borderRadius: "10px",
     width: "100%",
     height: "100%",
     position: "absolute",
     top: 0,
+    borderRadius: "10px",
     background: "rgba(0,0,0,0.7)",
     transition: "0.2s",
     padding: theme.spacing(1),
@@ -34,12 +34,12 @@ const useStyles = makeStyles((theme) => ({
     "& > :nth-child(2)": {
       marginBottom: theme.spacing(1),
     },
-    "& button": {
+    "& > button": {
       margin: `auto 0 ${theme.spacing(1)}px`,
       padding: `${theme.spacing(0.5)}px ${theme.spacing(1.5)}px`,
       fontWeight: "bold",
     },
-    "& button + div": {
+    "& > button + div": {
       zIndex: "1",
     },
   },
@@ -70,6 +70,7 @@ export default function MovieDetails({
   const [session, loading] = useSession();
   const router = useRouter();
   const { data: lists, error } = useSWR(session ? "/api/lists" : null);
+  if (error) console.error(error);
 
   const [external_ids, setExternalIDs] = React.useState({});
   var {
@@ -128,6 +129,7 @@ export default function MovieDetails({
       })
     : "No release date";
 
+  // For ListsMenu
   const [menuOpen, setMenuOpen] = React.useState(false);
   const anchorRef = React.useRef(null);
 
@@ -206,7 +208,7 @@ export default function MovieDetails({
         aria-haspopup="true"
         onClick={handleButtonClick}
       >
-        <AddRoundedIcon /> Add
+        <PlaylistAddRoundedIcon /> Add
       </Button>
       <Popper
         open={menuOpen}
@@ -223,7 +225,7 @@ export default function MovieDetails({
                 placement === "bottom" ? "center top" : "center bottom",
             }}
           >
-            <Paper className={classes.popup}>
+            <Paper>
               <ClickAwayListener onClickAway={handleMenuClose}>
                 <MenuList
                   autoFocus={menuOpen}

@@ -11,7 +11,7 @@ const useStyles = makeStyles((theme) => ({
     borderBottom: "2px solid rgba(224, 224, 224, 1)",
   },
   posterCell: {
-    "& span:nth-of-type(even)": {
+    "& a:nth-of-type(even)": {
       marginLeft: "5px",
     },
     padding: theme.spacing(1),
@@ -25,7 +25,6 @@ const useStyles = makeStyles((theme) => ({
     fontSize: "0.9rem",
     textAlign: "center",
     lineHeight: 1.2,
-    // whiteSpace: "nowrap",
     margin: theme.spacing(0.8),
   },
 }));

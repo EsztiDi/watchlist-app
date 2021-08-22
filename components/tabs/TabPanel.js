@@ -67,12 +67,12 @@ const useStyles = makeStyles((theme) => ({
       color: theme.palette.primary.main,
     },
   },
-  calendar: {
-    padding: theme.spacing(0.5),
-    position: "absolute",
-    bottom: "19px",
-    right: "24px",
-  },
+  // calendar: {
+  //   padding: theme.spacing(0.5),
+  //   position: "absolute",
+  //   bottom: "19px",
+  //   right: "24px",
+  // },
   updating: {
     position: "absolute",
     bottom: "27px",
@@ -112,6 +112,7 @@ export default function TabPanel(props) {
   } = props;
 
   const { data: list, error } = useSWR(listID ? `/api/lists/${listID}` : null);
+  if (error) console.error(error);
 
   var title, privateList, emails, createdAt;
 
@@ -153,47 +154,6 @@ export default function TabPanel(props) {
       {...other}
     >
       <div className={classes.buttons}>
-        {calendar ? (
-          <Link
-            href={
-              editable && newTab
-                ? `/list/${listID}/${uid}`
-                : newTab
-                ? `/list/${listID}`
-                : `/lists/${listID}`
-            }
-            replace={newTab ? false : true}
-            passHref
-          >
-            <IconButton
-              aria-label="list view"
-              title="List view"
-              className={newTab ? classes.calendar : classes.button}
-            >
-              <FormatListBulletedRoundedIcon className={classes.topIcon} />
-            </IconButton>
-          </Link>
-        ) : (
-          <Link
-            href={
-              editable && newTab
-                ? `/list/calendar/${listID}/${uid}`
-                : newTab
-                ? `/list/calendar/${listID}`
-                : `/lists/calendar/${listID}`
-            }
-            replace={newTab ? false : true}
-            passHref
-          >
-            <IconButton
-              aria-label="calendar view"
-              title="Calendar view"
-              className={newTab ? classes.calendar : classes.button}
-            >
-              <TodayRoundedIcon className={classes.topIcon} />
-            </IconButton>
-          </Link>
-        )}
         {newTab && updating && (
           <CircularProgress
             size="1.5rem"
@@ -203,6 +163,27 @@ export default function TabPanel(props) {
         )}
         {!newTab && (
           <>
+            {calendar ? (
+              <Link href={`/lists/${listID}`} replace passHref>
+                <IconButton
+                  aria-label="list view"
+                  title="List view"
+                  className={classes.button}
+                >
+                  <FormatListBulletedRoundedIcon className={classes.topIcon} />
+                </IconButton>
+              </Link>
+            ) : (
+              <Link href={`/lists/calendar/${listID}`} replace passHref>
+                <IconButton
+                  aria-label="calendar view"
+                  title="Calendar view"
+                  className={classes.button}
+                >
+                  <TodayRoundedIcon className={classes.topIcon} />
+                </IconButton>
+              </Link>
+            )}
             <FormControlLabel
               label="Private"
               labelPlacement="start"
@@ -286,6 +267,7 @@ export default function TabPanel(props) {
           deleteMovie={editable ? deleteMovie : undefined}
           moveMovie={editable ? moveMovie : undefined}
           updating={updating}
+          setMessage={setMessage}
         />
       )}
       {editable && !calendar && (

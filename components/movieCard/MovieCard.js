@@ -1,4 +1,6 @@
-import formatData from "../../utils/formatData";
+import { useRouter } from "next/router";
+import { useSession } from "next-auth/client";
+import useSWR from "swr";
 
 import { makeStyles } from "@material-ui/core/styles";
 import Card from "@material-ui/core/Card";
@@ -6,6 +8,7 @@ import CardContent from "@material-ui/core/CardContent";
 import CardMedia from "@material-ui/core/CardMedia";
 import Typography from "@material-ui/core/Typography";
 import IconButton from "@material-ui/core/IconButton";
+import PlaylistAddRoundedIcon from "@material-ui/icons/PlaylistAddRounded";
 import StarRoundedIcon from "@material-ui/icons/StarRounded";
 import TheatersRoundedIcon from "@material-ui/icons/TheatersRounded";
 import HighlightOffRoundedIcon from "@material-ui/icons/HighlightOffRounded";
@@ -13,9 +16,15 @@ import VerticalAlignTopRoundedIcon from "@material-ui/icons/VerticalAlignTopRoun
 import VerticalAlignBottomRoundedIcon from "@material-ui/icons/VerticalAlignBottomRounded";
 import KeyboardArrowUpRoundedIcon from "@material-ui/icons/KeyboardArrowUpRounded";
 import KeyboardArrowDownRoundedIcon from "@material-ui/icons/KeyboardArrowDownRounded";
+import ClickAwayListener from "@material-ui/core/ClickAwayListener";
+import Grow from "@material-ui/core/Grow";
+import Paper from "@material-ui/core/Paper";
+import Popper from "@material-ui/core/Popper";
+import MenuList from "@material-ui/core/MenuList";
 
 import Overview from "./Overview";
 import Seasons from "./Seasons";
+import ListsMenu from "../carousel/ListsMenu";
 
 const useStyles = makeStyles((theme) => ({
   moviecard: {
@@ -43,6 +52,14 @@ const useStyles = makeStyles((theme) => ({
   },
   title: {
     textAlign: "center",
+    display: "flex",
+    justifyContent: "center",
+    "& > span": {
+      flexBasis: "95%",
+    },
+    "& > button + div": {
+      zIndex: "1",
+    },
   },
   media: {
     textTransform: "capitalize",
@@ -137,6 +154,7 @@ export default function MovieCard({
   deleteMovie,
   moveMovie,
   updating,
+  setMessage,
 }) {
   const classes = useStyles();
 
@@ -172,6 +190,39 @@ export default function MovieCard({
     ? `https://image.tmdb.org/t/p/w200${poster_path}`
     : "/movieIcon.png";
 
+  // For ListsMenu
+  const [session, loading] = useSession();
+  const router = useRouter();
+  const { data: lists, error } = useSWR(session ? "/api/lists" : null);
+  if (error) console.error(error);
+
+  const [menuOpen, setMenuOpen] = React.useState(false);
+  const anchorRef = React.useRef(null);
+
+  const handleButtonClick = () => {
+    if (!loading && !session) {
+      router.push("/login");
+    } else if (lists && lists.length === 0) {
+      router.push("/create");
+    } else {
+      setMenuOpen((prevOpen) => !prevOpen);
+    }
+  };
+
+  const handleMenuClose = (ev) => {
+    if (anchorRef.current && anchorRef.current.contains(ev.target)) {
+      return;
+    }
+    setMenuOpen(false);
+  };
+
+  const handleListKeyDown = (ev) => {
+    if (ev.key === "Tab") {
+      ev.preventDefault();
+      setMenuOpen(false);
+    }
+  };
+
   // For Seasons modal
   const [seasonsOpen, setSeasonsOpen] = React.useState(false);
 
@@ -189,7 +240,55 @@ export default function MovieCard({
         />
         <CardContent className={classes.content}>
           <Typography variant="h6" className={classes.title}>
-            {title || "Untitled"} {/* ({year}, {media_type || "-"}) */}
+            <span>{title || "Untitled"}</span>
+            <IconButton
+              aria-controls={menuOpen ? "menu-list" : undefined}
+              aria-haspopup="true"
+              aria-label="add to list"
+              title="Add to list"
+              ref={anchorRef}
+              disabled={updating}
+              onClick={handleButtonClick}
+              className={classes.button}
+            >
+              <PlaylistAddRoundedIcon className={classes.arrow} />
+            </IconButton>
+            <Popper
+              open={menuOpen}
+              anchorEl={anchorRef.current}
+              role={undefined}
+              transition
+              disablePortal
+            >
+              {({ TransitionProps, placement }) => (
+                <Grow
+                  {...TransitionProps}
+                  style={{
+                    transformOrigin:
+                      placement === "bottom" ? "center top" : "center bottom",
+                  }}
+                >
+                  <Paper>
+                    <ClickAwayListener onClickAway={handleMenuClose}>
+                      <MenuList
+                        autoFocus={menuOpen}
+                        id="menu-list"
+                        onKeyDown={handleListKeyDown}
+                      >
+                        {session && (
+                          <ListsMenu
+                            movieID={id}
+                            media_type={media_type}
+                            setMessage={setMessage}
+                            handleMenuClose={handleMenuClose}
+                          />
+                        )}
+                      </MenuList>
+                    </ClickAwayListener>
+                  </Paper>
+                </Grow>
+              )}
+            </Popper>
           </Typography>
           <Typography
             variant="subtitle2"

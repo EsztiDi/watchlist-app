@@ -21,12 +21,14 @@ export default function Movies({
   deleteMovie,
   moveMovie,
   updating,
+  setMessage,
 }) {
   const classes = useStyles();
 
   const { data: list, error } = useSWR(listID ? `/api/lists/${listID}` : null, {
     refreshInterval: 2000,
   });
+  if (error) console.error(error);
   if (list) {
     ({ movies } = list);
   }
@@ -45,6 +47,7 @@ export default function Movies({
           deleteMovie={deleteMovie}
           moveMovie={moveMovie}
           updating={updating}
+          setMessage={setMessage}
           className={classes.cards}
         />
       ))
