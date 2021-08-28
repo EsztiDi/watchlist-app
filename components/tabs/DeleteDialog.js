@@ -38,7 +38,13 @@ export default function DeleteDialog({
         method: "DELETE",
       });
 
-      mutate("/api/lists");
+      mutate("/api/lists", async (lists) => {
+        const filteredLists = lists.filter((list) => list._id !== listID);
+        mutate("/api/lists/newuser", async (data) => {
+          return { ...data, id: filteredLists[0]?._id };
+        });
+        return lists.filter((list) => list._id !== listID);
+      });
       setUpdating(false);
       router.push("/lists");
     } catch (error) {

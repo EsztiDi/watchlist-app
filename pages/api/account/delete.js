@@ -16,12 +16,12 @@ export default async function handler(req, res) {
           mongoose.connection.db.collection("users", async (err, users) => {
             try {
               const user = await users.findOne({
-                email: session.user.email,
+                email: session?.user.email,
               });
               const { _id: userID } = user;
 
               await Watchlist.deleteMany({
-                user: session.user,
+                user: session?.user,
               }).catch((err) => {
                 console.error(
                   `Couldn't delete lists - user: ${JSON.stringify(

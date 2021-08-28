@@ -176,6 +176,7 @@ export default function TabPanel(props) {
             ) : (
               <Link href={`/lists/calendar/${listID}`} replace passHref>
                 <IconButton
+                  id="calendar"
                   aria-label="calendar view"
                   title="Calendar view"
                   className={classes.button}
@@ -185,6 +186,7 @@ export default function TabPanel(props) {
               </Link>
             )}
             <FormControlLabel
+              id="private"
               label="Private"
               labelPlacement="start"
               control={
@@ -197,6 +199,7 @@ export default function TabPanel(props) {
               }
             />
             <FormControlLabel
+              id="emails"
               label="Emails"
               labelPlacement="start"
               control={
@@ -209,6 +212,7 @@ export default function TabPanel(props) {
               }
             />
             <IconButton
+              id="share"
               aria-label="share watchlist"
               title="Share"
               onClick={handleOpenShare}

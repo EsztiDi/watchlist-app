@@ -44,7 +44,7 @@ export default async function handler(req, res) {
 
         if (!updatedList) {
           console.error(
-            `List ${id} not found - user: ${JSON.stringify(session.user)}`
+            `List ${id} not found - user: ${JSON.stringify(session?.user)}`
           );
           return res.status(400).json({ success: false });
         }
@@ -52,7 +52,7 @@ export default async function handler(req, res) {
       } catch (err) {
         console.error(
           `Couldn't update lists - ${id} - user: ${JSON.stringify(
-            session.user
+            session?.user
           )} - ${JSON.stringify(err)}`
         );
         res.status(400).json({ success: false });

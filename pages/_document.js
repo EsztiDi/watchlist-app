@@ -20,6 +20,10 @@ export default class MyDocument extends Document {
             href="https://fonts.googleapis.com/css2?family=Bangers&family=Carter+One&display=swap"
             rel="stylesheet"
           />
+          <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/intro.js/4.2.2/introjs.min.css"
+          />
         </Head>
         <body>
           <Main />

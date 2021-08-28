@@ -186,7 +186,7 @@ export default function Account({ setMessage }) {
                 <Typography component="span">
                   Unsubscribe from <b>ALL</b> emails:
                   <Typography variant="caption" component="p">
-                    (The weekly release summaries.)
+                    (The weekly upcoming releases summary.)
                   </Typography>
                 </Typography>
                 <Button

@@ -12,7 +12,7 @@ export default async function handler(req, res) {
     case "GET":
       try {
         const lists = await Watchlist.find(
-          { user: session.user },
+          { user: session?.user },
           "_id title movies position"
         ).sort({
           position: -1,
@@ -21,7 +21,7 @@ export default async function handler(req, res) {
       } catch (err) {
         console.error(
           `Lists not found -  user: ${JSON.stringify(
-            session.user
+            session?.user
           )} - ${JSON.stringify(err)}`
         );
         res.status(400).json({ success: false });
@@ -30,7 +30,7 @@ export default async function handler(req, res) {
     case "POST":
       try {
         if (session) {
-          const lists = await Watchlist.find({ user: session.user }).sort({
+          const lists = await Watchlist.find({ user: session?.user }).sort({
             position: -1,
           });
 
@@ -39,7 +39,7 @@ export default async function handler(req, res) {
           } else {
             req.body.position = 0;
           }
-          req.body.user = session.user;
+          req.body.user = session?.user;
         }
 
         const list = await Watchlist.create(req.body);
@@ -47,7 +47,7 @@ export default async function handler(req, res) {
       } catch (err) {
         console.error(
           `Couldn't create list -  user: ${JSON.stringify(
-            session.user
+            session?.user
           )} - ${JSON.stringify(err)}`
         );
         res.status(400).json({ success: false });

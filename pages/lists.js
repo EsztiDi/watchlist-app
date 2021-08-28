@@ -39,9 +39,14 @@ export default function Lists() {
     id = null;
 
   const { data, error } = useSWR("/api/lists/newuser");
+  const { data: savedLists, error2 } = useSWR(
+    session ? "/api/lists/saved" : null
+  );
   if (error) console.error(error);
+  if (error2) console.error(error2);
 
   if (data) ({ hasLists, id } = data);
+  const hasSavedLists = savedLists && savedLists.length > 0;
 
   if (loading) return null;
 
@@ -49,15 +54,20 @@ export default function Lists() {
 
   if (!loading && !session) {
     router.replace("/login");
-  } else if (hasLists) {
+  } else if (hasLists && id !== undefined) {
     router.replace(`/lists/${id}`);
+    return <CircularProgress size="3rem" thickness={3} />;
+  } else if (!data?.movies && !hasLists && hasSavedLists) {
+    router.replace(`/lists/saved`);
     return <CircularProgress size="3rem" thickness={3} />;
   }
 
   return (
     session &&
     data &&
-    !hasLists && (
+    !data?.movies &&
+    !hasLists &&
+    !hasSavedLists && (
       <Paper elevation={4} className={classes.container}>
         <>
           <Typography variant="h4">Create a watchlist</Typography>

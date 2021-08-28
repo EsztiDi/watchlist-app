@@ -1616,7 +1616,7 @@ export default function weeklyHTML(lists) {
                     "
                   >
                     You are receiving this email because you have
-                    opted in for weekly email notifications for one or
+                    opted in for the weekly email summary for one or
                     more of your watchlists on
                     <span style="color: #cccccc"
                       ><strong

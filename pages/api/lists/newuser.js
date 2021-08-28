@@ -18,7 +18,7 @@ export default async function handler(req, res) {
 
         if (session) {
           var results = await Watchlist.find(
-            { user: session.user },
+            { user: session?.user },
             "_id"
           ).sort({
             position: -1,
@@ -33,7 +33,7 @@ export default async function handler(req, res) {
               var user = null;
               try {
                 const result = await users.findOne({
-                  email: session.user.email,
+                  email: session?.user.email,
                 });
                 if (result) {
                   user = await JSON.parse(JSON.stringify(result));
@@ -46,7 +46,7 @@ export default async function handler(req, res) {
             });
           });
           newUser =
-            new Date(user?.createdAt).getTime() > new Date() - 10 * 1000;
+            new Date(user?.createdAt).getTime() > new Date() - 30 * 1000;
 
           if (newUser && !hasLists) {
             try {
@@ -63,7 +63,7 @@ export default async function handler(req, res) {
                   movies: [],
                   private: true,
                   emails: false,
-                  user: session.user,
+                  user: session?.user,
                   position: 1,
                 }),
               });
@@ -79,7 +79,7 @@ export default async function handler(req, res) {
                   movies: [],
                   private: true,
                   emails: false,
-                  user: session.user,
+                  user: session?.user,
                   position: 0,
                 }),
               });
@@ -94,7 +94,7 @@ export default async function handler(req, res) {
               console.error(err.message + " - Failed to add first lists");
             }
             var results = await Watchlist.find(
-              { user: session.user },
+              { user: session?.user },
               "_id"
             ).sort({
               position: -1,
@@ -112,7 +112,7 @@ export default async function handler(req, res) {
       } catch (err) {
         console.error(
           `Lists not found -  user: ${JSON.stringify(
-            session.user
+            session?.user
           )} - ${JSON.stringify(err)}`
         );
         res.status(400).json({ success: false });

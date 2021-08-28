@@ -177,7 +177,13 @@ export default function ListPage({
           listid: id[0],
           title: list?.title,
           creator: { name: list?.user.name, email: list?.user.email },
-          movies: list?.movies,
+          movies: list?.movies.map((movie) => {
+            return {
+              title: movie.title,
+              poster_path: movie.poster_path,
+              position: movie.position,
+            };
+          }),
         });
       }
     }

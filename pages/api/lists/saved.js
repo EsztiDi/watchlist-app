@@ -11,12 +11,12 @@ export default async function handler(req, res) {
   switch (method) {
     case "GET":
       try {
-        const lists = await Savedlist.find({ user: session.user });
+        const lists = await Savedlist.find({ user: session?.user });
         res.status(200).json({ success: true, data: lists });
       } catch (err) {
         console.error(
           `Savedlists not found -  user: ${JSON.stringify(
-            session.user
+            session?.user
           )} - ${JSON.stringify(err)}`
         );
         res.status(400).json({ success: false });
@@ -24,13 +24,13 @@ export default async function handler(req, res) {
       break;
     case "POST":
       try {
-        req.body.user = session.user;
+        req.body.user = session?.user;
         const list = await Savedlist.create(req.body);
         res.status(201).json({ success: true, data: list });
       } catch (err) {
         console.error(
           `Couldn't create savedlist -  user: ${JSON.stringify(
-            session.user
+            session?.user
           )} - ${JSON.stringify(err)}`
         );
         res.status(400).json({ success: false });
@@ -44,7 +44,7 @@ export default async function handler(req, res) {
         if (!deletedList) {
           console.error(
             `Savedlist ${req.body.id} not found - user: ${JSON.stringify(
-              session.user
+              session?.user
             )}`
           );
           return res.status(400).json({ success: false });
@@ -53,7 +53,7 @@ export default async function handler(req, res) {
       } catch (err) {
         console.error(
           `Couldn't delete list ${id} - user: ${JSON.stringify(
-            session.user
+            session?.user
           )} - ${JSON.stringify(err)}`
         );
         res.status(400).json({ success: false });

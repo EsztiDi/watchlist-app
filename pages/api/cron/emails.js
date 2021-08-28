@@ -73,7 +73,7 @@ export default async function handler(req, res) {
                       var today = new Date().setUTCHours(0, 0, 0, 0);
                       if (
                         release_date > today &&
-                        release_date < today + 60000 * 60 * 24 * 7
+                        release_date <= today + 60000 * 60 * 24 * 7
                       ) {
                         movies.push(movie);
                       }

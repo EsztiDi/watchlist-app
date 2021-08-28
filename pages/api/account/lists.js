@@ -13,7 +13,7 @@ export default async function handler(req, res) {
       try {
         const update = await Watchlist.updateMany(
           {
-            user: session.user,
+            user: session?.user,
             private: false,
           },
           { private: true }
@@ -22,7 +22,7 @@ export default async function handler(req, res) {
         if (!update) {
           console.error(
             `Couldn't perform updateMany() for public lists in MongoDB - user: ${JSON.stringify(
-              session.user
+              session?.user
             )}`
           );
           return res.status(400).json({ success: false });
@@ -34,7 +34,7 @@ export default async function handler(req, res) {
       } catch (err) {
         console.error(
           `Couldn't perform updateMany() for public lists in MongoDB - user: ${
-            session.user
+            session?.user
           } - ${JSON.stringify(err)}`
         );
         res.status(400).json({ success: false });
@@ -44,12 +44,12 @@ export default async function handler(req, res) {
     case "DELETE":
       try {
         const deletedLists = await Watchlist.deleteMany({
-          user: session.user,
+          user: session?.user,
         });
         if (!deletedLists) {
           console.error(
             `Couldn't perform deleteMany() in MongoDB - user: ${JSON.stringify(
-              session.user
+              session?.user
             )}`
           );
           return res.status(400).json({ success: false });
@@ -61,7 +61,7 @@ export default async function handler(req, res) {
       } catch (err) {
         console.error(
           `Couldn't perform deleteMany() in MongoDB - user: ${
-            session.user
+            session?.user
           } - ${JSON.stringify(err)}`
         );
         res.status(400).json({ success: false });

@@ -18,7 +18,7 @@ export default async function handler(req, res) {
         const list = await Watchlist.findById(id);
         if (!list) {
           console.error(
-            `List ${id} not found - user: ${JSON.stringify(session.user)}`
+            `List ${id} not found - user: ${JSON.stringify(session?.user)}`
           );
           return res.status(400).json({ success: false });
         }
@@ -26,7 +26,7 @@ export default async function handler(req, res) {
       } catch (err) {
         console.error(
           `List ${id} not found - user: ${JSON.stringify(
-            session.user
+            session?.user
           )} - ${JSON.stringify(err)}`
         );
         res.status(400).json({ success: false });
@@ -38,7 +38,7 @@ export default async function handler(req, res) {
         var list, list2;
         if (req.body.hasOwnProperty("position")) {
           const lists = await Watchlist.find(
-            { user: session.user },
+            { user: session?.user },
             "_id position"
           ).sort({
             position: -1,
@@ -68,7 +68,7 @@ export default async function handler(req, res) {
           if (!list2) {
             console.error(
               `Adjacent list not found for ${id} - user: ${JSON.stringify(
-                session.user
+                session?.user
               )}`
             );
             return res.status(400).json({ success: false });
@@ -81,7 +81,7 @@ export default async function handler(req, res) {
         }
         if (!list) {
           console.error(
-            `List ${id} not found - user: ${JSON.stringify(session.user)}`
+            `List ${id} not found - user: ${JSON.stringify(session?.user)}`
           );
           return res.status(400).json({ success: false });
         }
@@ -89,7 +89,7 @@ export default async function handler(req, res) {
       } catch (err) {
         console.error(
           `Couldn't update lists - ${id} - user: ${JSON.stringify(
-            session.user
+            session?.user
           )} - ${JSON.stringify(err)}`
         );
         res.status(400).json({ success: false });
@@ -101,7 +101,7 @@ export default async function handler(req, res) {
         const deletedList = await Watchlist.findByIdAndDelete(id);
         if (!deletedList) {
           console.error(
-            `List ${id} not found - user: ${JSON.stringify(session.user)}`
+            `List ${id} not found - user: ${JSON.stringify(session?.user)}`
           );
           return res.status(400).json({ success: false });
         }
@@ -109,7 +109,7 @@ export default async function handler(req, res) {
       } catch (err) {
         console.error(
           `Couldn't delete list ${id} - user: ${JSON.stringify(
-            session.user
+            session?.user
           )} - ${JSON.stringify(err)}`
         );
         res.status(400).json({ success: false });

@@ -50,7 +50,7 @@ export default function Footer() {
         </a>
       </Typography>
       <Typography component="span">
-        Copyright &copy; 2021{year > 2021 ? `-${year}` : ""} The Watchlist App
+        Copyright &copy; 2021{year > 2021 ? `-${year}` : ""}, The Watchlist App
         by Eszter Diana Toth
       </Typography>
       {" | "}

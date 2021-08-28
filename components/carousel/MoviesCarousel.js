@@ -5,6 +5,7 @@ import Paper from "@material-ui/core/Paper";
 import Typography from "@material-ui/core/Typography";
 import Divider from "@material-ui/core/Divider";
 import CircularProgress from "@material-ui/core/CircularProgress";
+import Skeleton from "@material-ui/lab/Skeleton";
 import Carousel from "react-material-ui-carousel";
 
 import MovieDetails from "./MovieDetails";
@@ -23,6 +24,15 @@ const useStyles = makeStyles((theme) => ({
       marginBottom: theme.spacing(2.5),
     },
     "& .CarouselItem > div > div:first-child": {
+      marginRight: `${theme.spacing(2)}px !important`,
+    },
+  },
+  skeletons: {
+    "& > span": {
+      display: "inline-block",
+      borderRadius: "10px",
+    },
+    "& > span:first-child": {
       marginRight: `${theme.spacing(2)}px !important`,
     },
   },
@@ -74,7 +84,11 @@ export default function MoviesCarousel({
       <Typography variant="h4">{title}</Typography>
       <Divider />
       {loading || movies.length === 0 ? (
-        <CircularProgress size="3rem" thickness={3} />
+        // <CircularProgress size="3rem" thickness={3} />
+        <span className={classes.skeletons}>
+          <Skeleton variant="rect" width={200} height={300} />
+          <Skeleton variant="rect" width={200} height={300} />
+        </span>
       ) : (
         <Carousel
           autoPlay={false}

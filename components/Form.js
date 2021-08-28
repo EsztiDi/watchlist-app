@@ -119,6 +119,7 @@ export default function Form({
       }
 
       mutate("/api/lists");
+      mutate("/api/lists/newuser", newForm);
       setUpdating(false);
       router.push("/lists");
     } catch (error) {
@@ -411,7 +412,7 @@ export default function Form({
               />
               <Typography variant="subtitle1" color="textSecondary">
                 Private lists are <b>not</b> featured on the Discover page but
-                can still be shared.
+                can still be shared by you.
               </Typography>
             </Grid>
             <Grid item>
@@ -428,8 +429,8 @@ export default function Form({
                 }
               />
               <Typography variant="subtitle1" color="textSecondary">
-                Receive weekly emails to {email} of any upcoming releases from
-                your watchlist.
+                Receive an email on Thursdays to {email} of any upcoming
+                releases from your watchlist.
               </Typography>
             </Grid>
             <Grid item className={classes.grid}>

@@ -3,14 +3,40 @@ import { useSession } from "next-auth/client";
 import useSWR from "swr";
 
 import { makeStyles } from "@material-ui/core/styles";
-import CircularProgress from "@material-ui/core/CircularProgress";
+import Skeleton from "@material-ui/lab/Skeleton";
 import Paper from "@material-ui/core/Paper";
 
 import Form from "./Form";
 
 const useStyles = makeStyles((theme) => ({
   loadingContainer: {
+    display: "flex",
+    width: "100%",
     height: "calc(100vh - 16px - 16px - 56px)",
+    "& > span:first-child": {
+      margin: 0,
+      // marginRight: theme.spacing(1.5),
+    },
+    "& span": {
+      display: "inline-block",
+      margin: theme.spacing(1.5),
+    },
+    "& div": {
+      width: "75%",
+      height: "100%",
+      display: "flex",
+      flexWrap: "wrap",
+      alignContent: "flex-start",
+      paddingLeft: theme.spacing(3),
+      paddingTop: theme.spacing(1),
+      paddingRight: theme.spacing(4),
+      "& > span:first-child": {
+        marginRight: "auto",
+      },
+    },
+  },
+  skeleton: {
+    borderRadius: "4px",
   },
   container: {
     width: "100%",
@@ -51,7 +77,18 @@ export default function ListPanels({ setMessage, calendar = false }) {
   if (!list) {
     return (
       <div className={classes.loadingContainer}>
-        <CircularProgress size="3rem" thickness={3} />
+        <Skeleton variant="rect" width={"25%"} height={"100%"} />
+        <div>
+          <Skeleton variant="circle" width={30} height={30} />
+          <Skeleton variant="rect" width={100} height={30} />
+          <Skeleton variant="rect" width={100} height={30} />
+          <Skeleton variant="circle" width={30} height={30} />
+          <Skeleton variant="circle" width={30} height={30} />
+          <Skeleton variant="circle" width={30} height={30} />
+          <Skeleton variant="rect" width={"100%"} height={210} />
+          <Skeleton variant="rect" width={"100%"} height={210} />
+          <Skeleton variant="rect" width={"100%"} height={60} />
+        </div>
       </div>
     );
   }

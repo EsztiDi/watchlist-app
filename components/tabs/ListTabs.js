@@ -136,7 +136,7 @@ export default function ListTabs({
     );
 
   return (
-    hasLists && (
+    (hasLists || hasSavedLists) && (
       <Tabs
         orientation="vertical"
         variant="scrollable"
@@ -144,6 +144,7 @@ export default function ListTabs({
         aria-label="list tabs"
         value={value}
         className={classes.tabs}
+        id="list-tabs"
       >
         {lists.map((list, index) =>
           editTitle && value === index ? (

@@ -3,15 +3,15 @@ import { useSession } from "next-auth/client";
 import useSWR from "swr";
 
 import { makeStyles } from "@material-ui/core/styles";
-import CircularProgress from "@material-ui/core/CircularProgress";
+import Skeleton from "@material-ui/lab/Skeleton";
 import Paper from "@material-ui/core/Paper";
 
 import ListTabs from "../../components/tabs/ListTabs";
 import SavedPanel from "../../components/tabs/SavedPanel";
 
 const useStyles = makeStyles((theme) => ({
-  loadingContainer: {
-    height: "calc(100vh - 16px - 16px - 56px)",
+  skeleton: {
+    borderRadius: "4px",
   },
   container: {
     width: "100%",
@@ -51,9 +51,12 @@ export default function SavedLists({ setMessage }) {
 
   if (!lists)
     return (
-      <div className={classes.loadingContainer}>
-        <CircularProgress size="3rem" thickness={3} />
-      </div>
+      <Skeleton
+        variant="rect"
+        width={"100%"}
+        height={"calc(100vh - 16px - 16px - 56px)"}
+        className={classes.skeleton}
+      />
     );
 
   return (
