@@ -6,6 +6,7 @@ import CircularProgress from "@material-ui/core/CircularProgress";
 import Button from "@material-ui/core/Button";
 import Snackbar from "@material-ui/core/Snackbar";
 import Alert from "@material-ui/lab/Alert";
+import useMediaQuery from "@material-ui/core/useMediaQuery";
 
 import Dropdown from "./Dropdown";
 
@@ -25,7 +26,7 @@ export default function MovieSearch({
   const [query, setQuery] = React.useState("");
   const [results, setResults] = React.useState([]);
   const [message, setMessage] = React.useState("");
-  const [render, setRender] = React.useState(true);
+  const matches = useMediaQuery("(max-width:350px)");
 
   React.useEffect(() => {
     loading
@@ -198,7 +199,7 @@ export default function MovieSearch({
       <TextField
         id={`${listID}-input`}
         name="movies"
-        label="Add movies / TV shows"
+        label={matches ? "Add movies" : "Add movies / TV shows"}
         type="search"
         variant="outlined"
         autoComplete="off"

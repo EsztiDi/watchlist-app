@@ -10,6 +10,7 @@ import Grid from "@material-ui/core/Grid";
 import Button from "@material-ui/core/Button";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import Divider from "@material-ui/core/Divider";
+import useMediaQuery from "@material-ui/core/useMediaQuery";
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -18,8 +19,10 @@ const useStyles = makeStyles((theme) => ({
   paper: {
     padding: theme.spacing(2.5),
   },
+  paperMobile: {
+    padding: theme.spacing(1),
+  },
   grid: {
-    width: "60%",
     margin: "auto",
     textAlign: "left",
     "& > div": {
@@ -27,10 +30,12 @@ const useStyles = makeStyles((theme) => ({
       alignItems: "center",
       justifyContent: "space-between",
       flexWrap: "wrap",
+      columnGap: theme.spacing(2.5),
+      rowGap: theme.spacing(2.5),
       padding: `${theme.spacing(3.5)}px 0`,
       "& > button": {
-        flex: "40%",
-        marginLeft: theme.spacing(2.5),
+        flex: "30%",
+        minWidth: "150px",
       },
       "& > span": {
         flex: "50%",
@@ -61,6 +66,7 @@ export default function Account({ setMessage }) {
   const [deletingAccount, setDeletingAccount] = React.useState(false);
   var updating =
     updatingPrivate || updatingEmails || deletingLists || deletingAccount;
+  const matches = useMediaQuery("(max-width:1024px)");
 
   React.useEffect(() => {
     updating
@@ -152,8 +158,15 @@ export default function Account({ setMessage }) {
         <Head>
           <title>Account - My Watchlists</title>
         </Head>
-        <Container maxWidth="md" className={classes.container}>
-          <Paper elevation={4} className={classes.paper}>
+        <Container
+          maxWidth="md"
+          className={classes.container}
+          style={matches ? { padding: 0 } : undefined}
+        >
+          <Paper
+            elevation={4}
+            className={matches ? classes.paperMobile : classes.paper}
+          >
             <Typography variant="h4">Settings</Typography>
             <Typography variant="subtitle2" className={classes.subtitle}>
               Clicking any of these buttons cannot be taken back
@@ -163,6 +176,7 @@ export default function Account({ setMessage }) {
               direction="column"
               wrap="nowrap"
               className={classes.grid}
+              style={matches ? { width: "90%" } : { width: "60%" }}
             >
               <Grid item>
                 <Typography component="span">

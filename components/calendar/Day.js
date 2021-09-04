@@ -3,6 +3,7 @@ import Image from "next/image";
 import { makeStyles } from "@material-ui/core/styles";
 import TableCell from "@material-ui/core/TableCell";
 import Tooltip from "@material-ui/core/Tooltip";
+import useMediaQuery from "@material-ui/core/useMediaQuery";
 
 const useStyles = makeStyles((theme) => ({
   cell: {
@@ -33,6 +34,8 @@ const today = new Date();
 
 export default function Day({ date, month, year, movies }) {
   const classes = useStyles();
+  const touch = useMediaQuery("(hover: none)");
+
   const thisDay =
     date === today.getDate() &&
     month === today.getMonth() &&
@@ -60,15 +63,15 @@ export default function Day({ date, month, year, movies }) {
     movies &&
     movies.length > 1 &&
     (sameSeries.length !== movies.length || Object.entries(same).length > 1)
-      ? "142px"
-      : "110px";
+      ? "141px"
+      : "76px";
 
   const divWidth =
     movies &&
     movies.length > 1 &&
     (sameSeries.length !== movies.length || Object.entries(same).length > 1)
-      ? "126px"
-      : "94px";
+      ? "125px"
+      : "60px";
 
   return movies ? (
     <TableCell width={cellWidth} className={classes.posterCell}>
@@ -102,7 +105,11 @@ export default function Day({ date, month, year, movies }) {
                 }
               >
                 <a
-                  href={`https://www.imdb.com/title/${series[1][0].imdb_id}`}
+                  href={
+                    !touch
+                      ? `https://www.imdb.com/title/${series[1][0].imdb_id}`
+                      : undefined
+                  }
                   target="_blank"
                   rel="noopener noreferrer"
                 >
@@ -144,9 +151,11 @@ export default function Day({ date, month, year, movies }) {
               >
                 <a
                   href={
-                    movie.imdb_id
-                      ? `https://www.imdb.com/title/${movie.imdb_id}`
-                      : `https://www.imdb.com/title/${movie.details?.external_ids?.imdb_id}`
+                    !touch
+                      ? movie.imdb_id
+                        ? `https://www.imdb.com/title/${movie.imdb_id}`
+                        : `https://www.imdb.com/title/${movie.details?.external_ids?.imdb_id}`
+                      : undefined
                   }
                   target="_blank"
                   rel="noopener noreferrer"

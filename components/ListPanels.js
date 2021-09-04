@@ -5,34 +5,36 @@ import useSWR from "swr";
 import { makeStyles } from "@material-ui/core/styles";
 import Skeleton from "@material-ui/lab/Skeleton";
 import Paper from "@material-ui/core/Paper";
+import useMediaQuery from "@material-ui/core/useMediaQuery";
 
 import Form from "./Form";
 
 const useStyles = makeStyles((theme) => ({
   loadingContainer: {
     display: "flex",
+    flexWrap: "wrap",
+    alignContent: "flex-start",
+    justifyContent: "space-evenly",
     width: "100%",
-    height: "calc(100vh - 16px - 16px - 56px)",
     "& > span:first-child": {
       margin: 0,
-      // marginRight: theme.spacing(1.5),
     },
     "& span": {
       display: "inline-block",
       margin: theme.spacing(1.5),
     },
-    "& div": {
-      width: "75%",
-      height: "100%",
-      display: "flex",
-      flexWrap: "wrap",
-      alignContent: "flex-start",
-      paddingLeft: theme.spacing(3),
-      paddingTop: theme.spacing(1),
-      paddingRight: theme.spacing(4),
-      "& > span:first-child": {
-        marginRight: "auto",
-      },
+  },
+  circles: {
+    width: "75%",
+    height: "100%",
+    display: "flex",
+    flexWrap: "wrap",
+    alignContent: "flex-start",
+    paddingLeft: theme.spacing(3),
+    paddingTop: theme.spacing(1),
+    paddingRight: theme.spacing(4),
+    "& > span:first-child": {
+      marginRight: "auto",
     },
   },
   skeleton: {
@@ -45,6 +47,15 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: "column",
     alignItems: "center",
     padding: theme.spacing(2),
+  },
+  containerMobile: {
+    width: "100%",
+    height: "calc(100vh - 20px - 56px)",
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    padding: theme.spacing(1),
+    paddingTop: 0,
   },
   watchlists: {
     width: "100%",
@@ -60,6 +71,8 @@ export default function ListPanels({ setMessage, calendar = false }) {
   const [session, loading] = useSession();
   const router = useRouter();
   const { id } = router.query;
+  const matches = useMediaQuery("(max-width:1024px)");
+  const matches2 = useMediaQuery("(max-width:480px)");
 
   const { data: list, error } = useSWR(id ? `/api/lists/${id}` : null);
   if (error) console.error(error);
@@ -70,25 +83,57 @@ export default function ListPanels({ setMessage, calendar = false }) {
 
   if (!loading && !session) {
     router.replace("/login");
-  } else if ((list && !auth) || error) {
+  } else if (list && !auth) {
     router.replace("/lists");
   }
 
   if (!list) {
     return (
-      <div className={classes.loadingContainer}>
-        <Skeleton variant="rect" width={"25%"} height={"100%"} />
-        <div>
-          <Skeleton variant="circle" width={30} height={30} />
-          <Skeleton variant="rect" width={100} height={30} />
-          <Skeleton variant="rect" width={100} height={30} />
-          <Skeleton variant="circle" width={30} height={30} />
-          <Skeleton variant="circle" width={30} height={30} />
-          <Skeleton variant="circle" width={30} height={30} />
-          <Skeleton variant="rect" width={"100%"} height={210} />
-          <Skeleton variant="rect" width={"100%"} height={210} />
-          <Skeleton variant="rect" width={"100%"} height={60} />
-        </div>
+      <div
+        className={classes.loadingContainer}
+        style={
+          matches
+            ? { height: "calc(100vh - 20px - 56px + 24px)" }
+            : { height: "calc(100vh - 16px - 16px - 56px)" }
+        }
+      >
+        {matches ? (
+          <>
+            <Skeleton variant="rect" width={"100%"} height={72} />
+            <Skeleton
+              variant="rect"
+              width={matches2 ? "40%" : 100}
+              height={30}
+            />
+            <Skeleton
+              variant="rect"
+              width={matches2 ? "40%" : 100}
+              height={30}
+            />
+            <Skeleton variant="circle" width={30} height={30} />
+            <Skeleton variant="circle" width={30} height={30} />
+            <Skeleton variant="circle" width={30} height={30} />
+            <Skeleton variant="circle" width={30} height={30} />
+            <Skeleton variant="rect" width={"100%"} height={210} />
+            <Skeleton variant="rect" width={"100%"} height={210} />
+            <Skeleton variant="rect" width={"100%"} height={60} />
+          </>
+        ) : (
+          <>
+            <Skeleton variant="rect" width={"25%"} height={"100%"} />
+            <div className={classes.circles}>
+              <Skeleton variant="circle" width={30} height={30} />
+              <Skeleton variant="rect" width={100} height={30} />
+              <Skeleton variant="rect" width={100} height={30} />
+              <Skeleton variant="circle" width={30} height={30} />
+              <Skeleton variant="circle" width={30} height={30} />
+              <Skeleton variant="circle" width={30} height={30} />
+              <Skeleton variant="rect" width={"100%"} height={210} />
+              <Skeleton variant="rect" width={"100%"} height={210} />
+              <Skeleton variant="rect" width={"100%"} height={60} />
+            </div>
+          </>
+        )}
       </div>
     );
   }
@@ -96,8 +141,17 @@ export default function ListPanels({ setMessage, calendar = false }) {
   return (
     auth &&
     list && (
-      <Paper elevation={4} className={classes.container} id="watchlists">
-        <div className={classes.watchlists}>
+      <Paper
+        elevation={4}
+        className={matches ? classes.containerMobile : classes.container}
+        id="watchlists"
+      >
+        <div
+          className={classes.watchlists}
+          style={
+            matches ? { flexDirection: "column" } : { flexDirection: "row" }
+          }
+        >
           <Form
             list={list}
             setMessage={setMessage}

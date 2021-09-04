@@ -21,6 +21,7 @@ import Grow from "@material-ui/core/Grow";
 import Paper from "@material-ui/core/Paper";
 import Popper from "@material-ui/core/Popper";
 import MenuList from "@material-ui/core/MenuList";
+import useMediaQuery from "@material-ui/core/useMediaQuery";
 
 import Overview from "./Overview";
 import Seasons from "./Seasons";
@@ -35,6 +36,16 @@ const useStyles = makeStyles((theme) => ({
     padding: `${theme.spacing(2)}px ${theme.spacing(1.5)}px`,
     textAlign: "left",
   },
+  moviecardMobile: {
+    display: "flex",
+    flexWrap: "wrap",
+    alignItems: "center",
+    justifyContent: "center",
+    margin: theme.spacing(0),
+    marginTop: theme.spacing(1.5),
+    padding: `${theme.spacing(1)}px ${theme.spacing(0.75)}px`,
+    textAlign: "left",
+  },
   content: {
     display: "flex",
     flexDirection: "column",
@@ -45,10 +56,31 @@ const useStyles = makeStyles((theme) => ({
       paddingBottom: 0,
     },
   },
+  contentMobile: {
+    flexGrow: 1,
+    width: "50%",
+    padding: `0 ${theme.spacing(0.75)}px`,
+    "&:last-child": {
+      paddingBottom: 0,
+    },
+  },
+  contentMobile2: {
+    minWidth: "70%",
+    padding: `0 ${theme.spacing(0.75)}px`,
+    "&:last-child": {
+      paddingBottom: 0,
+    },
+  },
   image: {
     minWidth: "16%",
     paddingTop: "24%",
     backgroundSize: "contain",
+  },
+  imageMobile: {
+    minWidth: "22%",
+    paddingTop: "33%",
+    backgroundSize: "contain",
+    marginRight: theme.spacing(1),
   },
   title: {
     textAlign: "center",
@@ -59,6 +91,16 @@ const useStyles = makeStyles((theme) => ({
     },
     "& > button + div": {
       zIndex: "1",
+    },
+  },
+  titleMobile: {
+    fontSize: "1.2rem",
+    textAlign: "center",
+    display: "flex",
+    alignItems: "center",
+    marginBottom: theme.spacing(0.5),
+    "& > span": {
+      flexBasis: "90%",
     },
   },
   media: {
@@ -118,6 +160,18 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: "column",
     alignItems: "center",
   },
+  buttonsMobile: {
+    flexBasis: "95%",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-between",
+    "& svg": {
+      fontSize: "1.5rem",
+    },
+    "& > button + div": {
+      zIndex: "2",
+    },
+  },
   bigbutton: {
     padding: theme.spacing(0.8),
   },
@@ -156,8 +210,6 @@ export default function MovieCard({
   updating,
   setMessage,
 }) {
-  const classes = useStyles();
-
   var {
     id,
     poster_path,
@@ -189,6 +241,10 @@ export default function MovieCard({
   var poster = poster_path
     ? `https://image.tmdb.org/t/p/w200${poster_path}`
     : "/movieIcon.png";
+
+  const classes = useStyles();
+  const matches = useMediaQuery("(max-width:768px)");
+  const matches2 = useMediaQuery("(max-width:420px)");
 
   // For ListsMenu
   const [session, loading] = useSession();
@@ -232,64 +288,94 @@ export default function MovieCard({
 
   return (
     <>
-      <Card id={id} className={classes.moviecard}>
-        <CardMedia
-          data-image="background"
-          className={classes.image}
-          image={poster}
-        />
-        <CardContent className={classes.content}>
-          <Typography variant="h6" className={classes.title}>
+      <Card
+        id={id}
+        className={matches ? classes.moviecardMobile : classes.moviecard}
+      >
+        {!matches2 && (
+          <CardMedia
+            data-image="background"
+            className={matches ? classes.imageMobile : classes.image}
+            image={poster}
+          />
+        )}
+        <CardContent
+          className={
+            !matches
+              ? classes.content
+              : !matches2
+              ? classes.contentMobile
+              : classes.contentMobile2
+          }
+        >
+          <Typography
+            variant="h6"
+            className={matches2 ? classes.titleMobile : classes.title}
+          >
+            {matches2 && (
+              <CardMedia
+                data-image="background"
+                className={classes.imageMobile}
+                image={poster}
+              />
+            )}
             <span>{title || "Untitled"}</span>
-            <IconButton
-              aria-controls={menuOpen ? "menu-list" : undefined}
-              aria-haspopup="true"
-              aria-label="add to list"
-              title="Add to list"
-              ref={anchorRef}
-              disabled={updating}
-              onClick={handleButtonClick}
-              className={classes.button}
-            >
-              <PlaylistAddRoundedIcon className={classes.arrow} />
-            </IconButton>
-            <Popper
-              open={menuOpen}
-              anchorEl={anchorRef.current}
-              role={undefined}
-              transition
-              disablePortal
-            >
-              {({ TransitionProps, placement }) => (
-                <Grow
-                  {...TransitionProps}
-                  style={{
-                    transformOrigin:
-                      placement === "bottom" ? "center top" : "center bottom",
-                  }}
+            {(!matches || !deleteMovie) && (
+              <>
+                <IconButton
+                  aria-controls={menuOpen ? "menu-list" : undefined}
+                  aria-haspopup="true"
+                  aria-label="add to list"
+                  title="Add to list"
+                  ref={anchorRef}
+                  disabled={updating}
+                  onClick={handleButtonClick}
+                  className={classes.button}
                 >
-                  <Paper>
-                    <ClickAwayListener onClickAway={handleMenuClose}>
-                      <MenuList
-                        autoFocus={menuOpen}
-                        id="menu-list"
-                        onKeyDown={handleListKeyDown}
-                      >
-                        {session && (
-                          <ListsMenu
-                            movieID={id}
-                            media_type={media_type}
-                            setMessage={setMessage}
-                            handleMenuClose={handleMenuClose}
-                          />
-                        )}
-                      </MenuList>
-                    </ClickAwayListener>
-                  </Paper>
-                </Grow>
-              )}
-            </Popper>
+                  <PlaylistAddRoundedIcon className={classes.arrow} />
+                </IconButton>
+                <Popper
+                  open={menuOpen}
+                  anchorEl={anchorRef.current}
+                  role={undefined}
+                  transition
+                  disablePortal
+                >
+                  {({ TransitionProps, placement }) => (
+                    <Grow
+                      {...TransitionProps}
+                      style={{
+                        transformOrigin:
+                          placement === "bottom"
+                            ? "center top"
+                            : "center bottom",
+                      }}
+                    >
+                      <Paper>
+                        <ClickAwayListener onClickAway={handleMenuClose}>
+                          <MenuList
+                            autoFocus={menuOpen}
+                            id="menu-list"
+                            onKeyDown={handleListKeyDown}
+                          >
+                            {session && (
+                              <ListsMenu
+                                movieID={id}
+                                media_type={media_type}
+                                setMessage={setMessage}
+                                handleMenuClose={handleMenuClose}
+                              />
+                            )}
+                          </MenuList>
+                        </ClickAwayListener>
+                      </Paper>
+                    </Grow>
+                  )}
+                </Popper>
+              </>
+            )}
           </Typography>
+
           <Typography
             variant="subtitle2"
             color="textSecondary"
@@ -324,7 +410,7 @@ export default function MovieCard({
             {runtime && (genres || release_date) && " ● "}
             <span className={classes.nowrap}>{release_date}</span>
             {release_date && genres && " ● "}
-            {genres}
+            {genres}{" "}
             {vote_average ? (
               <a
                 href={`https://www.themoviedb.org/${media_type}/${id}`}
@@ -332,13 +418,12 @@ export default function MovieCard({
                 rel="noopener noreferrer"
                 className={classes.external}
               >
-                {" "}
                 <StarRoundedIcon className={classes.miniIcon} /> {vote_average}{" "}
                 (TMDb)
               </a>
             ) : (
               ""
-            )}
+            )}{" "}
             {imdb_id && (
               <a
                 href={`https://www.imdb.com/title/${imdb_id}`}
@@ -346,7 +431,6 @@ export default function MovieCard({
                 rel="noopener noreferrer"
                 className={classes.external}
               >
-                {" "}
                 <TheatersRoundedIcon className={classes.miniIcon} /> IMDb
               </a>
             )}
@@ -362,7 +446,61 @@ export default function MovieCard({
           <Overview overview={overview} />
         </CardContent>
         {deleteMovie && (
-          <div className={classes.buttons}>
+          <div className={matches ? classes.buttonsMobile : classes.buttons}>
+            {matches && (
+              <>
+                <IconButton
+                  aria-controls={menuOpen ? "menu-list" : undefined}
+                  aria-haspopup="true"
+                  aria-label="add to list"
+                  title="Add to list"
+                  ref={anchorRef}
+                  disabled={updating}
+                  onClick={handleButtonClick}
+                  className={classes.button}
+                >
+                  <PlaylistAddRoundedIcon className={classes.arrow} />
+                </IconButton>
+                <Popper
+                  open={menuOpen}
+                  anchorEl={anchorRef.current}
+                  role={undefined}
+                  transition
+                  disablePortal
+                >
+                  {({ TransitionProps, placement }) => (
+                    <Grow
+                      {...TransitionProps}
+                      style={{
+                        transformOrigin:
+                          placement === "bottom"
+                            ? "center top"
+                            : "center bottom",
+                      }}
+                    >
+                      <Paper>
+                        <ClickAwayListener onClickAway={handleMenuClose}>
+                          <MenuList
+                            autoFocus={menuOpen}
+                            id="menu-list"
+                            onKeyDown={handleListKeyDown}
+                          >
+                            {session && (
+                              <ListsMenu
+                                movieID={id}
+                                media_type={media_type}
+                                setMessage={setMessage}
+                                handleMenuClose={handleMenuClose}
+                              />
+                            )}
+                          </MenuList>
+                        </ClickAwayListener>
+                      </Paper>
+                    </Grow>
+                  )}
+                </Popper>
+              </>
+            )}
             {index > 0 && (
               <>
                 {index > 1 && (
@@ -387,15 +525,17 @@ export default function MovieCard({
                 </IconButton>
               </>
             )}
-            <IconButton
-              aria-label="remove"
-              title="Remove"
-              className={classes.button}
-              disabled={updating}
-              onClick={() => deleteMovie(index)}
-            >
-              <HighlightOffRoundedIcon className={classes.delete} />
-            </IconButton>
+            {!matches && (
+              <IconButton
+                aria-label="remove"
+                title="Remove"
+                className={classes.button}
+                disabled={updating}
+                onClick={() => deleteMovie(index)}
+              >
+                <HighlightOffRoundedIcon className={classes.delete} />
+              </IconButton>
+            )}
             {index < moviesLength - 1 && (
               <>
                 <IconButton
@@ -421,6 +561,17 @@ export default function MovieCard({
                   </IconButton>
                 )}
               </>
+            )}
+            {matches && (
+              <IconButton
+                aria-label="remove"
+                title="Remove"
+                className={classes.button}
+                disabled={updating}
+                onClick={() => deleteMovie(index)}
+              >
+                <HighlightOffRoundedIcon className={classes.delete} />
+              </IconButton>
             )}
           </div>
         )}

@@ -35,7 +35,7 @@ export default function ListPanel({ setMessage }) {
           steps: [
             {
               title: "Welcome",
-              intro: "Hi there! 👋",
+              intro: "Hi there! 👋<br/>Let me give you a quick tour.",
             },
             {
               title: "Your watchlists",

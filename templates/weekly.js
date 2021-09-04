@@ -5,7 +5,9 @@ export default function weeklyHTML(lists) {
   );
   const month1 = today.toLocaleString("default", { month: "short" });
   const month2 = nextWeek.toLocaleString("default", { month: "short" });
-  const day1 = today.getDate() + 1;
+  const day1 = new Date(
+    new Date().setUTCHours(0, 0, 0, 0) + 60000 * 60 * 24
+  ).getDate();
   const day2 = nextWeek.getDate();
   const title = `Upcoming releases<br/>${
     month1 === month2
@@ -275,6 +277,9 @@ export default function weeklyHTML(lists) {
                   word-break: break-word;
                   margin: 0 auto;
                   background-color: transparent;
+                  border-top: 1px solid #444;
+                  border-left: 1px solid #444;
+                  border-right: 1px solid #444;
                 "
               >
                 <div
@@ -347,6 +352,8 @@ export default function weeklyHTML(lists) {
                   word-break: break-word;
                   margin: 0 auto;
                   background-color: #fff;
+                  border-left: 1px solid #444;
+                  border-right: 1px solid #444;
                 "
               >
                 <div
@@ -553,6 +560,8 @@ export default function weeklyHTML(lists) {
                   word-break: break-word;
                   margin: 0 auto;
                   background-color: #fff;
+                  border-left: 1px solid #444;
+                  border-right: 1px solid #444;
                 "
               >
                 <div
@@ -620,7 +629,7 @@ export default function weeklyHTML(lists) {
                                   min-width: 100%;
                                   -ms-text-size-adjust: 100%;
                                   -webkit-text-size-adjust: 100%;
-                                  padding-top: 15px;
+                                  padding-top: 5px;
                                   padding-right: 10px;
                                   padding-bottom: 15px;
                                   padding-left: 10px;
@@ -828,6 +837,8 @@ export default function weeklyHTML(lists) {
           word-break: break-word;
           margin: 0 auto;
           background-color: #fff;
+          border-left: 1px solid #444;
+          border-right: 1px solid #444;
         "
       >
         <div
@@ -895,8 +906,12 @@ export default function weeklyHTML(lists) {
                       "
                       valign="top"
                       width="100%"
-                    >
-                      <h3
+                    ><a
+                    href="https://mywatchlists.watch/lists/${list.id}"
+                    rel="noopener"
+                    style="text-decoration: none; color: #000"
+                    target="_blank"
+                    ><h3
                         style="
                           color: #000;
                           direction: ltr;
@@ -913,8 +928,11 @@ export default function weeklyHTML(lists) {
                           margin-bottom: 0;
                         "
                       >
-                        ${list.title}
-                      </h3>
+                        ${list.title}&nbsp;<span
+                        style="font-weight: bold"
+                        title="Opens in new tab"
+                        >&#x2197;</span>
+                      </h3></a>
                     </td>
                   </tr>
                 </table>
@@ -943,6 +961,8 @@ export default function weeklyHTML(lists) {
             word-break: break-word;
             margin: 0 auto;
             background-color: #fff;
+            border-left: 1px solid #444;
+            border-right: 1px solid #444;
           "
         >
           <div
@@ -950,7 +970,7 @@ export default function weeklyHTML(lists) {
               border-collapse: collapse;
               display: table;
               width: 100%;
-              background-color: #fff;
+              background-color: ${index % 2 === 1 ? "#f9f9f9" : "#fff"};
             "
           >
             <!--[if (mso)|(IE)]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td align="center"><table cellpadding="0" cellspacing="0" border="0" style="width:600px"><tr class="layout-full-width" style="background-color:#fff"><![endif]-->
@@ -1124,12 +1144,16 @@ export default function weeklyHTML(lists) {
                             movie.details?.external_ids?.imdb_id
                           }"
                           rel="noopener"
-                          style="text-decoration: none; color: #000"
+                          style="
+                            text-decoration: none;
+                            color: #000;
+                            font-weight: bold;
+                          "
                           target="_blank"
                           ><span style="font-size: 17px">
                           ${movie.title}${
         movie.media_type === "tv"
-          ? `&nbsp;- S${movie.details?.next_episode_to_air?.season_number}&nbsp;E${movie.details?.next_episode_to_air?.episode_number}`
+          ? `<br />S${movie.details?.next_episode_to_air?.season_number}&nbsp;E${movie.details?.next_episode_to_air?.episode_number}`
           : ""
       }
                           </span></a
@@ -1144,7 +1168,9 @@ export default function weeklyHTML(lists) {
                           mso-line-height-alt: 27px;
                           margin-top: 0;
                           margin-bottom: 0;
-                        "
+                          color: #f5b829;
+                          font-style: italic;
+                          "
                       >
                         <span style="font-size: 17px">${
                           movie.release_date
@@ -1181,6 +1207,8 @@ export default function weeklyHTML(lists) {
         word-break: break-word;
         margin: 0 auto;
         background-color: #fff;
+        border-left: 1px solid #444;
+        border-right: 1px solid #444;
       "
     >
       <div
@@ -1282,6 +1310,8 @@ export default function weeklyHTML(lists) {
         word-break: break-word;
         margin: 0 auto;
         background-color: #fff;
+        border-left: 1px solid #444;
+        border-right: 1px solid #444;
       "
     >
       <div
@@ -1842,6 +1872,9 @@ export default function weeklyHTML(lists) {
         word-break: break-word;
         margin: 0 auto;
         background-color: transparent;
+        border-left: 1px solid #444;
+        border-right: 1px solid #444;
+        border-bottom: 1px solid #444;
       "
     >
       <div

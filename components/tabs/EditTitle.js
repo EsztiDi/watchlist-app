@@ -6,16 +6,24 @@ import IconButton from "@material-ui/core/IconButton";
 import CheckCircleOutlineRoundedIcon from "@material-ui/icons/CheckCircleOutlineRounded";
 import HighlightOffRoundedIcon from "@material-ui/icons/HighlightOffRounded";
 import CircularProgress from "@material-ui/core/CircularProgress";
+import useMediaQuery from "@material-ui/core/useMediaQuery";
 
 const useStyles = makeStyles((theme) => ({
   editTitle: {
     padding: theme.spacing(1),
+  },
+  editTitleMobile: {
+    padding: theme.spacing(1),
+    minWidth: "100%",
   },
   button: {
     padding: theme.spacing(0.5),
   },
   icon: {
     fontSize: "2rem",
+  },
+  iconMobile: {
+    fontSize: "1.6rem",
   },
 }));
 
@@ -27,6 +35,7 @@ export default function EditTitle({
   putData,
 }) {
   const classes = useStyles();
+  const matches = useMediaQuery("(max-width:1024px)");
   const [newTitle, setTitle] = React.useState({ title });
 
   const handleChange = (ev) => {
@@ -52,7 +61,10 @@ export default function EditTitle({
 
   return (
     <ClickAwayListener onClickAway={closeEditTitle}>
-      <form onSubmit={handleSubmit} className={classes.editTitle}>
+      <form
+        onSubmit={handleSubmit}
+        className={matches ? classes.editTitleMobile : classes.editTitle}
+      >
         <TextField
           name="title"
           label="Title"
@@ -75,7 +87,7 @@ export default function EditTitle({
                     <CircularProgress size="1.5rem" thickness={5} />
                   ) : (
                     <CheckCircleOutlineRoundedIcon
-                      className={classes.icon}
+                      className={matches ? classes.iconMobile : classes.icon}
                       color="primary"
                     />
                   )}
@@ -87,7 +99,7 @@ export default function EditTitle({
                   className={classes.button}
                 >
                   <HighlightOffRoundedIcon
-                    className={classes.icon}
+                    className={matches ? classes.iconMobile : classes.icon}
                     color="secondary"
                   />
                 </IconButton>

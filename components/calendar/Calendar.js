@@ -17,12 +17,13 @@ import TableRow from "@material-ui/core/TableRow";
 import TableCell from "@material-ui/core/TableCell";
 import { MuiPickersUtilsProvider, DatePicker } from "@material-ui/pickers";
 import MomentUtils from "@date-io/moment";
+import useMediaQuery from "@material-ui/core/useMediaQuery";
 
 import Month from "./Month";
 
 const useStyles = makeStyles((theme) => ({
   panel: {
-    padding: theme.spacing(1.5),
+    // padding: theme.spacing(1.5),
     width: "100%",
     overflow: "auto",
     "&::-webkit-scrollbar": {
@@ -50,17 +51,22 @@ const useStyles = makeStyles((theme) => ({
       fontSize: "1.3rem",
     },
   },
-  table: {
-    overflowX: "visible",
-  },
+  // table: {
+  //   overflowX: "visible",
+  // },
   buttons: {
     position: "relative",
     padding: theme.spacing(1),
   },
   thisMonth: {
-    whiteSpace: "nowrap",
     position: "absolute",
     right: "16px",
+  },
+  thisMonthMobile: {
+    whiteSpace: "nowrap",
+    "&:last-child": {
+      marginLeft: theme.spacing(1),
+    },
   },
   button: {
     padding: theme.spacing(0.5),
@@ -94,6 +100,7 @@ const today = new Date();
 
 export default function Calendar({ listID, newTab = false }) {
   const classes = useStyles();
+  const matches = useMediaQuery("(max-width:780px)");
 
   const { data: list, error } = useSWR(listID ? `/api/lists/${listID}` : null, {
     refreshInterval: 2000,
@@ -137,7 +144,10 @@ export default function Calendar({ listID, newTab = false }) {
   return !list ? (
     <CircularProgress size="3rem" thickness={3} />
   ) : (
-    <Box p={2} className={!newTab ? classes.panel : classes.newTab}>
+    <Box
+      p={matches ? 0.5 : 2}
+      className={!newTab ? classes.panel : classes.newTab}
+    >
       <Paper elevation={1} className={classes.container}>
         {newTab && (
           <CardHeader title="Release Calendar" className={classes.header} />
@@ -151,43 +161,47 @@ export default function Calendar({ listID, newTab = false }) {
                   colSpan={7}
                   className={classes.buttons}
                 >
-                  <IconButton
-                    aria-label="previous month"
-                    title="Prev"
-                    onClick={previousMonth}
-                    className={classes.button}
-                  >
-                    <ArrowBackIosRoundedIcon className={classes.arrow} />
-                  </IconButton>
-                  <MuiPickersUtilsProvider utils={MomentUtils}>
-                    <DatePicker
-                      variant="inline"
-                      inputVariant="outlined"
-                      format="MMM yyyy"
-                      openTo="month"
-                      views={["year", "month"]}
-                      autoFocus={false}
-                      autoOk
-                      id="month-picker"
-                      minDate={new Date(1870, 0, 1)}
-                      maxDate={new Date(today.getFullYear() + 10, 11, 31)}
-                      value={new Date(year, month)}
-                      onChange={handleDateChange}
-                      className={classes.picker}
-                    />
-                  </MuiPickersUtilsProvider>
-                  <IconButton
-                    aria-label="next month"
-                    title="Next"
-                    onClick={nextMonth}
-                    className={classes.button}
-                  >
-                    <ArrowForwardIosRoundedIcon className={classes.arrow} />
-                  </IconButton>
+                  <span className={classes.thisMonthMobile}>
+                    <IconButton
+                      aria-label="previous month"
+                      title="Prev"
+                      onClick={previousMonth}
+                      className={classes.button}
+                    >
+                      <ArrowBackIosRoundedIcon className={classes.arrow} />
+                    </IconButton>
+                    <MuiPickersUtilsProvider utils={MomentUtils}>
+                      <DatePicker
+                        variant="inline"
+                        inputVariant="outlined"
+                        format="MMM yyyy"
+                        openTo="month"
+                        views={["year", "month"]}
+                        autoFocus={false}
+                        autoOk
+                        id="month-picker"
+                        minDate={new Date(1870, 0, 1)}
+                        maxDate={new Date(today.getFullYear() + 10, 11, 31)}
+                        value={new Date(year, month)}
+                        onChange={handleDateChange}
+                        className={classes.picker}
+                      />
+                    </MuiPickersUtilsProvider>
+                    <IconButton
+                      aria-label="next month"
+                      title="Next"
+                      onClick={nextMonth}
+                      className={classes.button}
+                    >
+                      <ArrowForwardIosRoundedIcon className={classes.arrow} />
+                    </IconButton>
+                  </span>
                   <Button
                     aria-label="this month"
                     onClick={thisMonth}
-                    className={classes.thisMonth}
+                    className={
+                      matches ? classes.thisMonthMobile : classes.thisMonth
+                    }
                   >
                     This month
                   </Button>

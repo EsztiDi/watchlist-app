@@ -10,6 +10,7 @@ import Container from "@material-ui/core/Container";
 import ClickAwayListener from "@material-ui/core/ClickAwayListener";
 import Fade from "@material-ui/core/Fade";
 import Alert from "@material-ui/lab/Alert";
+import useMediaQuery from "@material-ui/core/useMediaQuery";
 
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
@@ -80,9 +81,15 @@ const useStyles = makeStyles((theme) => ({
     alignItems: "center",
     paddingTop: theme.spacing(2),
     paddingBottom: theme.spacing(2),
-    "& a": {
-      textDecoration: "none",
-    },
+  },
+  mainContainerMobile: {
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "flex-start",
+    alignItems: "center",
+    padding: `${theme.spacing(2)}px ${theme.spacing(0.5)}px ${theme.spacing(
+      1
+    )}px`,
   },
   message: {
     position: "fixed",
@@ -100,6 +107,7 @@ export default function MyApp({ Component, pageProps }) {
   const router = useRouter();
 
   const [message, setMessage] = React.useState("");
+  const matches = useMediaQuery("(max-width:600px)");
 
   React.useEffect(() => {
     // Removing the server-side injected CSS
@@ -224,7 +232,9 @@ export default function MyApp({ Component, pageProps }) {
               </ClickAwayListener>
             )}
             <Container
-              className={classes.mainContainer}
+              className={
+                matches ? classes.mainContainerMobile : classes.mainContainer
+              }
               style={{
                 height:
                   router.pathname.includes("/lists/[id]") ||

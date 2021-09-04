@@ -7,13 +7,13 @@ import Typography from "@material-ui/core/Typography";
 
 const useStyles = makeStyles((theme) => ({
   footer: {
+    width: "100%",
     marginTop: "auto",
     paddingTop: theme.spacing(4),
-    paddingBottom: theme.spacing(1),
     textAlign: "center",
     color: theme.palette.text.secondary,
     "& > *": {
-      margin: `0 ${theme.spacing(1)}px ${theme.spacing(1)}px`,
+      margin: theme.spacing(1),
       fontSize: "0.88rem",
     },
     "& a": {
@@ -30,6 +30,9 @@ const useStyles = makeStyles((theme) => ({
     "& > *": {
       lineHeight: 0,
       marginLeft: theme.spacing(1),
+    },
+    "& > a": {
+      minWidth: "50px",
     },
   },
 }));
@@ -53,14 +56,15 @@ export default function Footer() {
         Copyright &copy; 2021{year > 2021 ? `-${year}` : ""}, The Watchlist App
         by Eszter Diana Toth
       </Typography>
-      {" | "}
-      <Link href="/about">
-        <a target="_blank">About & Contact</a>
-      </Link>
-      {" | "}
-      <Link href="/privacy">
-        <a target="_blank">Privacy Notice</a>
-      </Link>
+      <Typography>
+        <Link href="/about">
+          <a>About & Contact</a>
+        </Link>
+        {" | "}
+        <Link href="/privacy">
+          <a>Privacy Notice</a>
+        </Link>
+      </Typography>
     </Box>
   );
 }

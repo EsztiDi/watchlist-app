@@ -36,6 +36,29 @@ export default async function handler(req, res) {
         res.status(400).json({ success: false });
       }
       break;
+    case "PUT":
+      try {
+        const deletedLists = await Savedlist.deleteMany({
+          user: session?.user,
+        });
+        if (!deletedLists) {
+          console.error(
+            `Couldn't perform deleteMany() in MongoDB - user: ${JSON.stringify(
+              session?.user
+            )}`
+          );
+          return res.status(400).json({ success: false });
+        }
+        res.status(200).json({ success: true, data: deletedLists });
+      } catch (err) {
+        console.error(
+          `Couldn't delete lists - user: ${JSON.stringify(
+            session?.user
+          )} - ${JSON.stringify(err)}`
+        );
+        res.status(400).json({ success: false });
+      }
+      break;
     case "DELETE":
       try {
         const deletedList = await Savedlist.findOneAndDelete({

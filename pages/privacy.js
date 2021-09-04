@@ -1,15 +1,14 @@
 import Head from "next/head";
 import Link from "next/link";
-import { useRouter } from "next/router";
 
 import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
 import Paper from "@material-ui/core/Paper";
 import Typography from "@material-ui/core/Typography";
+import useMediaQuery from "@material-ui/core/useMediaQuery";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
-    padding: theme.spacing(2.5),
     "& > h6:first-of-type": {
       marginTop: theme.spacing(1),
     },
@@ -23,6 +22,7 @@ const useStyles = makeStyles((theme) => ({
     },
     "& > ul, a": {
       fontSize: "1rem",
+      wordBreak: "break-word",
     },
   },
   link: {
@@ -39,8 +39,8 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Privacy() {
   const classes = useStyles();
+  const matches = useMediaQuery("(max-width:768px)");
   const variant = "h5";
-  const router = useRouter();
 
   const titles = [
     "1. What information do we collect?",
@@ -71,8 +71,15 @@ export default function Privacy() {
       <Head>
         <title>Privacy Notice - My Watchlists</title>
       </Head>
-      <Container maxWidth="md">
-        <Paper elevation={4} className={classes.paper}>
+      <Container
+        maxWidth="md"
+        style={matches ? { padding: "0 8px" } : undefined}
+      >
+        <Paper
+          elevation={4}
+          style={matches ? { padding: "10px" } : { padding: "20px" }}
+          className={classes.paper}
+        >
           <Typography variant="h4">Privacy Notice</Typography>
           <Typography variant="subtitle2" align="center">
             Last updated 15 July 2021
@@ -85,7 +92,7 @@ export default function Privacy() {
             personal information and your right to privacy. If you have any
             questions or concerns about this privacy notice, or our practices
             with regards to your personal information, please contact us at
-            contact@mywatchlists.watch .
+            contact@mywatchlists.watch.
           </Typography>
           <Typography>
             When you visit our website {process.env.BASE_URL} (the &quot;
@@ -499,7 +506,7 @@ export default function Privacy() {
           </Typography>
           <Typography>
             If you have questions or comments about this notice, you may email
-            us at contact@mywatchlists.watch .
+            us at contact@mywatchlists.watch.
           </Typography>
           <Typography>
             If you are a resident in the European Economic Area or the United

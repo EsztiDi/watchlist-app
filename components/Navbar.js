@@ -14,6 +14,8 @@ import Paper from "@material-ui/core/Paper";
 import Popper from "@material-ui/core/Popper";
 import MenuItem from "@material-ui/core/MenuItem";
 import MenuList from "@material-ui/core/MenuList";
+import MenuRoundedIcon from "@material-ui/icons/MenuRounded";
+import useMediaQuery from "@material-ui/core/useMediaQuery";
 
 const useStyles = makeStyles((theme) => ({
   navbar: {
@@ -28,15 +30,24 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     alignItems: "center",
     outline: "none",
-    "& :last-child": {
-      cursor: "pointer",
-      color: theme.palette.primary.dark,
-      textShadow: `1px 1px 1px ${theme.palette.text.primary}`,
-      marginLeft: theme.spacing(2),
-      textTransform: "uppercase",
-      fontSize: "1.8rem",
-      fontFamily: "'Carter One', cursive",
-    },
+  },
+  text: {
+    cursor: "pointer",
+    color: theme.palette.primary.dark,
+    textShadow: `1px 1px 1px ${theme.palette.text.primary}`,
+    marginLeft: theme.spacing(2),
+    textTransform: "uppercase",
+    fontSize: "1.8rem",
+    fontFamily: "'Carter One', cursive",
+  },
+  textMobile: {
+    cursor: "pointer",
+    color: theme.palette.primary.dark,
+    textShadow: `1px 1px 1px ${theme.palette.text.primary}`,
+    marginLeft: theme.spacing(1),
+    textTransform: "uppercase",
+    fontSize: "1.4rem",
+    fontFamily: "'Carter One', cursive",
   },
   menu: {
     marginLeft: theme.spacing(2),
@@ -57,6 +68,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Navbar() {
   const classes = useStyles();
+  const matches = useMediaQuery("(max-width:660px)");
 
   const [session, loading] = useSession();
   const user = session?.user;
@@ -102,21 +114,110 @@ export default function Navbar() {
         <Toolbar className={classes.toolbar}>
           <Link href="/lists">
             <a className={classes.title}>
-              <Image src="/logo.png" alt="" width={48} height={48} />
-              <Typography variant="h4">My Watchlists</Typography>
+              <Image
+                src="/logo.png"
+                alt=""
+                width={matches ? 40 : 48}
+                height={matches ? 40 : 48}
+              />
+              <Typography
+                variant="h4"
+                className={matches ? classes.textMobile : classes.text}
+              >
+                My Watchlists
+              </Typography>
             </a>
           </Link>
-          <Link href="/" passHref>
-            <Button size="large">Discover</Button>
-          </Link>
-          {loading ? null : user ? (
+          {!matches ? (
             <>
-              <Link href="/create" passHref>
-                <Button size="large">Create</Button>
+              <Link href="/" passHref>
+                <Button size="large">Discover</Button>
               </Link>
-              <Link href="/lists" passHref>
-                <Button size="large">Lists</Button>
-              </Link>
+              {loading ? null : user ? (
+                <>
+                  <Link href="/create" passHref>
+                    <Button size="large">Create</Button>
+                  </Link>
+                  <Link href="/lists" passHref>
+                    <Button size="large">Lists</Button>
+                  </Link>
+                  <IconButton
+                    size="medium"
+                    className={classes.menu}
+                    ref={anchorRef}
+                    aria-controls={menuOpen ? "menu-list" : undefined}
+                    aria-haspopup="true"
+                    onClick={handleMenuToggle}
+                  >
+                    <Image
+                      src={user.image ? user.image : "/avatar.jpg"}
+                      alt=""
+                      width={46}
+                      height={46}
+                      className={classes.avatar}
+                    />
+                  </IconButton>
+                  <Popper
+                    open={menuOpen}
+                    anchorEl={anchorRef.current}
+                    role={undefined}
+                    transition
+                    disablePortal
+                  >
+                    {({ TransitionProps, placement }) => (
+                      <Grow
+                        {...TransitionProps}
+                        style={{
+                          transformOrigin:
+                            placement === "bottom"
+                              ? "center top"
+                              : "center bottom",
+                        }}
+                      >
+                        <Paper className={classes.popup}>
+                          <ClickAwayListener onClickAway={handleMenuClose}>
+                            <MenuList
+                              autoFocus={menuOpen}
+                              id="menu-list"
+                              onKeyDown={handleListKeyDown}
+                            >
+                              <Link href="/account">
+                                <a>
+                                  <MenuItem onClick={handleMenuClose}>
+                                    <Typography
+                                      variant="button"
+                                      className={classes.menuItem}
+                                    >
+                                      Account
+                                    </Typography>
+                                  </MenuItem>
+                                </a>
+                              </Link>
+                              <MenuItem
+                                onClick={() => signOut({ callbackUrl: "/" })}
+                              >
+                                <Typography
+                                  variant="button"
+                                  className={classes.menuItem}
+                                >
+                                  Log out
+                                </Typography>
+                              </MenuItem>
+                            </MenuList>
+                          </ClickAwayListener>
+                        </Paper>
+                      </Grow>
+                    )}
+                  </Popper>
+                </>
+              ) : (
+                <Link href="/login" passHref>
+                  <Button size="large">Login</Button>
+                </Link>
+              )}
+            </>
+          ) : (
+            <>
               <IconButton
                 size="medium"
                 className={classes.menu}
@@ -125,13 +226,7 @@ export default function Navbar() {
                 aria-haspopup="true"
                 onClick={handleMenuToggle}
               >
-                <Image
-                  src={user.image ? user.image : "/avatar.jpg"}
-                  alt=""
-                  width={46}
-                  height={46}
-                  className={classes.avatar}
-                />
+                <MenuRoundedIcon />
               </IconButton>
               <Popper
                 open={menuOpen}
@@ -155,28 +250,81 @@ export default function Navbar() {
                           id="menu-list"
                           onKeyDown={handleListKeyDown}
                         >
-                          <Link href="/account">
+                          <Link href="/" passHref>
                             <a>
                               <MenuItem onClick={handleMenuClose}>
                                 <Typography
                                   variant="button"
                                   className={classes.menuItem}
                                 >
-                                  Account
+                                  Discover
                                 </Typography>
                               </MenuItem>
                             </a>
                           </Link>
-                          <MenuItem
-                            onClick={() => signOut({ callbackUrl: "/" })}
-                          >
-                            <Typography
-                              variant="button"
-                              className={classes.menuItem}
-                            >
-                              Log out
-                            </Typography>
-                          </MenuItem>
+                          {loading ? null : user ? (
+                            <span>
+                              <Link href="/create">
+                                <a>
+                                  <MenuItem onClick={handleMenuClose}>
+                                    <Typography
+                                      variant="button"
+                                      className={classes.menuItem}
+                                    >
+                                      Create
+                                    </Typography>
+                                  </MenuItem>
+                                </a>
+                              </Link>
+                              <Link href="/lists">
+                                <a>
+                                  <MenuItem onClick={handleMenuClose}>
+                                    <Typography
+                                      variant="button"
+                                      className={classes.menuItem}
+                                    >
+                                      Lists
+                                    </Typography>
+                                  </MenuItem>
+                                </a>
+                              </Link>
+                              <Link href="/account">
+                                <a>
+                                  <MenuItem onClick={handleMenuClose}>
+                                    <Typography
+                                      variant="button"
+                                      className={classes.menuItem}
+                                    >
+                                      Account
+                                    </Typography>
+                                  </MenuItem>
+                                </a>
+                              </Link>
+                              <MenuItem
+                                onClick={() => signOut({ callbackUrl: "/" })}
+                              >
+                                <Typography
+                                  variant="button"
+                                  className={classes.menuItem}
+                                >
+                                  Log out
+                                </Typography>
+                              </MenuItem>
+                            </span>
+                          ) : (
+                            <Link href="/login">
+                              <a>
+                                <MenuItem onClick={handleMenuClose}>
+                                  <Typography
+                                    variant="button"
+                                    className={classes.menuItem}
+                                  >
+                                    Login
+                                  </Typography>
+                                </MenuItem>
+                              </a>
+                            </Link>
+                          )}
                         </MenuList>
                       </ClickAwayListener>
                     </Paper>
@@ -184,10 +332,6 @@ export default function Navbar() {
                 )}
               </Popper>
             </>
-          ) : (
-            <Link href="/login" passHref>
-              <Button size="large">Login</Button>
-            </Link>
           )}
         </Toolbar>
       </AppBar>

@@ -12,6 +12,7 @@ import CircularProgress from "@material-ui/core/CircularProgress";
 import Typography from "@material-ui/core/Typography";
 import Container from "@material-ui/core/Container";
 import Paper from "@material-ui/core/Paper";
+import useMediaQuery from "@material-ui/core/useMediaQuery";
 
 import MovieSearch from "./movieSearch/MovieSearch";
 import Movies from "./Movies";
@@ -23,9 +24,18 @@ const useStyles = makeStyles((theme) => ({
     textAlign: "center",
     padding: theme.spacing(2.5),
   },
+  createMobile: {
+    textAlign: "center",
+    padding: theme.spacing(1),
+  },
   grid: {
     "& > *": {
       margin: theme.spacing(1.5),
+    },
+  },
+  gridMobile: {
+    "& > *": {
+      margin: `${theme.spacing(1.5)}px ${theme.spacing(0)}px`,
     },
   },
   title: {
@@ -56,6 +66,8 @@ export default function Form({
   const router = useRouter();
   var { id } = router.query;
   if (Array.isArray(id)) id = id[0];
+  const matches = useMediaQuery("(max-width:1024px)");
+  const matches2 = useMediaQuery("(max-width:460px)");
 
   const [session, loading] = useSession();
   const email = session?.user?.email;
@@ -255,7 +267,7 @@ export default function Form({
           yOffset;
         window.scrollTo({ top: y, behavior: "smooth" });
       } else {
-        const yOffset = -40 - 32 - 16;
+        const yOffset = matches ? -40 - 32 - 16 - 65 : -40 - 32 - 16;
         const y = document.getElementById(movie.id).offsetTop + yOffset;
         document
           .getElementById(`tabpanel-${id}`)
@@ -353,8 +365,11 @@ export default function Form({
       />
     </>
   ) : (
-    <Container maxWidth="md">
-      <Paper elevation={4} className={classes.create}>
+    <Container maxWidth="md" style={matches ? { padding: 0 } : undefined}>
+      <Paper
+        elevation={4}
+        className={matches ? classes.createMobile : classes.create}
+      >
         <Typography variant="h4" className={classes.title}>
           New Watchlist
         </Typography>
@@ -364,7 +379,7 @@ export default function Form({
             direction="column"
             justifyContent="flex-start"
             wrap="nowrap"
-            className={classes.grid}
+            className={matches2 ? classes.gridMobile : classes.grid}
           >
             <Grid item>
               <TextField

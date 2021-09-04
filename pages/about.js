@@ -6,6 +6,7 @@ import Container from "@material-ui/core/Container";
 import Paper from "@material-ui/core/Paper";
 import Typography from "@material-ui/core/Typography";
 import OpenInNewRoundedIcon from "@material-ui/icons/OpenInNewRounded";
+import useMediaQuery from "@material-ui/core/useMediaQuery";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -13,6 +14,16 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(2.5),
     "& > p": {
       margin: theme.spacing(2.5),
+    },
+    "& > h4:not(:first-of-type)": {
+      marginTop: theme.spacing(5),
+    },
+  },
+  paperMobile: {
+    textAlign: "center",
+    padding: theme.spacing(1.25),
+    "& > p": {
+      margin: `${theme.spacing(2.5)}px ${theme.spacing(1)}px`,
     },
     "& > h4:not(:first-of-type)": {
       marginTop: theme.spacing(5),
@@ -34,17 +45,23 @@ const useStyles = makeStyles((theme) => ({
 
 export default function About() {
   const classes = useStyles();
+  const matches = useMediaQuery("(max-width:768px)");
+
   return (
     <>
       <Head>
         <title>About - My Watchlists</title>
       </Head>
-      <Container maxWidth="md">
-        <Paper elevation={4} className={classes.paper}>
+      <Container
+        maxWidth="md"
+        style={matches ? { padding: "0 8px" } : undefined}
+      >
+        <Paper
+          elevation={4}
+          className={matches ? classes.paperMobile : classes.paper}
+        >
           <Typography variant="h4">Contact</Typography>
-          <Typography>
-            All enquiries, comments, ideas for improvement are welcome.
-          </Typography>
+          <Typography>All enquiries, feedback are welcome.</Typography>
           <Typography>
             <b>Email: </b>
             contact@mywatchlists.watch
@@ -62,22 +79,21 @@ export default function About() {
           </Typography>
           <Typography variant="h4">About</Typography>
           <Typography>
-            This watchlist app is a passion project. Born from the idea of
-            having watchlists that are easy to edit and can be shared or even
-            edited together with others. Due to having to scroll back in chats
-            with my brother just to find the movie link he sent me as a
-            recommendation for our next movie night. Then our chat became a
-            group chat and there were even more links sent and to be found. :)
+            This watchlist app is a passion project of mine. Born from the idea
+            of having watchlists that are easy to edit and can be shared or even
+            edited together instead of scrolling back in group chats with
+            friends to find the links we sent each other to plan the next movie
+            night. 🎬&nbsp;+&nbsp;🍕
           </Typography>
           <Typography>
-            I figured there must be an easier way to plan movie nights, so I
-            made this app. I hope you enjoy using it!
+            I&apos;m an office worker by day, aspiring web developer by night
+            learning all things front-end. :)
           </Typography>
           <Typography>
             All movie and TV show information is available thanks to the TMDb
             API. The Movie Database (TMDb) is a community built movie and TV
-            database. It is a great platform and I recommend checking it out if
-            you are hearing about it for the first time.
+            database. They have a great platform, I can definitely recommend
+            checking it out.
           </Typography>
           <a
             href="https://www.themoviedb.org/"

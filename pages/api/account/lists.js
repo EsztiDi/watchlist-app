@@ -60,9 +60,9 @@ export default async function handler(req, res) {
         });
       } catch (err) {
         console.error(
-          `Couldn't perform deleteMany() in MongoDB - user: ${
-            session?.user
-          } - ${JSON.stringify(err)}`
+          `Couldn't delete lists - user: ${session?.user} - ${JSON.stringify(
+            err
+          )}`
         );
         res.status(400).json({ success: false });
       }

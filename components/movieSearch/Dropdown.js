@@ -6,6 +6,7 @@ import ClickAwayListener from "@material-ui/core/ClickAwayListener";
 import Paper from "@material-ui/core/Paper";
 import ListItem from "@material-ui/core/ListItem";
 import Divider from "@material-ui/core/Divider";
+import useMediaQuery from "@material-ui/core/useMediaQuery";
 
 import MovieListItem from "./MovieListItem";
 
@@ -34,12 +35,17 @@ const useStyles = makeStyles((theme) => ({
     paddingTop: 0,
     paddingBottom: 0,
   },
+  itemMobile: {
+    paddingLeft: theme.spacing(0.5),
+    paddingRight: theme.spacing(0.5),
+  },
 }));
 
 export default function Dropdown({ dropdownProps, results }) {
-  const classes = useStyles();
   const { open, setOpen, anchorRef, handleToggle, handleListItemClick } =
     dropdownProps;
+  const classes = useStyles();
+  const matches = useMediaQuery("(max-width:640px)");
 
   const handleClose = (ev) => {
     if (anchorRef.current && anchorRef.current.contains(ev.target)) {
@@ -92,7 +98,11 @@ export default function Dropdown({ dropdownProps, results }) {
         >
           {results.map((movie, index) => (
             <React.Fragment key={index}>
-              <ListItem button onClick={() => handleListItemClick(index)}>
+              <ListItem
+                button
+                onClick={() => handleListItemClick(index)}
+                className={matches ? classes.itemMobile : undefined}
+              >
                 <MovieListItem movie={movie} />
               </ListItem>
               <Divider />

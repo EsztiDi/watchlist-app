@@ -14,7 +14,7 @@ export default async function handler(req, res) {
           "_id title movies user",
           {
             skip: 0,
-            limit: 10,
+            limit: 8,
             sort: {
               updatedAt: -1,
             },

@@ -9,6 +9,7 @@ import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
 import Box from "@material-ui/core/Box";
 import Typography from "@material-ui/core/Typography";
+import useMediaQuery from "@material-ui/core/useMediaQuery";
 
 import EpisodeCard from "./EpisodeCard";
 
@@ -32,7 +33,7 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: "4px",
     boxShadow: theme.shadows[5],
     height: "80%",
-    width: "70%",
+    // width: "70%",
     overflow: "auto",
     "&::-webkit-scrollbar": {
       width: "7px",
@@ -66,6 +67,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Seasons({ open, onClose, seasons, lastSeason }) {
   const classes = useStyles();
+  const matches = useMediaQuery("(max-width:1024px)");
 
   const [seasonTab, setSeasonTab] = React.useState(
     lastSeason ? lastSeason - 1 : 0
@@ -95,7 +97,11 @@ export default function Seasons({ open, onClose, seasons, lastSeason }) {
       }}
     >
       <Fade in={open}>
-        <div id="seasons" className={classes.seasons}>
+        <div
+          id="seasons"
+          style={matches ? { width: "95%" } : { width: "70%" }}
+          className={classes.seasons}
+        >
           <AppBar position="static" className={classes.tabheader}>
             <Tabs
               id="modal-title"
@@ -153,6 +159,7 @@ export default function Seasons({ open, onClose, seasons, lastSeason }) {
 
 function TabPanel(props) {
   const classes = useStyles();
+  const matches2 = useMediaQuery("(max-width:768px)");
 
   const { children, seasonTab, index, ...other } = props;
 
@@ -165,7 +172,7 @@ function TabPanel(props) {
       {...other}
     >
       {seasonTab === index && (
-        <Box p={3}>
+        <Box p={matches2 ? 1 : 3}>
           {children ? (
             children
               .sort((a, b) => a.episode_number - b.episode_number)

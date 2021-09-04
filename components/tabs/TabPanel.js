@@ -13,6 +13,7 @@ import TodayRoundedIcon from "@material-ui/icons/TodayRounded";
 import ShareRoundedIcon from "@material-ui/icons/ShareRounded";
 import OpenInNewRoundedIcon from "@material-ui/icons/OpenInNewRounded";
 import HighlightOffRoundedIcon from "@material-ui/icons/HighlightOffRounded";
+import useMediaQuery from "@material-ui/core/useMediaQuery";
 
 import Calendar from "../calendar/Calendar";
 import Movies from "../Movies";
@@ -24,6 +25,7 @@ const useStyles = makeStyles((theme) => ({
   panel: {
     paddingTop: 0,
     width: "100%",
+    height: "100%",
     overflow: "auto",
     textAlign: "center",
     "&::-webkit-scrollbar": {
@@ -57,6 +59,21 @@ const useStyles = makeStyles((theme) => ({
       marginRight: "auto",
     },
   },
+  buttonsMobile: {
+    position: "relative",
+    display: "flex",
+    flexWrap: "wrap",
+    alignItems: "center",
+    justifyContent: "space-evenly",
+    columnGap: theme.spacing(1),
+    padding: theme.spacing(0.5),
+    "& svg": {
+      fontSize: "1.7rem",
+    },
+  },
+  label: {
+    width: "43%",
+  },
   button: {
     padding: theme.spacing(0.5),
   },
@@ -67,16 +84,20 @@ const useStyles = makeStyles((theme) => ({
       color: theme.palette.primary.main,
     },
   },
-  // calendar: {
-  //   padding: theme.spacing(0.5),
-  //   position: "absolute",
-  //   bottom: "19px",
-  //   right: "24px",
-  // },
   updating: {
     position: "absolute",
-    bottom: "27px",
-    left: "30px",
+    bottom: "29px",
+    left: "50px",
+  },
+  updatingMobile: {
+    position: "absolute",
+    bottom: "37px",
+    left: "60px",
+  },
+  updatingMobile2: {
+    position: "absolute",
+    bottom: "20px",
+    left: "43px",
   },
   delete: {
     fontSize: "1.9rem",
@@ -87,14 +108,15 @@ const useStyles = makeStyles((theme) => ({
   },
   search: {
     position: "relative",
-    marginLeft: theme.spacing(2),
-    marginRight: theme.spacing(2),
-    marginTop: theme.spacing(4),
+    margin: `${theme.spacing(4)}px ${theme.spacing(2)}px 0`,
+  },
+  searchMobile: {
+    position: "relative",
+    margin: `${theme.spacing(4)}px 0 0`,
   },
 }));
 
 export default function TabPanel(props) {
-  const classes = useStyles();
   const {
     id: listID,
     newTab,
@@ -110,6 +132,12 @@ export default function TabPanel(props) {
     calendar,
     ...other
   } = props;
+
+  const classes = useStyles();
+  const matches = useMediaQuery("(max-width:1024px)");
+  const matches2 = useMediaQuery("(max-width:455px)");
+  const matches3 = useMediaQuery("(max-width:640px)");
+  const matches4 = useMediaQuery("(max-width:768px)");
 
   const { data: list, error } = useSWR(listID ? `/api/lists/${listID}` : null);
   if (error) console.error(error);
@@ -146,49 +174,62 @@ export default function TabPanel(props) {
 
   return (
     <Box
-      p={2}
+      p={matches ? 0.5 : 2}
       className={!newTab ? classes.panel : classes.newTab}
       role={!newTab ? "tabpanel" : null}
       id={!newTab ? `tabpanel-${listID}` : null}
       aria-labelledby={!newTab ? `tab-${listID}` : null}
       {...other}
     >
-      <div className={classes.buttons}>
+      <div className={matches ? classes.buttonsMobile : classes.buttons}>
         {newTab && updating && (
           <CircularProgress
             size="1.5rem"
             thickness={5}
-            className={classes.updating}
+            className={
+              matches4
+                ? classes.updatingMobile2
+                : matches
+                ? classes.updatingMobile
+                : classes.updating
+            }
           />
         )}
         {!newTab && (
           <>
-            {calendar ? (
-              <Link href={`/lists/${listID}`} replace passHref>
-                <IconButton
-                  aria-label="list view"
-                  title="List view"
-                  className={classes.button}
-                >
-                  <FormatListBulletedRoundedIcon className={classes.topIcon} />
-                </IconButton>
-              </Link>
+            {!matches ? (
+              calendar ? (
+                <Link href={`/lists/${listID}`} replace passHref>
+                  <IconButton
+                    aria-label="list view"
+                    title="List view"
+                    className={classes.button}
+                  >
+                    <FormatListBulletedRoundedIcon
+                      className={classes.topIcon}
+                    />
+                  </IconButton>
+                </Link>
+              ) : (
+                <Link href={`/lists/calendar/${listID}`} replace passHref>
+                  <IconButton
+                    id="calendar"
+                    aria-label="calendar view"
+                    title="Calendar view"
+                    className={classes.button}
+                  >
+                    <TodayRoundedIcon className={classes.topIcon} />
+                  </IconButton>
+                </Link>
+              )
             ) : (
-              <Link href={`/lists/calendar/${listID}`} replace passHref>
-                <IconButton
-                  id="calendar"
-                  aria-label="calendar view"
-                  title="Calendar view"
-                  className={classes.button}
-                >
-                  <TodayRoundedIcon className={classes.topIcon} />
-                </IconButton>
-              </Link>
+              ""
             )}
             <FormControlLabel
               id="private"
               label="Private"
-              labelPlacement="start"
+              labelPlacement={!matches2 ? "start" : "end"}
+              className={matches2 ? classes.label : undefined}
               control={
                 <Switch
                   color="primary"
@@ -201,7 +242,9 @@ export default function TabPanel(props) {
             <FormControlLabel
               id="emails"
               label="Emails"
-              labelPlacement="start"
+              labelPlacement={!matches2 ? "start" : "end"}
+              // labelPlacement="start"
+              className={matches2 ? classes.label : undefined}
               control={
                 <Switch
                   color="primary"
@@ -211,6 +254,34 @@ export default function TabPanel(props) {
                 />
               }
             />
+            {matches ? (
+              calendar ? (
+                <Link href={`/lists/${listID}`} replace passHref>
+                  <IconButton
+                    aria-label="list view"
+                    title="List view"
+                    className={classes.button}
+                  >
+                    <FormatListBulletedRoundedIcon
+                      className={classes.topIcon}
+                    />
+                  </IconButton>
+                </Link>
+              ) : (
+                <Link href={`/lists/calendar/${listID}`} replace passHref>
+                  <IconButton
+                    id="calendar"
+                    aria-label="calendar view"
+                    title="Calendar view"
+                    className={classes.button}
+                  >
+                    <TodayRoundedIcon className={classes.topIcon} />
+                  </IconButton>
+                </Link>
+              )
+            ) : (
+              ""
+            )}
             <IconButton
               id="share"
               aria-label="share watchlist"
@@ -275,7 +346,7 @@ export default function TabPanel(props) {
         />
       )}
       {editable && !calendar && (
-        <div className={classes.search}>
+        <div className={matches3 ? classes.searchMobile : classes.search}>
           <MovieSearch
             addMovie={addMovie}
             addingMovie={addingMovie}

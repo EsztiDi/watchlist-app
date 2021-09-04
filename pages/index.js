@@ -1,8 +1,8 @@
 import Head from "next/head";
 
 import { makeStyles } from "@material-ui/core/styles";
-import Container from "@material-ui/core/Container";
 import Paper from "@material-ui/core/Paper";
+import useMediaQuery from "@material-ui/core/useMediaQuery";
 
 import MoviesCarousel from "../components/carousel/MoviesCarousel";
 import ListsCarousel from "../components/carousel/ListsCarousel";
@@ -14,10 +14,17 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: "space-evenly",
     padding: theme.spacing(2.5),
   },
+  paperMobile: {
+    display: "flex",
+    flexWrap: "wrap",
+    justifyContent: "space-evenly",
+    padding: theme.spacing(1),
+  },
 }));
 
 export default function Discover({ setMessage }) {
   const classes = useStyles();
+  const matches = useMediaQuery("(max-width:1024px)");
 
   const [loading, setLoading] = React.useState(false);
   const [thisMonthMovies, setThisMonthMovies] = React.useState([]);
@@ -157,25 +164,26 @@ export default function Discover({ setMessage }) {
       <Head>
         <title>Discover - My Watchlists</title>
       </Head>
-      <Container disableGutters maxWidth="xl">
-        <Paper elevation={4} className={classes.paper}>
-          {carousels
-            .sort((a, b) => a.position - b.position)
-            .map((carousel, index) => {
-              return (
-                <MoviesCarousel
-                  key={index}
-                  title={carousel.title}
-                  movies={carousel.movies}
-                  media_type={carousel.media_type}
-                  loading={loading}
-                  setMessage={setMessage}
-                />
-              );
-            })}
-          <ListsCarousel setMessage={setMessage} />
-        </Paper>
-      </Container>
+      <Paper
+        elevation={4}
+        className={matches ? classes.paperMobile : classes.paper}
+      >
+        {carousels
+          .sort((a, b) => a.position - b.position)
+          .map((carousel, index) => {
+            return (
+              <MoviesCarousel
+                key={index}
+                title={carousel.title}
+                movies={carousel.movies}
+                media_type={carousel.media_type}
+                loading={loading}
+                setMessage={setMessage}
+              />
+            );
+          })}
+        <ListsCarousel setMessage={setMessage} />
+      </Paper>
     </>
   );
 }

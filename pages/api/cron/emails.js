@@ -80,6 +80,7 @@ export default async function handler(req, res) {
                     });
                     if (movies.length > 0) {
                       upcoming.push({
+                        id: list._id,
                         title: list.title,
                         movies: movies.sort(
                           (a, b) =>
@@ -101,7 +102,7 @@ export default async function handler(req, res) {
               const html = weeklyHTML(upcoming);
 
               const emailParams = new EmailParams()
-                .setFrom("releases@mywatchlists.watch")
+                .setFrom("contact@mywatchlists.watch")
                 .setFromName("Watchlist App")
                 .setRecipients(recipient)
                 .setSubject("Upcoming releases from your watchlists")

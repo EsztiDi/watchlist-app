@@ -8,6 +8,7 @@ import EditRoundedIcon from "@material-ui/icons/EditRounded";
 import KeyboardArrowUpRoundedIcon from "@material-ui/icons/KeyboardArrowUpRounded";
 import KeyboardArrowDownRoundedIcon from "@material-ui/icons/KeyboardArrowDownRounded";
 import CircularProgress from "@material-ui/core/CircularProgress";
+import useMediaQuery from "@material-ui/core/useMediaQuery";
 
 import EditTitle from "./EditTitle";
 
@@ -15,6 +16,11 @@ const useStyles = makeStyles((theme) => ({
   tabs: {
     borderRight: `1px solid ${theme.palette.divider}`,
     minWidth: "25%",
+  },
+  tabsMobile: {
+    borderBottom: `1px solid ${theme.palette.divider}`,
+    minHeight: "fit-content",
+    overflow: "visible",
   },
   loader: {
     paddingTop: theme.spacing(2),
@@ -36,6 +42,18 @@ const useStyles = makeStyles((theme) => ({
       },
     },
   },
+  tabMobile: {
+    fontSize: "0.875rem",
+    maxWidth: "100%",
+    minWidth: "50%",
+    "& > :first-child": {
+      width: "76%",
+      flexDirection: "row",
+      "& > :first-child": {
+        marginBottom: "3px",
+      },
+    },
+  },
   edit: {
     position: "absolute",
     top: "50%",
@@ -43,7 +61,7 @@ const useStyles = makeStyles((theme) => ({
     transform: "translateY(-50%)",
     padding: theme.spacing(0.5),
     borderRadius: "50%",
-    fontSize: "2rem",
+    // fontSize: "2rem",
     color: theme.palette.primary.light,
     transition: "background-color 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms",
     "&:hover": {
@@ -93,6 +111,7 @@ export default function ListTabs({
   saved = false,
 }) {
   const classes = useStyles();
+  const matches = useMediaQuery("(max-width:1024px)");
   const [editTitle, setEditTitle] = React.useState(false);
 
   const { data: lists, error } = useSWR("/api/lists");
@@ -131,19 +150,19 @@ export default function ListTabs({
   if (!lists)
     return (
       <div className={classes.loader}>
-        <CircularProgress size="3rem" thickness={3} />
+        <CircularProgress size={matches ? "2rem" : "3rem"} thickness={3} />
       </div>
     );
 
   return (
     (hasLists || hasSavedLists) && (
       <Tabs
-        orientation="vertical"
+        orientation={matches ? "horizontal" : "vertical"}
         variant="scrollable"
         indicatorColor="secondary"
         aria-label="list tabs"
         value={value}
-        className={classes.tabs}
+        className={matches ? classes.tabsMobile : classes.tabs}
         id="list-tabs"
       >
         {lists.map((list, index) =>
@@ -167,12 +186,12 @@ export default function ListTabs({
             >
               <Tab
                 label={list.title}
-                wrapped
+                wrapped={matches ? false : true}
                 disableFocusRipple
                 disabled={updating}
                 onClick={editTitle ? closeEditTitle : null}
-                className={classes.tab}
-                style={value === index ? { opacity: 1 } : null}
+                className={matches ? classes.tabMobile : classes.tab}
+                style={value === index ? { opacity: 1 } : undefined}
                 {...a11yProps(list._id, index, value)}
                 icon={
                   putData &&
@@ -180,7 +199,7 @@ export default function ListTabs({
                     <>
                       {updating ? (
                         <CircularProgress
-                          size="1.5rem"
+                          size={matches ? "1rem" : "1.5rem"}
                           thickness={5}
                           className={classes.updating}
                         />
@@ -189,6 +208,7 @@ export default function ListTabs({
                           <EditRoundedIcon
                             aria-label="edit title"
                             className={classes.edit}
+                            fontSize={"medium"}
                             onClick={openEditTitle}
                           />
                         </span>
@@ -199,6 +219,7 @@ export default function ListTabs({
                             <KeyboardArrowUpRoundedIcon
                               aria-label="move list up"
                               className={classes.arrow}
+                              fontSize={matches ? "medium" : "large"}
                               onClick={() => moveListUp(index)}
                             />
                           </span>
@@ -208,6 +229,7 @@ export default function ListTabs({
                             <KeyboardArrowDownRoundedIcon
                               aria-label="move list down"
                               className={classes.arrow}
+                              fontSize={matches ? "medium" : "large"}
                               onClick={() => moveListDown(index)}
                             />
                           </span>
@@ -224,11 +246,11 @@ export default function ListTabs({
           <Link href={`/lists/saved`} replace passHref>
             <Tab
               label="Saved Lists"
-              wrapped
+              wrapped={matches ? false : true}
               disableFocusRipple
               disabled={updating}
-              className={classes.tab}
-              style={value === lists.length ? { opacity: 1 } : null}
+              className={matches ? classes.tabMobile : classes.tab}
+              style={value === lists.length ? { opacity: 1 } : undefined}
               {...a11yProps("saved", lists.length, lists.length)}
             />
           </Link>

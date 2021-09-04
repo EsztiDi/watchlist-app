@@ -158,7 +158,7 @@ export default function MovieDetails({
   };
 
   const handleMouse = (ev) => {
-    handleShowDetails();
+    handleShowDetails(ev);
     handleMenuClose(ev);
   };
 
@@ -208,7 +208,8 @@ export default function MovieDetails({
         aria-haspopup="true"
         onClick={handleButtonClick}
       >
-        <PlaylistAddRoundedIcon /> Add
+        <PlaylistAddRoundedIcon />
+        &nbsp;Add
       </Button>
       <Popper
         open={menuOpen}

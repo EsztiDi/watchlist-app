@@ -5,15 +5,15 @@ import MenuItem from "@material-ui/core/MenuItem";
 import Typography from "@material-ui/core/Typography";
 
 const useStyles = makeStyles((theme) => ({
-  menuItem: {
+  item: {
+    whiteSpace: "unset",
+    textAlign: "center",
+  },
+  text: {
     width: "100%",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
   },
   added: {
     width: "100%",
-    textAlign: "center",
     color: "#009688",
   },
 }));
@@ -97,13 +97,14 @@ export default function ListsMenu({
           key={index}
           disabled={updating}
           onClick={(ev) => add(list._id, index, ev)}
+          className={classes.item}
         >
           <Typography
             variant="button"
             className={
               list?.movies?.map((mov) => mov.id).includes(movieID)
                 ? classes.added
-                : classes.menuItem
+                : classes.text
             }
           >
             {list.title}

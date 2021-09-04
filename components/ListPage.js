@@ -14,12 +14,20 @@ import StarBorderRoundedIcon from "@material-ui/icons/StarBorderRounded";
 import StarRoundedIcon from "@material-ui/icons/StarRounded";
 import FormatListBulletedRoundedIcon from "@material-ui/icons/FormatListBulletedRounded";
 import TodayRoundedIcon from "@material-ui/icons/TodayRounded";
+import useMediaQuery from "@material-ui/core/useMediaQuery";
 
 import Form from "./Form";
 
 const useStyles = makeStyles((theme) => ({
+  containerMobile: {
+    padding: theme.spacing(1),
+  },
   paper: {
     padding: theme.spacing(2.5),
+    marginBottom: theme.spacing(3),
+  },
+  paperMobile: {
+    padding: theme.spacing(1),
     marginBottom: theme.spacing(3),
   },
   titleContainer: {
@@ -28,8 +36,22 @@ const useStyles = makeStyles((theme) => ({
     "& > h4": {
       display: "flex",
       justifyContent: "center",
+      alignItems: "center",
       "& > span": {
-        flexBasis: "95%",
+        flexGrow: 1,
+      },
+    },
+  },
+  titleContainerMobile: {
+    margin: 0,
+    marginTop: theme.spacing(1.5),
+    padding: theme.spacing(0.5),
+    "& > h4": {
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center",
+      "& > span": {
+        flexGrow: 1,
       },
     },
   },
@@ -72,6 +94,8 @@ export default function ListPage({
   const [session, loading] = useSession();
   const router = useRouter();
   var { id } = router.query;
+  const matches = useMediaQuery("(max-width:1024px)");
+  const matches2 = useMediaQuery("(max-width:768px)");
 
   const [updating, setUpdating] = React.useState(false);
   const [backdrop, setBackdrop] = React.useState("");
@@ -219,7 +243,10 @@ export default function ListPage({
           <link rel="canonical" href={url} key="canonical" />
           <title>{list ? list.title : initialList.title} - My Watchlists</title>
         </Head>
-        <Container maxWidth="md">
+        <Container
+          maxWidth="md"
+          className={matches ? classes.containerMobile : undefined}
+        >
           {Object.keys(list).length !== 0 && backdrop.length > 0 && (
             <div
               style={{
@@ -230,8 +257,16 @@ export default function ListPage({
               data-background="backdrop"
             ></div>
           )}
-          <Paper elevation={4} className={classes.paper}>
-            <Paper elevation={1} className={classes.titleContainer}>
+          <Paper
+            elevation={4}
+            className={matches ? classes.paperMobile : classes.paper}
+          >
+            <Paper
+              elevation={1}
+              className={
+                matches2 ? classes.titleContainerMobile : classes.titleContainer
+              }
+            >
               <Typography variant="h4">
                 {sameUser !== undefined &&
                   !sameUser &&
