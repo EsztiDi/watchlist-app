@@ -14,7 +14,7 @@ import React from "react";
 const useStyles = makeStyles((theme) => ({
   container: {
     width: "100%",
-    height: "calc(100vh - 16px - 16px - 56px)",
+    height: "100%",
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
@@ -69,14 +69,12 @@ export default function Lists() {
     !hasLists &&
     !hasSavedLists && (
       <Paper elevation={4} className={classes.container}>
-        <>
-          <Typography variant="h4">Create a watchlist</Typography>
-          <Link href="/create" passHref>
-            <IconButton className={classes.button}>
-              <AddCircleRoundedIcon className={classes.add} />
-            </IconButton>
-          </Link>
-        </>
+        <Typography variant="h4">Create a watchlist</Typography>
+        <Link href="/create" passHref>
+          <IconButton className={classes.button}>
+            <AddCircleRoundedIcon className={classes.add} />
+          </IconButton>
+        </Link>
       </Paper>
     )
   );

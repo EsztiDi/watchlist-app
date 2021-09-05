@@ -24,6 +24,7 @@ const useStyles = makeStyles((theme) => ({
     alignItems: "center",
     width: "100%",
     height: "100%",
+    overflow: "auto",
     position: "absolute",
     top: 0,
     borderRadius: "10px",
@@ -41,6 +42,20 @@ const useStyles = makeStyles((theme) => ({
     },
     "& > button + div": {
       zIndex: "1",
+    },
+    "&::-webkit-scrollbar": {
+      width: "6px",
+      height: "6px",
+      background: "#F0F0F0",
+      borderRadius: "100px",
+    },
+    "&::-webkit-scrollbar-track": {
+      background: "#F0F0F0",
+      borderRadius: "100px",
+    },
+    "&::-webkit-scrollbar-thumb": {
+      background: "#CECECE",
+      borderRadius: "100px",
     },
   },
   miniIcon: {
@@ -111,6 +126,10 @@ export default function MovieDetails({
     // eslint-disable-next-line
   }, []);
 
+  React.useEffect(() => {
+    if (!show) handleMenuClose();
+  }, [show]);
+
   var { imdb_id } = external_ids;
 
   title = title ? title : name ? name : "Untitled";
@@ -144,7 +163,7 @@ export default function MovieDetails({
   };
 
   const handleMenuClose = (ev) => {
-    if (anchorRef.current && anchorRef.current.contains(ev.target)) {
+    if (anchorRef.current && anchorRef.current.contains(ev?.target)) {
       return;
     }
     setMenuOpen(false);
@@ -159,7 +178,6 @@ export default function MovieDetails({
 
   const handleMouse = (ev) => {
     handleShowDetails(ev);
-    handleMenuClose(ev);
   };
 
   return (
@@ -216,7 +234,6 @@ export default function MovieDetails({
         anchorEl={anchorRef.current}
         role={undefined}
         transition
-        disablePortal
       >
         {({ TransitionProps, placement }) => (
           <Grow

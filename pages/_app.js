@@ -107,7 +107,7 @@ export default function MyApp({ Component, pageProps }) {
   const router = useRouter();
 
   const [message, setMessage] = React.useState("");
-  const matches = useMediaQuery("(max-width:600px)");
+  const matches = useMediaQuery("(max-width:768px)");
 
   React.useEffect(() => {
     // Removing the server-side injected CSS

@@ -13,10 +13,10 @@ import MovieListItem from "./MovieListItem";
 const useStyles = makeStyles((theme) => ({
   dropdown: {
     width: "100%",
-    maxHeight: "430px",
+    maxHeight: "500px",
     border: "2px solid #F7C550",
     borderRadius: "4px",
-    zIndex: "99",
+    zIndex: "1111",
     overflow: "auto",
     "&::-webkit-scrollbar": {
       width: "6px",
@@ -88,6 +88,7 @@ export default function Dropdown({ dropdownProps, results }) {
       anchorEl={anchorRef.current}
       role={undefined}
       disablePortal
+      placement="bottom"
     >
       <ClickAwayListener onClickAway={handleClose}>
         <Paper

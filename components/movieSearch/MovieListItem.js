@@ -6,24 +6,21 @@ import useMediaQuery from "@material-ui/core/useMediaQuery";
 
 const useStyles = makeStyles((theme) => ({
   title: {
-    marginBottom: theme.spacing(1),
+    marginBottom: theme.spacing(0.5),
   },
   titleMobile: {
-    fontSize: "1.15rem",
-    marginBottom: theme.spacing(0.5),
     display: "flex",
     alignItems: "center",
   },
   image: {
-    minWidth: "14%",
-    paddingTop: "21%",
+    minWidth: "10%",
+    paddingTop: "15%",
     backgroundSize: "contain",
   },
   imageMobile: {
-    minWidth: "20%",
-    paddingTop: "30%",
+    minWidth: "15%",
+    paddingTop: "22.5%",
     backgroundSize: "contain",
-    marginRight: theme.spacing(0.5),
   },
   content: {
     minWidth: "70%",
@@ -33,15 +30,13 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   contentMobile: {
-    width: "100%",
-    padding: `0 ${theme.spacing(0.75)}px`,
+    minWidth: "70%",
+    padding: `0 ${theme.spacing(0.5)}px`,
     "&:last-child": {
       paddingBottom: 0,
     },
   },
   overview: {
-    fontSize: "0.95rem",
-    maxHeight: "90.56px",
     overflow: "auto",
     "&::-webkit-scrollbar": {
       width: "6px",
@@ -62,7 +57,8 @@ const useStyles = makeStyles((theme) => ({
 
 export default function MovieListItem({ movie }) {
   const classes = useStyles();
-  const matches = useMediaQuery("(max-width:640px)");
+  const matches = useMediaQuery("(max-width:768px)");
+  const matches2 = useMediaQuery("(max-width:500px)");
 
   var {
     poster_path,
@@ -88,26 +84,44 @@ export default function MovieListItem({ movie }) {
 
   return (
     <>
-      {!matches && <CardMedia className={classes.image} image={poster} />}
+      <CardMedia
+        className={matches2 ? classes.imageMobile : classes.image}
+        image={poster}
+      />
       <CardContent
-        className={matches ? classes.contentMobile : classes.content}
+        className={matches2 ? classes.contentMobile : classes.content}
       >
         <Typography
           variant="h6"
-          className={matches ? classes.titleMobile : classes.title}
+          className={matches2 ? classes.titleMobile : classes.title}
+          style={
+            matches2
+              ? { fontSize: "0.8rem" }
+              : matches
+              ? { fontSize: "1rem" }
+              : { fontSize: "1.25rem" }
+          }
         >
-          {matches && (
-            <CardMedia className={classes.imageMobile} image={poster} />
-          )}
-          {!matches && `${title} (${year}, ${media_type || "-"})`}
-          {matches && (
+          {!matches2 && `${title} (${year}, ${media_type || "-"})`}
+          {matches2 && (
             <span>
               {title}
               <br />({year}, {media_type || "-"})
             </span>
           )}
         </Typography>
-        <Typography className={classes.overview}>{overview || ""}</Typography>
+        <Typography
+          className={classes.overview}
+          style={
+            matches2
+              ? { fontSize: "0.7rem", maxHeight: "33px" }
+              : matches
+              ? { fontSize: "0.8rem", maxHeight: "38px" }
+              : { fontSize: "0.95rem", maxHeight: "68px" }
+          }
+        >
+          {overview || ""}
+        </Typography>
       </CardContent>
     </>
   );

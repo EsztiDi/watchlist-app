@@ -963,6 +963,8 @@ export default function weeklyHTML(lists) {
             background-color: #fff;
             border-left: 1px solid #444;
             border-right: 1px solid #444;
+            padding-top: 5px;
+            padding-bottom: 5px;
           "
         >
           <div
@@ -1076,32 +1078,9 @@ export default function weeklyHTML(lists) {
                           sans-serif;
                       "
                     >
-                      <div style="height: 35px"></div>
+                      <div style="height: 25px"></div>
                     </div>
                   </div>
-                  <!--[if !mso]><!-->
-                  <div
-                    class="desktop_hide"
-                    style="
-                      mso-hide: all;
-                      display: none;
-                      max-height: 0px;
-                      overflow: hidden;
-                    "
-                  >
-                    <div
-                      style="
-                        font-size: 16px;
-                        text-align: center;
-                        font-family: Trebuchet MS, Lucida Grande,
-                          Lucida Sans Unicode, Lucida Sans, Tahoma,
-                          sans-serif;
-                      "
-                    >
-                      <div style="height: 10px"></div>
-                    </div>
-                  </div>
-                  <!--<![endif]-->
                   <!--[if mso]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="padding-right: 0px; padding-left: 0px; padding-top: 0px; padding-bottom: 0px; font-family: Tahoma, sans-serif"><![endif]-->
                   <div
                     style="
@@ -1147,7 +1126,6 @@ export default function weeklyHTML(lists) {
                           style="
                             text-decoration: none;
                             color: #000;
-                            font-weight: bold;
                           "
                           target="_blank"
                           ><span style="font-size: 17px">
@@ -1169,7 +1147,6 @@ export default function weeklyHTML(lists) {
                           margin-top: 0;
                           margin-bottom: 0;
                           color: #f5b829;
-                          font-style: italic;
                           "
                       >
                         <span style="font-size: 17px">${
@@ -1209,7 +1186,8 @@ export default function weeklyHTML(lists) {
         background-color: #fff;
         border-left: 1px solid #444;
         border-right: 1px solid #444;
-      "
+        padding-top: 5px;
+        "
     >
       <div
         style="

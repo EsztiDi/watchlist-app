@@ -86,6 +86,7 @@ const useStyles = makeStyles((theme) => ({
     textAlign: "center",
     display: "flex",
     justifyContent: "center",
+    alignItems: "center",
     "& > span": {
       flexBasis: "95%",
     },
@@ -94,7 +95,6 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   titleMobile: {
-    fontSize: "1.2rem",
     textAlign: "center",
     display: "flex",
     alignItems: "center",
@@ -109,7 +109,6 @@ const useStyles = makeStyles((theme) => ({
   info: {
     textAlign: "center",
     marginBottom: theme.spacing(1),
-    fontSize: "0.9rem",
   },
   nowrap: {
     whiteSpace: "nowrap",
@@ -131,15 +130,11 @@ const useStyles = makeStyles((theme) => ({
   },
   director: {
     fontWeight: "normal",
-    marginBottom: theme.spacing(0.5),
-    fontSize: "0.95rem",
   },
   cast: {
     whiteSpace: "nowrap",
     overflow: "auto",
     fontWeight: "normal",
-    marginBottom: theme.spacing(1),
-    fontSize: "0.95rem",
     "&::-webkit-scrollbar": {
       width: "4px",
       height: "4px",
@@ -244,7 +239,7 @@ export default function MovieCard({
 
   const classes = useStyles();
   const matches = useMediaQuery("(max-width:768px)");
-  const matches2 = useMediaQuery("(max-width:420px)");
+  const matches2 = useMediaQuery("(max-width:500px)");
 
   // For ListsMenu
   const [session, loading] = useSession();
@@ -292,35 +287,27 @@ export default function MovieCard({
         id={id}
         className={matches ? classes.moviecardMobile : classes.moviecard}
       >
-        {!matches2 && (
-          <CardMedia
-            data-image="background"
-            className={matches ? classes.imageMobile : classes.image}
-            image={poster}
-          />
-        )}
+        <CardMedia
+          data-image="background"
+          className={matches2 ? classes.imageMobile : classes.image}
+          image={poster}
+        />
         <CardContent
-          className={
-            !matches
-              ? classes.content
-              : !matches2
-              ? classes.contentMobile
-              : classes.contentMobile2
-          }
+          className={matches ? classes.contentMobile : classes.content}
         >
           <Typography
             variant="h6"
-            className={matches2 ? classes.titleMobile : classes.title}
+            className={classes.title}
+            style={
+              matches2
+                ? { fontSize: "0.9rem" }
+                : matches
+                ? { fontSize: "1.1rem" }
+                : { fontSize: "1.25rem" }
+            }
           >
-            {matches2 && (
-              <CardMedia
-                data-image="background"
-                className={classes.imageMobile}
-                image={poster}
-              />
-            )}
             <span>{title || "Untitled"}</span>
-            {(!matches || !deleteMovie) && (
+            {(!matches2 || !deleteMovie) && (
               <>
                 <IconButton
                   aria-controls={menuOpen ? "menu-list" : undefined}
@@ -380,19 +367,27 @@ export default function MovieCard({
             variant="subtitle2"
             color="textSecondary"
             className={classes.info}
+            style={
+              matches2
+                ? { fontSize: "0.7rem" }
+                : matches
+                ? { fontSize: "0.8rem" }
+                : { fontSize: "0.9rem" }
+            }
           >
             {media_type === "tv" ? (
-              `TV series, ${year}– ● `
+              `TV series, ${year}–`
             ) : (
-              <span className={classes.media}>{media_type || "–"} ● </span>
+              <span className={classes.media}>{media_type || "–"}</span>
             )}
+            {(number_of_episodes >= 0 || runtime || genres || release_date) &&
+              " ● "}
             {number_of_episodes > 0 && (
               <>
                 <span className={classes.external} onClick={handleSeasonsOpen}>
                   {number_of_episodes +
                     (number_of_episodes === 1 ? " episode" : " episodes")}
                 </span>
-                {" ● "}
                 <Seasons
                   open={seasonsOpen}
                   onClose={handleSeasonsOpen}
@@ -403,9 +398,12 @@ export default function MovieCard({
             )}
             {number_of_episodes === 0 && (
               <span className={classes.nowrap}>
-                {number_of_episodes + " episodes ● "}
+                {number_of_episodes + " episodes"}
               </span>
             )}
+            {number_of_episodes >= 0 &&
+              (runtime || genres || release_date) &&
+              " ● "}
             {runtime}
             {runtime && (genres || release_date) && " ● "}
             <span className={classes.nowrap}>{release_date}</span>
@@ -435,19 +433,25 @@ export default function MovieCard({
               </a>
             )}
           </Typography>
-          <Typography className={classes.director}>
+          <Typography
+            className={matches ? classes.cast : classes.director}
+            style={matches2 ? { fontSize: "0.8rem" } : { fontSize: "0.95rem" }}
+          >
             {media_type === "tv" ? <b>Created by: </b> : <b>Director: </b>}
             {creators || directors || "-"}
           </Typography>
-          <Typography className={classes.cast}>
+          <Typography
+            className={classes.cast}
+            style={matches2 ? { fontSize: "0.8rem" } : { fontSize: "0.95rem" }}
+          >
             <b>Cast: </b>
             {cast || "-"}
           </Typography>
-          <Overview overview={overview} />
+          <Overview overview={overview} movieCard={true} />
         </CardContent>
         {deleteMovie && (
-          <div className={matches ? classes.buttonsMobile : classes.buttons}>
-            {matches && (
+          <div className={matches2 ? classes.buttonsMobile : classes.buttons}>
+            {matches2 && (
               <>
                 <IconButton
                   aria-controls={menuOpen ? "menu-list" : undefined}
@@ -525,7 +529,7 @@ export default function MovieCard({
                 </IconButton>
               </>
             )}
-            {!matches && (
+            {!matches2 && (
               <IconButton
                 aria-label="remove"
                 title="Remove"
@@ -562,7 +566,7 @@ export default function MovieCard({
                 )}
               </>
             )}
-            {matches && (
+            {matches2 && (
               <IconButton
                 aria-label="remove"
                 title="Remove"

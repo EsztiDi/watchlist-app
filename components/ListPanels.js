@@ -93,7 +93,7 @@ export default function ListPanels({ setMessage, calendar = false }) {
         className={classes.loadingContainer}
         style={
           matches
-            ? { height: "calc(100vh - 20px - 56px + 24px)" }
+            ? { height: "auto" }
             : { height: "calc(100vh - 16px - 16px - 56px)" }
         }
       >

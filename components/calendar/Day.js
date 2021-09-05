@@ -28,6 +28,9 @@ const useStyles = makeStyles((theme) => ({
     lineHeight: 1.2,
     margin: theme.spacing(0.8),
   },
+  tooltipPadding: {
+    padding: "4px 8px",
+  },
 }));
 
 const today = new Date();
@@ -96,6 +99,11 @@ export default function Day({ date, month, year, movies }) {
               <Tooltip
                 key={index}
                 arrow
+                enterTouchDelay={0}
+                leaveTouchDelay={50000}
+                classes={{
+                  tooltip: classes.tooltipPadding,
+                }}
                 title={
                   <p className={classes.tooltip}>
                     {`${series[0]} S${series[1][0].season_number} E${
@@ -139,6 +147,11 @@ export default function Day({ date, month, year, movies }) {
               <Tooltip
                 key={`${movie.id}-${index}`}
                 arrow
+                enterTouchDelay={0}
+                leaveTouchDelay={50000}
+                classes={{
+                  tooltip: classes.tooltipPadding,
+                }}
                 title={
                   <p className={classes.tooltip}>
                     {movie.title

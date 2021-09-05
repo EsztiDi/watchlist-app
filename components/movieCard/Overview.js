@@ -1,37 +1,37 @@
 import { makeStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
+import useMediaQuery from "@material-ui/core/useMediaQuery";
 
 const useStyles = makeStyles((theme) => ({
   overview: {
-    fontSize: "0.95rem",
-    maxHeight: "46px",
-    overflow: "auto",
-    "&::-webkit-scrollbar": {
-      width: "6px",
-      height: "6px",
-      background: "#F0F0F0",
-      borderRadius: "100px",
+    marginTop: theme.spacing(1),
+    marginBottom: theme.spacing(0.5),
+    "& *": {
+      fontSize: "0.95rem",
     },
-    "&::-webkit-scrollbar-track": {
-      background: "#F0F0F0",
-      borderRadius: "100px",
-    },
-    "&::-webkit-scrollbar-thumb": {
-      background: "#CECECE",
-      borderRadius: "100px",
+  },
+  overviewMobile: {
+    marginTop: theme.spacing(0.5),
+    "& *": {
+      fontSize: "0.8rem",
     },
   },
 }));
 
-export default function Overview({ overview, height }) {
+export default function Overview({ overview, movieCard = false }) {
   const classes = useStyles();
+  const matches = useMediaQuery("(max-width:500px)");
 
   return (
-    <Typography
-      className={classes.overview}
-      style={height ? { maxHeight: height, margin: "0.5rem 0" } : undefined}
-    >
-      {overview || ""}
-    </Typography>
+    overview && (
+      <details
+        className={
+          matches && movieCard ? classes.overviewMobile : classes.overview
+        }
+      >
+        <summary>Synopsis</summary>
+        <Typography>{overview}</Typography>
+      </details>
+    )
   );
 }

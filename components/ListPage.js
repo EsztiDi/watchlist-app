@@ -199,6 +199,7 @@ export default function ListPage({
       } else {
         saveList({
           listid: id[0],
+          uid: editable ? uid : "",
           title: list?.title,
           creator: { name: list?.user.name, email: list?.user.email },
           movies: list?.movies.map((movie) => {

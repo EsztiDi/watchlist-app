@@ -35,13 +35,13 @@ export default function ListPanel({ setMessage }) {
           steps: [
             {
               title: "Welcome",
-              intro: "Hi there! 👋<br/>Let me give you a quick tour.",
+              intro: "Hi there! 👋<br/><br/>Let me give you a quick tour.",
             },
             {
               title: "Your watchlists",
               element: document.querySelector("#list-tabs"),
               intro: `You will find all the watchlists you create here as well as your <b>saved lists</b> made by others.<br/><br/>
-              You can change their order and title here too.`,
+              You can change their order with the arrows and the title with the pen.`,
             },
             {
               title: "Privacy setting",
@@ -52,7 +52,8 @@ export default function ListPanel({ setMessage }) {
               title: "Weekly email",
               element: document.querySelector("#emails"),
               intro: `Receive an email on Thursdays of upcoming releases from your watchlists, if there's any.<br/><br/>
-              You can set this per list which ones to include in the email and you can <b>unsubscribe</b> from all lists with one button on your <b>Account</b> page.`,
+              You can set this per list which ones to include in the email.<br/><br/>
+              You can <b>unsubscribe</b> all with one button on your <b>Account</b> page.`,
             },
             {
               title: "Share",

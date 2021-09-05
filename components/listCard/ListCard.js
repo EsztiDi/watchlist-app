@@ -77,6 +77,7 @@ export default function ListCard({
           })}
         <ListDetails
           listID={list.listid ? list.listid : list._id}
+          uid={list.uid}
           title={list.title}
           creator={
             list.creator

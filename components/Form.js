@@ -67,7 +67,7 @@ export default function Form({
   var { id } = router.query;
   if (Array.isArray(id)) id = id[0];
   const matches = useMediaQuery("(max-width:1024px)");
-  const matches2 = useMediaQuery("(max-width:460px)");
+  const matches2 = useMediaQuery("(max-width:768px)");
 
   const [session, loading] = useSession();
   const email = session?.user?.email;
@@ -259,7 +259,7 @@ export default function Form({
     if (ids.includes(movie.id)) {
       newMovie.current = false;
       setMessage("It's already on the list \\(^-^)/");
-      if (newTab || newList) {
+      if (newTab || newList || matches) {
         const yOffset = -56 - 12 + 1;
         const y =
           document.getElementById(movie.id).getBoundingClientRect().top +
@@ -267,7 +267,7 @@ export default function Form({
           yOffset;
         window.scrollTo({ top: y, behavior: "smooth" });
       } else {
-        const yOffset = matches ? -40 - 32 - 16 - 65 : -40 - 32 - 16;
+        const yOffset = -40 - 32 - 16;
         const y = document.getElementById(movie.id).offsetTop + yOffset;
         document
           .getElementById(`tabpanel-${id}`)

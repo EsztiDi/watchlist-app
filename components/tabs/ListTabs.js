@@ -46,6 +46,7 @@ const useStyles = makeStyles((theme) => ({
     fontSize: "0.875rem",
     maxWidth: "100%",
     minWidth: "50%",
+    minHeight: "60px",
     "& > :first-child": {
       width: "76%",
       flexDirection: "row",
@@ -61,7 +62,6 @@ const useStyles = makeStyles((theme) => ({
     transform: "translateY(-50%)",
     padding: theme.spacing(0.5),
     borderRadius: "50%",
-    // fontSize: "2rem",
     color: theme.palette.primary.light,
     transition: "background-color 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms",
     "&:hover": {

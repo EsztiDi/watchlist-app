@@ -135,9 +135,8 @@ export default function TabPanel(props) {
 
   const classes = useStyles();
   const matches = useMediaQuery("(max-width:1024px)");
-  const matches2 = useMediaQuery("(max-width:455px)");
-  const matches3 = useMediaQuery("(max-width:640px)");
-  const matches4 = useMediaQuery("(max-width:768px)");
+  const matches2 = useMediaQuery("(max-width:768px)");
+  const matches3 = useMediaQuery("(max-width:455px)");
 
   const { data: list, error } = useSWR(listID ? `/api/lists/${listID}` : null);
   if (error) console.error(error);
@@ -187,7 +186,7 @@ export default function TabPanel(props) {
             size="1.5rem"
             thickness={5}
             className={
-              matches4
+              matches2
                 ? classes.updatingMobile2
                 : matches
                 ? classes.updatingMobile
@@ -228,8 +227,8 @@ export default function TabPanel(props) {
             <FormControlLabel
               id="private"
               label="Private"
-              labelPlacement={!matches2 ? "start" : "end"}
-              className={matches2 ? classes.label : undefined}
+              labelPlacement={!matches3 ? "start" : "end"}
+              className={matches3 ? classes.label : undefined}
               control={
                 <Switch
                   color="primary"
@@ -242,9 +241,8 @@ export default function TabPanel(props) {
             <FormControlLabel
               id="emails"
               label="Emails"
-              labelPlacement={!matches2 ? "start" : "end"}
-              // labelPlacement="start"
-              className={matches2 ? classes.label : undefined}
+              labelPlacement={!matches3 ? "start" : "end"}
+              className={matches3 ? classes.label : undefined}
               control={
                 <Switch
                   color="primary"
@@ -346,7 +344,7 @@ export default function TabPanel(props) {
         />
       )}
       {editable && !calendar && (
-        <div className={matches3 ? classes.searchMobile : classes.search}>
+        <div className={matches2 ? classes.searchMobile : classes.search}>
           <MovieSearch
             addMovie={addMovie}
             addingMovie={addingMovie}

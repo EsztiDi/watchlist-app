@@ -10,9 +10,9 @@ import CarouselMovieCard from "./CarouselMovieCard";
 
 const useStyles = makeStyles((theme) => ({
   moviesCard: {
-    minWidth: "500px",
+    width: "450px",
     minHeight: "410px",
-    margin: `${theme.spacing(4)}px ${theme.spacing(2)}px`,
+    margin: `${theme.spacing(4)}px ${theme.spacing(1)}px`,
     padding: theme.spacing(2),
     textAlign: "center",
     "& .CarouselItem > div > div:first-child": {
@@ -20,14 +20,14 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   moviesCardMobile: {
-    minWidth: "400px",
+    width: "400px",
     minHeight: "410px",
-    margin: `${theme.spacing(2)}px ${theme.spacing(1)}px`,
+    margin: `${theme.spacing(3)}px ${theme.spacing(1)}px`,
     padding: theme.spacing(2),
     textAlign: "center",
   },
   moviesCardMobile2: {
-    width: "250px",
+    width: "100%",
     minHeight: "410px",
     margin: `${theme.spacing(2)}px ${theme.spacing(0.5)}px`,
     padding: theme.spacing(2),
@@ -62,7 +62,7 @@ export default function MoviesCarousel({
 }) {
   const classes = useStyles();
   const matches = useMediaQuery("(max-width:1024px)");
-  const matches2 = useMediaQuery("(max-width:540px)");
+  const matches2 = useMediaQuery("(max-width:520px)");
   const matches3 = useMediaQuery("(min-width:1024px)");
 
   var sliced = [];

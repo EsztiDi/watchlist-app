@@ -12,7 +12,7 @@ import ListCard from "../listCard/ListCard";
 
 const useStyles = makeStyles((theme) => ({
   listsCard: {
-    minWidth: "900px",
+    width: "900px",
     minHeight: "410px",
     margin: `${theme.spacing(4)}px 0`,
     padding: theme.spacing(2),
@@ -23,9 +23,9 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   listsCardMobile: {
-    minWidth: "500px",
+    width: "500px",
     minHeight: "410px",
-    margin: `${theme.spacing(2)}px`,
+    margin: `${theme.spacing(3)}px 0`,
     padding: theme.spacing(2),
     textAlign: "center",
     "& .CarouselItem > div": {
@@ -34,7 +34,7 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   listsCardMobile2: {
-    width: "250px",
+    width: "100%",
     minHeight: "410px",
     margin: `${theme.spacing(2)}px ${theme.spacing(0.5)}px`,
     padding: theme.spacing(2),
@@ -63,9 +63,9 @@ export default function ListsCarousel({ setMessage }) {
   const classes = useStyles();
   var [updating, setUpdating] = React.useState(false);
   const matches = useMediaQuery("(max-width:1024px)");
-  const matches2 = useMediaQuery("(max-width:540px)");
+  const matches2 = useMediaQuery("(max-width:520px)");
   const matches3 = useMediaQuery("(min-width:1024px)");
-  const matches4 = useMediaQuery("(min-width:540px)");
+  const matches4 = useMediaQuery("(min-width:520px)");
 
   const { data: lists, error } = useSWR("/api/lists/public");
   if (error) console.error(error);

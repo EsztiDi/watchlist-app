@@ -65,7 +65,11 @@ export default function SavedLists({ setMessage }) {
       <Skeleton
         variant="rect"
         width={"100%"}
-        height={"calc(100vh - 16px - 16px - 56px)"}
+        height={
+          matches
+            ? "calc(100vh - 20px - 56px)"
+            : "calc(100vh - 16px - 16px - 56px)"
+        }
         className={classes.skeleton}
       />
     );

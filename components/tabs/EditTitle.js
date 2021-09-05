@@ -10,11 +10,7 @@ import useMediaQuery from "@material-ui/core/useMediaQuery";
 
 const useStyles = makeStyles((theme) => ({
   editTitle: {
-    padding: theme.spacing(1),
-  },
-  editTitleMobile: {
-    padding: theme.spacing(1),
-    minWidth: "100%",
+    padding: theme.spacing(0.75),
   },
   button: {
     padding: theme.spacing(0.5),
@@ -36,6 +32,8 @@ export default function EditTitle({
 }) {
   const classes = useStyles();
   const matches = useMediaQuery("(max-width:1024px)");
+  const matches2 = useMediaQuery("(max-width:768px)");
+
   const [newTitle, setTitle] = React.useState({ title });
 
   const handleChange = (ev) => {
@@ -63,7 +61,8 @@ export default function EditTitle({
     <ClickAwayListener onClickAway={closeEditTitle}>
       <form
         onSubmit={handleSubmit}
-        className={matches ? classes.editTitleMobile : classes.editTitle}
+        className={classes.editTitle}
+        style={matches2 ? { minWidth: "100%" } : { minWidth: "50%" }}
       >
         <TextField
           name="title"

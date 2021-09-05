@@ -11,6 +11,10 @@ const SavedlistSchema = new mongoose.Schema(
       required: true,
       trim: true,
     },
+    uid: {
+      type: String,
+      trim: true,
+    },
     title: {
       type: String,
       required: true,

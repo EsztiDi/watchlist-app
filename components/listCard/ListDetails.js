@@ -73,6 +73,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function ListDetails({
   listID,
+  uid,
   title,
   creator,
   movies,
@@ -174,7 +175,7 @@ export default function ListDetails({
       style={!show ? { zIndex: "-99", opacity: 0 } : undefined}
       onMouseLeave={handleMouse}
     >
-      <Link href={`/list/${listID}`} passHref>
+      <Link href={uid ? `/list/${listID}/${uid}` : `/list/${listID}`} passHref>
         <a target="_blank" rel="noopener noreferrer">
           <Typography variant="h6">
             {title} <OpenInNewRoundedIcon className={classes.open} />

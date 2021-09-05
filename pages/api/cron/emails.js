@@ -102,10 +102,10 @@ export default async function handler(req, res) {
               const html = weeklyHTML(upcoming);
 
               const emailParams = new EmailParams()
-                .setFrom("contact@mywatchlists.watch")
+                .setFrom("releases@mywatchlists.watch")
                 .setFromName("Watchlist App")
                 .setRecipients(recipient)
-                .setSubject("Upcoming releases from your watchlists")
+                .setSubject("Weekly releases summary")
                 .setHtml(html)
                 .setText("Upcoming releases from your watchlists");
 

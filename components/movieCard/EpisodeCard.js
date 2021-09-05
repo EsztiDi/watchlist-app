@@ -23,8 +23,9 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     flexDirection: "column",
     minWidth: "70%",
+    padding: `0 ${theme.spacing(2)}px`,
     "&:last-child": {
-      paddingBottom: theme.spacing(2),
+      paddingBottom: theme.spacing(0),
     },
   },
   contentMobile: {
@@ -45,13 +46,11 @@ const useStyles = makeStyles((theme) => ({
     backgroundSize: "contain",
   },
   imageMobile2: {
-    minWidth: "60%",
-    paddingTop: "33.9%",
+    minWidth: "50%",
+    paddingTop: "28.25%",
     backgroundSize: "contain",
   },
   date: {
-    marginBottom: theme.spacing(1),
-    fontSize: "0.95rem",
     whiteSpace: "nowrap",
   },
 }));
@@ -82,11 +81,11 @@ export default function EpisodeCard({ episode }) {
       >
         <CardMedia
           className={
-            !matches
-              ? classes.image
-              : !matches2
+            matches2
+              ? classes.imageMobile2
+              : matches
               ? classes.imageMobile
-              : classes.imageMobile2
+              : classes.image
           }
           image={image}
         />
@@ -95,7 +94,13 @@ export default function EpisodeCard({ episode }) {
         >
           <Typography
             variant="h6"
-            style={matches2 ? { fontSize: "1.15rem" } : { fontSize: "1.25rem" }}
+            style={
+              matches2
+                ? { fontSize: "1rem" }
+                : matches
+                ? { fontSize: "1.1rem" }
+                : { fontSize: "1.25rem" }
+            }
           >
             {episode_number ? `Ep.${episode_number} – ` : ""}
             {name ? name : "Untitled"}
@@ -104,6 +109,7 @@ export default function EpisodeCard({ episode }) {
             variant="subtitle2"
             color="textSecondary"
             className={classes.date}
+            style={matches2 ? { fontSize: "0.85rem" } : { fontSize: "0.95rem" }}
           >
             {air_date}
           </Typography>
