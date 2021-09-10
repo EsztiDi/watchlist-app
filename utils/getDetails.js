@@ -11,7 +11,7 @@ export default async function getDetails(movie) {
   };
 
   var release_date;
-  var country = movie.country || "US";
+  var country;
   if (movie.media_type === "movie") {
     await fetch(
       `https://ipinfo.io/json?token=${

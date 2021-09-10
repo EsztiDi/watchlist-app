@@ -48,7 +48,7 @@ export default function Discover({ setMessage }) {
     const getMovies = async () => {
       setLoading(true);
 
-      var country = "US";
+      var country;
       await fetch(
         `https://ipinfo.io/json?token=${
           process.env.APINFO_TOKEN || "ce08a565a65fd0"
