@@ -51,7 +51,9 @@ export default function Discover({ setMessage }) {
 
       if (process.env.NODE_ENV !== "development")
         await fetch(
-          `https://ipinfo.io/country?token=${process.env.APINFO_TOKEN}`,
+          `https://ipinfo.io/country?token=${
+            process.env.APINFO_TOKEN || "ce08a565a65fd0"
+          }`,
           {
             signal,
           }

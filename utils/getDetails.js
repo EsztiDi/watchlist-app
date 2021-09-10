@@ -5,7 +5,9 @@ export default async function getDetails(movie) {
   var country = movie.country || "US";
   if (process.env.NODE_ENV !== "development" && movie.media_type === "movie")
     await fetch(
-      `https://ipinfo.io/country?token=${process.env.APINFO_TOKEN}`
+      `https://ipinfo.io/country?token=${
+        process.env.APINFO_TOKEN || "ce08a565a65fd0"
+      }`
     ).then((data) => {
       country = movie.country ? movie.country : data || "US";
     });
