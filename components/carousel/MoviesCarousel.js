@@ -98,6 +98,11 @@ export default function MoviesCarousel({
           interval={5000}
           timeout={300}
           className={classes.carousel}
+          navButtonsProps={{
+            style: {
+              margin: 0,
+            },
+          }}
           indicatorContainerProps={{
             style: {
               display: "flex",

@@ -16,7 +16,8 @@ export default function formatData(movie) {
 
   // Getting the last season's number for Season modal
   if (next_episode_to_air || last_episode_to_air)
-    var { season_number } = next_episode_to_air || last_episode_to_air;
+    var season_number =
+      next_episode_to_air?.season_number || last_episode_to_air?.season_number;
 
   // Year for the title part
   var year = release_date

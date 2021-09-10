@@ -107,6 +107,11 @@ export default function ListsCarousel({ setMessage }) {
           autoPlay={false}
           interval={5000}
           timeout={300}
+          navButtonsProps={{
+            style: {
+              margin: 0,
+            },
+          }}
           indicatorContainerProps={{
             style: {
               display: "flex",

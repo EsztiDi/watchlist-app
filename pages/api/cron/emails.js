@@ -105,7 +105,7 @@ export default async function handler(req, res) {
                 .setFrom("releases@mywatchlists.watch")
                 .setFromName("Watchlist App")
                 .setRecipients(recipient)
-                .setSubject("Weekly releases summary")
+                .setSubject("Your weekly releases update")
                 .setHtml(html)
                 .setText("Upcoming releases from your watchlists");
 

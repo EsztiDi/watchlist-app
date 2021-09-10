@@ -44,15 +44,31 @@ export default function Discover({ setMessage }) {
     var isMounted = true;
     const controller = new AbortController();
     const signal = controller.signal;
+    var country = "US";
 
     const getMovies = async () => {
       setLoading(true);
 
+      if (process.env.NODE_ENV !== "development")
+        await fetch(
+          `https://ipinfo.io/country?token=${process.env.APINFO_TOKEN}`,
+          {
+            signal,
+          }
+        ).then((data) => {
+          country = data || "US";
+        });
+
       var baseURL = "https://api.themoviedb.org/3";
-      var url = "/discover/movie";
       var api_key = process.env.TMDB_API_KEY;
-      var params = `&include_adult=false&primary_release_date.gte=${year}-${thisMonth}-01&primary_release_date.lte=${year}-${thisMonth}-31&sort_by=popularity.desc`;
-      var fullUrl = `${baseURL}${url}?api_key=${api_key}${params}`;
+      var adult = `&include_adult=false`;
+      var type = `&with_release_type=3|2`;
+      var region = `&region=${country}`;
+      var sort = `&sort_by=popularity.desc`;
+
+      var url = "/discover/movie";
+      var params = `&release_date.gte=${year}-${thisMonth}-01&release_date.lte=${year}-${thisMonth}-31`;
+      var fullUrl = `${baseURL}${url}?api_key=${api_key}${adult}${type}${region}${params}${sort}`;
       var options = {
         headers: {
           Authorization: process.env.TMDB_BEARER,
@@ -67,16 +83,15 @@ export default function Discover({ setMessage }) {
           if (isMounted) setThisMonthMovies(data.results);
         });
 
-      params = `&include_adult=false&primary_release_date.gte=${year}-${nextMonth}-01&primary_release_date.lte=${year}-${nextMonth}-31&sort_by=popularity.desc`;
-      fullUrl = `${baseURL}${url}?api_key=${api_key}${params}`;
+      params = `&release_date.gte=${year}-${nextMonth}-01&release_date.lte=${year}-${nextMonth}-31`;
+      fullUrl = `${baseURL}${url}?api_key=${api_key}${adult}${type}${region}${params}${sort}`;
       await fetch(fullUrl, options)
         .then((res) => res.json())
         .then((data) => {
           if (isMounted) setNextMonthMovies(data.results);
         });
 
-      params = `&include_adult=false&sort_by=popularity.desc`;
-      fullUrl = `${baseURL}${url}?api_key=${api_key}${params}`;
+      fullUrl = `${baseURL}${url}?api_key=${api_key}${adult}${region}${sort}`;
       await fetch(fullUrl, options)
         .then((res) => res.json())
         .then((data) => {
@@ -84,24 +99,24 @@ export default function Discover({ setMessage }) {
         });
 
       url = "/discover/tv";
-      params = `&include_adult=false&first_air_date.gte=${year}-${thisMonth}-01&first_air_date.lte=${year}-${thisMonth}-31&sort_by=popularity.desc`;
-      fullUrl = `${baseURL}${url}?api_key=${api_key}${params}`;
+      region = `&watch_region=${country}`;
+      params = `&first_air_date.gte=${year}-${thisMonth}-01&first_air_date.lte=${year}-${thisMonth}-31`;
+      fullUrl = `${baseURL}${url}?api_key=${api_key}${adult}${region}${params}${sort}`;
       await fetch(fullUrl, options)
         .then((res) => res.json())
         .then((data) => {
           if (isMounted) setThisMonthTV(data.results);
         });
 
-      params = `&include_adult=false&first_air_date.gte=${year}-${nextMonth}-01&first_air_date.lte=${year}-${nextMonth}-31&sort_by=popularity.desc`;
-      fullUrl = `${baseURL}${url}?api_key=${api_key}${params}`;
+      params = `&first_air_date.gte=${year}-${nextMonth}-01&first_air_date.lte=${year}-${nextMonth}-31`;
+      fullUrl = `${baseURL}${url}?api_key=${api_key}${adult}${region}${params}${sort}`;
       await fetch(fullUrl, options)
         .then((res) => res.json())
         .then((data) => {
           if (isMounted) setNextMonthTV(data.results);
         });
 
-      params = `&include_adult=false&sort_by=popularity.desc`;
-      fullUrl = `${baseURL}${url}?api_key=${api_key}${params}`;
+      fullUrl = `${baseURL}${url}?api_key=${api_key}${adult}${region}${sort}`;
       await fetch(fullUrl, options)
         .then((res) => res.json())
         .then((data) => {

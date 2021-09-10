@@ -405,7 +405,7 @@ export default function weeklyHTML(lists) {
                             ><img
                               align="center"
                               border="0"
-                              class="center fixedwidth"
+                              class="center fixedwidth col_cont"
                               src="https://mywatchlists.watch/logo.png"
                               style="
                                 text-decoration: none;
@@ -414,9 +414,10 @@ export default function weeklyHTML(lists) {
                                 border: 0;
                                 width: 84px;
                                 max-width: 100%;
+                                margin-left: auto;
                                 display: block;
                               "
-                              width="84"
+                              width="70"
                           /></a>
                           <!--[if mso]></td></tr></table><![endif]-->
                         </div>
@@ -462,7 +463,7 @@ export default function weeklyHTML(lists) {
                                 sans-serif;
                             "
                           >
-                            <div style="height: 25px"></div>
+                            <div style="height: 20px"></div>
                           </div>
                         </div>
                         <div
@@ -486,7 +487,7 @@ export default function weeklyHTML(lists) {
                               -ms-interpolation-mode: bicubic;
                               height: auto;
                               border: 0;
-                              width: 340px;
+                              width: 300px;
                               max-width: 100%;
                               display: block;
                             "
@@ -631,7 +632,7 @@ export default function weeklyHTML(lists) {
                                   -webkit-text-size-adjust: 100%;
                                   padding-top: 5px;
                                   padding-right: 10px;
-                                  padding-bottom: 15px;
+                                  padding-bottom: 10px;
                                   padding-left: 10px;
                                 "
                                 valign="top"
@@ -717,7 +718,7 @@ export default function weeklyHTML(lists) {
                                   font-family: Trebuchet MS, Lucida Grande,
                                     Lucida Sans Unicode, Lucida Sans, Tahoma,
                                     sans-serif;
-                                  font-size: 22px;
+                                  font-size: 21px;
                                   font-weight: normal;
                                   letter-spacing: normal;
                                   line-height: 150%;
@@ -761,9 +762,9 @@ export default function weeklyHTML(lists) {
                                   min-width: 100%;
                                   -ms-text-size-adjust: 100%;
                                   -webkit-text-size-adjust: 100%;
-                                  padding-top: 15px;
+                                  padding-top: 10px;
                                   padding-right: 10px;
-                                  padding-bottom: 15px;
+                                  padding-bottom: 0px;
                                   padding-left: 10px;
                                 "
                                 valign="top"
@@ -869,7 +870,7 @@ export default function weeklyHTML(lists) {
                   border-left: 0px solid #5d5d5d;
                   border-bottom: 0px dashed #5d5d5d;
                   border-right: 0px solid #5d5d5d;
-                  padding-top: 5px;
+                  padding-top: 20px;
                   padding-bottom: 10px;
                   padding-right: 5px;
                   padding-left: 5px;
@@ -918,7 +919,7 @@ export default function weeklyHTML(lists) {
                           font-family: Trebuchet MS, Lucida Grande,
                             Lucida Sans Unicode, Lucida Sans, Tahoma,
                             sans-serif;
-                          font-size: 19px;
+                          font-size: 18px;
                           text-transform: uppercase;
                           font-weight: normal;
                           letter-spacing: normal;
@@ -1258,7 +1259,7 @@ export default function weeklyHTML(lists) {
                       line-height: 1.5;
                       word-break: break-word;
                       mso-line-height-alt: 27px;
-                      margin-top: 15px;
+                      margin-top: 20px;
                       margin-bottom: 0;
                     "
                   >

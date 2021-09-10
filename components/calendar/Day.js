@@ -29,7 +29,8 @@ const useStyles = makeStyles((theme) => ({
     margin: theme.spacing(0.8),
   },
   tooltipPadding: {
-    padding: "4px 8px",
+    padding: `${theme.spacing(0.5)}px ${theme.spacing(1)}px`,
+    margin: `${theme.spacing(1)}px 0`,
   },
 }));
 
@@ -100,7 +101,7 @@ export default function Day({ date, month, year, movies }) {
                 key={index}
                 arrow
                 enterTouchDelay={0}
-                leaveTouchDelay={50000}
+                leaveTouchDelay={5000}
                 classes={{
                   tooltip: classes.tooltipPadding,
                 }}
@@ -124,6 +125,7 @@ export default function Day({ date, month, year, movies }) {
                   <Image
                     width={60}
                     height={90}
+                    objectFit={series[1][0].poster_path ? "cover" : "contain"}
                     src={
                       series[1][0].poster_path
                         ? `https://image.tmdb.org/t/p/w92${series[1][0].poster_path}`
@@ -148,7 +150,7 @@ export default function Day({ date, month, year, movies }) {
                 key={`${movie.id}-${index}`}
                 arrow
                 enterTouchDelay={0}
-                leaveTouchDelay={50000}
+                leaveTouchDelay={5000}
                 classes={{
                   tooltip: classes.tooltipPadding,
                 }}
@@ -176,6 +178,7 @@ export default function Day({ date, month, year, movies }) {
                   <Image
                     width={60}
                     height={90}
+                    objectFit={movie.poster_path ? "cover" : "contain"}
                     src={
                       movie.poster_path
                         ? `https://image.tmdb.org/t/p/w92${movie.poster_path}`

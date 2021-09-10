@@ -42,7 +42,7 @@ const useStyles = makeStyles((theme) => ({
       fontSize: "0.95rem",
       textAlign: "left",
       paddingInlineStart: "24px",
-      maxHeight: "68%",
+      maxHeight: "53%",
       overflow: "auto",
       "&::-webkit-scrollbar": {
         width: "6px",

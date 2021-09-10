@@ -4,6 +4,7 @@ import useMediaQuery from "@material-ui/core/useMediaQuery";
 
 const useStyles = makeStyles((theme) => ({
   overview: {
+    wordBreak: "break-word",
     marginTop: theme.spacing(1),
     marginBottom: theme.spacing(0.5),
     "& *": {
@@ -11,14 +12,28 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   overviewMobile: {
+    wordBreak: "break-word",
     marginTop: theme.spacing(0.5),
+    marginBottom: theme.spacing(1),
     "& *": {
       fontSize: "0.8rem",
     },
   },
+  summary: {
+    width: "fit-content",
+    cursor: "pointer",
+    transition: "color 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms",
+    "&:hover": {
+      color: theme.palette.text.secondary,
+    },
+  },
 }));
 
-export default function Overview({ overview, movieCard = false }) {
+export default function Overview({
+  overview,
+  movieCard = false,
+  carousel = false,
+}) {
   const classes = useStyles();
   const matches = useMediaQuery("(max-width:500px)");
 
@@ -29,7 +44,14 @@ export default function Overview({ overview, movieCard = false }) {
           matches && movieCard ? classes.overviewMobile : classes.overview
         }
       >
-        <summary>Synopsis</summary>
+        <summary
+          style={
+            (!movieCard && matches) || carousel ? { margin: "auto" } : undefined
+          }
+          className={classes.summary}
+        >
+          Synopsis
+        </summary>
         <Typography>{overview}</Typography>
       </details>
     )

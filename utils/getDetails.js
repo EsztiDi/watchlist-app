@@ -1,17 +1,41 @@
 import formatData from "./formatData";
 
 export default async function getDetails(movie) {
+  var release_date;
+  var country = movie.country || "US";
+  if (process.env.NODE_ENV !== "development" && movie.media_type === "movie")
+    await fetch(
+      `https://ipinfo.io/country?token=${process.env.APINFO_TOKEN}`
+    ).then((data) => {
+      country = movie.country ? movie.country : data || "US";
+    });
+
   var baseURL = "https://api.themoviedb.org/3";
-  var url = `/${movie.media_type}/${movie.id}`;
   var api_key = process.env.TMDB_API_KEY;
-  var params = "&append_to_response=credits,external_ids&include_adult=false";
-  var fullUrl = `${baseURL}${url}?api_key=${api_key}${params}`;
   var options = {
     headers: {
       Authorization: process.env.TMDB_BEARER,
       "Content-Type": "application/json;charset=utf-8",
     },
   };
+
+  if (movie.media_type === "movie") {
+    var url = `/${movie.media_type}/${movie.id}/release_dates`;
+    var fullUrl = `${baseURL}${url}?api_key=${api_key}`;
+    await fetch(fullUrl, options)
+      .then((res) => res.json())
+      .then((data) => {
+        release_date = data?.results
+          ?.filter((date) => date.iso_3166_1 === country)[0]
+          ?.release_dates?.filter(
+            (date) => date.type === 3 || date.type === 2
+          )[0]?.release_date;
+      });
+  }
+
+  var url = `/${movie.media_type}/${movie.id}`;
+  var params = "&append_to_response=credits,external_ids&include_adult=false";
+  var fullUrl = `${baseURL}${url}?api_key=${api_key}${params}`;
 
   var getCrew = (obj) =>
     obj?.credits?.crew
@@ -81,10 +105,11 @@ export default async function getDetails(movie) {
             }
           : {
               ...movie,
+              country: country,
               poster_path: data?.poster_path,
               backdrop_path: data?.backdrop_path,
               title: data?.title,
-              release_date: data?.release_date,
+              release_date: release_date || data?.release_date,
               overview: data?.overview,
               details: {
                 genres: data?.genres,

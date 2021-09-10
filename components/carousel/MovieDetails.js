@@ -31,9 +31,18 @@ const useStyles = makeStyles((theme) => ({
     background: "rgba(0,0,0,0.7)",
     transition: "0.2s",
     padding: theme.spacing(1),
+    paddingTop: theme.spacing(1.5),
     color: "#fff",
     "& > :nth-child(2)": {
+      marginTop: theme.spacing(0.5),
       marginBottom: theme.spacing(1),
+    },
+    "& > details": {
+      marginTop: theme.spacing(1.5),
+      marginBottom: theme.spacing(1.5),
+      "& summary:hover": {
+        color: theme.palette.primary.light,
+      },
     },
     "& > button": {
       margin: `auto 0 ${theme.spacing(1)}px`,
@@ -216,7 +225,7 @@ export default function MovieDetails({
           </a>
         )}
       </span>
-      <Overview overview={overview} height={"92px"} />
+      <Overview overview={overview} carousel={true} />
       <Button
         size="medium"
         color="primary"

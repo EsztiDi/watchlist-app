@@ -1,4 +1,5 @@
 import Head from "next/head";
+import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useSession } from "next-auth/client";
@@ -97,9 +98,9 @@ export default function ListPage({
   const matches = useMediaQuery("(max-width:1024px)");
   const matches2 = useMediaQuery("(max-width:768px)");
 
-  const [updating, setUpdating] = React.useState(false);
-  const [backdrop, setBackdrop] = React.useState("");
   var movies = (list) => list?.movies?.sort((a, b) => a.position - b.position);
+  const [updating, setUpdating] = React.useState(false);
+  const [backdrop, setBackdrop] = React.useState(image?.url || "");
 
   const { data: list, error } = useSWR(id[0] ? `/api/lists/${id[0]}` : null, {
     refreshInterval: 2000,
@@ -132,7 +133,7 @@ export default function ListPage({
 
   React.useEffect(() => {
     if (error) {
-      setMessage(`${JSON.stringify(error.message)} - Please try again.`);
+      setMessage(`${JSON.stringify(error.message)}`);
       router.push("/");
     }
     // eslint-disable-next-line
@@ -249,14 +250,9 @@ export default function ListPage({
           className={matches ? classes.containerMobile : undefined}
         >
           {Object.keys(list).length !== 0 && backdrop.length > 0 && (
-            <div
-              style={{
-                background: `url(${backdrop}) center / cover no-repeat`,
-              }}
-              alt=""
-              className={classes.backdrop}
-              data-background="backdrop"
-            ></div>
+            <div className={classes.backdrop} data-background="backdrop">
+              <Image layout="fill" objectFit="cover" src={backdrop} alt="" />
+            </div>
           )}
           <Paper
             elevation={4}
