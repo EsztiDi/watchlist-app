@@ -15,10 +15,12 @@ const useStyles = makeStyles((theme) => ({
     height: "300px",
   },
   title: {
+    width: "100%",
     position: "absolute",
     top: 0,
-    width: "100%",
+    borderRadius: "10px",
     padding: theme.spacing(1),
+    paddingTop: theme.spacing(1.5),
     textShadow: `1px 1px 0px white`,
   },
   poster: {
