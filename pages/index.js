@@ -44,21 +44,22 @@ export default function Discover({ setMessage }) {
     var isMounted = true;
     const controller = new AbortController();
     const signal = controller.signal;
-    var country = "US";
 
     const getMovies = async () => {
       setLoading(true);
 
-      if (process.env.NODE_ENV !== "development")
-        await fetch(
-          `https://ipinfo.io/country?token=${
-            process.env.APINFO_TOKEN || "ce08a565a65fd0"
-          }`,
-          {
-            signal,
-          }
-        ).then((data) => {
-          country = data || "US";
+      var country = "US";
+      await fetch(
+        `https://ipinfo.io/json?token=${
+          process.env.APINFO_TOKEN || "ce08a565a65fd0"
+        }`,
+        {
+          signal,
+        }
+      )
+        .then((res) => res.json())
+        .then((data) => {
+          country = data.country || "US";
         });
 
       var baseURL = "https://api.themoviedb.org/3";

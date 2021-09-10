@@ -1,17 +1,6 @@
 import formatData from "./formatData";
 
 export default async function getDetails(movie) {
-  var release_date;
-  var country = movie.country || "US";
-  if (process.env.NODE_ENV !== "development" && movie.media_type === "movie")
-    await fetch(
-      `https://ipinfo.io/country?token=${
-        process.env.APINFO_TOKEN || "ce08a565a65fd0"
-      }`
-    ).then((data) => {
-      country = movie.country ? movie.country : data || "US";
-    });
-
   var baseURL = "https://api.themoviedb.org/3";
   var api_key = process.env.TMDB_API_KEY;
   var options = {
@@ -21,7 +10,19 @@ export default async function getDetails(movie) {
     },
   };
 
+  var release_date;
+  var country = movie.country || "US";
   if (movie.media_type === "movie") {
+    await fetch(
+      `https://ipinfo.io/json?token=${
+        process.env.APINFO_TOKEN || "ce08a565a65fd0"
+      }`
+    )
+      .then((res) => res.json())
+      .then((data) => {
+        country = movie.country ? movie.country : data.country || "US";
+      });
+
     var url = `/${movie.media_type}/${movie.id}/release_dates`;
     var fullUrl = `${baseURL}${url}?api_key=${api_key}`;
     await fetch(fullUrl, options)
