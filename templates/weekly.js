@@ -463,7 +463,7 @@ export default function weeklyHTML(lists) {
                                 sans-serif;
                             "
                           >
-                            <div style="height: 20px"></div>
+                            <div style="height: 25px"></div>
                           </div>
                         </div>
                         <div
@@ -871,7 +871,7 @@ export default function weeklyHTML(lists) {
                   border-bottom: 0px dashed #5d5d5d;
                   border-right: 0px solid #5d5d5d;
                   padding-top: 20px;
-                  padding-bottom: 10px;
+                  padding-bottom: 5px;
                   padding-right: 5px;
                   padding-left: 5px;
                 "
@@ -913,6 +913,7 @@ export default function weeklyHTML(lists) {
                     style="text-decoration: none; color: #000"
                     target="_blank"
                     ><h3
+                        title="Opens in new tab"
                         style="
                           color: #000;
                           direction: ltr;
@@ -931,7 +932,6 @@ export default function weeklyHTML(lists) {
                       >
                         ${list.title}&nbsp;<span
                         style="font-weight: bold"
-                        title="Opens in new tab"
                         >&#x2197;</span>
                       </h3></a>
                     </td>
@@ -961,7 +961,7 @@ export default function weeklyHTML(lists) {
             word-wrap: break-word;
             word-break: break-word;
             margin: 0 auto;
-            background-color: #fff;
+            background-color: ${index % 2 === 1 ? "#f9f9f9" : "#fff"};
             border-left: 1px solid #444;
             border-right: 1px solid #444;
             padding-top: 5px;
@@ -973,7 +973,6 @@ export default function weeklyHTML(lists) {
               border-collapse: collapse;
               display: table;
               width: 100%;
-              background-color: ${index % 2 === 1 ? "#f9f9f9" : "#fff"};
             "
           >
             <!--[if (mso)|(IE)]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td align="center"><table cellpadding="0" cellspacing="0" border="0" style="width:600px"><tr class="layout-full-width" style="background-color:#fff"><![endif]-->

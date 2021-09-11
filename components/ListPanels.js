@@ -99,7 +99,7 @@ export default function ListPanels({ setMessage, calendar = false }) {
       >
         {matches ? (
           <>
-            <Skeleton variant="rect" width={"100%"} height={72} />
+            <Skeleton variant="rect" width={"100%"} height={60} />
             <Skeleton
               variant="rect"
               width={matches2 ? "40%" : 100}

@@ -88,6 +88,7 @@ export default function MovieDetails({
   setMessage,
   show,
   handleShowDetails,
+  locale,
 }) {
   const classes = useStyles();
 
@@ -196,7 +197,18 @@ export default function MovieDetails({
       onMouseLeave={handleMouse}
     >
       <Typography variant="h6">{title}</Typography>
-      <Typography variant="subtitle1">{release_date}</Typography>
+      <Typography variant="subtitle1">
+        {release_date}
+        {media_type === "movie" && (
+          <Typography
+            variant="caption"
+            style={{ verticalAlign: "text-bottom" }}
+          >
+            {" "}
+            ({locale})
+          </Typography>
+        )}
+      </Typography>
       <span>
         {" "}
         {vote_average ? (

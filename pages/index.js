@@ -26,6 +26,7 @@ export default function Discover({ setMessage }) {
   const classes = useStyles();
   const matches = useMediaQuery("(max-width:1024px)");
 
+  const [locale, setLocale] = React.useState("");
   const [loading, setLoading] = React.useState(false);
   const [thisMonthMovies, setThisMonthMovies] = React.useState([]);
   const [nextMonthMovies, setNextMonthMovies] = React.useState([]);
@@ -47,26 +48,27 @@ export default function Discover({ setMessage }) {
 
     const getMovies = async () => {
       setLoading(true);
+      var locale2;
 
-      var country;
-      await fetch(
-        `https://ipinfo.io/json?token=${
-          process.env.APINFO_TOKEN || "ce08a565a65fd0"
-        }`,
-        {
-          signal,
-        }
-      )
+      await fetch("api/account/locale", {
+        signal,
+      })
         .then((res) => res.json())
-        .then((data) => {
-          country = data.country || "US";
+        .then((res) => {
+          locale2 = res.data || "US";
+          setLocale(res.data || "US");
+        })
+        .catch((err) => {
+          console.error(err);
+          locale2 = "US";
+          setLocale("US");
         });
 
       var baseURL = "https://api.themoviedb.org/3";
       var api_key = process.env.TMDB_API_KEY;
       var adult = `&include_adult=false`;
       var type = `&with_release_type=3|2`;
-      var region = `&region=${country}`;
+      var region = `&region=${locale2}`;
       var sort = `&sort_by=popularity.desc`;
 
       var url = "/discover/movie";
@@ -102,7 +104,7 @@ export default function Discover({ setMessage }) {
         });
 
       url = "/discover/tv";
-      region = `&watch_region=${country}`;
+      region = `&watch_region=${locale2}`;
       params = `&first_air_date.gte=${year}-${thisMonth}-01&first_air_date.lte=${year}-${thisMonth}-31`;
       fullUrl = `${baseURL}${url}?api_key=${api_key}${adult}${region}${params}${sort}`;
       await fetch(fullUrl, options)
@@ -196,6 +198,7 @@ export default function Discover({ setMessage }) {
                 movies={carousel.movies}
                 media_type={carousel.media_type}
                 loading={loading}
+                locale={locale}
                 setMessage={setMessage}
               />
             );

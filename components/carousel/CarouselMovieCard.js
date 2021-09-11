@@ -22,6 +22,9 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(1),
     paddingTop: theme.spacing(1.5),
     textShadow: `1px 1px 0px white`,
+    "& > :nth-child(2)": {
+      marginTop: theme.spacing(0.5),
+    },
   },
   poster: {
     borderRadius: "10px",
@@ -32,10 +35,11 @@ export default function CarouselMovieCard({
   index,
   movie,
   media_type,
+  locale,
   setMessage,
 }) {
   const classes = useStyles();
-  const [data, setData] = React.useState("");
+  const [data, setData] = React.useState(undefined);
   const touch = useMediaQuery("(hover: none)");
 
   const handleShowDetails = (ev) => {
@@ -44,12 +48,12 @@ export default function CarouselMovieCard({
       () => {
         setData(index);
       },
-      !touch ? 0 : 200
+      !touch ? 0 : 100
     );
   };
 
   return (
-    <ClickAwayListener onClickAway={() => setData("")}>
+    <ClickAwayListener onClickAway={() => setData(undefined)}>
       <div key={index} className={classes.movie}>
         {!movie?.poster_path && (
           <div
@@ -73,11 +77,21 @@ export default function CarouselMovieCard({
                     year: "numeric",
                   })
                 : "No release date"}
+              {media_type === "movie" && (
+                <Typography
+                  variant="caption"
+                  style={{ verticalAlign: "text-bottom" }}
+                >
+                  {" "}
+                  ({locale})
+                </Typography>
+              )}
             </Typography>
           </div>
         )}
         <Image
           onMouseEnter={handleShowDetails}
+          onTouchStart={handleShowDetails}
           data-index={index}
           width={200}
           height={300}
@@ -101,6 +115,7 @@ export default function CarouselMovieCard({
           setMessage={setMessage}
           show={index.toString() === data}
           handleShowDetails={handleShowDetails}
+          locale={locale}
         />
       </div>
     </ClickAwayListener>

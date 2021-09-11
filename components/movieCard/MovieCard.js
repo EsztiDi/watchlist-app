@@ -1,6 +1,7 @@
 import { useRouter } from "next/router";
 import { useSession } from "next-auth/client";
 import useSWR from "swr";
+import getLocalDate from "../../utils/getLocalDate";
 
 import { makeStyles } from "@material-ui/core/styles";
 import Card from "@material-ui/core/Card";
@@ -21,11 +22,13 @@ import Grow from "@material-ui/core/Grow";
 import Paper from "@material-ui/core/Paper";
 import Popper from "@material-ui/core/Popper";
 import MenuList from "@material-ui/core/MenuList";
+import Button from "@material-ui/core/Button";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
 
 import Overview from "./Overview";
 import Seasons from "./Seasons";
 import ListsMenu from "../carousel/ListsMenu";
+import React from "react";
 
 const useStyles = makeStyles((theme) => ({
   moviecard: {
@@ -59,14 +62,7 @@ const useStyles = makeStyles((theme) => ({
   contentMobile: {
     flexGrow: 1,
     width: "50%",
-    padding: `0 ${theme.spacing(0.75)}px`,
-    "&:last-child": {
-      paddingBottom: 0,
-    },
-  },
-  contentMobile2: {
-    minWidth: "70%",
-    padding: `0 ${theme.spacing(0.75)}px`,
+    padding: `0 ${theme.spacing(0.9)}px`,
     "&:last-child": {
       paddingBottom: 0,
     },
@@ -128,12 +124,15 @@ const useStyles = makeStyles((theme) => ({
       color: theme.palette.text.primary,
     },
   },
-  director: {
+  hidden: {
+    position: "relative",
+    whiteSpace: "nowrap",
+    overflow: "hidden",
     fontWeight: "normal",
   },
   cast: {
     whiteSpace: "nowrap",
-    overflow: "auto",
+    position: "relative",
     fontWeight: "normal",
     "&::-webkit-scrollbar": {
       width: "4px",
@@ -148,6 +147,29 @@ const useStyles = makeStyles((theme) => ({
     "&::-webkit-scrollbar-thumb": {
       background: "#CECECE",
       borderRadius: "100px",
+    },
+  },
+  more: {
+    position: "absolute",
+    right: 0,
+    padding: "3px",
+    backgroundColor: "#fff",
+    boxShadow: "none",
+    minWidth: 0,
+    fontWeight: "normal",
+    lineHeight: 1.2,
+    "&:hover": {
+      backgroundColor: "#f5f5f5",
+    },
+  },
+  less: {
+    padding: "3px",
+    backgroundColor: "#fff",
+    boxShadow: "none",
+    minWidth: "45px",
+    lineHeight: 1.2,
+    "&:hover": {
+      backgroundColor: "#f5f5f5",
     },
   },
   buttons: {
@@ -211,6 +233,7 @@ export default function MovieCard({
     title,
     release_date,
     year,
+    locale,
     media_type,
     overview,
     details,
@@ -240,6 +263,69 @@ export default function MovieCard({
   const classes = useStyles();
   const matches = useMediaQuery("(max-width:768px)");
   const matches2 = useMediaQuery("(max-width:500px)");
+
+  const [date, setDate] = React.useState(release_date);
+  const [loc, setLoc] = React.useState(locale);
+  const [overflows1, setOverflows1] = React.useState(false);
+  const [overflows2, setOverflows2] = React.useState(false);
+  const [visible1, setVisible1] = React.useState(false);
+  const [visible2, setVisible2] = React.useState(false);
+
+  React.useEffect(() => {
+    var isMounted = true;
+
+    const getDate = async () => {
+      var { release_date, locale } = await getLocalDate(movie);
+      if (release_date) {
+        setDate(release_date);
+        setLoc(locale);
+      }
+    };
+    if (isMounted) getDate();
+
+    return () => {
+      isMounted = false;
+    };
+    // eslint-disable-next-line
+  }, []);
+
+  React.useEffect(() => {
+    var isMounted = true;
+
+    var list1 = document.getElementById(`${id}-directors`);
+    var list2 = document.getElementById(`${id}-cast`);
+    if (isMounted) setOverflows1(list1.offsetWidth < list1.scrollWidth);
+    if (isMounted) setOverflows2(list2.offsetWidth < list2.scrollWidth);
+
+    return () => {
+      isMounted = false;
+    };
+  }, [id, matches, matches2]);
+
+  const handleMore1 = () => {
+    setOverflows1(false);
+    setVisible1(true);
+    var list1 = document.getElementById(`${id}-directors`);
+    list1.style.whiteSpace = "break-spaces";
+  };
+  const handleMore2 = () => {
+    setOverflows2(false);
+    setVisible2(true);
+    var list2 = document.getElementById(`${id}-cast`);
+    list2.style.whiteSpace = "break-spaces";
+  };
+  const handleLess1 = () => {
+    setOverflows1(true);
+    setVisible1(false);
+    var list1 = document.getElementById(`${id}-directors`);
+    list1.style.whiteSpace = "nowrap";
+  };
+  const handleLess2 = () => {
+    setOverflows2(true);
+    setVisible2(false);
+    var list2 = document.getElementById(`${id}-cast`);
+    list2.style.whiteSpace = "nowrap";
+  };
 
   // For ListsMenu
   const [session, loading] = useSession();
@@ -406,7 +492,25 @@ export default function MovieCard({
               " ● "}
             {runtime}
             {runtime && (genres || release_date) && " ● "}
-            <span className={classes.nowrap}>{release_date}</span>
+            <span className={classes.nowrap}>
+              {media_type === "movie" && loc !== locale ? date : release_date}
+              {media_type === "movie" && (
+                <Typography
+                  variant="caption"
+                  style={{
+                    verticalAlign: "text-bottom",
+                    fontSize: matches2
+                      ? "0.55rem"
+                      : matches
+                      ? "0.65rem"
+                      : "0.75rem",
+                  }}
+                >
+                  {" "}
+                  ({loc !== locale ? loc : locale})
+                </Typography>
+              )}
+            </span>
             {release_date && genres && " ● "}
             {genres}{" "}
             {vote_average ? (
@@ -434,18 +538,74 @@ export default function MovieCard({
             )}
           </Typography>
           <Typography
-            className={matches ? classes.cast : classes.director}
+            id={`${id}-directors`}
+            className={overflows1 ? classes.hidden : classes.cast}
             style={matches2 ? { fontSize: "0.8rem" } : { fontSize: "0.95rem" }}
           >
             {media_type === "tv" ? <b>Created by: </b> : <b>Director: </b>}
             {creators || directors || "-"}
+            {overflows1 && (
+              <Button
+                size="small"
+                className={classes.more}
+                style={
+                  matches2 ? { fontSize: "0.7rem" } : { fontSize: "0.8125rem" }
+                }
+                onClick={handleMore1}
+              >
+                ...More
+              </Button>
+            )}
+            {visible1 && (
+              <>
+                <br />
+                <Button
+                  size="small"
+                  className={classes.less}
+                  style={
+                    matches2 ? { fontSize: "0.7rem" } : { fontSize: "0.9rem" }
+                  }
+                  onClick={handleLess1}
+                >
+                  Less
+                </Button>
+              </>
+            )}
           </Typography>
           <Typography
-            className={classes.cast}
+            id={`${id}-cast`}
+            className={overflows2 ? classes.hidden : classes.cast}
             style={matches2 ? { fontSize: "0.8rem" } : { fontSize: "0.95rem" }}
           >
             <b>Cast: </b>
             {cast || "-"}
+            {overflows2 && (
+              <Button
+                size="small"
+                className={classes.more}
+                style={
+                  matches2 ? { fontSize: "0.7rem" } : { fontSize: "0.8125rem" }
+                }
+                onClick={handleMore2}
+              >
+                ...More
+              </Button>
+            )}
+            {visible2 && (
+              <>
+                <br />
+                <Button
+                  size="small"
+                  className={classes.less}
+                  style={
+                    matches2 ? { fontSize: "0.7rem" } : { fontSize: "0.9rem" }
+                  }
+                  onClick={handleLess2}
+                >
+                  Less
+                </Button>
+              </>
+            )}
           </Typography>
           <Overview overview={overview} movieCard={true} />
         </CardContent>

@@ -218,7 +218,8 @@ export default function MyApp({ Component, pageProps }) {
                     severity={
                       message.includes("saved!") || message.includes("deleted!")
                         ? "success"
-                        : message.includes("already on the list")
+                        : message.includes("already on the list") ||
+                          message.includes("ad blocker")
                         ? "warning"
                         : "error"
                     }

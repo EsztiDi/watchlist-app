@@ -58,6 +58,7 @@ export default function MoviesCarousel({
   movies,
   media_type,
   loading,
+  locale,
   setMessage,
 }) {
   const classes = useStyles();
@@ -119,6 +120,7 @@ export default function MoviesCarousel({
                   index={index}
                   movie={movie}
                   media_type={media_type}
+                  locale={locale}
                   setMessage={setMessage}
                 />
               );

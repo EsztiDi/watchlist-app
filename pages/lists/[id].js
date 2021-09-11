@@ -14,7 +14,7 @@ export default function ListPanel({ setMessage }) {
       await fetch("/api/lists/newuser", { signal })
         .then((res) => res.json())
         .then((res) => {
-          setNewUser(res.data.newUser);
+          setNewUser(res.data?.newUser);
         });
       setFetching(false);
     };
