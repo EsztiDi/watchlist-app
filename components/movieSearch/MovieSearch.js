@@ -9,6 +9,7 @@ import Alert from "@material-ui/lab/Alert";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
 
 import Dropdown from "./Dropdown";
+import DropdownModal from "./DropdownModal";
 
 const unloadAlert = (ev) => {
   ev.preventDefault();
@@ -26,7 +27,8 @@ export default function MovieSearch({
   const [query, setQuery] = React.useState("");
   const [results, setResults] = React.useState([]);
   const [message, setMessage] = React.useState("");
-  const matches = useMediaQuery("(max-width:350px)");
+  const matches = useMediaQuery("(max-width:1024px)");
+  const matches2 = useMediaQuery("(max-width:350px)");
 
   React.useEffect(() => {
     loading
@@ -199,7 +201,7 @@ export default function MovieSearch({
       <TextField
         id={`${listID}-input`}
         name="movies"
-        label={matches ? "Add movies" : "Add movies / TV shows"}
+        label={matches2 ? "Add movies" : "Add movies / TV shows"}
         type="search"
         variant="outlined"
         autoComplete="off"
@@ -223,18 +225,28 @@ export default function MovieSearch({
         aria-controls={open ? "movie-list" : undefined}
         aria-haspopup="true"
       />
-      {results.length > 0 && (
-        <Dropdown
-          dropdownProps={{
-            open,
-            setOpen,
-            anchorRef,
-            handleToggle,
-            handleListItemClick,
-          }}
-          results={results}
-        />
-      )}
+      {results.length > 0 &&
+        (matches ? (
+          <DropdownModal
+            dropdownProps={{
+              open,
+              setOpen,
+              anchorRef,
+              handleListItemClick,
+            }}
+            results={results}
+          />
+        ) : (
+          <Dropdown
+            dropdownProps={{
+              open,
+              setOpen,
+              anchorRef,
+              handleListItemClick,
+            }}
+            results={results}
+          />
+        ))}
       {message && (
         <Snackbar
           open={message.length > 0}

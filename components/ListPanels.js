@@ -37,9 +37,6 @@ const useStyles = makeStyles((theme) => ({
       marginRight: "auto",
     },
   },
-  skeleton: {
-    borderRadius: "4px",
-  },
   container: {
     width: "100%",
     height: "calc(100vh - 16px - 16px - 56px)",

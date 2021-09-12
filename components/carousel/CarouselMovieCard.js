@@ -48,7 +48,7 @@ export default function CarouselMovieCard({
       () => {
         setData(index);
       },
-      !touch ? 0 : 100
+      touch ? 150 : 0
     );
   };
 
@@ -90,8 +90,8 @@ export default function CarouselMovieCard({
           </div>
         )}
         <Image
-          onMouseEnter={handleShowDetails}
-          onTouchStart={handleShowDetails}
+          onMouseEnter={!touch ? handleShowDetails : undefined}
+          onTouchStart={touch ? handleShowDetails : undefined}
           data-index={index}
           width={200}
           height={300}

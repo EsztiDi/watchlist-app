@@ -22,13 +22,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function ListCard({
-  list,
-  index,
-  updating,
-  setUpdating,
-  setMessage,
-}) {
+export default function ListCard({ list, index, setMessage }) {
   const classes = useStyles();
   const [data, setData] = React.useState(undefined);
   const touch = useMediaQuery("(hover: none)");
@@ -41,7 +35,7 @@ export default function ListCard({
       () => {
         setData(index);
       },
-      !touch ? 0 : 100
+      touch ? 150 : 0
     );
   };
 
@@ -49,8 +43,8 @@ export default function ListCard({
     <ClickAwayListener onClickAway={() => setData(undefined)}>
       <div
         className={classes.list}
-        onMouseEnter={handleShowDetails}
-        onTouchStart={handleShowDetails}
+        onMouseEnter={!touch ? handleShowDetails : undefined}
+        onTouchStart={touch ? handleShowDetails : undefined}
         data-index={index}
       >
         {list.movies
@@ -94,8 +88,6 @@ export default function ListCard({
           })}
           show={index.toString() === data}
           handleShowDetails={handleShowDetails}
-          updating={updating}
-          setUpdating={setUpdating}
           setMessage={setMessage}
         />
       </div>

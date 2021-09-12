@@ -1,8 +1,9 @@
 import React from "react";
 
 import { makeStyles } from "@material-ui/core/styles";
-import Popper from "@material-ui/core/Popper";
-import ClickAwayListener from "@material-ui/core/ClickAwayListener";
+import Modal from "@material-ui/core/Modal";
+import Backdrop from "@material-ui/core/Backdrop";
+import Fade from "@material-ui/core/Fade";
 import Paper from "@material-ui/core/Paper";
 import ListItem from "@material-ui/core/ListItem";
 import Divider from "@material-ui/core/Divider";
@@ -11,16 +12,22 @@ import useMediaQuery from "@material-ui/core/useMediaQuery";
 import MovieListItem from "./MovieListItem";
 
 const useStyles = makeStyles((theme) => ({
-  dropdown: {
-    width: "100%",
-    maxHeight: "500px",
+  modal: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  list: {
+    paddingTop: 0,
+    paddingBottom: 0,
+    height: "80%",
     border: "2px solid #F7C550",
     borderRadius: "4px",
-    zIndex: "1111",
+    boxShadow: theme.shadows[5],
     overflow: "auto",
     "&::-webkit-scrollbar": {
-      width: "6px",
-      height: "6px",
+      width: "7px",
+      height: "7px",
       background: "#F0F0F0",
     },
     "&::-webkit-scrollbar-track": {
@@ -31,17 +38,13 @@ const useStyles = makeStyles((theme) => ({
       borderRadius: "100px",
     },
   },
-  list: {
-    paddingTop: 0,
-    paddingBottom: 0,
-  },
   itemMobile: {
     paddingLeft: theme.spacing(0.5),
     paddingRight: theme.spacing(0.5),
   },
 }));
 
-export default function Dropdown({ dropdownProps, results }) {
+export default function DropdownModal({ dropdownProps, results }) {
   const { open, setOpen, anchorRef, handleListItemClick } = dropdownProps;
   const classes = useStyles();
   const matches = useMediaQuery("(max-width:640px)");
@@ -53,48 +56,25 @@ export default function Dropdown({ dropdownProps, results }) {
     setOpen(false);
   };
 
-  const handleKeys = (ev) => {
-    if (ev.key === "ArrowDown" && open) {
-      ev.preventDefault();
-      let active = document.activeElement;
-      if (active.nextElementSibling.nextElementSibling) {
-        active.nextElementSibling.nextElementSibling.focus();
-      }
-    }
-
-    if (ev.key === "ArrowUp" && open) {
-      ev.preventDefault();
-      let active = document.activeElement;
-      if (active.previousElementSibling) {
-        active.previousElementSibling.previousElementSibling.focus();
-      }
-    }
-
-    if (ev.key === "Enter") {
-      setOpen(false);
-    }
-
-    if (ev.key === "Escape" && open) {
-      setOpen(false);
-      document.querySelector("input[type='search']").focus();
-    }
-  };
-
   return (
-    <Popper
-      className={classes.dropdown}
+    <Modal
+      aria-describedby="movie-list"
+      className={classes.modal}
+      ref={anchorRef.current}
       open={open}
-      anchorEl={anchorRef.current}
-      role={undefined}
-      disablePortal
-      placement="bottom"
+      onClose={handleClose}
+      closeAfterTransition
+      BackdropComponent={Backdrop}
+      BackdropProps={{
+        timeout: 500,
+      }}
     >
-      <ClickAwayListener onClickAway={handleClose}>
+      <Fade in={open}>
         <Paper
           id="movie-list"
+          style={matches ? { width: "95%" } : { width: "80%" }}
           className={classes.list}
           onClick={handleClose}
-          onKeyDown={handleKeys}
         >
           {results.map((movie, index) => (
             <React.Fragment key={index}>
@@ -109,7 +89,7 @@ export default function Dropdown({ dropdownProps, results }) {
             </React.Fragment>
           ))}
         </Paper>
-      </ClickAwayListener>
-    </Popper>
+      </Fade>
+    </Modal>
   );
 }

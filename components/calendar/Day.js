@@ -49,17 +49,18 @@ export default function Day({ date, month, year, movies }) {
   const names =
     movies &&
     movies.reduce(
-      (ep, { mainName }) => ep.set(mainName, ep.has(mainName)),
+      (ep, { mainTitle }) => ep.set(mainTitle, ep.has(mainTitle)),
       new Map()
     );
   const sameSeries =
-    movies && movies.filter(({ mainName }) => mainName && names.get(mainName));
+    movies &&
+    movies.filter(({ mainTitle }) => mainTitle && names.get(mainTitle));
 
   var same = {};
   if (sameSeries && sameSeries.length > 0) {
     same = sameSeries.reduce((r, a) => {
-      r[a.mainName] = r[a.mainName] || [];
-      r[a.mainName].push(a);
+      r[a.mainTitle] = r[a.mainTitle] || [];
+      r[a.mainTitle].push(a);
       return r;
     }, same);
   }
@@ -94,6 +95,60 @@ export default function Day({ date, month, year, movies }) {
           width: divWidth,
         }}
       >
+        {movies
+          .filter((episode) => !sameSeries.includes(episode))
+          .map((movie, index) => {
+            return (
+              <Tooltip
+                key={`${movie.id}-${index}`}
+                arrow
+                enterTouchDelay={0}
+                leaveTouchDelay={5000}
+                classes={{
+                  tooltip: classes.tooltipPadding,
+                }}
+                title={
+                  <p className={classes.tooltip}>
+                    {movie.title
+                      ? movie.title
+                      : movie.mainTitle
+                      ? `${movie.mainTitle} S${movie.season_number} E${movie.episode_number}`
+                      : "-"}
+                  </p>
+                }
+              >
+                <a
+                  href={
+                    !touch
+                      ? movie.imdb_id
+                        ? `https://www.imdb.com/title/${movie.imdb_id}`
+                        : `https://www.imdb.com/title/${movie.details?.external_ids?.imdb_id}`
+                      : undefined
+                  }
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <Image
+                    width={60}
+                    height={90}
+                    objectFit={movie.poster_path ? "cover" : "contain"}
+                    src={
+                      movie.poster_path
+                        ? `https://image.tmdb.org/t/p/w92${movie.poster_path}`
+                        : "/movieIcon.png"
+                    }
+                    onError={(ev) => {
+                      ev.target.onerror = null;
+                      ev.target.src = "/movieIcon.png";
+                    }}
+                    alt=""
+                    className={classes.poster}
+                  />
+                </a>
+              </Tooltip>
+            );
+          })}
+
         {sameSeries.length > 0 &&
           Object.entries(same).map((series, index) => {
             return (
@@ -129,59 +184,6 @@ export default function Day({ date, month, year, movies }) {
                     src={
                       series[1][0].poster_path
                         ? `https://image.tmdb.org/t/p/w92${series[1][0].poster_path}`
-                        : "/movieIcon.png"
-                    }
-                    onError={(ev) => {
-                      ev.target.onerror = null;
-                      ev.target.src = "/movieIcon.png";
-                    }}
-                    alt=""
-                    className={classes.poster}
-                  />
-                </a>
-              </Tooltip>
-            );
-          })}
-        {movies
-          .filter((episode) => !sameSeries.includes(episode))
-          .map((movie, index) => {
-            return (
-              <Tooltip
-                key={`${movie.id}-${index}`}
-                arrow
-                enterTouchDelay={0}
-                leaveTouchDelay={5000}
-                classes={{
-                  tooltip: classes.tooltipPadding,
-                }}
-                title={
-                  <p className={classes.tooltip}>
-                    {movie.title
-                      ? movie.title
-                      : movie.mainName
-                      ? `${movie.mainName} S${movie.season_number} E${movie.episode_number}`
-                      : "-"}
-                  </p>
-                }
-              >
-                <a
-                  href={
-                    !touch
-                      ? movie.imdb_id
-                        ? `https://www.imdb.com/title/${movie.imdb_id}`
-                        : `https://www.imdb.com/title/${movie.details?.external_ids?.imdb_id}`
-                      : undefined
-                  }
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <Image
-                    width={60}
-                    height={90}
-                    objectFit={movie.poster_path ? "cover" : "contain"}
-                    src={
-                      movie.poster_path
-                        ? `https://image.tmdb.org/t/p/w92${movie.poster_path}`
                         : "/movieIcon.png"
                     }
                     onError={(ev) => {

@@ -79,14 +79,13 @@ export default function ListDetails({
   movies,
   show,
   handleShowDetails,
-  updating,
-  setUpdating,
   setMessage,
 }) {
   const classes = useStyles();
   const name = creator?.name?.split(" ")[0];
   const contentType = "application/json";
 
+  const [updating, setUpdating] = React.useState(false);
   const [session, loading] = useSession();
   const router = useRouter();
 
@@ -116,7 +115,9 @@ export default function ListDetails({
       }
 
       mutate("/api/lists/saved");
-      setUpdating(false);
+      setTimeout(() => {
+        setUpdating(false);
+      }, 500);
     } catch (error) {
       setMessage(
         `${JSON.stringify(

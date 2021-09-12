@@ -125,29 +125,10 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   hidden: {
-    position: "relative",
     whiteSpace: "nowrap",
     overflow: "hidden",
-    fontWeight: "normal",
-  },
-  cast: {
-    whiteSpace: "nowrap",
     position: "relative",
     fontWeight: "normal",
-    "&::-webkit-scrollbar": {
-      width: "4px",
-      height: "4px",
-      background: "#F0F0F0",
-      borderRadius: "100px",
-    },
-    "&::-webkit-scrollbar-track": {
-      background: "#F0F0F0",
-      borderRadius: "100px",
-    },
-    "&::-webkit-scrollbar-thumb": {
-      background: "#CECECE",
-      borderRadius: "100px",
-    },
   },
   more: {
     position: "absolute",
@@ -277,11 +258,11 @@ export default function MovieCard({
     const getDate = async () => {
       var { release_date, locale } = await getLocalDate(movie);
       if (release_date) {
-        setDate(release_date);
-        setLoc(locale);
+        if (isMounted) setDate(release_date);
+        if (isMounted) setLoc(locale);
       }
     };
-    if (isMounted) getDate();
+    getDate();
 
     return () => {
       isMounted = false;
@@ -539,7 +520,7 @@ export default function MovieCard({
           </Typography>
           <Typography
             id={`${id}-directors`}
-            className={overflows1 ? classes.hidden : classes.cast}
+            className={classes.hidden}
             style={matches2 ? { fontSize: "0.8rem" } : { fontSize: "0.95rem" }}
           >
             {media_type === "tv" ? <b>Created by: </b> : <b>Director: </b>}
@@ -574,7 +555,7 @@ export default function MovieCard({
           </Typography>
           <Typography
             id={`${id}-cast`}
-            className={overflows2 ? classes.hidden : classes.cast}
+            className={classes.hidden}
             style={matches2 ? { fontSize: "0.8rem" } : { fontSize: "0.95rem" }}
           >
             <b>Cast: </b>

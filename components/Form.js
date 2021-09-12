@@ -259,7 +259,7 @@ export default function Form({
     if (ids.includes(movie.id)) {
       newMovie.current = false;
       setMessage("It's already on the list \\(^-^)/");
-      if (newTab || newList || matches) {
+      if (newTab || newList) {
         const yOffset = -56 - 12 + 1;
         const y =
           document.getElementById(movie.id).getBoundingClientRect().top +
@@ -267,7 +267,7 @@ export default function Form({
           yOffset;
         window.scrollTo({ top: y, behavior: "smooth" });
       } else {
-        const yOffset = -40 - 32 - 16;
+        const yOffset = matches ? -45 - 32 - 64 : -45 - 32 - 16;
         const y = document.getElementById(movie.id).offsetTop + yOffset;
         document
           .getElementById(`tabpanel-${id}`)

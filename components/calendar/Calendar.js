@@ -1,7 +1,4 @@
-import useSWR from "swr";
-
 import { makeStyles } from "@material-ui/core/styles";
-import CircularProgress from "@material-ui/core/CircularProgress";
 import Box from "@material-ui/core/Box";
 import CardHeader from "@material-ui/core/CardHeader";
 import Button from "@material-ui/core/Button";
@@ -23,7 +20,6 @@ import Month from "./Month";
 
 const useStyles = makeStyles((theme) => ({
   panel: {
-    // padding: theme.spacing(1.5),
     width: "100%",
     overflow: "auto",
     "&::-webkit-scrollbar": {
@@ -51,9 +47,6 @@ const useStyles = makeStyles((theme) => ({
       fontSize: "1.3rem",
     },
   },
-  // table: {
-  //   overflowX: "visible",
-  // },
   buttons: {
     position: "relative",
     padding: theme.spacing(1),
@@ -102,16 +95,6 @@ export default function Calendar({ listID, newTab = false }) {
   const classes = useStyles();
   const matches = useMediaQuery("(max-width:780px)");
 
-  const { data: list, error } = useSWR(listID ? `/api/lists/${listID}` : null, {
-    refreshInterval: 2000,
-  });
-  if (error) console.error(error);
-  var movies = [];
-  if (list) {
-    ({ movies } = list);
-    movies = movies.sort((a, b) => a.position - b.position);
-  }
-
   var [year, setYear] = React.useState(today.getFullYear());
   var [month, setMonth] = React.useState(today.getMonth());
 
@@ -141,9 +124,7 @@ export default function Calendar({ listID, newTab = false }) {
     setMonth(date._d.getMonth());
   };
 
-  return !list ? (
-    <CircularProgress size="3rem" thickness={3} />
-  ) : (
+  return (
     <Box
       p={matches ? 0.5 : 2}
       className={!newTab ? classes.panel : classes.newTab}
@@ -152,7 +133,7 @@ export default function Calendar({ listID, newTab = false }) {
         {newTab && (
           <CardHeader title="Release Calendar" className={classes.header} />
         )}
-        <TableContainer component={Paper} className={classes.table}>
+        <TableContainer component={Paper}>
           <Table aria-label="calendar view">
             <TableHead>
               <TableRow>
@@ -218,7 +199,7 @@ export default function Calendar({ listID, newTab = false }) {
               </TableRow>
             </TableHead>
             <TableBody>
-              <Month month={month} year={year} movies={movies} />
+              <Month listID={listID} month={month} year={year} />
             </TableBody>
           </Table>
         </TableContainer>
