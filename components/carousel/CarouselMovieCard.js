@@ -40,6 +40,7 @@ export default function CarouselMovieCard({
 }) {
   const classes = useStyles();
   const [data, setData] = React.useState(undefined);
+  const show = index.toString() === data;
   const touch = useMediaQuery("(hover: none)");
 
   const handleShowDetails = (ev) => {
@@ -57,7 +58,7 @@ export default function CarouselMovieCard({
       <div key={index} className={classes.movie}>
         {!movie?.poster_path && (
           <div
-            style={index.toString() !== data ? { zIndex: "1" } : undefined}
+            style={!show ? { zIndex: "1" } : undefined}
             className={classes.title}
           >
             <Typography variant="h6">
@@ -90,8 +91,7 @@ export default function CarouselMovieCard({
           </div>
         )}
         <Image
-          onMouseEnter={!touch ? handleShowDetails : undefined}
-          onTouchStart={touch ? handleShowDetails : undefined}
+          onMouseEnter={!show ? handleShowDetails : undefined}
           data-index={index}
           width={200}
           height={300}
@@ -113,7 +113,7 @@ export default function CarouselMovieCard({
           movie={movie}
           media_type={media_type}
           setMessage={setMessage}
-          show={index.toString() === data}
+          show={show}
           handleShowDetails={handleShowDetails}
           locale={locale}
         />

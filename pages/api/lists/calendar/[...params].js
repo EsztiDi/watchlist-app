@@ -19,7 +19,7 @@ const isSameDay = async (date, moviesList) => {
   return dayMovies;
 };
 
-const getDays = async (year, month, moviesList) => {
+const getDays = async (year, month, moviesList, loc) => {
   let monthMovies = [];
 
   moviesList.length > 0 &&
@@ -44,16 +44,21 @@ const getDays = async (year, month, moviesList) => {
               });
           });
         } else {
-          let { release_date, locale } = await getLocalDate(movie);
-          let releaseDate = new Date(
-            movie.locale !== locale ? release_date : movie.release_date
-          );
+          let releaseDate, release_date;
+          if (movie.locale !== loc) {
+            ({ release_date } = await getLocalDate(movie, loc));
+            releaseDate = new Date(
+              release_date ? release_date : movie.release_date
+            );
+          } else {
+            releaseDate = new Date(movie.release_date);
+          }
 
           if (
             releaseDate.getFullYear() === year &&
             releaseDate.getMonth() === month
           ) {
-            if (movie.locale !== locale) {
+            if (movie.locale !== loc) {
               monthMovies.push({ ...movie, release_date });
             } else {
               monthMovies.push(movie);
@@ -107,7 +112,7 @@ export default async function handler(req, res) {
   switch (method) {
     case "GET":
       try {
-        var [id, year, month] = params;
+        var [id, year, month, loc] = params;
         year = parseInt(year);
         month = parseInt(month);
         var movies;
@@ -123,7 +128,7 @@ export default async function handler(req, res) {
           ({ movies } = list);
         }
 
-        var weekMovies = await getDays(year, month, movies);
+        var weekMovies = await getDays(year, month, movies, loc);
 
         res.status(200).json({ success: true, data: weekMovies });
       } catch (err) {

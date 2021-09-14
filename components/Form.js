@@ -272,6 +272,7 @@ export default function Form({
         document
           .getElementById(`tabpanel-${id}`)
           .scrollTo({ top: y, behavior: "smooth" });
+        window.scrollTo({ top: 0, behavior: "smooth" });
       }
     } else {
       setForm({

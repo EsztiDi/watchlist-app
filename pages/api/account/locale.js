@@ -3,6 +3,7 @@ export default async function handler(req, res) {
 
   switch (method) {
     case "GET":
+      // Identify the original incoming request's location
       var ip =
         req.headers["x-forwarded-for"]?.split(",").shift() ||
         req.socket?.remoteAddress;

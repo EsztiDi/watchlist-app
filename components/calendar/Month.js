@@ -3,8 +3,34 @@ import Skeleton from "@material-ui/lab/Skeleton";
 import Week from "./Week";
 
 export default function Month({ listID, year, month }) {
+  const [loc, setLoc] = React.useState("US");
+
+  React.useEffect(() => {
+    var isMounted = true;
+    const controller = new AbortController();
+    const signal = controller.signal;
+
+    const getLocale = async () => {
+      await fetch(`${process.env.BASE_URL}/api/account/locale`, { signal })
+        .then((res) => res.json())
+        .then((res) => {
+          if (isMounted) setLoc(res.data || "US");
+        })
+        .catch((err) => {
+          console.error(err);
+        });
+    };
+    getLocale();
+
+    return () => {
+      controller.abort();
+      isMounted = false;
+    };
+    // eslint-disable-next-line
+  }, []);
+
   const { data: dates, error } = useSWR(
-    listID ? `/api/lists/calendar/${listID}/${year}/${month}` : null,
+    listID ? `/api/lists/calendar/${listID}/${year}/${month}/${loc}` : null,
     {
       refreshInterval: 2000,
     }

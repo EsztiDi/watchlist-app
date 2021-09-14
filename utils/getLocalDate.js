@@ -1,16 +1,24 @@
-export default async function getLocalDate(movie, getDetails = false) {
+export default async function getLocalDate(
+  movie,
+  loc = null,
+  getDetails = false
+) {
   var release_date;
   var locale;
 
-  await fetch(`${process.env.BASE_URL}/api/account/locale`)
-    .then((res) => res.json())
-    .then((res) => {
-      locale = getDetails && movie.locale ? movie.locale : res.data || "US";
-    })
-    .catch((err) => {
-      console.error(err);
-      locale = getDetails && movie.locale ? movie.locale : "US";
-    });
+  if (!loc) {
+    await fetch(`${process.env.BASE_URL}/api/account/locale`)
+      .then((res) => res.json())
+      .then((res) => {
+        locale = getDetails && movie.locale ? movie.locale : res.data || "US";
+      })
+      .catch((err) => {
+        console.error(err);
+        locale = getDetails && movie.locale ? movie.locale : "US";
+      });
+  } else {
+    locale = loc;
+  }
 
   if (movie.media_type === "movie") {
     var baseURL = "https://api.themoviedb.org/3";
@@ -30,9 +38,18 @@ export default async function getLocalDate(movie, getDetails = false) {
           (date) => date.iso_3166_1 === locale
         )[0]?.release_dates;
 
-        release_date = results?.filter(
-          (date) => date.type === 3 || date.type === 2 || date.type === 4
-        )[0]?.release_date;
+        var dates = [];
+        results?.forEach((date) => {
+          if (date.type === 3) dates.push(date);
+        });
+        results?.forEach((date) => {
+          if (date.type === 2) dates.push(date);
+        });
+        results?.forEach((date) => {
+          if (date.type === 4) dates.push(date);
+        });
+
+        release_date = dates[0]?.release_date;
 
         if (release_date) {
           release_date = new Date(release_date).toLocaleDateString("en-GB", {

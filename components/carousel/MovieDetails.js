@@ -186,8 +186,8 @@ export default function MovieDetails({
     }
   };
 
-  const handleMouse = (ev) => {
-    handleShowDetails(ev);
+  const handleMouse = () => {
+    handleShowDetails();
   };
 
   return (

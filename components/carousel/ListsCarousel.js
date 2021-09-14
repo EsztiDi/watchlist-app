@@ -52,37 +52,53 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   header: {
-    position: "relative",
+    display: "grid",
+    gridTemplateColumns: "1fr 1fr 1fr",
+    gap: `${theme.spacing(1)}px ${theme.spacing(2)}px`,
     marginBottom: theme.spacing(1),
-    "& h4": {
-      flexGrow: 1,
+    "& > h4": {
+      gridArea: "1 / 2 / 2 / 3",
+    },
+    "& > div": {
+      width: "155px",
+      gridArea: "1 / 3 / 2 / 4",
+      justifySelf: "end",
+      "&:focus-within": {
+        width: 468 - 16 - 204 + "px",
+      },
     },
   },
-  headerFlex: {
-    display: "flex",
-    flexWrap: "wrap",
-    alignItems: "center",
-    // justifyContent: "flex-end",
-    columnGap: "16px",
-    rowGap: "8px",
+  header2: {
+    display: "grid",
+    gridTemplateColumns: "2fr 1fr",
+    gap: `${theme.spacing(1)}px ${theme.spacing(2)}px`,
     marginBottom: theme.spacing(1),
+    "& > h4": {
+      gridArea: "1 / 1 / 2 / 2",
+      justifySelf: "end",
+    },
+    "& > div": {
+      width: "155px",
+      gridArea: "1 / 2 / 2 / 3",
+      justifySelf: "end",
+      "&:focus-within": {
+        width: 468 - 16 - 204 + "px",
+      },
+    },
+  },
+  header3: {
+    display: "grid",
+    gap: `${theme.spacing(1)}px ${theme.spacing(2)}px`,
+    marginBottom: theme.spacing(1),
+    "& > div": {
+      width: "175px",
+      justifySelf: "center",
+      "&:focus-within": {
+        width: "98%",
+      },
+    },
   },
   search: {
-    position: "absolute",
-    right: 0,
-    bottom: 0,
-    width: "152px",
-    transition: "width 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms",
-    "& input": {
-      padding: "11px",
-      paddingRight: theme.spacing(0),
-    },
-    "& label": {
-      top: "-7px",
-    },
-  },
-  searchMobile: {
-    width: "152px",
     transition: "width 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms",
     "& input": {
       padding: "11px",
@@ -163,30 +179,6 @@ export default function ListsCarousel({ setMessage }) {
     if (query.length === 0) setResults([]);
   };
 
-  const handleFocus = (ev) => {
-    ev.target.parentElement.parentElement.style.position = "relative";
-    ev.target.parentElement.parentElement.style.width = matches2
-      ? "95%"
-      : 468 - 16 - 204 + "px";
-    var header = document.getElementById("header");
-    if (!matches) {
-      header.style.display = "flex";
-      header.style.flexWrap = "wrap";
-      header.style.alignItems = "center";
-      header.style.justifyContent = "flex-end";
-      header.style.columnGap = "16px";
-    }
-  };
-  const handleBlur = (ev) => {
-    ev.target.parentElement.parentElement.style.width = "152px";
-    setTimeout(() => {
-      ev.target.parentElement.parentElement.style.position = matches
-        ? "relative"
-        : "absolute";
-      // if (!matches) document.getElementById("header").style.display = "block";
-    }, 230);
-  };
-
   const handleSearch = async () => {
     if (query) {
       setLoading(true);
@@ -230,11 +222,12 @@ export default function ListsCarousel({ setMessage }) {
     >
       <div
         id="header"
-        className={matches ? classes.headerFlex : classes.header}
-        style={
+        className={
           matches2
-            ? { justifyContent: "center", flexDirection: "column" }
-            : { justifyContent: "flex-end" }
+            ? classes.header3
+            : matches
+            ? classes.header2
+            : classes.header
         }
       >
         <Typography variant="h4">New watchlists</Typography>
@@ -247,10 +240,8 @@ export default function ListsCarousel({ setMessage }) {
           aria-controls="lists-carousel"
           onChange={updateQuery}
           onKeyDown={handleKeys}
-          onFocus={handleFocus}
-          onBlur={handleBlur}
           classes={{
-            root: matches ? classes.searchMobile : classes.search,
+            root: classes.search,
           }}
           InputProps={{
             endAdornment: (

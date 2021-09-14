@@ -97,7 +97,7 @@ const useStyles = makeStyles((theme) => ({
   updatingMobile2: {
     position: "absolute",
     bottom: "20px",
-    left: "43px",
+    left: "13px",
   },
   delete: {
     fontSize: "1.9rem",
