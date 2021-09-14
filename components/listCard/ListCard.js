@@ -36,7 +36,7 @@ export default function ListCard({ list, index, setMessage }) {
       () => {
         setData(index);
       },
-      touch ? 150 : 0
+      touch ? 200 : 0
     );
   };
 

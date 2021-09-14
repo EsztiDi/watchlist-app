@@ -49,7 +49,7 @@ export default function CarouselMovieCard({
       () => {
         setData(index);
       },
-      touch ? 150 : 0
+      touch ? 200 : 0
     );
   };
 
