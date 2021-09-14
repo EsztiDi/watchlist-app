@@ -2,7 +2,7 @@ import getLocalDate from "./getLocalDate";
 import formatData from "./formatData";
 
 export default async function getDetails(movie) {
-  var { release_date, locale } = await getLocalDate(movie, true);
+  var { release_date, locale } = await getLocalDate(movie, null, true);
 
   var getCrew = (obj) =>
     obj?.credits?.crew

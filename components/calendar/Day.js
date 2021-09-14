@@ -102,8 +102,8 @@ export default function Day({ date, month, year, movies }) {
               <Tooltip
                 key={`${movie.id}-${index}`}
                 arrow
-                enterTouchDelay={0}
-                leaveTouchDelay={5000}
+                enterTouchDelay={50}
+                leaveTouchDelay={3000}
                 classes={{
                   tooltip: classes.tooltipPadding,
                 }}
@@ -155,8 +155,8 @@ export default function Day({ date, month, year, movies }) {
               <Tooltip
                 key={index}
                 arrow
-                enterTouchDelay={0}
-                leaveTouchDelay={5000}
+                enterTouchDelay={50}
+                leaveTouchDelay={3000}
                 classes={{
                   tooltip: classes.tooltipPadding,
                 }}

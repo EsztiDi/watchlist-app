@@ -91,7 +91,8 @@ export default function CarouselMovieCard({
           </div>
         )}
         <Image
-          onMouseEnter={!show ? handleShowDetails : undefined}
+          onMouseEnter={!touch && !show ? handleShowDetails : undefined}
+          onTouchStart={touch && !show ? handleShowDetails : undefined}
           data-index={index}
           width={200}
           height={300}

@@ -44,7 +44,8 @@ export default function ListCard({ list, index, setMessage }) {
     <ClickAwayListener onClickAway={() => setData(undefined)}>
       <div
         className={classes.list}
-        onMouseEnter={!show ? handleShowDetails : undefined}
+        onMouseEnter={!touch && !show ? handleShowDetails : undefined}
+        onTouchStart={touch && !show ? handleShowDetails : undefined}
         data-index={index}
       >
         {list.movies
