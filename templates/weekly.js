@@ -1683,7 +1683,7 @@ export default function weeklyHTML(lists) {
                     in your account or
                     <strong
                       ><a
-                        href="https://mywatchlists.watch/lists"
+                        href="https://mywatchlists.watch/email-toggle.jpg"
                         rel="noopener"
                         style="
                           text-decoration: underline;

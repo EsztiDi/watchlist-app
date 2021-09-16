@@ -91,6 +91,10 @@ export default function Share({ listID, uid, title, open, onClose }) {
     setEditable("false");
   }, [listID]);
 
+  React.useEffect(() => {
+    setCopied(false);
+  }, [editable]);
+
   const handleEditableChange = (ev) => {
     setEditable(ev.target.value);
 
@@ -100,14 +104,13 @@ export default function Share({ listID, uid, title, open, onClose }) {
   };
 
   const copyLink = () => {
-    var link = document.getElementById("shareLink");
+    let link = document.getElementById("shareLink");
     link.select();
-    link.setSelectionRange(0, 99999);
-    document.execCommand("copy");
+    navigator.clipboard.writeText(shareLink);
     setCopied(true);
     setTimeout(() => {
       setCopied(false);
-    }, 5000);
+    }, 3000);
   };
 
   return (
@@ -135,7 +138,7 @@ export default function Share({ listID, uid, title, open, onClose }) {
               <Typography variant={textVariant}>Facebook</Typography>
             </FacebookShareButton>
             <FacebookMessengerShareButton
-              appId="827802261304460"
+              // appId="827802261304460"
               url={shareLink}
             >
               <FacebookMessengerIcon size={iconSize} round />

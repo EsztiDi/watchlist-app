@@ -1,9 +1,8 @@
 import useSWR from "swr";
-import Skeleton from "@material-ui/lab/Skeleton";
 import Week from "./Week";
 
 export default function Month({ listID, year, month }) {
-  const [loc, setLoc] = React.useState("US");
+  const [loc, setLoc] = React.useState("");
 
   React.useEffect(() => {
     var isMounted = true;
@@ -30,7 +29,9 @@ export default function Month({ listID, year, month }) {
   }, []);
 
   const { data: dates, error } = useSWR(
-    listID ? `/api/lists/calendar/${listID}/${year}/${month}/${loc}` : null,
+    listID && loc
+      ? `/api/lists/calendar/${listID}/${year}/${month}/${loc}`
+      : null,
     {
       refreshInterval: 2000,
     }
@@ -39,40 +40,58 @@ export default function Month({ listID, year, month }) {
 
   if (!dates)
     return (
-      <tr>
-        <td scope="col" colSpan={7}>
-          <Skeleton
-            variant="rect"
-            width={"100%"}
-            height={36}
-            style={{ marginTop: "2px" }}
-          />
-          <Skeleton
-            variant="rect"
-            width={"100%"}
-            height={36}
-            style={{ marginTop: "2px" }}
-          />
-          <Skeleton
-            variant="rect"
-            width={"100%"}
-            height={36}
-            style={{ marginTop: "2px" }}
-          />
-          <Skeleton
-            variant="rect"
-            width={"100%"}
-            height={36}
-            style={{ marginTop: "2px" }}
-          />
-          <Skeleton
-            variant="rect"
-            width={"100%"}
-            height={36}
-            style={{ marginTop: "2px" }}
-          />
-        </td>
-      </tr>
+      <>
+        <tr>
+          <td
+            scope="col"
+            colSpan={7}
+            style={{
+              height: "37.4px",
+              borderBottom: "2px solid rgba(224, 224, 224, 1)",
+            }}
+          ></td>
+        </tr>
+        <tr>
+          <td
+            scope="col"
+            colSpan={7}
+            style={{
+              height: "37.9px",
+              borderBottom: "2px solid rgba(224, 224, 224, 1)",
+            }}
+          ></td>
+        </tr>
+        <tr>
+          <td
+            scope="col"
+            colSpan={7}
+            style={{
+              height: "37.9px",
+              borderBottom: "2px solid rgba(224, 224, 224, 1)",
+            }}
+          ></td>
+        </tr>
+        <tr>
+          <td
+            scope="col"
+            colSpan={7}
+            style={{
+              height: "37.9px",
+              borderBottom: "2px solid rgba(224, 224, 224, 1)",
+            }}
+          ></td>
+        </tr>
+        <tr>
+          <td
+            scope="col"
+            colSpan={7}
+            style={{
+              height: "37.9px",
+              // borderBottom: "2px solid rgba(224, 224, 224, 1)",
+            }}
+          ></td>
+        </tr>
+      </>
     );
 
   return <Week rows={dates} month={month} year={year} />;

@@ -39,9 +39,6 @@ const theme = createTheme({
     h6: {
       cursor: "default",
     },
-    // body1: {
-    //   cursor: "default",
-    // },
     body2: {
       cursor: "default",
     },

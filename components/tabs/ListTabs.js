@@ -31,13 +31,23 @@ const useStyles = makeStyles((theme) => ({
     alignItems: "center",
   },
   tab: {
-    fontSize: "1rem",
+    fontSize: "0.95rem",
     minWidth: "100%",
     minHeight: "3.6rem",
+    paddingLeft: `${theme.spacing(0.75)}px`,
+  },
+  tabSelected: {
+    fontSize: "0.95rem",
+    minWidth: "100%",
+    minHeight: "3.6rem",
+    paddingLeft: `${theme.spacing(0.75)}px`,
     "& > :first-child": {
-      width: "76%",
-      flexDirection: "row",
+      display: "grid",
+      gridTemplateColumns: "repeat(3, auto)",
+      justifyContent: "stretch",
       "& > :first-child": {
+        gridArea: "1 / 3 / 2 / 4",
+        justifySelf: "end",
         marginBottom: "3px",
       },
     },
@@ -47,19 +57,25 @@ const useStyles = makeStyles((theme) => ({
     maxWidth: "100%",
     minWidth: "50%",
     minHeight: "60px",
+  },
+  tabMobileSelected: {
+    fontSize: "0.875rem",
+    maxWidth: "100%",
+    minWidth: "50%",
+    minHeight: "60px",
     "& > :first-child": {
-      width: "76%",
-      flexDirection: "row",
+      display: "grid",
+      gridTemplateColumns: "repeat(3, auto)",
+      justifyContent: "stretch",
       "& > :first-child": {
+        gridArea: "1 / 3 / 2 / 4",
+        justifySelf: "end",
         marginBottom: "3px",
       },
     },
   },
   edit: {
-    position: "absolute",
-    top: "50%",
-    right: "12px",
-    transform: "translateY(-50%)",
+    verticalAlign: "middle",
     padding: theme.spacing(0.5),
     borderRadius: "50%",
     color: theme.palette.primary.light,
@@ -70,14 +86,12 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   updating: {
-    position: "absolute",
-    right: "12px",
+    marginLeft: "4px",
   },
   arrows: {
-    position: "absolute",
-    left: "12px",
+    gridArea: "1 / 1 / 2 / 2",
+    justifySelf: "start",
     display: "flex",
-    flexDirection: "column",
     color: theme.palette.primary.light,
     "& > *": {
       height: "1.8rem",
@@ -190,7 +204,15 @@ export default function ListTabs({
                 disableFocusRipple
                 disabled={updating}
                 onClick={editTitle ? closeEditTitle : null}
-                className={matches ? classes.tabMobile : classes.tab}
+                className={
+                  matches && value === index
+                    ? classes.tabMobileSelected
+                    : matches
+                    ? classes.tabMobile
+                    : value === index
+                    ? classes.tabSelected
+                    : classes.tab
+                }
                 style={value === index ? { opacity: 1 } : undefined}
                 {...a11yProps(list._id, index, value)}
                 icon={
@@ -199,7 +221,7 @@ export default function ListTabs({
                     <>
                       {updating ? (
                         <CircularProgress
-                          size={matches ? "1rem" : "1.5rem"}
+                          size={"1.3rem"}
                           thickness={5}
                           className={classes.updating}
                         />
@@ -213,7 +235,14 @@ export default function ListTabs({
                           />
                         </span>
                       )}
-                      <span className={classes.arrows}>
+                      <span
+                        className={classes.arrows}
+                        style={
+                          matches
+                            ? { flexDirection: "row" }
+                            : { flexDirection: "column" }
+                        }
+                      >
                         {index !== 0 && (
                           <span title="Move up">
                             <KeyboardArrowUpRoundedIcon

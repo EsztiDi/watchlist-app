@@ -48,6 +48,12 @@ export default async function getLocalDate(
         results?.forEach((date) => {
           if (date.type === 4) dates.push(date);
         });
+        results?.forEach((date) => {
+          if (date.type === 6) dates.push(date);
+        });
+        results?.forEach((date) => {
+          if (date.type === 5) dates.push(date);
+        });
 
         release_date = dates[0]?.release_date;
 
