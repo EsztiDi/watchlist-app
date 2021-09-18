@@ -25,10 +25,10 @@ import MenuList from "@material-ui/core/MenuList";
 import Button from "@material-ui/core/Button";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
 
+import WatchedButton from "./WatchedButton";
 import Overview from "./Overview";
 import Seasons from "./Seasons";
 import ListsMenu from "../carousel/ListsMenu";
-import React from "react";
 
 const useStyles = makeStyles((theme) => ({
   moviecard: {
@@ -68,11 +68,13 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   image: {
+    position: "relative",
     minWidth: "16%",
     paddingTop: "24%",
     backgroundSize: "contain",
   },
   imageMobile: {
+    position: "relative",
     minWidth: "22%",
     paddingTop: "33%",
     backgroundSize: "contain",
@@ -138,7 +140,7 @@ const useStyles = makeStyles((theme) => ({
     boxShadow: "none",
     minWidth: 0,
     fontWeight: "normal",
-    lineHeight: 1.2,
+    lineHeight: 1.6,
     "&:hover": {
       backgroundColor: "#f5f5f5",
     },
@@ -358,7 +360,9 @@ export default function MovieCard({
           data-image="background"
           className={matches2 ? classes.imageMobile : classes.image}
           image={poster}
-        />
+        >
+          <WatchedButton movie={movie} />
+        </CardMedia>
         <CardContent
           className={matches ? classes.contentMobile : classes.content}
         >
@@ -414,8 +418,7 @@ export default function MovieCard({
                           >
                             {session && (
                               <ListsMenu
-                                movieID={id}
-                                media_type={media_type}
+                                movie={movie}
                                 setMessage={setMessage}
                                 handleMenuClose={handleMenuClose}
                               />
@@ -530,7 +533,7 @@ export default function MovieCard({
                 size="small"
                 className={classes.more}
                 style={
-                  matches2 ? { fontSize: "0.7rem" } : { fontSize: "0.8125rem" }
+                  matches2 ? { fontSize: "0.6rem" } : { fontSize: "0.7rem" }
                 }
                 onClick={handleMore1}
               >
@@ -544,7 +547,7 @@ export default function MovieCard({
                   size="small"
                   className={classes.less}
                   style={
-                    matches2 ? { fontSize: "0.7rem" } : { fontSize: "0.9rem" }
+                    matches2 ? { fontSize: "0.7rem" } : { fontSize: "0.8rem" }
                   }
                   onClick={handleLess1}
                 >
@@ -565,7 +568,7 @@ export default function MovieCard({
                 size="small"
                 className={classes.more}
                 style={
-                  matches2 ? { fontSize: "0.7rem" } : { fontSize: "0.8125rem" }
+                  matches2 ? { fontSize: "0.6rem" } : { fontSize: "0.7rem" }
                 }
                 onClick={handleMore2}
               >
@@ -579,7 +582,7 @@ export default function MovieCard({
                   size="small"
                   className={classes.less}
                   style={
-                    matches2 ? { fontSize: "0.7rem" } : { fontSize: "0.9rem" }
+                    matches2 ? { fontSize: "0.7rem" } : { fontSize: "0.8rem" }
                   }
                   onClick={handleLess2}
                 >

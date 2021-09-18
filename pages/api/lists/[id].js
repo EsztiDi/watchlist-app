@@ -54,6 +54,7 @@ export default async function handler(req, res) {
           list = await Watchlist.findByIdAndUpdate(id, data1, {
             new: true,
             runValidators: true,
+            timestamps: false,
           });
           // Adjacent list, id depends on the direction
           list2 = await Watchlist.findByIdAndUpdate(
@@ -62,6 +63,7 @@ export default async function handler(req, res) {
             {
               new: true,
               runValidators: true,
+              timestamps: false,
             }
           );
 

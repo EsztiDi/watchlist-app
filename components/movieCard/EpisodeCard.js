@@ -5,6 +5,7 @@ import CardMedia from "@material-ui/core/CardMedia";
 import Typography from "@material-ui/core/Typography";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
 
+import WatchedButton from "./WatchedButton";
 import Overview from "./Overview";
 
 const useStyles = makeStyles((theme) => ({
@@ -36,19 +37,25 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   image: {
+    position: "relative",
     minWidth: "20%",
     paddingTop: "11.3%",
     backgroundSize: "contain",
   },
   imageMobile: {
+    position: "relative",
     minWidth: "30%",
     paddingTop: "16.95%",
     backgroundSize: "contain",
   },
   imageMobile2: {
+    position: "relative",
     minWidth: "50%",
     paddingTop: "28.25%",
     backgroundSize: "contain",
+    "& > button": {
+      right: "25%",
+    },
   },
   date: {
     whiteSpace: "nowrap",
@@ -88,7 +95,9 @@ export default function EpisodeCard({ episode }) {
               : classes.image
           }
           image={image}
-        />
+        >
+          <WatchedButton movie={episode} episode={true} />
+        </CardMedia>
         <CardContent
           className={matches2 ? classes.contentMobile : classes.content}
         >

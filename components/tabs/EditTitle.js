@@ -83,7 +83,10 @@ export default function EditTitle({
                   className={classes.button}
                 >
                   {updating ? (
-                    <CircularProgress size="1.5rem" thickness={5} />
+                    <CircularProgress
+                      size={matches ? "1.3rem" : "1.5rem"}
+                      thickness={5}
+                    />
                   ) : (
                     <CheckCircleOutlineRoundedIcon
                       className={matches ? classes.iconMobile : classes.icon}

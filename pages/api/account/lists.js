@@ -16,7 +16,10 @@ export default async function handler(req, res) {
             user: session?.user,
             private: false,
           },
-          { private: true }
+          { private: true },
+          {
+            timestamps: false,
+          }
         );
 
         if (!update) {

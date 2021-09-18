@@ -17,7 +17,10 @@ export default async function handler(req, res) {
             user: session?.user,
             emails: true,
           },
-          { emails: false }
+          { emails: false },
+          {
+            timestamps: false,
+          }
         );
 
         if (!update) {

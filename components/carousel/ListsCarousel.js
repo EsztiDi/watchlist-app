@@ -262,26 +262,26 @@ export default function ListsCarousel({ setMessage }) {
             ),
           }}
         />
-        {alert && (
-          <Snackbar
-            open={alert.length > 0}
-            anchorOrigin={{ vertical: "top", horizontal: "center" }}
-            autoHideDuration={3000}
-            onClose={handleMessage}
-          >
-            <Alert
-              severity="warning"
-              variant="filled"
-              style={{
-                fontSize: "1rem",
-                alignItems: "center",
-              }}
-            >
-              {alert}
-            </Alert>
-          </Snackbar>
-        )}
       </div>
+      {alert && (
+        <Snackbar
+          open={alert.length > 0}
+          anchorOrigin={{ vertical: "top", horizontal: "center" }}
+          autoHideDuration={3000}
+          onClose={handleMessage}
+        >
+          <Alert
+            severity="warning"
+            variant="filled"
+            style={{
+              fontSize: "1rem",
+              alignItems: "center",
+            }}
+          >
+            {alert}
+          </Alert>
+        </Snackbar>
+      )}
       <Divider className={classes.divider} />
       {!lists ? (
         <span className={classes.skeletons}>

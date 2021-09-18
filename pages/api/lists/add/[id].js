@@ -14,9 +14,9 @@ export default async function handler(req, res) {
   await dbConnect();
 
   switch (method) {
-    case "PUT":
+    case "POST":
       try {
-        var movie = await getDetails(req.body);
+        var movie = req.body.locale ? req.body : await getDetails(req.body);
         var { _doc: list } = await Watchlist.findById(id);
         var { movies } = list;
 
@@ -34,7 +34,25 @@ export default async function handler(req, res) {
             movies: [...movies.filter((mov) => mov.id !== movie.id)],
           };
         } else {
-          list = { ...list, movies: [...movies, movie] };
+          // If adding to the "Watched" list, change movie to "watched" on all lists
+          if (/^Watched$/i.test(list.title)) {
+            list = {
+              ...list,
+              movies: [...movies, { ...movie, watched: "true" }],
+            };
+            await Watchlist.updateMany(
+              {
+                user: session?.user,
+                "movies.id": movie.id,
+              },
+              { "movies.$.watched": "true" },
+              {
+                timestamps: false,
+              }
+            );
+          } else {
+            list = { ...list, movies: [...movies, movie] };
+          }
         }
 
         var updatedList = await Watchlist.findByIdAndUpdate(id, list, {

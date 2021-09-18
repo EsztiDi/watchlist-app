@@ -403,6 +403,7 @@ export default function weeklyHTML(lists) {
                             tabindex="-1"
                             target="_blank"
                             ><img
+                              alt="Logo"
                               align="center"
                               border="0"
                               class="center fixedwidth col_cont"
@@ -478,6 +479,7 @@ export default function weeklyHTML(lists) {
                           tabindex="-1"
                           target="_blank"
                           ><img
+                            alt=""
                             align="center"
                             border="0"
                             class="center autowidth"
@@ -1016,6 +1018,7 @@ export default function weeklyHTML(lists) {
                       tabindex="-1"
                       target="_blank"
                       ><img
+                        alt="Poster"
                         align="right"
                         border="0"
                         class="right fixedwidth"
@@ -1683,7 +1686,7 @@ export default function weeklyHTML(lists) {
                     in your account or
                     <strong
                       ><a
-                        href="https://mywatchlists.watch/email-toggle.jpg"
+                        href="https://mywatchlists.watch/emails-toggle.jpg"
                         rel="noopener"
                         style="
                           text-decoration: underline;
@@ -2029,6 +2032,7 @@ export default function weeklyHTML(lists) {
                         >
                           <a href="https://www.designedwithbee.com/"
                             ><img
+                              alt=""
                               align="center"
                               alt="Designed with BEE"
                               class="icon"

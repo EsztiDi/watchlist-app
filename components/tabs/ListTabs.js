@@ -94,12 +94,11 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     color: theme.palette.primary.light,
     "& > *": {
-      height: "1.8rem",
+      lineHeight: 1,
     },
   },
   arrow: {
     borderRadius: "50%",
-    fontSize: "1.8rem",
     "&:hover": {
       color: theme.palette.primary.main,
       backgroundColor: "rgba(0, 0, 0, 0.04)",
@@ -221,7 +220,7 @@ export default function ListTabs({
                     <>
                       {updating ? (
                         <CircularProgress
-                          size={"1.3rem"}
+                          size={matches ? "1.2rem" : "1.5rem"}
                           thickness={5}
                           className={classes.updating}
                         />
@@ -230,7 +229,11 @@ export default function ListTabs({
                           <EditRoundedIcon
                             aria-label="edit title"
                             className={classes.edit}
-                            fontSize={"medium"}
+                            style={
+                              matches
+                                ? { fontSize: "1.5rem" }
+                                : { fontSize: "1.8rem" }
+                            }
                             onClick={openEditTitle}
                           />
                         </span>
@@ -248,7 +251,11 @@ export default function ListTabs({
                             <KeyboardArrowUpRoundedIcon
                               aria-label="move list up"
                               className={classes.arrow}
-                              fontSize={matches ? "medium" : "large"}
+                              style={
+                                matches
+                                  ? { fontSize: "1.5rem" }
+                                  : { fontSize: "1.8rem" }
+                              }
                               onClick={() => moveListUp(index)}
                             />
                           </span>
@@ -258,7 +265,11 @@ export default function ListTabs({
                             <KeyboardArrowDownRoundedIcon
                               aria-label="move list down"
                               className={classes.arrow}
-                              fontSize={matches ? "medium" : "large"}
+                              style={
+                                matches
+                                  ? { fontSize: "1.5rem" }
+                                  : { fontSize: "1.8rem" }
+                              }
                               onClick={() => moveListDown(index)}
                             />
                           </span>

@@ -33,6 +33,7 @@ export default async function getDetails(movie) {
         overview: ep.overview,
         still_path: ep.still_path,
         season_number: ep.season_number,
+        watched: "false",
       };
     });
 
@@ -56,6 +57,7 @@ export default async function getDetails(movie) {
           ? {
               ...movie,
               locale: locale,
+              watched: movie.watched || "false",
               poster_path: data?.poster_path,
               backdrop_path: data?.backdrop_path,
               title: data?.name,
@@ -86,6 +88,7 @@ export default async function getDetails(movie) {
           : {
               ...movie,
               locale: locale,
+              watched: movie.watched || "false",
               poster_path: data?.poster_path,
               backdrop_path: data?.backdrop_path,
               title: data?.title,

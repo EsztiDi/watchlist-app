@@ -24,6 +24,7 @@ const unloadAlert = (ev) => {
 };
 
 export default function ListsMenu({
+  movie,
   movieID,
   media_type,
   setMessage,
@@ -31,6 +32,7 @@ export default function ListsMenu({
 }) {
   const classes = useStyles();
   const contentType = "application/json";
+  movieID = movieID ? movieID : movie.id;
   const [updating, setUpdating] = React.useState(false);
   const [added, setAdded] = React.useState(false);
   const [value, setValue] = React.useState("");
@@ -53,12 +55,12 @@ export default function ListsMenu({
 
     try {
       const res = await fetch(`/api/lists/add/${id}`, {
-        method: "PUT",
+        method: "POST",
         headers: {
           Accept: contentType,
           "Content-Type": contentType,
         },
-        body: JSON.stringify({ id: movieID, media_type }),
+        body: JSON.stringify(movie ? movie : { id: movieID, media_type }),
       });
 
       if (!res.ok) {
