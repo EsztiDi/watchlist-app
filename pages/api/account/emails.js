@@ -21,7 +21,7 @@ export default async function handler(req, res) {
           {
             timestamps: false,
           }
-        );
+        ).catch((err) => console.error(err));
 
         if (!update) {
           console.error(
@@ -34,7 +34,7 @@ export default async function handler(req, res) {
 
         const deletedEmails = await Releasesemail.deleteMany({
           email: session?.user?.email,
-        });
+        }).catch((err) => console.error(err));
 
         if (!deletedEmails) {
           console.error(

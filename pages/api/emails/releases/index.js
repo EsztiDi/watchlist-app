@@ -23,7 +23,9 @@ export default async function handler(req, res) {
       break;
     case "POST":
       try {
-        const email = await Releasesemail.create(req.body);
+        const email = await Releasesemail.create(req.body).catch((err) =>
+          console.error(err)
+        );
         res.status(201).json({ success: true, data: email });
       } catch (err) {
         console.error(`Couldn't create releasesemail - ${JSON.stringify(err)}`);
@@ -32,7 +34,9 @@ export default async function handler(req, res) {
       break;
     case "DELETE":
       try {
-        const deletedEmail = await Releasesemail.deleteOne(req.body);
+        const deletedEmail = await Releasesemail.deleteOne(req.body).catch(
+          (err) => console.error(err)
+        );
         if (!deletedEmail) {
           console.error(`Email - ${req.body} - not found`);
           return res.status(400).json({ success: false });

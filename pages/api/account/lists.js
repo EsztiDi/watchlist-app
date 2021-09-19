@@ -20,7 +20,7 @@ export default async function handler(req, res) {
           {
             timestamps: false,
           }
-        );
+        ).catch((err) => console.error(err));
 
         if (!update) {
           console.error(
@@ -48,7 +48,7 @@ export default async function handler(req, res) {
       try {
         const deletedLists = await Watchlist.deleteMany({
           user: session?.user,
-        });
+        }).catch((err) => console.error(err));
         if (!deletedLists) {
           console.error(
             `Couldn't perform deleteMany() in MongoDB - user: ${JSON.stringify(

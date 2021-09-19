@@ -62,7 +62,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function EpisodeCard({ episode }) {
+export default function EpisodeCard({ episode, movieID }) {
   const classes = useStyles();
   const matches = useMediaQuery("(max-width:768px)");
   const matches2 = useMediaQuery("(max-width:500px)");
@@ -96,7 +96,7 @@ export default function EpisodeCard({ episode }) {
           }
           image={image}
         >
-          <WatchedButton movie={episode} episode={true} />
+          <WatchedButton movie={episode} movieID={movieID} episode={true} />
         </CardMedia>
         <CardContent
           className={matches2 ? classes.contentMobile : classes.content}

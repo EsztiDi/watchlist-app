@@ -1,14 +1,12 @@
 import {
   EmailShareButton,
   FacebookShareButton,
-  FacebookMessengerShareButton,
   LinkedinShareButton,
   RedditShareButton,
   TwitterShareButton,
   WhatsappShareButton,
   EmailIcon,
   FacebookIcon,
-  FacebookMessengerIcon,
   LinkedinIcon,
   RedditIcon,
   TwitterIcon,
@@ -89,13 +87,6 @@ export default function Share({ listID, uid, title, open, onClose }) {
   React.useEffect(() => {
     setShareLink(`${window.location.origin}/list/${listID}`);
     setEditable("false");
-
-    window.fbAsyncInit = function () {
-      FB.init({
-        appId: "827802261304460",
-        autoLogAppEvents: true,
-      });
-    };
   }, [listID]);
 
   React.useEffect(() => {
@@ -119,23 +110,6 @@ export default function Share({ listID, uid, title, open, onClose }) {
       link.blur();
       setCopied(false);
     }, 2000);
-  };
-
-  const handleMessenger = () => {
-    FB.api(
-      "https://graph.facebook.com/",
-      "post",
-      {
-        id: shareLink,
-        scrape: true,
-      },
-      function (res) {
-        FB.ui({
-          method: "send",
-          link: shareLink,
-        });
-      }
-    );
   };
 
   return (
@@ -162,10 +136,6 @@ export default function Share({ listID, uid, title, open, onClose }) {
               <FacebookIcon size={iconSize} round />
               <Typography variant={textVariant}>Facebook</Typography>
             </FacebookShareButton>
-            <FacebookMessengerShareButton onClick={handleMessenger}>
-              <FacebookMessengerIcon size={iconSize} round />
-              <Typography variant={textVariant}>Messenger</Typography>
-            </FacebookMessengerShareButton>
             <WhatsappShareButton url={shareLink}>
               <WhatsappIcon size={iconSize} round />
               <Typography variant={textVariant}>WhatsApp</Typography>

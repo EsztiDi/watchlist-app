@@ -26,12 +26,6 @@ export default class MyDocument extends Document {
           />
         </Head>
         <body>
-          <script
-            async
-            defer
-            crossOrigin="anonymous"
-            src="https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v12.0"
-          ></script>
           <Main />
           <NextScript />
         </body>

@@ -38,7 +38,7 @@ export default async function handler(req, res) {
               position: 0,
             },
           },
-        ]);
+        ]).catch((err) => console.error(err));
 
         res.status(200).json({
           success: true,

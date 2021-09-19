@@ -42,7 +42,9 @@ export default async function handler(req, res) {
           req.body.user = session?.user;
         }
 
-        const list = await Watchlist.create(req.body);
+        const list = await Watchlist.create(req.body).catch((err) =>
+          console.error(err)
+        );
         res.status(201).json({ success: true, data: list });
       } catch (err) {
         console.error(

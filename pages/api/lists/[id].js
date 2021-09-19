@@ -55,7 +55,7 @@ export default async function handler(req, res) {
             new: true,
             runValidators: true,
             timestamps: false,
-          });
+          }).catch((err) => console.error(err));
           // Adjacent list, id depends on the direction
           list2 = await Watchlist.findByIdAndUpdate(
             position < 0 ? lists[index - 1].id : lists[index + 1].id,
@@ -65,7 +65,7 @@ export default async function handler(req, res) {
               runValidators: true,
               timestamps: false,
             }
-          );
+          ).catch((err) => console.error(err));
 
           if (!list2) {
             console.error(
@@ -79,7 +79,7 @@ export default async function handler(req, res) {
           list = await Watchlist.findByIdAndUpdate(id, req.body, {
             new: true,
             runValidators: true,
-          });
+          }).catch((err) => console.error(err));
         }
         if (!list) {
           console.error(
@@ -100,7 +100,9 @@ export default async function handler(req, res) {
 
     case "DELETE":
       try {
-        const deletedList = await Watchlist.findByIdAndDelete(id);
+        const deletedList = await Watchlist.findByIdAndDelete(id).catch((err) =>
+          console.error(err)
+        );
         if (!deletedList) {
           console.error(
             `List ${id} not found - user: ${JSON.stringify(session?.user)}`

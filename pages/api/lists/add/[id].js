@@ -3,6 +3,7 @@ import { getSession } from "next-auth/client";
 import dbConnect from "../../../../utils/dbConnect";
 import Watchlist from "../../../../models/Watchlist";
 import getDetails from "../../../../utils/getDetails";
+import setWatched from "../../../../utils/setWatched";
 
 export default async function handler(req, res) {
   const {
@@ -34,31 +35,13 @@ export default async function handler(req, res) {
             movies: [...movies.filter((mov) => mov.id !== movie.id)],
           };
         } else {
-          // If adding to the "Watched" list, change movie to "watched" on all lists
-          if (/^Watched$/i.test(list.title)) {
-            list = {
-              ...list,
-              movies: [...movies, { ...movie, watched: "true" }],
-            };
-            await Watchlist.updateMany(
-              {
-                user: session?.user,
-                "movies.id": movie.id,
-              },
-              { "movies.$.watched": "true" },
-              {
-                timestamps: false,
-              }
-            );
-          } else {
-            list = { ...list, movies: [...movies, movie] };
-          }
+          list = { ...list, movies: [...movies, movie] };
         }
 
         var updatedList = await Watchlist.findByIdAndUpdate(id, list, {
           new: true,
           runValidators: true,
-        });
+        }).catch((err) => console.error(err));
 
         if (!updatedList) {
           console.error(
@@ -66,6 +49,13 @@ export default async function handler(req, res) {
           );
           return res.status(400).json({ success: false });
         }
+
+        // If adding to the "Watched" list, change movie to "watched" on all lists
+        if (/^Watched$/i.test(list.title)) {
+          var tv = movie.seasons?.length > 0;
+          await setWatched(session?.user, movie.id, "true", tv);
+        }
+
         res.status(200).json({ success: true, data: updatedList });
       } catch (err) {
         console.error(

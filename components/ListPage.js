@@ -13,6 +13,8 @@ import Typography from "@material-ui/core/Typography";
 import IconButton from "@material-ui/core/IconButton";
 import StarBorderRoundedIcon from "@material-ui/icons/StarBorderRounded";
 import StarRoundedIcon from "@material-ui/icons/StarRounded";
+import Snackbar from "@material-ui/core/Snackbar";
+import Alert from "@material-ui/lab/Alert";
 import FormatListBulletedRoundedIcon from "@material-ui/icons/FormatListBulletedRounded";
 import TodayRoundedIcon from "@material-ui/icons/TodayRounded";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
@@ -71,6 +73,7 @@ const useStyles = makeStyles((theme) => ({
   star: {
     fontSize: "2.1rem",
     color: theme.palette.primary.light,
+    opacity: 0.75,
     "&:hover": {
       color: theme.palette.primary.main,
     },
@@ -101,6 +104,7 @@ export default function ListPage({
   var movies = (list) => list?.movies?.sort((a, b) => a.position - b.position);
   const [updating, setUpdating] = React.useState(false);
   const [backdrop, setBackdrop] = React.useState(image?.url || "");
+  const [alert, setAlert] = React.useState("");
 
   const { data: list, error } = useSWR(id[0] ? `/api/lists/${id[0]}` : null, {
     refreshInterval: 2000,
@@ -139,6 +143,10 @@ export default function ListPage({
     // eslint-disable-next-line
   }, [error]);
 
+  const handleMessage = () => {
+    setAlert("");
+  };
+
   const saveList = async (list) => {
     try {
       const res = await fetch("/api/lists/saved", {
@@ -156,6 +164,7 @@ export default function ListPage({
 
       mutate("/api/lists/saved");
       setUpdating(false);
+      setAlert("List saved!");
     } catch (error) {
       setMessage(
         `${JSON.stringify(
@@ -183,6 +192,7 @@ export default function ListPage({
 
       mutate("/api/lists/saved");
       setUpdating(false);
+      setAlert("List removed");
     } catch (error) {
       setMessage(`${JSON.stringify(error.message)} - Failed to delete list.`);
       setUpdating(false);
@@ -253,6 +263,25 @@ export default function ListPage({
             <div className={classes.backdrop} data-background="backdrop">
               <Image layout="fill" objectFit="cover" src={backdrop} alt="" />
             </div>
+          )}
+          {alert && (
+            <Snackbar
+              open={alert.length > 0}
+              anchorOrigin={{ vertical: "top", horizontal: "center" }}
+              autoHideDuration={3000}
+              onClose={handleMessage}
+            >
+              <Alert
+                severity="success"
+                variant="standard"
+                style={{
+                  fontSize: "1rem",
+                  alignItems: "center",
+                }}
+              >
+                {alert}
+              </Alert>
+            </Snackbar>
           )}
           <Paper
             elevation={4}

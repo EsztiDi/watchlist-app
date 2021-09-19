@@ -27,8 +27,13 @@ const unloadAlert = (ev) => {
   ev.returnValue = "";
 };
 
-export default function WatchedButton({ movie, episode = false }) {
-  const { id: movieID, watched } = movie;
+export default function WatchedButton({
+  movie,
+  movieID,
+  season = false,
+  episode = false,
+}) {
+  const { id, season_number, watched } = movie;
 
   const classes = useStyles();
   const contentType = "application/json";
@@ -36,10 +41,10 @@ export default function WatchedButton({ movie, episode = false }) {
   const isMounted = React.useRef(null);
 
   const router = useRouter();
-  var { id } = router.query;
-  if (Array.isArray(id)) id = id[0];
+  var { id: listID } = router.query;
+  if (Array.isArray(listID)) listID = listID[0];
 
-  const { data: list, error } = useSWR(id ? `/api/lists/${id}` : null);
+  const { data: list, error } = useSWR(listID ? `/api/lists/${listID}` : null);
   if (error) console.error(error);
 
   const [session, loading] = useSession();
@@ -60,15 +65,15 @@ export default function WatchedButton({ movie, episode = false }) {
 
   const setMovieWatched = async () => {
     try {
-      const res = await fetch(`/api/lists/watched/${id}`, {
+      const res = await fetch(`/api/lists/watched`, {
         method: "POST",
         headers: {
           Accept: contentType,
           "Content-Type": contentType,
         },
         body: JSON.stringify({
-          movieID,
           watched: watched === "false" ? "true" : "false",
+          movieID: id,
           movie,
         }),
       });
@@ -77,7 +82,34 @@ export default function WatchedButton({ movie, episode = false }) {
         throw new Error(res.status);
       }
 
-      await mutate(`/api/lists/${id}`);
+      await mutate(`/api/lists/${listID}`);
+      if (isMounted.current) setUpdating(false);
+    } catch (error) {
+      console.error(error);
+      setUpdating(false);
+    }
+  };
+
+  const setSeasonWatched = async () => {
+    try {
+      const res = await fetch(`/api/lists/watched/season`, {
+        method: "POST",
+        headers: {
+          Accept: contentType,
+          "Content-Type": contentType,
+        },
+        body: JSON.stringify({
+          watched: watched === "false" ? "true" : "false",
+          movieID,
+          season_number,
+        }),
+      });
+
+      if (!res.ok) {
+        throw new Error(res.status);
+      }
+
+      await mutate(`/api/lists/${listID}`);
       if (isMounted.current) setUpdating(false);
     } catch (error) {
       console.error(error);
@@ -87,15 +119,17 @@ export default function WatchedButton({ movie, episode = false }) {
 
   const setEpisodeWatched = async () => {
     try {
-      const res = await fetch(`/api/lists/watched/${id}`, {
+      const res = await fetch(`/api/lists/watched`, {
         method: "PUT",
         headers: {
           Accept: contentType,
           "Content-Type": contentType,
         },
         body: JSON.stringify({
-          episodeID: movieID,
           watched: watched === "false" ? "true" : "false",
+          movieID,
+          episodeID: id,
+          season_number,
         }),
       });
 
@@ -103,7 +137,7 @@ export default function WatchedButton({ movie, episode = false }) {
         throw new Error(res.status);
       }
 
-      await mutate(`/api/lists/${id}`);
+      await mutate(`/api/lists/${listID}`);
       if (isMounted.current) setUpdating(false);
     } catch (error) {
       console.error(error);
@@ -113,7 +147,11 @@ export default function WatchedButton({ movie, episode = false }) {
 
   const handleClick = () => {
     setUpdating(true);
-    episode ? setEpisodeWatched() : setMovieWatched();
+    season
+      ? setSeasonWatched()
+      : episode
+      ? setEpisodeWatched()
+      : setMovieWatched();
   };
 
   if (loading) return null;

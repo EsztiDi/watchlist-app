@@ -33,9 +33,12 @@ export default async function getDetails(movie) {
         overview: ep.overview,
         still_path: ep.still_path,
         season_number: ep.season_number,
-        watched: "false",
+        watched: ep.watched || "false",
       };
     });
+  var getSeasonWatched = (arr, num) => {
+    return arr?.filter((season) => season.season_number === num)[0]?.watched;
+  };
 
   var baseURL = "https://api.themoviedb.org/3";
   var api_key = process.env.TMDB_API_KEY;
@@ -120,6 +123,9 @@ export default async function getDetails(movie) {
               seasons.push({
                 episodes: getEpisodes(data) || [],
                 season_number: data?.season_number,
+                watched:
+                  getSeasonWatched(movie.seasons, data?.season_number) ||
+                  "false",
               });
             })
             .catch((err) => {

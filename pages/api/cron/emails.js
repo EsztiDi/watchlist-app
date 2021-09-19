@@ -47,7 +47,7 @@ export default async function handler(req, res) {
             if (lists.length === 0) {
               const deletedEmails = await Releasesemail.deleteMany({
                 email: email,
-              });
+              }).catch((err) => console.error(err));
               if (!deletedEmails) {
                 console.error(
                   `Couldn't perform deleteMany() in MongoDB - ${email}`
@@ -99,7 +99,8 @@ export default async function handler(req, res) {
                   recipient = [new Recipient(email, user[0].name)];
                   response.data.recipients.push(email);
                 }
-              });
+              })
+              .catch((err) => console.error(err));
 
             if (recipient.length > 0) {
               const html = weeklyHTML(upcoming);

@@ -25,7 +25,9 @@ export default async function handler(req, res) {
     case "POST":
       try {
         req.body.user = session?.user;
-        const list = await Savedlist.create(req.body);
+        const list = await Savedlist.create(req.body).catch((err) =>
+          console.error(err)
+        );
         res.status(201).json({ success: true, data: list });
       } catch (err) {
         console.error(
@@ -40,7 +42,7 @@ export default async function handler(req, res) {
       try {
         const deletedLists = await Savedlist.deleteMany({
           user: session?.user,
-        });
+        }).catch((err) => console.error(err));
         if (!deletedLists) {
           console.error(
             `Couldn't perform deleteMany() in MongoDB - user: ${JSON.stringify(
@@ -63,7 +65,7 @@ export default async function handler(req, res) {
       try {
         const deletedList = await Savedlist.findOneAndDelete({
           listid: req.body.id,
-        });
+        }).catch((err) => console.error(err));
         if (!deletedList) {
           console.error(
             `Savedlist ${req.body.id} not found - user: ${JSON.stringify(

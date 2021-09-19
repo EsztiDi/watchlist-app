@@ -206,7 +206,7 @@ export default function ListsCarousel({ setMessage }) {
     }
   };
   const handleMessage = () => {
-    setMessage("");
+    setAlert("");
   };
 
   return (

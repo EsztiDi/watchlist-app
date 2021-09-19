@@ -23,13 +23,7 @@ const unloadAlert = (ev) => {
   ev.returnValue = "";
 };
 
-export default function ListsMenu({
-  movie,
-  movieID,
-  media_type,
-  setMessage,
-  handleMenuClose,
-}) {
+export default function ListsMenu({ movie, movieID, media_type, setMessage }) {
   const classes = useStyles();
   const contentType = "application/json";
   movieID = movieID ? movieID : movie.id;
@@ -75,11 +69,6 @@ export default function ListsMenu({
 
       if (isMounted.current && success) setAdded(true);
       if (isMounted.current) setUpdating(false);
-      if (handleMenuClose && isMounted.current) {
-        setTimeout(() => {
-          handleMenuClose(ev);
-        }, 150);
-      }
     } catch (error) {
       window.removeEventListener("beforeunload", unloadAlert);
       setMessage(

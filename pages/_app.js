@@ -187,7 +187,7 @@ export default function MyApp({ Component, pageProps }) {
         <link rel="canonical" href={process.env.BASE_URL} key="canonical" />
         <meta
           name="description"
-          content="Create, share and edit watchlists for films and TV shows with anyone"
+          content="Create, share and edit watchlists for films and TV shows to plan movie nights or to keep track of your shows 🎬 + 🍕"
         />
         <title>My Watchlists</title>
       </Head>

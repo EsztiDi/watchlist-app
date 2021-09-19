@@ -92,13 +92,14 @@ const useStyles = makeStyles((theme) => ({
       zIndex: "1",
     },
   },
-  titleMobile: {
-    textAlign: "center",
-    display: "flex",
-    alignItems: "center",
-    marginBottom: theme.spacing(0.5),
-    "& > span": {
-      flexBasis: "90%",
+  new: {
+    color: theme.palette.primary.light,
+    cursor: "pointer",
+    textTransform: "uppercase",
+    fontWeight: "bold",
+    transition: "color 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms",
+    "&:hover": {
+      color: theme.palette.primary.dark,
     },
   },
   media: {
@@ -203,6 +204,8 @@ const useStyles = makeStyles((theme) => ({
 
 export default function MovieCard({
   movie,
+  listID,
+  listTitle,
   index,
   moviesLength,
   deleteMovie,
@@ -222,6 +225,7 @@ export default function MovieCard({
     details,
     seasons,
     position,
+    watched,
   } = movie;
 
   if (details) {
@@ -243,72 +247,29 @@ export default function MovieCard({
     ? `https://image.tmdb.org/t/p/w200${poster_path}`
     : "/movieIcon.png";
 
+  var newEpisode = /^Watched$/i.test(listTitle) && watched === "false";
+
   const classes = useStyles();
   const matches = useMediaQuery("(max-width:768px)");
   const matches2 = useMediaQuery("(max-width:500px)");
+  const contentType = "application/json";
+  const isMounted = React.useRef(null);
 
   const [date, setDate] = React.useState(release_date);
   const [loc, setLoc] = React.useState(locale);
+
+  // For Seasons modal
+  const [seasonsOpen, setSeasonsOpen] = React.useState(false);
+
+  const handleSeasonsOpen = () => {
+    setSeasonsOpen((prev) => !prev);
+  };
+
+  // For directors and cast "more" buttons
   const [overflows1, setOverflows1] = React.useState(false);
   const [overflows2, setOverflows2] = React.useState(false);
   const [visible1, setVisible1] = React.useState(false);
   const [visible2, setVisible2] = React.useState(false);
-
-  React.useEffect(() => {
-    var isMounted = true;
-
-    const getDate = async () => {
-      var { release_date, locale } = await getLocalDate(movie);
-      if (release_date) {
-        if (isMounted) setDate(release_date);
-        if (isMounted) setLoc(locale);
-      }
-    };
-    getDate();
-
-    return () => {
-      isMounted = false;
-    };
-    // eslint-disable-next-line
-  }, []);
-
-  React.useEffect(() => {
-    var isMounted = true;
-
-    var list1 = document.getElementById(`${id}-directors`);
-    var list2 = document.getElementById(`${id}-cast`);
-    if (isMounted) setOverflows1(list1.offsetWidth < list1.scrollWidth);
-    if (isMounted) setOverflows2(list2.offsetWidth < list2.scrollWidth);
-
-    return () => {
-      isMounted = false;
-    };
-  }, [id, matches, matches2]);
-
-  const handleMore1 = () => {
-    setOverflows1(false);
-    setVisible1(true);
-    var list1 = document.getElementById(`${id}-directors`);
-    list1.style.whiteSpace = "break-spaces";
-  };
-  const handleMore2 = () => {
-    setOverflows2(false);
-    setVisible2(true);
-    var list2 = document.getElementById(`${id}-cast`);
-    list2.style.whiteSpace = "break-spaces";
-  };
-  const handleLess1 = () => {
-    setOverflows1(true);
-    setVisible1(false);
-    var list1 = document.getElementById(`${id}-directors`);
-    list1.style.whiteSpace = "nowrap";
-  };
-  const handleLess2 = () => {
-    setOverflows2(true);
-    setVisible2(false);
-    var list2 = document.getElementById(`${id}-cast`);
-    list2.style.whiteSpace = "nowrap";
-  };
 
   // For ListsMenu
   const [session, loading] = useSession();
@@ -343,11 +304,110 @@ export default function MovieCard({
     }
   };
 
-  // For Seasons modal
-  const [seasonsOpen, setSeasonsOpen] = React.useState(false);
+  React.useEffect(() => {
+    const details = document.querySelectorAll("details");
+    details.forEach((detail) => {
+      detail.removeAttribute("open");
+    });
+    setMenuOpen(false);
+    setSeasonsOpen(false);
+    if (visible1) handleLess1();
+    if (visible2) handleLess2();
+    // eslint-disable-next-line
+  }, [id, listID]);
 
-  const handleSeasonsOpen = () => {
-    setSeasonsOpen((prev) => !prev);
+  React.useEffect(() => {
+    isMounted.current = true;
+    const checkProps = async () => {
+      var { release_date, locale } = await getLocalDate(movie);
+      if (release_date) {
+        if (isMounted.current) setDate(release_date);
+        if (isMounted.current) setLoc(locale);
+      }
+
+      try {
+        const res = await fetch(`/api/lists/watched/check`, {
+          method: "POST",
+          headers: {
+            Accept: contentType,
+            "Content-Type": contentType,
+          },
+          body: JSON.stringify({
+            id,
+            season_number,
+          }),
+        });
+
+        if (!res.ok) {
+          throw new Error(res.status);
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    checkProps();
+    return () => {
+      isMounted.current = false;
+    };
+    // eslint-disable-next-line
+  }, []);
+
+  React.useEffect(() => {
+    var list1 = document.getElementById(`${id}-directors`);
+    var list2 = document.getElementById(`${id}-cast`);
+    if (isMounted.current) setOverflows1(list1.offsetWidth < list1.scrollWidth);
+    if (isMounted.current) setOverflows2(list2.offsetWidth < list2.scrollWidth);
+  }, [id, listID, matches, matches2]);
+
+  const handleMore1 = () => {
+    setOverflows1(false);
+    setVisible1(true);
+    var list1 = document.getElementById(`${id}-directors`);
+    list1.style.whiteSpace = "break-spaces";
+  };
+  const handleMore2 = () => {
+    setOverflows2(false);
+    setVisible2(true);
+    var list2 = document.getElementById(`${id}-cast`);
+    list2.style.whiteSpace = "break-spaces";
+  };
+  const handleLess1 = () => {
+    setOverflows1(true);
+    setVisible1(false);
+    var list1 = document.getElementById(`${id}-directors`);
+    if (list1) list1.style.whiteSpace = "nowrap";
+  };
+  const handleLess2 = () => {
+    setOverflows2(true);
+    setVisible2(false);
+    var list2 = document.getElementById(`${id}-cast`);
+    if (list2) list2.style.whiteSpace = "nowrap";
+  };
+
+  const handleDelete = async (idx) => {
+    if (/^Watched$/i.test(listTitle)) {
+      try {
+        const res = await fetch(`/api/lists/watched`, {
+          method: "POST",
+          headers: {
+            Accept: contentType,
+            "Content-Type": contentType,
+          },
+          body: JSON.stringify({
+            watched: "false",
+            movieID: id,
+            movie,
+          }),
+        });
+
+        if (!res.ok) {
+          throw new Error(res.status);
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    }
+    deleteMovie(idx);
   };
 
   return (
@@ -377,6 +437,19 @@ export default function MovieCard({
                 : { fontSize: "1.25rem" }
             }
           >
+            {newEpisode && (
+              <Typography
+                variant="caption"
+                component="div"
+                onClick={handleSeasonsOpen}
+                className={classes.new}
+                style={{
+                  fontSize: matches2 ? "0.65rem" : "0.75rem",
+                }}
+              >
+                New
+              </Typography>
+            )}
             <span>{title || "Untitled"}</span>
             {(!matches2 || !deleteMovie) && (
               <>
@@ -420,7 +493,6 @@ export default function MovieCard({
                               <ListsMenu
                                 movie={movie}
                                 setMessage={setMessage}
-                                handleMenuClose={handleMenuClose}
                               />
                             )}
                           </MenuList>
@@ -463,6 +535,7 @@ export default function MovieCard({
                   onClose={handleSeasonsOpen}
                   seasons={seasons}
                   lastSeason={season_number}
+                  movieID={id}
                 />
               </>
             )}
@@ -635,10 +708,8 @@ export default function MovieCard({
                           >
                             {session && (
                               <ListsMenu
-                                movieID={id}
-                                media_type={media_type}
+                                movie={movie}
                                 setMessage={setMessage}
-                                handleMenuClose={handleMenuClose}
                               />
                             )}
                           </MenuList>
@@ -679,7 +750,7 @@ export default function MovieCard({
                 title="Remove"
                 className={classes.button}
                 disabled={updating}
-                onClick={() => deleteMovie(index)}
+                onClick={() => handleDelete(index)}
               >
                 <HighlightOffRoundedIcon className={classes.delete} />
               </IconButton>
@@ -716,7 +787,7 @@ export default function MovieCard({
                 title="Remove"
                 className={classes.button}
                 disabled={updating}
-                onClick={() => deleteMovie(index)}
+                onClick={() => handleDelete(index)}
               >
                 <HighlightOffRoundedIcon className={classes.delete} />
               </IconButton>

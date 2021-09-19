@@ -11,6 +11,7 @@ import Box from "@material-ui/core/Box";
 import Typography from "@material-ui/core/Typography";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
 
+import WatchedButton from "./WatchedButton";
 import EpisodeCard from "./EpisodeCard";
 
 function a11yProps(index) {
@@ -57,6 +58,29 @@ const useStyles = makeStyles((theme) => ({
   tabpanel: {
     marginTop: "48px",
   },
+  activeTabpanel: {
+    position: "relative",
+    "& > button": {
+      top: "5px",
+      right: "10px",
+      "& svg": {
+        fontSize: "1.5rem",
+      },
+    },
+  },
+  activeTabpanelMobile: {
+    "& > button": {
+      position: "relative",
+      left: "100%",
+      transform: "translateX(-100%)",
+      "& svg": {
+        fontSize: "1.5rem",
+      },
+    },
+    "& > div:first-of-type": {
+      marginTop: theme.spacing(0.75),
+    },
+  },
   none: {
     width: "100%",
     textAlign: "center",
@@ -64,7 +88,13 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function Seasons({ open, onClose, seasons, lastSeason }) {
+export default function Seasons({
+  open,
+  onClose,
+  seasons,
+  lastSeason,
+  movieID,
+}) {
   const classes = useStyles();
   const matches = useMediaQuery("(max-width:1024px)");
 
@@ -140,6 +170,9 @@ export default function Seasons({ open, onClose, seasons, lastSeason }) {
                 .map((season, index) => (
                   <TabPanel
                     key={index}
+                    movieID={movieID}
+                    season_number={season.season_number}
+                    watched={season.watched}
                     seasonTab={seasonTab}
                     index={index}
                     className={classes.tabpanel}
@@ -160,7 +193,15 @@ function TabPanel(props) {
   const classes = useStyles();
   const matches2 = useMediaQuery("(max-width:768px)");
 
-  const { children, seasonTab, index, ...other } = props;
+  const {
+    children,
+    movieID,
+    season_number,
+    watched,
+    seasonTab,
+    index,
+    ...other
+  } = props;
 
   return (
     <div
@@ -171,12 +212,24 @@ function TabPanel(props) {
       {...other}
     >
       {seasonTab === index && (
-        <Box p={matches2 ? 1 : 3}>
+        <Box
+          p={matches2 ? 1 : 3}
+          className={
+            matches2 ? classes.activeTabpanelMobile : classes.activeTabpanel
+          }
+        >
+          {children && (
+            <WatchedButton
+              movieID={movieID}
+              movie={{ season_number, watched }}
+              season={true}
+            />
+          )}
           {children ? (
             children
               .sort((a, b) => a.episode_number - b.episode_number)
               .map((episode, index) => (
-                <EpisodeCard key={index} episode={episode} />
+                <EpisodeCard key={index} episode={episode} movieID={movieID} />
               ))
           ) : (
             <Typography variant="h6" className={classes.none}>
