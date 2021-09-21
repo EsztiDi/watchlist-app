@@ -8,11 +8,14 @@ export default async function checkEpisodes(user, movieID, season_number) {
   })
     .then(async (list) => {
       var movie = list?.movies?.filter((movie) => movie.id === movieID)[0];
-      var episodes = movie?.seasons
-        ?.filter((season) => season.season_number === season_number)[0]
-        ?.episodes?.filter((episode) => episode.watched === "false");
+      if (movie?.seasons?.length > 0) {
+        var season = movie?.seasons?.filter(
+          (season) => season.season_number === season_number
+        )[0];
+        var watched =
+          season?.episodes?.length > 0 &&
+          season?.episodes?.every((episode) => episode.watched === "true");
 
-      if (episodes) {
         var updatedLists3 = await Watchlist.updateMany(
           {
             user: user,
@@ -20,8 +23,7 @@ export default async function checkEpisodes(user, movieID, season_number) {
           },
           {
             $set: {
-              "movies.$[movie].seasons.$[season].watched":
-                episodes.length === 0 ? "true" : "false",
+              "movies.$[movie].seasons.$[season].watched": watched.toString(),
             },
           },
           {

@@ -1,8 +1,4 @@
-export default async function getLocalDate(
-  movie,
-  loc = null,
-  getDetails = false
-) {
+export default async function getLocalDate(movie, loc = null) {
   var release_date;
   var locale;
 
@@ -10,11 +6,11 @@ export default async function getLocalDate(
     await fetch(`${process.env.BASE_URL}/api/account/locale`)
       .then((res) => res.json())
       .then((res) => {
-        locale = getDetails && movie.locale ? movie.locale : res.data || "US";
+        locale = movie.locale ? movie.locale : res.data || "US";
       })
       .catch((err) => {
         console.error(err);
-        locale = getDetails && movie.locale ? movie.locale : "US";
+        locale = movie.locale ? movie.locale : "US";
       });
   } else {
     locale = loc;

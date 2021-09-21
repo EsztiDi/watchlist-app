@@ -325,24 +325,26 @@ export default function MovieCard({
         if (isMounted.current) setLoc(locale);
       }
 
-      try {
-        const res = await fetch(`/api/lists/watched/check`, {
-          method: "POST",
-          headers: {
-            Accept: contentType,
-            "Content-Type": contentType,
-          },
-          body: JSON.stringify({
-            id,
-            season_number,
-          }),
-        });
+      if (media_type === "tv") {
+        try {
+          const res = await fetch(`/api/lists/watched/check`, {
+            method: "POST",
+            headers: {
+              Accept: contentType,
+              "Content-Type": contentType,
+            },
+            body: JSON.stringify({
+              movieID: id,
+              season_number,
+            }),
+          });
 
-        if (!res.ok) {
-          throw new Error(res.status);
+          if (!res.ok) {
+            throw new Error(res.status);
+          }
+        } catch (error) {
+          console.error(error);
         }
-      } catch (error) {
-        console.error(error);
       }
     };
     checkProps();

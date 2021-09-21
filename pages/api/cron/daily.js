@@ -14,6 +14,45 @@ export default async function handler(req, res) {
 
         const updates = await Watchlist.find()
           .then(async (lists) => {
+            var movies = lists.reduce(
+              (list1, list2) => [...list1, ...list2.movies],
+              []
+            );
+            var uniques = movies
+              .filter((movie) => movie.media_type === "movie")
+              ?.filter(
+                (e, i) => movies.findIndex((a) => a["id"] === e["id"]) === i
+              );
+
+            if (uniques.length > 0) {
+              uniques.map(async (movie) => {
+                var updatedMovie = await getDetails(movie);
+
+                var updatedLists = await Watchlist.updateMany(
+                  {
+                    "movies.id": movie.id,
+                  },
+                  {
+                    "movies.$.poster_path": updatedMovie.poster_path,
+                    "movies.$.backdrop_path": updatedMovie.backdrop_path,
+                    "movies.$.title": updatedMovie.title,
+                    "movies.$.release_date": updatedMovie.release_date,
+                    "movies.$.year": updatedMovie.year,
+                    "movies.$.overview": updatedMovie.overview,
+                    "movies.$.details": updatedMovie.details,
+                  },
+                  {
+                    timestamps: false,
+                  }
+                ).catch((err) => console.error(err));
+
+                if (!updatedLists) {
+                  console.error(`Couldn't update movies with updateMany.`);
+                  return res.status(400).json({ success: false });
+                }
+              });
+            }
+
             return await Promise.all(
               lists.map(async (list) => {
                 if (list.movies.length > 0) {
@@ -21,7 +60,11 @@ export default async function handler(req, res) {
 
                   list.movies = await Promise.all(
                     list.movies.map(async (movie) => {
-                      return await getDetails(movie);
+                      if (movie.media_type === "tv") {
+                        return await getDetails(movie);
+                      } else {
+                        return movie;
+                      }
                     })
                   );
 
@@ -29,7 +72,6 @@ export default async function handler(req, res) {
                     return await list
                       .save()
                       .then(() => {
-                        console.log(`${list._id} - saved`);
                         return 1;
                       })
                       .catch((err) => {
@@ -57,12 +99,14 @@ export default async function handler(req, res) {
 
         var count = updates.reduce((a, b) => a + b, 0);
         console.log(
-          `Update done - ${count} ${count === 1 ? "list" : "lists"} updated ^^`
+          `Update done - At least ${count} ${
+            count === 1 ? "list" : "lists"
+          } updated ^^`
         );
 
         res.status(200).json({
           success: true,
-          data: `${count} ${count === 1 ? "list" : "lists"} updated`,
+          data: `At least ${count} ${count === 1 ? "list" : "lists"} updated`,
         });
       } catch (err) {
         console.error(

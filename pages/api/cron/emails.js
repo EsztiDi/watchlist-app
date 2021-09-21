@@ -69,7 +69,6 @@ export default async function handler(req, res) {
                   if (list.movies.length > 0) {
                     var movies = [];
                     list.movies.forEach((movie) => {
-                      console.log(movie.release_date, movie.title);
                       var release_date = new Date(
                         movie.release_date
                       ).setUTCHours(0, 0, 0, 0);

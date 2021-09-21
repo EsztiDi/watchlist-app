@@ -1,44 +1,51 @@
 import getLocalDate from "./getLocalDate";
 import formatData from "./formatData";
 
-export default async function getDetails(movie) {
-  var { release_date, locale } = await getLocalDate(movie, null, true);
+var getCrew = (obj) =>
+  obj?.credits?.crew
+    ?.filter(
+      (member) =>
+        member.job === "Director" ||
+        member.job === "Comic Book" ||
+        member.job === "Executive Producer"
+    )
+    ?.map((member) => {
+      return { job: member.job, name: member.name };
+    });
+var getCast = (obj) =>
+  obj?.credits?.cast?.map((member) => {
+    return { name: member.name };
+  });
+var getCreators = (obj) =>
+  obj?.created_by?.map((member) => {
+    return { name: member.name };
+  });
+var getEpisodes = (obj, seasons) =>
+  obj?.episodes?.map((ep) => {
+    let episode = seasons
+      ?.filter((season) => season.season_number === ep.season_number)[0]
+      ?.episodes?.filter((e) => e.episode_number === ep.episode_number)[0];
 
-  var getCrew = (obj) =>
-    obj?.credits?.crew
-      ?.filter(
-        (member) =>
-          member.job === "Director" ||
-          member.job === "Comic Book" ||
-          member.job === "Executive Producer"
-      )
-      ?.map((member) => {
-        return { job: member.job, name: member.name };
-      });
-  var getCast = (obj) =>
-    obj?.credits?.cast?.map((member) => {
-      return { name: member.name };
-    });
-  var getCreators = (obj) =>
-    obj?.created_by?.map((member) => {
-      return { name: member.name };
-    });
-  var getEpisodes = (obj) =>
-    obj?.episodes?.map((ep) => {
-      return {
-        id: ep.id,
-        episode_number: ep.episode_number,
-        air_date: ep.air_date,
-        name: ep.name,
-        overview: ep.overview,
-        still_path: ep.still_path,
-        season_number: ep.season_number,
-        watched: ep.watched || "false",
-      };
-    });
-  var getSeasonWatched = (arr, num) => {
-    return arr?.filter((season) => season.season_number === num)[0]?.watched;
-  };
+    return {
+      id: ep.id,
+      episode_number: ep.episode_number,
+      air_date: ep.air_date,
+      name: ep.name,
+      overview: ep.overview,
+      still_path: ep.still_path,
+      season_number: ep.season_number,
+      watched: episode?.watched || "false",
+    };
+  });
+var getSeasonWatched = (arr, num) => {
+  return arr?.filter((season) => season.season_number === num)[0]?.watched;
+};
+
+export default async function getDetails(movie) {
+  var { release_date, locale } = await getLocalDate(
+    movie,
+    movie.locale ? movie.locale : null
+  );
 
   var baseURL = "https://api.themoviedb.org/3";
   var api_key = process.env.TMDB_API_KEY;
@@ -121,7 +128,7 @@ export default async function getDetails(movie) {
             .then((res) => res.json())
             .then((data) => {
               seasons.push({
-                episodes: getEpisodes(data) || [],
+                episodes: getEpisodes(data, movie.seasons) || [],
                 season_number: data?.season_number,
                 watched:
                   getSeasonWatched(movie.seasons, data?.season_number) ||
@@ -140,6 +147,7 @@ export default async function getDetails(movie) {
                 );
             });
         }
+
         return formatData({ ...updatedMovie, seasons });
       } else {
         return formatData(updatedMovie);

@@ -9,36 +9,32 @@ export default async function checkSeasons(user, movieID) {
   })
     .then(async (list) => {
       var movie = list?.movies?.filter((movie) => movie.id === movieID)[0];
-      var seasons = movie?.seasons?.filter(
-        (season) => season.watched === "false"
-      );
-      // Checking if all episodes watched: "false"
-      var episodeCount;
-      if (seasons?.length !== 0) {
-        var watchedSeasons = movie?.seasons
-          ?.slice(0)
-          .filter((season) => season.watched === "true");
-        if (watchedSeasons?.length === 0) {
-          var episodes = movie?.seasons
-            ?.slice(0)
-            .map(
-              (season) =>
-                season?.episodes?.filter(
-                  (episode) => episode.watched === "true"
-                )?.length
-            );
-          episodeCount = episodes?.reduce((a, b) => a + b, 0);
-        }
-      }
+      if (movie?.seasons?.length > 0) {
+        var watched = movie?.seasons?.every(
+          (season) => season.watched === "true"
+        );
 
-      if (seasons) {
-        var watched = seasons.length === 0 ? "true" : "false";
-
-        if (watched === "true") {
-          await addToWatched(user, movieID, watched, movie); // Adding movie to the "Watched" list
-        }
-        if (episodeCount === 0) {
-          await addToWatched(user, movieID, "false", movie); // Removing movie from the "Watched" list
+        if (watched) {
+          await addToWatched(user, movieID, "true", movie); // Adding movie to the "Watched" list
+        } else {
+          // Checking if all episodes watched: "false"
+          var noneWatched = movie?.seasons?.every(
+            (season) => season.watched === "false"
+          );
+          if (noneWatched) {
+            var episodes = movie?.seasons?.slice(0).map((season) => {
+              return (
+                season?.episodes?.length > 0 &&
+                season?.episodes?.every(
+                  (episode) => episode.watched === "false"
+                )
+              );
+            });
+            var noEpisode = !episodes?.includes(false);
+            if (noEpisode) {
+              await addToWatched(user, movieID, "false", movie); // Removing movie from the "Watched" list
+            }
+          }
         }
 
         var updatedLists3 = await Watchlist.updateMany(
@@ -46,7 +42,7 @@ export default async function checkSeasons(user, movieID) {
             user: user,
             "movies.id": movieID,
           },
-          { "movies.$.watched": watched },
+          { "movies.$.watched": watched.toString() },
           {
             timestamps: false,
           }

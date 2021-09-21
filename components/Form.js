@@ -247,7 +247,7 @@ export default function Form({
     postData(form);
   };
 
-  const addMovie = (movie) => {
+  const addMovie = async (movie) => {
     if (movies.length > 0) {
       movie.position =
         movies.sort((a, b) => b.position - a.position)[0].position + 1;
@@ -281,6 +281,12 @@ export default function Form({
       });
       if (!newList) newMovie.current = true;
     }
+
+    // If adding to the "Watched" list, change movie to "watched" on all lists
+    //  if (/^Watched$/i.test(form.title)) {
+    //   var tv = movie.seasons?.length > 0;
+    //   await setWatched(session?.user, movie.id, "true", tv);
+    // }
   };
 
   const deleteMovie = (index) => {
