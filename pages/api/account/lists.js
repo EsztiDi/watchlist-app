@@ -1,6 +1,7 @@
 import { getSession } from "next-auth/client";
 import dbConnect from "../../../utils/dbConnect";
 import Watchlist from "../../../models/Watchlist";
+import Releasesemail from "../../../models/Releasesemail";
 
 export default async function handler(req, res) {
   const { method } = req;
@@ -11,6 +12,7 @@ export default async function handler(req, res) {
   switch (method) {
     case "GET":
       try {
+        // Sets all lists private
         const update = await Watchlist.updateMany(
           {
             user: session?.user,
@@ -36,9 +38,9 @@ export default async function handler(req, res) {
           .json({ success: update.n === update.nModified, data: update });
       } catch (err) {
         console.error(
-          `Couldn't perform updateMany() for public lists in MongoDB - user: ${
+          `Couldn't perform updateMany() for public lists in MongoDB - user: ${JSON.stringify(
             session?.user
-          } - ${JSON.stringify(err)}`
+          )} - ${JSON.stringify(err)}`
         );
         res.status(400).json({ success: false });
       }
@@ -46,26 +48,40 @@ export default async function handler(req, res) {
 
     case "DELETE":
       try {
+        // Deletes all lists
         const deletedLists = await Watchlist.deleteMany({
           user: session?.user,
         }).catch((err) => console.error(err));
         if (!deletedLists) {
           console.error(
-            `Couldn't perform deleteMany() in MongoDB - user: ${JSON.stringify(
+            `Couldn't perform deleteMany() for lists in MongoDB - user: ${JSON.stringify(
               session?.user
             )}`
           );
           return res.status(400).json({ success: false });
         }
+
+        const deletedEmails = await Releasesemail.deleteMany({
+          email: session?.user?.email,
+        }).catch((err) => console.error(err));
+
+        if (!deletedEmails) {
+          console.error(
+            `Couldn't perform deleteMany() for emails in MongoDB - user: ${JSON.stringify(
+              session?.user
+            )}`
+          );
+        }
+
         res.status(200).json({
           success: deletedLists.n === deletedLists.deletedCount,
           data: deletedLists,
         });
       } catch (err) {
         console.error(
-          `Couldn't delete lists - user: ${session?.user} - ${JSON.stringify(
-            err
-          )}`
+          `Couldn't delete lists - user: ${JSON.stringify(
+            session?.user
+          )} - ${JSON.stringify(err)}`
         );
         res.status(400).json({ success: false });
       }

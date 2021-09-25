@@ -112,22 +112,28 @@ export default function Navbar() {
     <div className={classes.navbar}>
       <AppBar color="default" position="fixed">
         <Toolbar className={classes.toolbar}>
-          <Link href="/lists">
-            <a className={classes.title}>
-              <Image
-                src="/logo.png"
-                alt=""
-                width={matches ? 40 : 48}
-                height={matches ? 40 : 48}
-              />
-              <Typography
-                variant="h4"
-                className={matches ? classes.textMobile : classes.text}
-              >
-                My Watchlists
-              </Typography>
-            </a>
-          </Link>
+          <div className={classes.title}>
+            <Link href="/">
+              <a style={{ height: matches ? "40px" : "48px" }}>
+                <Image
+                  src="/logo.png"
+                  alt=""
+                  width={matches ? 40 : 48}
+                  height={matches ? 40 : 48}
+                />
+              </a>
+            </Link>
+            <Link href="/lists">
+              <a>
+                <Typography
+                  variant="h4"
+                  className={matches ? classes.textMobile : classes.text}
+                >
+                  My Watchlists
+                </Typography>
+              </a>
+            </Link>
+          </div>
           {!matches ? (
             <>
               <Link href="/" passHref>
@@ -194,7 +200,16 @@ export default function Navbar() {
                                 </a>
                               </Link>
                               <MenuItem
-                                onClick={() => signOut({ callbackUrl: "/" })}
+                                onClick={() =>
+                                  signOut({
+                                    callbackUrl:
+                                      window.location.pathname.includes(
+                                        "/list/"
+                                      )
+                                        ? undefined
+                                        : "/",
+                                  })
+                                }
                               >
                                 <Typography
                                   variant="button"
@@ -301,7 +316,16 @@ export default function Navbar() {
                                 </a>
                               </Link>
                               <MenuItem
-                                onClick={() => signOut({ callbackUrl: "/" })}
+                                onClick={() =>
+                                  signOut({
+                                    callbackUrl:
+                                      window.location.pathname.includes(
+                                        "/list/"
+                                      )
+                                        ? undefined
+                                        : "/",
+                                  })
+                                }
                               >
                                 <Typography
                                   variant="button"

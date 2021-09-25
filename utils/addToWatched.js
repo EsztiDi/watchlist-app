@@ -7,7 +7,7 @@ export default async function addToWatched(user, id, watched, movie = null) {
     title: /^Watched$/i,
   })
     .then(async (res) => {
-      if (res._doc) {
+      if (res?._doc) {
         ({ _doc: list } = res);
         var { movies } = list;
 

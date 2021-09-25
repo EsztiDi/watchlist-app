@@ -21,36 +21,39 @@ export default async function handler(req, res) {
             var uniques = movies
               .filter((movie) => movie.media_type === "movie")
               ?.filter(
-                (e, i) => movies.findIndex((a) => a["id"] === e["id"]) === i
+                (movie, index, array) =>
+                  array.findIndex((el) => el.id === movie.id) === index
               );
 
             if (uniques.length > 0) {
-              uniques.map(async (movie) => {
-                var updatedMovie = await getDetails(movie);
+              await Promise.all(
+                uniques.map(async (movie) => {
+                  var updatedMovie = await getDetails(movie);
 
-                var updatedLists = await Watchlist.updateMany(
-                  {
-                    "movies.id": movie.id,
-                  },
-                  {
-                    "movies.$.poster_path": updatedMovie.poster_path,
-                    "movies.$.backdrop_path": updatedMovie.backdrop_path,
-                    "movies.$.title": updatedMovie.title,
-                    "movies.$.release_date": updatedMovie.release_date,
-                    "movies.$.year": updatedMovie.year,
-                    "movies.$.overview": updatedMovie.overview,
-                    "movies.$.details": updatedMovie.details,
-                  },
-                  {
-                    timestamps: false,
+                  var updatedLists = await Watchlist.updateMany(
+                    {
+                      "movies.id": movie.id,
+                    },
+                    {
+                      "movies.$.poster_path": updatedMovie.poster_path,
+                      "movies.$.backdrop_path": updatedMovie.backdrop_path,
+                      "movies.$.title": updatedMovie.title,
+                      "movies.$.release_date": updatedMovie.release_date,
+                      "movies.$.year": updatedMovie.year,
+                      "movies.$.overview": updatedMovie.overview,
+                      "movies.$.details": updatedMovie.details,
+                    },
+                    {
+                      timestamps: false,
+                    }
+                  ).catch((err) => console.error(err));
+
+                  if (!updatedLists) {
+                    console.error(`Couldn't update movies with updateMany.`);
+                    return res.status(400).json({ success: false });
                   }
-                ).catch((err) => console.error(err));
-
-                if (!updatedLists) {
-                  console.error(`Couldn't update movies with updateMany.`);
-                  return res.status(400).json({ success: false });
-                }
-              });
+                })
+              );
             }
 
             return await Promise.all(

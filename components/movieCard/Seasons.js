@@ -11,7 +11,7 @@ import Box from "@material-ui/core/Box";
 import Typography from "@material-ui/core/Typography";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
 
-import WatchedButton from "./WatchedButton";
+import WatchedButton from "./buttons/WatchedButton";
 import EpisodeCard from "./EpisodeCard";
 
 function a11yProps(index) {

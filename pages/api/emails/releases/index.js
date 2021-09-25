@@ -34,9 +34,9 @@ export default async function handler(req, res) {
       break;
     case "DELETE":
       try {
-        const deletedEmail = await Releasesemail.deleteOne(req.body).catch(
-          (err) => console.error(err)
-        );
+        const deletedEmail = await Releasesemail.findOneAndDelete(
+          req.body
+        ).catch((err) => console.error(err));
         if (!deletedEmail) {
           console.error(`Email - ${req.body} - not found`);
           return res.status(400).json({ success: false });

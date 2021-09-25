@@ -66,7 +66,7 @@ export default function SavedPanel({
       setUpdating(false);
       setLoading(false);
     } catch (error) {
-      setMessage(`${JSON.stringify(error.message)} - Failed to delete lists.`);
+      setMessage(`${error.message} - Failed to delete lists.`);
       setUpdating(false);
       setLoading(false);
     }

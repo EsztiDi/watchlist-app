@@ -16,6 +16,7 @@ module.exports = {
       "avatars.githubusercontent.com",
       "media-exp3.licdn.com",
       "image.tmdb.org",
+      "localhost",
     ],
   },
   // Temporary fix for react import

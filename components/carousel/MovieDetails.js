@@ -8,11 +8,6 @@ import StarRoundedIcon from "@material-ui/icons/StarRounded";
 import TheatersRoundedIcon from "@material-ui/icons/TheatersRounded";
 import Button from "@material-ui/core/Button";
 import PlaylistAddRoundedIcon from "@material-ui/icons/PlaylistAddRounded";
-import ClickAwayListener from "@material-ui/core/ClickAwayListener";
-import Grow from "@material-ui/core/Grow";
-import Paper from "@material-ui/core/Paper";
-import Popper from "@material-ui/core/Popper";
-import MenuList from "@material-ui/core/MenuList";
 
 import Overview from "../movieCard/Overview";
 import ListsMenu from "./ListsMenu";
@@ -250,40 +245,17 @@ export default function MovieDetails({
         <PlaylistAddRoundedIcon />
         &nbsp;Add
       </Button>
-      <Popper
-        open={menuOpen}
-        anchorEl={anchorRef.current}
-        role={undefined}
-        transition
-      >
-        {({ TransitionProps, placement }) => (
-          <Grow
-            {...TransitionProps}
-            style={{
-              transformOrigin:
-                placement === "bottom" ? "center top" : "center bottom",
-            }}
-          >
-            <Paper>
-              <ClickAwayListener onClickAway={handleMenuClose}>
-                <MenuList
-                  autoFocus={menuOpen}
-                  id="menu-list"
-                  onKeyDown={handleListKeyDown}
-                >
-                  {session && (
-                    <ListsMenu
-                      movieID={id}
-                      media_type={media_type}
-                      setMessage={setMessage}
-                    />
-                  )}
-                </MenuList>
-              </ClickAwayListener>
-            </Paper>
-          </Grow>
-        )}
-      </Popper>
+      {session && (
+        <ListsMenu
+          menuOpen={menuOpen}
+          anchorEl={anchorRef.current}
+          handleMenuClose={handleMenuClose}
+          handleListKeyDown={handleListKeyDown}
+          movieID={id}
+          media_type={media_type}
+          setMessage={setMessage}
+        />
+      )}
     </div>
   );
 }

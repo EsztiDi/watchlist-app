@@ -43,7 +43,7 @@ const useStyles = makeStyles((theme) => ({
     paddingLeft: `${theme.spacing(0.75)}px`,
     "& > :first-child": {
       display: "grid",
-      gridTemplateColumns: "repeat(3, auto)",
+      gridTemplateColumns: "1fr auto 1fr",
       justifyContent: "stretch",
       "& > :first-child": {
         gridArea: "1 / 3 / 2 / 4",
@@ -65,7 +65,7 @@ const useStyles = makeStyles((theme) => ({
     minHeight: "60px",
     "& > :first-child": {
       display: "grid",
-      gridTemplateColumns: "repeat(3, auto)",
+      gridTemplateColumns: "1fr auto 1fr",
       justifyContent: "stretch",
       "& > :first-child": {
         gridArea: "1 / 3 / 2 / 4",
@@ -226,16 +226,18 @@ export default function ListTabs({
                         />
                       ) : (
                         <span title="Edit title">
-                          <EditRoundedIcon
-                            aria-label="edit title"
-                            className={classes.edit}
-                            style={
-                              matches
-                                ? { fontSize: "1.5rem" }
-                                : { fontSize: "1.8rem" }
-                            }
-                            onClick={openEditTitle}
-                          />
+                          {!/^Watched$/i.test(list.title) && (
+                            <EditRoundedIcon
+                              aria-label="edit title"
+                              className={classes.edit}
+                              style={
+                                matches
+                                  ? { fontSize: "1.5rem" }
+                                  : { fontSize: "1.8rem" }
+                              }
+                              onClick={openEditTitle}
+                            />
+                          )}
                         </span>
                       )}
                       <span

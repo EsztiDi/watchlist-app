@@ -103,7 +103,7 @@ export default function ListPage({
 
   var movies = (list) => list?.movies?.sort((a, b) => a.position - b.position);
   const [updating, setUpdating] = React.useState(false);
-  const [backdrop, setBackdrop] = React.useState(image?.url || "");
+  const [backdrop, setBackdrop] = React.useState("");
   const [alert, setAlert] = React.useState("");
 
   const { data: list, error } = useSWR(id[0] ? `/api/lists/${id[0]}` : null, {
@@ -137,7 +137,7 @@ export default function ListPage({
 
   React.useEffect(() => {
     if (error) {
-      setMessage(`${JSON.stringify(error.message)}`);
+      setMessage(error.message);
       router.push("/");
     }
     // eslint-disable-next-line
@@ -166,11 +166,7 @@ export default function ListPage({
       setUpdating(false);
       setAlert("List saved!");
     } catch (error) {
-      setMessage(
-        `${JSON.stringify(
-          error.message
-        )} - Failed to add list, please try again.`
-      );
+      setMessage(`${error.message} - Failed to add list, please try again.`);
       setUpdating(false);
     }
   };
@@ -194,7 +190,7 @@ export default function ListPage({
       setUpdating(false);
       setAlert("List removed");
     } catch (error) {
-      setMessage(`${JSON.stringify(error.message)} - Failed to delete list.`);
+      setMessage(`${error.message} - Failed to delete list.`);
       setUpdating(false);
     }
   };

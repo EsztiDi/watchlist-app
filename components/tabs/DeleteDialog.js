@@ -48,7 +48,7 @@ export default function DeleteDialog({
       setUpdating(false);
       router.push("/lists");
     } catch (error) {
-      setMessage(`${JSON.stringify(error.message)} - Failed to delete list.`);
+      setMessage(`${error.message} - Failed to delete list.`);
       setUpdating(false);
     }
   };

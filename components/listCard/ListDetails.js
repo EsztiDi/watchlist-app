@@ -119,11 +119,7 @@ export default function ListDetails({
         setUpdating(false);
       }, 500);
     } catch (error) {
-      setMessage(
-        `${JSON.stringify(
-          error.message
-        )} - Failed to add list, please try again.`
-      );
+      setMessage(`${error.message} - Failed to add list, please try again.`);
       setUpdating(false);
     }
   };
@@ -146,7 +142,7 @@ export default function ListDetails({
       mutate("/api/lists/saved");
       setUpdating(false);
     } catch (error) {
-      setMessage(`${JSON.stringify(error.message)} - Failed to delete list.`);
+      setMessage(`${error.message} - Failed to delete list.`);
       setUpdating(false);
     }
   };

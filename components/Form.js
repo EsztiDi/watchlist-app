@@ -127,7 +127,7 @@ export default function Form({
       });
 
       if (!res.ok) {
-        throw new Error(res.status);
+        throw new Error(res.statusText || res.status);
       }
 
       mutate("/api/lists");
@@ -135,7 +135,7 @@ export default function Form({
       setUpdating(false);
       router.push("/lists");
     } catch (error) {
-      setMessage(error.message + " - Failed to add list, please try again.");
+      setMessage(`${error.message} - Failed to add list, please try again.`);
       setUpdating(false);
     }
   };
@@ -161,7 +161,7 @@ export default function Form({
         setUpdating(false);
       }, 500);
     } catch (error) {
-      setMessage(error.message + " - Failed to update list, please try again.");
+      setMessage(`${error.message} - Failed to update list, please try again.`);
       setUpdating(false);
     }
   };
@@ -184,7 +184,7 @@ export default function Form({
       setUpdating(false);
     } catch (error) {
       setMessage(
-        error.message + " - Failed to add your email, please try again."
+        `${error.message} - Failed to add your email, please try again.`
       );
       setUpdating(false);
     }
@@ -208,7 +208,7 @@ export default function Form({
       setUpdating(false);
     } catch (error) {
       setMessage(
-        error.message + " - Failed to remove your email, please try again."
+        `${error.message} - Failed to remove your email, please try again.`
       );
       setUpdating(false);
     }
@@ -275,18 +275,36 @@ export default function Form({
         window.scrollTo({ top: 0, behavior: "smooth" });
       }
     } else {
-      setForm({
-        ...form,
-        movies: [...movies, movie],
-      });
+      // If adding to the "Watched" list, change movie to "watched" on all lists
+      if (!newList && /^Watched$/i.test(form.title)) {
+        try {
+          const res = await fetch(`/api/lists/watched`, {
+            method: "POST",
+            headers: {
+              Accept: contentType,
+              "Content-Type": contentType,
+            },
+            body: JSON.stringify({
+              watched: "true",
+              movieID: movie.id,
+              movie,
+            }),
+          });
+
+          if (!res.ok) {
+            throw new Error(res.status);
+          }
+        } catch (error) {
+          console.error(error);
+        }
+      } else {
+        setForm({
+          ...form,
+          movies: [...movies, movie],
+        });
+      }
       if (!newList) newMovie.current = true;
     }
-
-    // If adding to the "Watched" list, change movie to "watched" on all lists
-    //  if (/^Watched$/i.test(form.title)) {
-    //   var tv = movie.seasons?.length > 0;
-    //   await setWatched(session?.user, movie.id, "true", tv);
-    // }
   };
 
   const deleteMovie = (index) => {

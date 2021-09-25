@@ -2,6 +2,7 @@ import { getSession } from "next-auth/client";
 
 import dbConnect from "../../../utils/dbConnect";
 import Watchlist from "../../../models/Watchlist";
+import Releasesemail from "../../../models/Releasesemail";
 
 export default async function handler(req, res) {
   const {
@@ -109,6 +110,17 @@ export default async function handler(req, res) {
           );
           return res.status(400).json({ success: false });
         }
+        if (deletedList.emails) {
+          const deletedEmail = await Releasesemail.findOneAndDelete({
+            email: deletedList?.user?.email,
+          }).catch((err) => console.error(err));
+
+          if (!deletedEmail) {
+            console.error(`Email - ${deletedList?.user?.email} - not found`);
+            return res.status(400).json({ success: false });
+          }
+        }
+
         res.status(200).json({ success: true, data: deletedList });
       } catch (err) {
         console.error(

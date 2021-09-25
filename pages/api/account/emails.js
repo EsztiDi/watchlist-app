@@ -12,6 +12,7 @@ export default async function handler(req, res) {
   switch (method) {
     case "GET":
       try {
+        // Unsubscribes all lists from weekly emails
         const update = await Watchlist.updateMany(
           {
             user: session?.user,
@@ -49,9 +50,9 @@ export default async function handler(req, res) {
           .json({ success: update.n === update.nModified, data: update });
       } catch (err) {
         console.error(
-          `Couldn't perform updateMany() for emails in MongoDB - user: ${
+          `Couldn't perform updateMany() for emails in MongoDB - user: ${JSON.stringify(
             session?.user
-          } - ${JSON.stringify(err)}`
+          )} - ${JSON.stringify(err)}`
         );
         res.status(400).json({ success: false });
       }

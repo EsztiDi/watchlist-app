@@ -53,7 +53,11 @@ export default async function handler(req, res) {
         // If adding to the "Watched" list, change movie to "watched" on all lists
         if (/^Watched$/i.test(list.title)) {
           var tv = movie.seasons?.length > 0;
-          await setWatched(session?.user, movie.id, "true", tv);
+          if (ids.includes(movie.id)) {
+            await setWatched(session?.user, movie.id, "false", tv);
+          } else {
+            await setWatched(session?.user, movie.id, "true", tv);
+          }
         }
 
         res.status(200).json({ success: true, data: updatedList });

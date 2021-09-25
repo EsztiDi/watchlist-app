@@ -2,6 +2,8 @@ import { getSession } from "next-auth/client";
 import mongoose from "mongoose";
 import dbConnect from "../../../utils/dbConnect";
 import Watchlist from "../../../models/Watchlist";
+import Releasesemail from "../../../models/Releasesemail";
+import Savedlist from "../../../models/Savedlist";
 
 export default async function handler(req, res) {
   const { method } = req;
@@ -20,6 +22,7 @@ export default async function handler(req, res) {
               });
               const { _id: userID } = user;
 
+              // Deleting all lists
               await Watchlist.deleteMany({
                 user: session?.user,
               }).catch((err) => {
@@ -31,6 +34,31 @@ export default async function handler(req, res) {
                 return res.status(400).json({ success: false });
               });
 
+              // Deleting all email subscriptions
+              await Releasesemail.deleteMany({
+                email: session?.user?.email,
+              }).catch((err) => {
+                console.error(
+                  `Couldn't delete emails - user: ${JSON.stringify(
+                    user
+                  )} - ${JSON.stringify(err)}`
+                );
+                return res.status(400).json({ success: false });
+              });
+
+              // Deleting all saved lists
+              await Savedlist.deleteMany({
+                user: session?.user,
+              }).catch((err) => {
+                console.error(
+                  `Couldn't delete saved lists - user: ${JSON.stringify(
+                    user
+                  )} - ${JSON.stringify(err)}`
+                );
+                return res.status(400).json({ success: false });
+              });
+
+              // Deleting all user sessions
               mongoose.connection.db.collection("sessions", (err, sessions) => {
                 sessions
                   .deleteMany({
@@ -45,6 +73,8 @@ export default async function handler(req, res) {
                     return res.status(400).json({ success: false });
                   });
               });
+
+              // Deleting all user login provider accounts
               mongoose.connection.db.collection("accounts", (err, accounts) => {
                 accounts
                   .findOneAndDelete({
@@ -60,6 +90,7 @@ export default async function handler(req, res) {
                   });
               });
 
+              // Deleting user
               const deletedUser = await users.findOneAndDelete({
                 _id: userID,
               });

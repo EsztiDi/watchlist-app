@@ -5,7 +5,7 @@ import CardMedia from "@material-ui/core/CardMedia";
 import Typography from "@material-ui/core/Typography";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
 
-import WatchedButton from "./WatchedButton";
+import WatchedButton from "./buttons/WatchedButton";
 import Overview from "./Overview";
 
 const useStyles = makeStyles((theme) => ({
