@@ -121,7 +121,10 @@ export default function Info({
         .then(async (res) => {
           if (res.data && locale !== res.data) {
             if (isMounted.current) setLoc(res.data);
-            ({ release_date: localDate } = await getLocalDate(movie, res.data));
+            var { release_date: localDate } = await getLocalDate(
+              movie,
+              res.data
+            );
             if (localDate && isMounted.current) setDate(localDate);
           }
         })
