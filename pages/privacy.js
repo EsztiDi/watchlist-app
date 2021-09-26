@@ -58,11 +58,15 @@ export default function Privacy() {
   ];
 
   const handleClick = (id) => {
+    document.querySelector("html").style.scrollBehavior = "smooth";
+    window.location.hash = `#${id}`;
+
     const yOffset = -56 - 20;
     const y =
       document.getElementById(id).getBoundingClientRect().top +
       window.pageYOffset +
       yOffset;
+
     window.scrollTo({ top: y, behavior: "smooth" });
   };
 

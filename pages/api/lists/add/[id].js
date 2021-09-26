@@ -17,7 +17,10 @@ export default async function handler(req, res) {
   switch (method) {
     case "POST":
       try {
-        var movie = req.body.locale ? req.body : await getDetails(req.body);
+        var movie = req.body.release_date
+          ? req.body
+          : await getDetails(req.body);
+
         var { _doc: list } = await Watchlist.findById(id);
         var { movies } = list;
 

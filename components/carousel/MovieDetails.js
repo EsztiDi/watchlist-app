@@ -253,6 +253,7 @@ export default function MovieDetails({
           handleListKeyDown={handleListKeyDown}
           movieID={id}
           media_type={media_type}
+          locale={locale}
           setMessage={setMessage}
         />
       )}

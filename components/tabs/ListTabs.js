@@ -198,6 +198,9 @@ export default function ListTabs({
               passHref
             >
               <Tab
+                data-id={
+                  /^Watched$/i.test(list.title) ? "watched-tab" : undefined
+                }
                 label={list.title}
                 wrapped={matches ? false : true}
                 disableFocusRipple

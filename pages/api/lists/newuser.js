@@ -33,7 +33,7 @@ export default async function handler(req, res) {
               var user = null;
               try {
                 const result = await users.findOne({
-                  email: session?.user.email,
+                  email: session?.user?.email,
                 });
                 if (result) {
                   user = await JSON.parse(JSON.stringify(result));
@@ -45,6 +45,7 @@ export default async function handler(req, res) {
               }
             });
           });
+
           newUser =
             new Date(user?.createdAt).getTime() > new Date() - 30 * 1000;
 
@@ -108,7 +109,10 @@ export default async function handler(req, res) {
 
         res
           .status(200)
-          .json({ success: true, data: { hasLists, id, newUser } });
+          .json({
+            success: true,
+            data: { hasLists, id, newUser, email: session?.user?.email },
+          });
       } catch (err) {
         console.error(
           `Lists not found -  user: ${JSON.stringify(

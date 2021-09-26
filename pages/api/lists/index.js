@@ -47,7 +47,8 @@ export default async function handler(req, res) {
           } else {
             req.body.position = 0;
           }
-          req.body.user = session?.user;
+
+          req.body.user = req.body.user || session?.user;
 
           if (/^Watched$/i.test(req.body.title)) {
             await Watchlist.find({

@@ -94,8 +94,8 @@ export default function Info({
   const matches2 = useMediaQuery("(max-width:500px)");
   const isMounted = React.useRef(null);
 
-  const [date, setDate] = React.useState(release_date);
-  const [loc, setLoc] = React.useState(locale);
+  const [date, setDate] = React.useState("");
+  const [loc, setLoc] = React.useState("");
 
   // For directors and cast "more" buttons
   const [overflows1, setOverflows1] = React.useState(false);
@@ -111,15 +111,29 @@ export default function Info({
 
   React.useEffect(() => {
     isMounted.current = true;
+    const controller = new AbortController();
+    const signal = controller.signal;
+
+    // Check if locale is different and get local release date
     const checkProps = async () => {
-      var { release_date, locale } = await getLocalDate(movie);
-      if (release_date) {
-        if (isMounted.current) setDate(release_date);
-        if (isMounted.current) setLoc(locale);
-      }
+      await fetch("/api/account/locale", { signal })
+        .then((res) => res.json())
+        .then(async (res) => {
+          if (res.data && locale !== res.data) {
+            if (isMounted.current) setLoc(res.data);
+            ({ release_date: localDate } = await getLocalDate(movie, res.data));
+            if (localDate && isMounted.current) setDate(localDate);
+          }
+        })
+        .catch((err) => {
+          console.error(err);
+        });
     };
-    checkProps();
+
+    if (movie.media_type === "movie") checkProps();
+
     return () => {
+      controller.abort();
       isMounted.current = false;
     };
     // eslint-disable-next-line
@@ -204,7 +218,7 @@ export default function Info({
         {runtime}
         {runtime && (genres || release_date) && " ● "}
         <span className={classes.nowrap}>
-          {media_type === "movie" && loc !== locale ? date : release_date}
+          {media_type === "movie" && date ? date : release_date}
           {media_type === "movie" && (
             <Typography
               variant="caption"
@@ -218,7 +232,7 @@ export default function Info({
               }}
             >
               {" "}
-              ({loc !== locale ? loc : locale})
+              ({loc ? loc : locale})
             </Typography>
           )}
         </span>

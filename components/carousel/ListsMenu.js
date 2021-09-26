@@ -36,6 +36,7 @@ export default function ListsMenu({
   movie,
   movieID,
   media_type,
+  locale,
   setMessage,
 }) {
   const classes = useStyles();
@@ -56,7 +57,7 @@ export default function ListsMenu({
     };
   }, []);
 
-  const add = async (id, idx, ev) => {
+  const add = async (id, idx) => {
     setUpdating(true);
     setValue(idx);
     window.addEventListener("beforeunload", unloadAlert);
@@ -68,7 +69,9 @@ export default function ListsMenu({
           Accept: contentType,
           "Content-Type": contentType,
         },
-        body: JSON.stringify(movie ? movie : { id: movieID, media_type }),
+        body: JSON.stringify(
+          movie ? movie : { id: movieID, media_type, locale }
+        ),
       });
 
       if (!res.ok) {
@@ -115,7 +118,7 @@ export default function ListsMenu({
                       <MenuItem
                         key={index}
                         disabled={updating}
-                        onClick={(ev) => add(list._id, index, ev)}
+                        onClick={() => add(list._id, index)}
                         className={classes.item}
                       >
                         <Typography

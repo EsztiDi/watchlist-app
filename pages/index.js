@@ -56,12 +56,12 @@ export default function Discover({ setMessage }) {
         .then((res) => res.json())
         .then((res) => {
           locale2 = res.data || "US";
-          setLocale(res.data || "US");
+          if (isMounted) setLocale(res.data || "US");
         })
         .catch((err) => {
           console.error(err);
           locale2 = "US";
-          setLocale("US");
+          if (isMounted) setLocale("US");
         });
 
       var baseURL = "https://api.themoviedb.org/3";

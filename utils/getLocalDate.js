@@ -6,11 +6,11 @@ export default async function getLocalDate(movie, loc = null) {
     await fetch(`${process.env.BASE_URL}/api/account/locale`)
       .then((res) => res.json())
       .then((res) => {
-        locale = movie.locale ? movie.locale : res.data || "US";
+        locale = res.data || "US";
       })
       .catch((err) => {
         console.error(err);
-        locale = movie.locale ? movie.locale : "US";
+        locale = "US";
       });
   } else {
     locale = loc;

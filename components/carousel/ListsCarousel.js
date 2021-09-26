@@ -237,7 +237,7 @@ export default function ListsCarousel({ setMessage }) {
           type="search"
           variant="outlined"
           autoComplete="off"
-          aria-controls="lists-carousel"
+          aria-controls={lists?.length > 0 ? "lists-carousel" : undefined}
           onChange={updateQuery}
           onKeyDown={handleKeys}
           classes={{

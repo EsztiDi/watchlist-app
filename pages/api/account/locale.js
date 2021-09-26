@@ -11,7 +11,7 @@ export default async function handler(req, res) {
       await fetch(`https://ipinfo.io/${ip}/json?token=ce08a565a65fd0`)
         .then((res) => res.json())
         .then((data) => {
-          res.status(200).json({ success: true, data: data?.country });
+          res.status(200).json({ success: true, data: data?.country || "US" });
         })
         .catch((err) => {
           console.error(`Error fetching locale ${JSON.stringify(err)}`);
