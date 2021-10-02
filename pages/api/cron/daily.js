@@ -12,7 +12,7 @@ export default async function handler(req, res) {
       try {
         console.log("Running cron database update");
 
-        const updates = await Watchlist.find()
+        const movieUpdates = await Watchlist.find()
           .then(async (lists) => {
             var movies = lists.reduce(
               (list1, list2) => [...list1, ...list2.movies],
@@ -26,7 +26,7 @@ export default async function handler(req, res) {
               );
 
             if (uniques.length > 0) {
-              await Promise.all(
+              return await Promise.all(
                 uniques.map(async (movie) => {
                   var updatedMovie = await getDetails(movie);
 
@@ -46,16 +46,27 @@ export default async function handler(req, res) {
                     {
                       timestamps: false,
                     }
-                  ).catch((err) => console.error(err));
+                  )
+                    .then(() => {
+                      return 1;
+                    })
+                    .catch((err) => console.error(err));
 
                   if (!updatedLists) {
                     console.error(`Couldn't update movies with updateMany.`);
                     return res.status(400).json({ success: false });
                   }
+                  return updatedLists;
                 })
               );
             }
+          })
+          .catch((err) => {
+            console.error(`Couldn't find watchlists - ${JSON.stringify(err)}`);
+          });
 
+        const tvUpdates = await Watchlist.find()
+          .then(async (lists) => {
             return await Promise.all(
               lists.map(async (list) => {
                 if (list.movies.length > 0) {
@@ -95,21 +106,17 @@ export default async function handler(req, res) {
             );
           })
           .catch((err) => {
-            console.error(
-              `Couldn't update watchlist collection - ${JSON.stringify(err)}`
-            );
+            console.error(`Couldn't find watchlists - ${JSON.stringify(err)}`);
           });
 
-        var count = updates.reduce((a, b) => a + b, 0);
+        var count = tvUpdates?.reduce((a, b) => a + b, 0);
         console.log(
-          `Update done - At least ${count} ${
-            count === 1 ? "list" : "lists"
-          } updated ^^`
+          `Update done - ${movieUpdates?.length} movies and ${count} lists with tv shows updated ^^`
         );
 
         res.status(200).json({
           success: true,
-          data: `At least ${count} ${count === 1 ? "list" : "lists"} updated`,
+          data: `${movieUpdates?.length} movies and ${count} lists with tv shows updated`,
         });
       } catch (err) {
         console.error(

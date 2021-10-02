@@ -7,7 +7,7 @@ import useMediaQuery from "@material-ui/core/useMediaQuery";
 
 import WatchedButton from "./buttons/WatchedButton";
 import AddButton from "./buttons/AddButton";
-import Info from "./Info";
+import MovieInfo from "./MovieInfo";
 import Overview from "./Overview";
 import Buttons from "./buttons/Buttons";
 
@@ -213,7 +213,7 @@ export default function MovieCard({
             )}
           </Typography>
 
-          <Info
+          <MovieInfo
             movie={movie}
             listID={listID}
             seasonsOpen={seasonsOpen}

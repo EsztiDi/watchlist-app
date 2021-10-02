@@ -1,6 +1,6 @@
 import { getSession } from "next-auth/client";
-import dbConnect from "../../../utils/dbConnect";
-import Savedlist from "../../../models/Savedlist";
+import dbConnect from "../../../../utils/dbConnect";
+import Savedlist from "../../../../models/Savedlist";
 
 export default async function handler(req, res) {
   const { method } = req;

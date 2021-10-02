@@ -66,7 +66,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function Info({
+export default function MovieInfo({
   movie,
   listID,
   seasonsOpen,
@@ -92,6 +92,7 @@ export default function Info({
   const classes = useStyles();
   const matches = useMediaQuery("(max-width:768px)");
   const matches2 = useMediaQuery("(max-width:500px)");
+  const contentType = "application/json";
   const isMounted = React.useRef(null);
 
   const [date, setDate] = React.useState("");
@@ -120,12 +121,25 @@ export default function Info({
         .then((res) => res.json())
         .then(async (res) => {
           if (res.data && locale !== res.data) {
-            if (isMounted.current) setLoc(res.data);
-            var { release_date: localDate } = await getLocalDate(
-              movie,
-              res.data
-            );
-            if (localDate && isMounted.current) setDate(localDate);
+            if (window.location.pathname.includes("/lists/")) {
+              await fetch("/api/account/locale", {
+                method: "PUT",
+                headers: {
+                  Accept: contentType,
+                  "Content-Type": contentType,
+                },
+                body: JSON.stringify({ loc: res.data }),
+              }).catch((err) => {
+                console.error(err);
+              });
+            } else {
+              if (isMounted.current) setLoc(res.data);
+              var { release_date: localDate } = await getLocalDate(
+                movie,
+                res.data
+              );
+              if (localDate && isMounted.current) setDate(localDate);
+            }
           }
         })
         .catch((err) => {

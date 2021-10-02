@@ -2,6 +2,7 @@ import Image from "next/image";
 
 import { makeStyles } from "@material-ui/core/styles";
 import ClickAwayListener from "@material-ui/core/ClickAwayListener";
+import Typography from "@material-ui/core/Typography";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
 
 import ListDetails from "./ListDetails";
@@ -48,29 +49,46 @@ export default function ListCard({ list, index, setMessage }) {
         onTouchStart={touch && !show ? handleShowDetails : undefined}
         data-index={index}
       >
-        {list.movies
-          .sort((a, b) => a.position - b.position)
-          .slice(0, 4)
-          .map((movie, index) => {
-            return (
-              <Image
-                key={`M-${index}`}
-                width={100}
-                height={150}
-                objectFit={movie?.poster_path ? "cover" : "contain"}
-                src={
-                  movie?.poster_path
-                    ? `https://image.tmdb.org/t/p/w200${movie?.poster_path}`
-                    : "/movieIcon.png"
-                }
-                onError={(ev) => {
-                  ev.target.onerror = null;
-                  ev.target.src = "/movieIcon.png";
-                }}
-                alt=""
-              />
-            );
-          })}
+        {list.movies.length > 0
+          ? list.movies
+              .sort((a, b) => a.position - b.position)
+              .slice(0, 4)
+              .map((movie, index) => {
+                return (
+                  <Image
+                    key={`M-${index}`}
+                    width={100}
+                    height={150}
+                    objectFit={movie?.poster_path ? "cover" : "contain"}
+                    src={
+                      movie?.poster_path
+                        ? `https://image.tmdb.org/t/p/w200${movie?.poster_path}`
+                        : "/movieIcon.png"
+                    }
+                    onError={(ev) => {
+                      ev.target.onerror = null;
+                      ev.target.src = "/movieIcon.png";
+                    }}
+                    alt=""
+                  />
+                );
+              })
+          : [...Array(3)].map((el, index) => {
+              return (
+                <Image
+                  key={index}
+                  width={200}
+                  height={100}
+                  objectFit="cover"
+                  src="/popcorn.png"
+                  onError={(ev) => {
+                    ev.target.onerror = null;
+                    ev.target.src = "/movieIcon.png";
+                  }}
+                  alt=""
+                />
+              );
+            })}
         <ListDetails
           listID={list.listid ? list.listid : list._id}
           uid={list.uid}
@@ -80,13 +98,15 @@ export default function ListCard({ list, index, setMessage }) {
               ? list.creator
               : { name: list.user.name, email: list.user.email }
           }
-          movies={list.movies.map((movie) => {
-            return {
-              title: movie.title,
-              poster_path: movie.poster_path,
-              position: movie.position,
-            };
-          })}
+          movies={list.movies
+            .sort((a, b) => a.position - b.position)
+            .map((movie) => {
+              return {
+                title: movie.title,
+                poster_path: movie.poster_path,
+                position: movie.position,
+              };
+            })}
           show={show}
           handleShowDetails={handleShowDetails}
           setMessage={setMessage}

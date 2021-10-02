@@ -10,7 +10,7 @@ export default function Month({ listID, year, month }) {
     const signal = controller.signal;
 
     const getLocale = async () => {
-      await fetch(`${process.env.BASE_URL}/api/account/locale`, { signal })
+      await fetch(`/api/account/locale`, { signal })
         .then((res) => res.json())
         .then((res) => {
           if (isMounted) setLoc(res.data || "US");

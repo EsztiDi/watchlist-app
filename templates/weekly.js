@@ -1,14 +1,12 @@
 export default function weeklyHTML(lists) {
-  var today = new Date(new Date().setUTCHours(0, 0, 0, 0));
+  var tomorrow = new Date(new Date().setUTCHours(0, 0, 0, 0) + 60000 * 60 * 24);
   var nextWeek = new Date(
     new Date().setUTCHours(0, 0, 0, 0) + 60000 * 60 * 24 * 7
   );
-  const month1 = today.toLocaleString("default", { month: "short" });
-  const month2 = nextWeek.toLocaleString("default", { month: "short" });
-  const day1 = new Date(
-    new Date().setUTCHours(0, 0, 0, 0) + 60000 * 60 * 24
-  ).getDate();
+  const day1 = tomorrow.getDate();
   const day2 = nextWeek.getDate();
+  const month1 = tomorrow.toLocaleString("default", { month: "short" });
+  const month2 = nextWeek.toLocaleString("default", { month: "short" });
   const title = `Upcoming releases<br/>${
     month1 === month2
       ? `${day1}&nbsp;-&nbsp;${day2}&nbsp;${month1}`
@@ -403,7 +401,7 @@ export default function weeklyHTML(lists) {
                             tabindex="-1"
                             target="_blank"
                             ><img
-                              alt="Logo"
+                              alt=""
                               align="center"
                               border="0"
                               class="center fixedwidth col_cont"
@@ -474,7 +472,7 @@ export default function weeklyHTML(lists) {
                         >
                           <!--[if mso]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr style="line-height:0px"><td style="padding-right: 0px;padding-left: 0px;" align="center"><!
                           [endif]--><a
-                          href="https://mywatchlists.watch"
+                          href="https://mywatchlists.watch/lists"
                           style="outline: none"
                           tabindex="-1"
                           target="_blank"
@@ -1627,7 +1625,7 @@ export default function weeklyHTML(lists) {
                     "
                   >
                     You are receiving this email because you have
-                    opted in for the weekly email summary for one or
+                    opted in for the weekly releases summary for one or
                     more of your watchlists on
                     <span style="color: #cccccc"
                       ><strong
