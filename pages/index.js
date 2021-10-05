@@ -50,19 +50,20 @@ export default function Discover({ setMessage }) {
       setLoading(true);
       var locale2;
 
-      await fetch("api/account/locale", {
-        signal,
-      })
-        .then((res) => res.json())
-        .then((res) => {
-          locale2 = res.data || "US";
-          if (isMounted) setLocale(res.data || "US");
+      if (isMounted)
+        await fetch("api/account/locale", {
+          signal,
         })
-        .catch((err) => {
-          console.error(err);
-          locale2 = "US";
-          if (isMounted) setLocale("US");
-        });
+          .then((res) => res.json())
+          .then((res) => {
+            locale2 = res.data || "US";
+            if (isMounted) setLocale(res.data || "US");
+          })
+          .catch((err) => {
+            console.error(err);
+            locale2 = "US";
+            if (isMounted) setLocale("US");
+          });
 
       var baseURL = "https://api.themoviedb.org/3";
       var api_key = process.env.TMDB_API_KEY;
@@ -82,51 +83,57 @@ export default function Discover({ setMessage }) {
         signal,
       };
 
-      await fetch(fullUrl, options)
-        .then((res) => res.json())
-        .then((data) => {
-          if (isMounted) setThisMonthMovies(data.results);
-        });
+      if (isMounted)
+        await fetch(fullUrl, options)
+          .then((res) => res.json())
+          .then((data) => {
+            if (isMounted) setThisMonthMovies(data.results);
+          });
 
       params = `&release_date.gte=${year}-${nextMonth}-01&release_date.lte=${year}-${nextMonth}-31`;
       fullUrl = `${baseURL}${url}?api_key=${api_key}${adult}${type}${region}${params}${sort}`;
-      await fetch(fullUrl, options)
-        .then((res) => res.json())
-        .then((data) => {
-          if (isMounted) setNextMonthMovies(data.results);
-        });
+      if (isMounted)
+        await fetch(fullUrl, options)
+          .then((res) => res.json())
+          .then((data) => {
+            if (isMounted) setNextMonthMovies(data.results);
+          });
 
       fullUrl = `${baseURL}${url}?api_key=${api_key}${adult}${region}${sort}`;
-      await fetch(fullUrl, options)
-        .then((res) => res.json())
-        .then((data) => {
-          if (isMounted) setPopularMovies(data.results);
-        });
+      if (isMounted)
+        await fetch(fullUrl, options)
+          .then((res) => res.json())
+          .then((data) => {
+            if (isMounted) setPopularMovies(data.results);
+          });
 
       url = "/discover/tv";
       region = `&watch_region=${locale2}`;
       params = `&first_air_date.gte=${year}-${thisMonth}-01&first_air_date.lte=${year}-${thisMonth}-31`;
       fullUrl = `${baseURL}${url}?api_key=${api_key}${adult}${region}${params}${sort}`;
-      await fetch(fullUrl, options)
-        .then((res) => res.json())
-        .then((data) => {
-          if (isMounted) setThisMonthTV(data.results);
-        });
+      if (isMounted)
+        await fetch(fullUrl, options)
+          .then((res) => res.json())
+          .then((data) => {
+            if (isMounted) setThisMonthTV(data.results);
+          });
 
       params = `&first_air_date.gte=${year}-${nextMonth}-01&first_air_date.lte=${year}-${nextMonth}-31`;
       fullUrl = `${baseURL}${url}?api_key=${api_key}${adult}${region}${params}${sort}`;
-      await fetch(fullUrl, options)
-        .then((res) => res.json())
-        .then((data) => {
-          if (isMounted) setNextMonthTV(data.results);
-        });
+      if (isMounted)
+        await fetch(fullUrl, options)
+          .then((res) => res.json())
+          .then((data) => {
+            if (isMounted) setNextMonthTV(data.results);
+          });
 
       fullUrl = `${baseURL}${url}?api_key=${api_key}${adult}${region}${sort}`;
-      await fetch(fullUrl, options)
-        .then((res) => res.json())
-        .then((data) => {
-          if (isMounted) setPopularTV(data.results);
-        });
+      if (isMounted)
+        await fetch(fullUrl, options)
+          .then((res) => res.json())
+          .then((data) => {
+            if (isMounted) setPopularTV(data.results);
+          });
 
       if (isMounted) setLoading(false);
     };

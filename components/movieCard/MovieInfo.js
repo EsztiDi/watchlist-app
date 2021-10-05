@@ -4,6 +4,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 import StarRoundedIcon from "@material-ui/icons/StarRounded";
 import TheatersRoundedIcon from "@material-ui/icons/TheatersRounded";
+import PlayArrowRoundedIcon from "@material-ui/icons/PlayArrowRounded";
 import Button from "@material-ui/core/Button";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
 
@@ -72,7 +73,8 @@ export default function MovieInfo({
   seasonsOpen,
   handleSeasonsOpen,
 }) {
-  var { id, release_date, year, locale, media_type, details, seasons } = movie;
+  var { id, title, release_date, year, locale, media_type, details, seasons } =
+    movie;
 
   if (details) {
     var {
@@ -88,6 +90,37 @@ export default function MovieInfo({
     } = details;
   }
   var { imdb_id } = external_ids;
+  var countries = [
+    "AU",
+    "BG",
+    "CA",
+    "DK",
+    "GR",
+    "HK",
+    "HU",
+    "ID",
+    "IE",
+    "IN",
+    "LT",
+    "LV",
+    "MY",
+    "NL",
+    "NO",
+    "NZ",
+    "PH",
+    "PL",
+    "RO",
+    "SE",
+    "SG",
+    "TH",
+    "TW",
+    "UK",
+    "US",
+    "ZA",
+  ];
+  var justWatchLink = `https://www.justwatch.com/${
+    countries.includes(loc) ? loc : countries.includes(locale) ? locale : "us"
+  }/search?q=${encodeURIComponent(title)}`;
 
   const classes = useStyles();
   const matches = useMediaQuery("(max-width:768px)");
@@ -240,7 +273,7 @@ export default function MovieInfo({
             <Typography
               variant="caption"
               style={{
-                verticalAlign: "text-bottom",
+                verticalAlign: "top",
                 fontSize: matches2
                   ? "0.55rem"
                   : matches
@@ -277,7 +310,16 @@ export default function MovieInfo({
           >
             <TheatersRoundedIcon className={classes.miniIcon} /> IMDb
           </a>
-        )}
+        )}{" "}
+        <a
+          href={justWatchLink}
+          target="_blank"
+          rel="noopener noreferrer"
+          className={classes.external}
+        >
+          <PlayArrowRoundedIcon className={classes.miniIcon} />
+          JustWatch
+        </a>
       </Typography>
       <Typography
         id={`${id}-directors`}
