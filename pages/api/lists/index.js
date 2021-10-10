@@ -1,7 +1,6 @@
 import { getSession } from "next-auth/client";
 import dbConnect from "../../../utils/dbConnect";
 import Watchlist from "../../../models/Watchlist";
-import setWatched from "../../../utils/setWatched";
 
 export default async function handler(req, res) {
   const { method } = req;
@@ -50,6 +49,7 @@ export default async function handler(req, res) {
 
           req.body.user = req.body.user || session?.user;
 
+          // Adding all watched movies to the list if it's titled "Watched"
           if (/^Watched$/i.test(req.body.title)) {
             await Watchlist.find({
               user: session?.user,
@@ -77,17 +77,6 @@ export default async function handler(req, res) {
           const list = await Watchlist.create(req.body).catch((err) =>
             console.error(err)
           );
-
-          if (/^Watched$/i.test(list?.title) && list?.movies.length > 0) {
-            await Promise.all(
-              list?.movies
-                .filter((movie) => movie.watched === "false")
-                ?.map(async (movie) => {
-                  var tv = movie?.seasons?.length > 0;
-                  await setWatched(session?.user, movie.id, "true", tv);
-                })
-            );
-          }
 
           res.status(201).json({ success: true, data: list });
         }

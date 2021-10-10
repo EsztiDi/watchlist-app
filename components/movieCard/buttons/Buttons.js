@@ -74,28 +74,6 @@ export default function Buttons({
   const contentType = "application/json";
 
   const handleDelete = async (idx) => {
-    if (/^Watched$/i.test(listTitle)) {
-      try {
-        const res = await fetch(`/api/lists/watched`, {
-          method: "POST",
-          headers: {
-            Accept: contentType,
-            "Content-Type": contentType,
-          },
-          body: JSON.stringify({
-            watched: "false",
-            movieID: id,
-            movie,
-          }),
-        });
-
-        if (!res.ok) {
-          throw new Error(res.status);
-        }
-      } catch (error) {
-        console.error(error);
-      }
-    }
     deleteMovie(idx);
   };
 

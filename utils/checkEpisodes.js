@@ -1,9 +1,9 @@
 import Watchlist from "../models/Watchlist";
 
 // Updates season to "watched" if all episodes are watched
-export default async function checkEpisodes(user, movieID, season_number) {
+export default async function checkEpisodes(movieID, season_number, listID) {
   await Watchlist.findOne({
-    user: user,
+    _id: listID,
     "movies.id": movieID,
   })
     .then(async (list) => {
@@ -16,9 +16,9 @@ export default async function checkEpisodes(user, movieID, season_number) {
           season?.episodes?.length > 0 &&
           season?.episodes?.every((episode) => episode.watched === "true");
 
-        var updatedLists3 = await Watchlist.updateMany(
+        var updatedList = await Watchlist.findOneAndUpdate(
           {
-            user: user,
+            _id: listID,
             "movies.id": movieID,
           },
           {
@@ -37,12 +37,14 @@ export default async function checkEpisodes(user, movieID, season_number) {
                 "season.season_number": season_number,
               },
             ],
+            new: true,
+            runValidators: true,
             timestamps: false,
           }
         ).catch((err) => console.error(err));
 
-        if (!updatedLists3) {
-          console.error(`Lists not found - user: ${JSON.stringify(user)}`);
+        if (!updatedList) {
+          console.error(`List not found - ${listID}`);
           return res.status(400).json({ success: false });
         }
       }

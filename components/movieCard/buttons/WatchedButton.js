@@ -41,14 +41,21 @@ export default function WatchedButton({
   const isMounted = React.useRef(null);
 
   const router = useRouter();
-  var { id: listID } = router.query;
-  if (Array.isArray(listID)) listID = listID[0];
+  var { id: ids } = router.query;
+  var listID = Array.isArray(ids) ? ids[0] : ids;
 
   const { data: list, error } = useSWR(listID ? `/api/lists/${listID}` : null);
   if (error) console.error(error);
 
   const [session, loading] = useSession();
   const auth = session && list?.user?.email === session?.user?.email;
+
+  var editable, createdAt;
+  if (Array.isArray(ids) && list) {
+    ({ createdAt } = list);
+    const uid = new Date(createdAt).getTime().toString().substring(0, 12);
+    editable = ids[1] === uid;
+  }
 
   React.useEffect(() => {
     updating
@@ -75,6 +82,7 @@ export default function WatchedButton({
           watched: watched === "false" ? "true" : "false",
           movieID: id,
           movie,
+          listID,
         }),
       });
 
@@ -102,6 +110,7 @@ export default function WatchedButton({
           watched: watched === "false" ? "true" : "false",
           movieID,
           season_number,
+          listID,
         }),
       });
 
@@ -130,6 +139,7 @@ export default function WatchedButton({
           movieID,
           episodeID: id,
           season_number,
+          listID,
         }),
       });
 
@@ -156,23 +166,21 @@ export default function WatchedButton({
 
   if (loading) return null;
 
-  return (
-    auth && (
-      <IconButton
-        aria-label="set watched"
-        title="Set watched"
-        className={classes.check}
-        disabled={updating}
-        onClick={handleClick}
-      >
-        {updating ? (
-          <CircularProgress size="1.3rem" thickness={5} />
-        ) : watched === "true" ? (
-          <CheckCircleRoundedIcon />
-        ) : (
-          <CheckCircleOutlineRoundedIcon />
-        )}
-      </IconButton>
-    )
-  );
+  return auth || editable ? (
+    <IconButton
+      aria-label="set watched"
+      title="Set watched"
+      className={classes.check}
+      disabled={updating}
+      onClick={handleClick}
+    >
+      {updating ? (
+        <CircularProgress size="1.3rem" thickness={5} />
+      ) : watched === "true" ? (
+        <CheckCircleRoundedIcon />
+      ) : (
+        <CheckCircleOutlineRoundedIcon />
+      )}
+    </IconButton>
+  ) : null;
 }

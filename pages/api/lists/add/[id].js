@@ -53,20 +53,18 @@ export default async function handler(req, res) {
           return res.status(400).json({ success: false });
         }
 
-        // If adding to the "Watched" list, change movie to "watched" on all lists
+        // If adding to the "Watched" list, change movie to "watched"
         if (/^Watched$/i.test(list.title)) {
           var tv = movie.seasons?.length > 0;
-          if (ids.includes(movie.id)) {
-            await setWatched(session?.user, movie.id, "false", tv);
-          } else {
-            await setWatched(session?.user, movie.id, "true", tv);
+          if (!ids.includes(movie.id)) {
+            await setWatched(movie.id, "true", tv, id);
           }
         }
 
         res.status(200).json({ success: true, data: updatedList });
       } catch (err) {
         console.error(
-          `Couldn't update lists - ${id} - user: ${JSON.stringify(
+          `Couldn't update list - ${id} - user: ${JSON.stringify(
             session?.user
           )} - ${JSON.stringify(err)}`
         );

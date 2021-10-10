@@ -12,12 +12,12 @@ export default async function handler(req, res) {
   switch (method) {
     case "POST":
       try {
-        var { watched, movieID, season_number } = req.body;
+        var { watched, movieID, season_number, listID } = req.body;
 
-        // Updating season and all episodes to "watched" on all lists
-        var updatedLists = await Watchlist.updateMany(
+        // Updating season and all episodes to "watched"
+        var updatedList = await Watchlist.findOneAndUpdate(
           {
-            user: session?.user,
+            _id: listID,
             "movies.id": movieID,
           },
           {
@@ -39,21 +39,23 @@ export default async function handler(req, res) {
               },
               { episode: { $exists: true } },
             ],
+
+            new: true,
+            runValidators: true,
             timestamps: false,
           }
         ).catch((err) => console.error(err));
 
-        if (!updatedLists) {
-          console.error(
-            `Lists not found - user: ${JSON.stringify(session?.user)}`
-          );
+        if (!updatedList) {
+          console.error(`List not found - ${listID}`);
           return res.status(400).json({ success: false });
         }
+        // }
 
         // Set show "watched" if all seasons are watched
-        await checkSeasons(session?.user, movieID);
+        await checkSeasons(session?.user, movieID, listID);
 
-        res.status(200).json({ success: true, data: updatedLists });
+        res.status(200).json({ success: true, data: updatedList });
       } catch (err) {
         console.error(
           `Couldn't update lists - movie: ${movieID} - user: ${JSON.stringify(

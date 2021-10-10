@@ -275,7 +275,7 @@ export default function Form({
         window.scrollTo({ top: 0, behavior: "smooth" });
       }
     } else {
-      // If adding to the "Watched" list, change movie to "watched" on all lists
+      // If adding to the "Watched" list, change movie to "watched"
       if (!newList && /^Watched$/i.test(form.title)) {
         try {
           const res = await fetch(`/api/lists/watched`, {
@@ -288,6 +288,7 @@ export default function Form({
               watched: "true",
               movieID: movie.id,
               movie,
+              id,
             }),
           });
 

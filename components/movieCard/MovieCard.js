@@ -98,6 +98,7 @@ export default function MovieCard({
 }) {
   var { id, poster_path, title, media_type, overview, details, watched } =
     movie;
+  var editable = deleteMovie ? true : false;
 
   if (details) {
     var { season_number } = details;
@@ -145,6 +146,7 @@ export default function MovieCard({
             body: JSON.stringify({
               movieID: id,
               season_number,
+              listID,
             }),
           });
 

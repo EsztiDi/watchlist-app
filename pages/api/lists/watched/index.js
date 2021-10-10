@@ -16,16 +16,16 @@ export default async function handler(req, res) {
   switch (method) {
     case "POST":
       try {
-        var { watched, movieID, movie } = req.body;
+        var { watched, movieID, movie, listID } = req.body;
         var tv = movie?.seasons?.length > 0;
 
         // Adding movie to the "Watched" list
         await addToWatched(session?.user, movieID, watched, movie);
 
-        // Updating movie to "watched" on all lists
-        var { updated } = await setWatched(session?.user, movieID, watched, tv);
+        // Updating movie to "watched"
+        var updatedList = await setWatched(movieID, watched, tv, listID);
 
-        res.status(200).json({ success: true, data: updated });
+        res.status(200).json({ success: true, data: updatedList });
       } catch (err) {
         console.error(
           `Couldn't update lists - movie: ${movieID} - user: ${JSON.stringify(
@@ -38,12 +38,12 @@ export default async function handler(req, res) {
 
     case "PUT":
       try {
-        var { watched, movieID, episodeID, season_number } = req.body;
+        var { watched, movieID, episodeID, season_number, listID } = req.body;
 
-        // Updating episode to "watched" on all lists
-        var updatedLists = await Watchlist.updateMany(
+        // Updating episode to "watched"
+        var updatedList = await Watchlist.findOneAndUpdate(
           {
-            user: session?.user,
+            _id: listID,
             "movies.seasons.episodes.id": episodeID,
           },
           {
@@ -60,22 +60,23 @@ export default async function handler(req, res) {
               { "season.episodes": { $exists: true } },
               { episode: { $exists: true }, "episode.id": episodeID },
             ],
+            new: true,
+            runValidators: true,
             timestamps: false,
           }
         ).catch((err) => console.error(err));
 
-        if (!updatedLists) {
-          console.error(
-            `Lists not found - user: ${JSON.stringify(session?.user)}`
-          );
+        if (!updatedList) {
+          console.error(`List not found - ${listID}`);
           return res.status(400).json({ success: false });
         }
+        // }
 
         // Set season and show "watched" if all episodes are watched
-        await checkEpisodes(session?.user, movieID, season_number);
-        await checkSeasons(session?.user, movieID);
+        await checkEpisodes(movieID, season_number, listID);
+        await checkSeasons(session?.user, movieID, listID);
 
-        res.status(200).json({ success: true, data: updatedLists });
+        res.status(200).json({ success: true, data: updatedList });
       } catch (err) {
         console.error(
           `Couldn't update lists - movie: ${movieID} - user: ${JSON.stringify(

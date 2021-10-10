@@ -12,10 +12,10 @@ export default async function handler(req, res) {
   switch (method) {
     case "POST":
       try {
-        var { movieID, season_number } = req.body;
+        var { movieID, season_number, listID } = req.body;
 
-        await checkEpisodes(session?.user, movieID, season_number);
-        await checkSeasons(session?.user, movieID);
+        await checkEpisodes(movieID, season_number, listID);
+        await checkSeasons(session?.user, movieID, listID);
 
         res.status(200).json({ success: true });
       } catch (err) {

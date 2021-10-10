@@ -114,12 +114,17 @@ export default function MovieInfo({
     "SG",
     "TH",
     "TW",
-    "UK",
     "US",
     "ZA",
   ];
   var justWatchLink = `https://www.justwatch.com/${
-    countries.includes(loc) ? loc : countries.includes(locale) ? locale : "us"
+    loc === "GB" || locale === "GB"
+      ? "UK"
+      : countries.includes(loc)
+      ? loc
+      : countries.includes(locale)
+      ? locale
+      : "us"
   }/search?q=${encodeURIComponent(title)}`;
 
   const classes = useStyles();

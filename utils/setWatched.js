@@ -1,30 +1,26 @@
 import Watchlist from "../models/Watchlist";
 
-export default async function setWatched(user, movieID, watched, tv) {
-  // Updating movie to "watched" on all lists
-  var updatedLists = await Watchlist.updateMany(
-    {
-      user: user,
-      "movies.id": movieID,
-    },
+export default async function setWatched(movieID, watched, tv, listID) {
+  // Updating movie to "watched"
+  var updatedList = await Watchlist.findOneAndUpdate(
+    { _id: listID, "movies.id": movieID },
     { "movies.$.watched": watched },
     {
+      new: true,
+      runValidators: true,
       timestamps: false,
     }
   ).catch((err) => console.error(err));
 
-  if (!updatedLists) {
-    console.error(`Lists not found - user: ${JSON.stringify(user)}`);
+  if (!updatedList) {
+    console.error(`List not found - ${listID}`);
     return res.status(400).json({ success: false });
   }
 
   // Changing all seasons and episodes to "watched" if tv show
   if (tv) {
-    var updatedLists2 = await Watchlist.updateMany(
-      {
-        user: user,
-        "movies.id": movieID,
-      },
+    var updatedList2 = await Watchlist.findOneAndUpdate(
+      { _id: listID, "movies.id": movieID },
       {
         $set: {
           "movies.$[movie].seasons.$[season].watched": watched,
@@ -44,14 +40,16 @@ export default async function setWatched(user, movieID, watched, tv) {
           },
           { episode: { $exists: true } },
         ],
+        new: true,
+        runValidators: true,
         timestamps: false,
       }
     ).catch((err) => console.error(err));
 
-    if (!updatedLists2) {
-      console.error(`Lists not found - user: ${JSON.stringify(user)}`);
+    if (!updatedList2) {
+      console.error(`List not found - ${listID}`);
       return res.status(400).json({ success: false });
     }
   }
-  return { updated: updatedLists?.nModified };
+  return updatedList;
 }
