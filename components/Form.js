@@ -288,7 +288,7 @@ export default function Form({
               watched: "true",
               movieID: movie.id,
               movie,
-              id,
+              listID: id,
             }),
           });
 

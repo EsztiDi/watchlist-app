@@ -76,6 +76,13 @@ export default function Login() {
             <FacebookLoginButton onClick={() => signIn("facebook")} />
             <TwitterLoginButton onClick={() => signIn("twitter")} />
             <GithubLoginButton onClick={() => signIn("github")} />
+            {/* <button
+              onClick={() =>
+                signIn("email", { email: "etrackerproject@gmail.com" })
+              }
+            >
+              Sign in with Email
+            </button> */}
           </Paper>
         </Container>
       </>

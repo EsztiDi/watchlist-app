@@ -14,7 +14,6 @@ export default async function setWatched(movieID, watched, tv, listID) {
 
   if (!updatedList) {
     console.error(`List not found - ${listID}`);
-    return res.status(400).json({ success: false });
   }
 
   // Changing all seasons and episodes to "watched" if tv show
@@ -48,7 +47,6 @@ export default async function setWatched(movieID, watched, tv, listID) {
 
     if (!updatedList2) {
       console.error(`List not found - ${listID}`);
-      return res.status(400).json({ success: false });
     }
   }
   return updatedList;

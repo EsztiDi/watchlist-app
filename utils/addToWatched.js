@@ -1,6 +1,7 @@
 import Watchlist from "../models/Watchlist";
 
-export default async function addToWatched(user, id, watched, movie = null) {
+export default async function addToWatched(user, id, watched, movie) {
+  var tv = movie?.seasons?.length > 0;
   var list;
   await Watchlist.findOne({
     user: user,
@@ -52,4 +53,38 @@ export default async function addToWatched(user, id, watched, movie = null) {
       }
     })
     .catch((err) => console.error(err));
+
+  // Changing all seasons and episodes to "watched" if tv show
+  if (tv) {
+    var updatedList2 = await Watchlist.findOneAndUpdate(
+      { user: user, title: /^Watched$/i },
+      {
+        $set: {
+          "movies.$[movie].seasons.$[season].watched": watched,
+          "movies.$[movie].seasons.$[season].episodes.$[episode].watched":
+            watched,
+        },
+      },
+      {
+        arrayFilters: [
+          {
+            "movie.seasons": { $exists: true },
+            "movie.id": movie?.id,
+          },
+          {
+            season: { $exists: true },
+            "season.episodes": { $exists: true },
+          },
+          { episode: { $exists: true } },
+        ],
+        new: true,
+        runValidators: true,
+        timestamps: false,
+      }
+    ).catch((err) => console.error(err));
+
+    if (!updatedList2) {
+      console.error(`List not found - user: ${JSON.stringify(user)}`);
+    }
+  }
 }

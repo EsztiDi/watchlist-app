@@ -107,12 +107,10 @@ export default async function handler(req, res) {
           }
         }
 
-        res
-          .status(200)
-          .json({
-            success: true,
-            data: { hasLists, id, newUser, email: session?.user?.email },
-          });
+        res.status(200).json({
+          success: true,
+          data: { hasLists, id, newUser, email: session?.user?.email },
+        });
       } catch (err) {
         console.error(
           `Lists not found -  user: ${JSON.stringify(

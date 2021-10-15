@@ -69,10 +69,10 @@ export default async function handler(req, res) {
                   if (list.movies.length > 0) {
                     var movies = [];
                     list.movies.forEach((movie) => {
-                      var release_date = new Date(
-                        movie.release_date
-                      ).setUTCHours(0, 0, 0, 0);
-                      var today = new Date().setUTCHours(0, 0, 0, 0);
+                      var release_date = new Date(movie.release_date).getTime();
+                      // .setUTCHours(0, 0, 0, 0);
+                      var today = new Date().getTime();
+                      // .setUTCHours(0, 0, 0, 0);
                       if (
                         release_date > today &&
                         release_date <= today + 60000 * 60 * 24 * 7

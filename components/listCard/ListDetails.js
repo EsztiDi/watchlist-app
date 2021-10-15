@@ -242,7 +242,7 @@ export default function ListDetails({
           (deleted)
         </Typography>
       )}
-      <Typography variant="subtitle1">By {name}</Typography>
+      <Typography variant="subtitle1">By {name || "Nameless"}</Typography>
       <ul>
         {movies.map((movie, index) => {
           return <li key={index}>{movie.title}</li>;

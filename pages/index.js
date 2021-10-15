@@ -35,25 +35,23 @@ export default function Discover({ setMessage }) {
   const [nextMonthTV, setNextMonthTV] = React.useState([]);
   const [popularTV, setPopularTV] = React.useState([]);
 
-  const year = new Date().getFullYear();
-  const month = new Date().getMonth() + 1;
-  const thisMonth = month < 10 ? `0${month}` : month;
-  const nextMonth =
-    month === 12 ? "01" : month < 9 ? `0${month + 1}` : month + 1;
-
   React.useEffect(() => {
     var isMounted = true;
+
+    const year = new Date().getFullYear();
+    const month = new Date().getMonth() + 1;
+    const thisMonth = month < 10 ? `0${month}` : month;
+    const nextMonth =
+      month === 12 ? "01" : month < 9 ? `0${month + 1}` : month + 1;
+
     const controller = new AbortController();
     const signal = controller.signal;
 
-    const getMovies = async () => {
+    const getLocale = async () => {
       setLoading(true);
       var locale2;
-
       if (isMounted)
-        await fetch("api/account/locale", {
-          signal,
-        })
+        await fetch(`/api/account/locale`, { signal })
           .then((res) => res.json())
           .then((res) => {
             locale2 = res.data || "US";
@@ -64,25 +62,31 @@ export default function Discover({ setMessage }) {
             locale2 = "US";
             if (isMounted) setLocale("US");
           });
+      if (isMounted) setLoading(false);
+      return locale2;
+    };
 
-      var baseURL = "https://api.themoviedb.org/3";
-      var api_key = process.env.TMDB_API_KEY;
-      var adult = `&include_adult=false`;
-      var type = `&with_release_type=3|2`;
-      var region = `&region=${locale2}`;
-      var sort = `&sort_by=popularity.desc`;
+    var baseURL = "https://api.themoviedb.org/3";
+    var api_key = process.env.TMDB_API_KEY;
+    var adult = `&include_adult=false`;
+    var type = `&with_release_type=3|2`;
+    var sort = `&sort_by=popularity.desc`;
+    var options = {
+      headers: {
+        Authorization: process.env.TMDB_BEARER,
+        "Content-Type": "application/json;charset=utf-8",
+      },
+      signal,
+    };
 
+    const getMovies = async () => {
+      setLoading(true);
+
+      var locale2 = await getLocale();
       var url = "/discover/movie";
+      var region = `&region=${locale2}`;
       var params = `&release_date.gte=${year}-${thisMonth}-01&release_date.lte=${year}-${thisMonth}-31`;
       var fullUrl = `${baseURL}${url}?api_key=${api_key}${adult}${type}${region}${params}${sort}`;
-      var options = {
-        headers: {
-          Authorization: process.env.TMDB_BEARER,
-          "Content-Type": "application/json;charset=utf-8",
-        },
-        signal,
-      };
-
       if (isMounted)
         await fetch(fullUrl, options)
           .then((res) => res.json())
@@ -107,10 +111,17 @@ export default function Discover({ setMessage }) {
             if (isMounted) setPopularMovies(data.results);
           });
 
-      url = "/discover/tv";
-      region = `&watch_region=${locale2}`;
-      params = `&first_air_date.gte=${year}-${thisMonth}-01&first_air_date.lte=${year}-${thisMonth}-31`;
-      fullUrl = `${baseURL}${url}?api_key=${api_key}${adult}${region}${params}${sort}`;
+      if (isMounted) setLoading(false);
+    };
+
+    const getTV = async () => {
+      setLoading(true);
+
+      var locale2 = await getLocale();
+      var url = "/discover/tv";
+      var region = `&watch_region=${locale2}`;
+      var params = `&first_air_date.gte=${year}-${thisMonth}-01&first_air_date.lte=${year}-${thisMonth}-31`;
+      var fullUrl = `${baseURL}${url}?api_key=${api_key}${adult}${region}${params}${sort}`;
       if (isMounted)
         await fetch(fullUrl, options)
           .then((res) => res.json())
@@ -139,6 +150,7 @@ export default function Discover({ setMessage }) {
     };
 
     getMovies();
+    getTV();
 
     return () => {
       controller.abort();

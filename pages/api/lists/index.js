@@ -43,7 +43,7 @@ export default async function handler(req, res) {
 
           if (lists.length > 0) {
             req.body.position = lists[0].position + 1;
-          } else {
+          } else if (req.body.position === undefined) {
             req.body.position = 0;
           }
 

@@ -2,7 +2,7 @@ import Watchlist from "../models/Watchlist";
 import addToWatched from "./addToWatched";
 
 // Updates tv show to "watched" if all seasons are watched
-export default async function checkSeasons(user, movieID, listID) {
+export default async function checkSeasons(user, movieID, listID, add = true) {
   await Watchlist.findOne({
     _id: listID,
     "movies.id": movieID,
@@ -14,9 +14,9 @@ export default async function checkSeasons(user, movieID, listID) {
           (season) => season.watched === "true"
         );
 
-        if (watched) {
+        if (watched && add) {
           await addToWatched(user, movieID, "true", movie); // Adding movie to the "Watched" list
-        } else {
+        } else if (add) {
           // Checking if all episodes watched: "false"
           var noneWatched = movie?.seasons?.every(
             (season) => season.watched === "false"
@@ -52,7 +52,6 @@ export default async function checkSeasons(user, movieID, listID) {
 
         if (!updatedList) {
           console.error(`List not found - ${listID}`);
-          return res.status(400).json({ success: false });
         }
       }
     })

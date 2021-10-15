@@ -45,7 +45,6 @@ export default async function checkEpisodes(movieID, season_number, listID) {
 
         if (!updatedList) {
           console.error(`List not found - ${listID}`);
-          return res.status(400).json({ success: false });
         }
       }
     })

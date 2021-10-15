@@ -19,11 +19,11 @@ export default async function handler(req, res) {
         var { watched, movieID, movie, listID } = req.body;
         var tv = movie?.seasons?.length > 0;
 
-        // Adding movie to the "Watched" list
-        await addToWatched(session?.user, movieID, watched, movie);
-
         // Updating movie to "watched"
         var updatedList = await setWatched(movieID, watched, tv, listID);
+
+        // Adding movie to the "Watched" list
+        await addToWatched(session?.user, movieID, watched, movie);
 
         res.status(200).json({ success: true, data: updatedList });
       } catch (err) {
@@ -70,7 +70,6 @@ export default async function handler(req, res) {
           console.error(`List not found - ${listID}`);
           return res.status(400).json({ success: false });
         }
-        // }
 
         // Set season and show "watched" if all episodes are watched
         await checkEpisodes(movieID, season_number, listID);

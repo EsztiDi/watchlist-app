@@ -15,7 +15,7 @@ export default async function handler(req, res) {
         var { movieID, season_number, listID } = req.body;
 
         await checkEpisodes(movieID, season_number, listID);
-        await checkSeasons(session?.user, movieID, listID);
+        await checkSeasons(session?.user, movieID, listID, false);
 
         res.status(200).json({ success: true });
       } catch (err) {
