@@ -96,7 +96,13 @@ export default function ListsMenu({
   if (!lists) return null;
 
   return (
-    <Popper open={menuOpen} anchorEl={anchorEl} role={undefined} transition>
+    <Popper
+      open={menuOpen}
+      anchorEl={anchorEl}
+      role={undefined}
+      transition
+      style={{ zIndex: 9999 }}
+    >
       {({ TransitionProps, placement }) => (
         <Grow
           {...TransitionProps}

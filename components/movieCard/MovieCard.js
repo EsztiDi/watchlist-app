@@ -3,8 +3,10 @@ import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
 import CardMedia from "@material-ui/core/CardMedia";
 import Typography from "@material-ui/core/Typography";
+import Button from "@material-ui/core/Button";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
 
+import Seasons from "./Seasons";
 import WatchedButton from "./buttons/WatchedButton";
 import AddButton from "./buttons/AddButton";
 import MovieInfo from "./MovieInfo";
@@ -62,26 +64,26 @@ const useStyles = makeStyles((theme) => ({
     marginRight: theme.spacing(1),
   },
   title: {
+    display: "grid",
+    gridTemplateColumns: "auto auto 1fr auto",
+    placeItems: "center",
     textAlign: "center",
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    "& > span": {
-      flexBasis: "95%",
+    "& > button:first-child": {
+      minWidth: "auto",
+      lineHeight: 1,
+      padding: `${theme.spacing(0.6)}px ${theme.spacing(1)}px`,
     },
-    "& > button + div": {
-      zIndex: "1",
+    "& > span": {
+      gridArea: "1 / 3 / 2 / 4",
+    },
+    "& > button:last-child": {
+      gridArea: "1 / 4 / 2 / 5",
     },
   },
   new: {
-    color: theme.palette.primary.light,
-    cursor: "pointer",
+    color: theme.palette.primary.main,
     textTransform: "uppercase",
-    fontWeight: "bold",
-    transition: "color 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms",
-    "&:hover": {
-      color: theme.palette.primary.dark,
-    },
+    marginLeft: theme.spacing(0.75),
   },
 }));
 
@@ -96,12 +98,19 @@ export default function MovieCard({
   updating,
   setMessage,
 }) {
-  var { id, poster_path, title, media_type, overview, details, watched } =
-    movie;
-  var editable = deleteMovie ? true : false;
+  var {
+    id,
+    poster_path,
+    title,
+    media_type,
+    overview,
+    details,
+    seasons,
+    watched,
+  } = movie;
 
   if (details) {
-    var { season_number } = details;
+    var { season_number, number_of_episodes } = details;
   }
   var poster = poster_path
     ? `https://image.tmdb.org/t/p/w200${poster_path}`
@@ -192,14 +201,34 @@ export default function MovieCard({
                 : { fontSize: "1.25rem" }
             }
           >
+            {number_of_episodes > 0 && (
+              <>
+                <Button
+                  size="small"
+                  variant="outlined"
+                  onClick={handleSeasonsOpen}
+                  style={{
+                    fontSize: matches2 ? "0.65rem" : "0.75rem",
+                  }}
+                >
+                  {number_of_episodes + (matches2 ? " ep" : " episodes")}
+                </Button>
+                <Seasons
+                  open={seasonsOpen}
+                  onClose={handleSeasonsOpen}
+                  seasons={seasons}
+                  lastSeason={season_number}
+                  movieID={id}
+                />
+              </>
+            )}
             {newEpisode && (
               <Typography
                 variant="caption"
                 component="div"
-                onClick={handleSeasonsOpen}
                 className={classes.new}
                 style={{
-                  fontSize: matches2 ? "0.65rem" : "0.75rem",
+                  fontSize: matches2 ? "0.6rem" : "0.7rem",
                 }}
               >
                 New
@@ -215,18 +244,12 @@ export default function MovieCard({
             )}
           </Typography>
 
-          <MovieInfo
-            movie={movie}
-            listID={listID}
-            seasonsOpen={seasonsOpen}
-            handleSeasonsOpen={handleSeasonsOpen}
-          />
+          <MovieInfo movie={movie} listID={listID} />
           <Overview overview={overview} movieCard={true} />
         </CardContent>
         {deleteMovie && (
           <Buttons
             movie={movie}
-            listTitle={listTitle}
             index={index}
             moviesLength={moviesLength}
             deleteMovie={deleteMovie}

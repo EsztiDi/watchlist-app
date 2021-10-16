@@ -7,6 +7,8 @@ import Box from "@material-ui/core/Box";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Switch from "@material-ui/core/Switch";
+import Tooltip from "@material-ui/core/Tooltip";
+import HelpOutlineRoundedIcon from "@material-ui/icons/HelpOutlineRounded";
 import IconButton from "@material-ui/core/IconButton";
 import FormatListBulletedRoundedIcon from "@material-ui/icons/FormatListBulletedRounded";
 import TodayRoundedIcon from "@material-ui/icons/TodayRounded";
@@ -71,8 +73,24 @@ const useStyles = makeStyles((theme) => ({
       fontSize: "1.7rem",
     },
   },
+  tooltip: {
+    fontSize: "0.85rem",
+    textAlign: "center",
+    lineHeight: 1.3,
+    margin: theme.spacing(0.6),
+  },
+  tooltipPadding: {
+    padding: `${theme.spacing(0.5)}px ${theme.spacing(1)}px`,
+    margin: `${theme.spacing(2.5)}px 0 ${theme.spacing(1)}px`,
+  },
+  miniIcon: {
+    fontSize: "1rem!important",
+    color: theme.palette.text.hint,
+    marginLeft: theme.spacing(0.25),
+  },
   label: {
-    width: "43%",
+    width: "44%",
+    whiteSpace: "nowrap",
   },
   button: {
     padding: theme.spacing(0.5),
@@ -136,7 +154,7 @@ export default function TabPanel(props) {
   const classes = useStyles();
   const matches = useMediaQuery("(max-width:1024px)");
   const matches2 = useMediaQuery("(max-width:768px)");
-  const matches3 = useMediaQuery("(max-width:455px)");
+  const matches3 = useMediaQuery("(max-width:490px)");
 
   const { data: list, error } = useSWR(listID ? `/api/lists/${listID}` : null);
   if (error) console.error(error);
@@ -226,7 +244,34 @@ export default function TabPanel(props) {
             )}
             <FormControlLabel
               id="private"
-              label="Private"
+              label={
+                <>
+                  <span>Private</span>
+                  <Tooltip
+                    arrow
+                    enterDelay={400}
+                    enterNextDelay={400}
+                    enterTouchDelay={50}
+                    leaveTouchDelay={5000}
+                    classes={{
+                      tooltip: classes.tooltipPadding,
+                    }}
+                    title={
+                      <p className={classes.tooltip}>
+                        Private lists are NOT featured on the <em>Discover</em>{" "}
+                        page but can still be shared by you
+                      </p>
+                    }
+                  >
+                    <HelpOutlineRoundedIcon
+                      onClick={(ev) => {
+                        ev.preventDefault();
+                      }}
+                      className={classes.miniIcon}
+                    />
+                  </Tooltip>
+                </>
+              }
               labelPlacement={!matches3 ? "start" : "end"}
               className={matches3 ? classes.label : undefined}
               control={
@@ -240,7 +285,34 @@ export default function TabPanel(props) {
             />
             <FormControlLabel
               id="emails"
-              label="Emails"
+              label={
+                <>
+                  <span>Emails</span>
+                  <Tooltip
+                    arrow
+                    enterDelay={400}
+                    enterNextDelay={400}
+                    enterTouchDelay={50}
+                    leaveTouchDelay={5000}
+                    classes={{
+                      tooltip: classes.tooltipPadding,
+                    }}
+                    title={
+                      <p className={classes.tooltip}>
+                        Include this list in the weekly releases summary email
+                        on Thursdays
+                      </p>
+                    }
+                  >
+                    <HelpOutlineRoundedIcon
+                      onClick={(ev) => {
+                        ev.preventDefault();
+                      }}
+                      className={classes.miniIcon}
+                    />
+                  </Tooltip>
+                </>
+              }
               labelPlacement={!matches3 ? "start" : "end"}
               className={matches3 ? classes.label : undefined}
               control={
@@ -289,14 +361,14 @@ export default function TabPanel(props) {
               disabled={openShare}
             >
               <ShareRoundedIcon className={classes.topIcon} />
-              <Share
-                listID={listID}
-                uid={uid}
-                title={title}
-                open={openShare}
-                onClose={handleOpenShare}
-              />
             </IconButton>
+            <Share
+              listID={listID}
+              uid={uid}
+              title={title}
+              open={openShare}
+              onClose={handleOpenShare}
+            />
             <Link
               href={calendar ? `/list/calendar/${listID}` : `/list/${listID}`}
               passHref

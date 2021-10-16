@@ -50,7 +50,7 @@ export default function ListPanel({ setMessage }) {
               element: document.querySelector("a[data-id='watched-tab']"),
               intro: `The <b>Watched</b> list is different from other lists.<br/><br/>
               Anything you add to it will be marked "watched", and anything you set "watched" will be added to the list. Just click the tick on the poster. ✅<br/><br/>
-              If you have a tv show on this list that has new episodes you haven't marked as watched, you'll see a "<b>NEW</b>" badge next to its poster.`,
+              If you have a tv show on this list that has new episodes you haven't marked as watched, you'll see a "<b>NEW</b>" badge.`,
             },
             {
               title: "Privacy setting",
@@ -83,14 +83,15 @@ export default function ListPanel({ setMessage }) {
           ],
         })
         .onbeforeexit(() => {
-          return confirm("Are you sure?");
+          return confirm("Close the tutorial?");
         })
         .start();
     };
+
     if (newUser && !fetching) {
       setTimeout(() => {
         intro();
-      }, 1000);
+      }, 2000);
     }
   }, [newUser, email, fetching]);
 

@@ -172,6 +172,7 @@ export default function ListTabs({
       <Tabs
         orientation={matches ? "horizontal" : "vertical"}
         variant="scrollable"
+        scrollButtons={matches ? "on" : "auto"}
         indicatorColor="secondary"
         aria-label="list tabs"
         value={value}

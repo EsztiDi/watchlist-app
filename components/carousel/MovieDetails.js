@@ -44,9 +44,6 @@ const useStyles = makeStyles((theme) => ({
       padding: `${theme.spacing(0.5)}px ${theme.spacing(1.5)}px`,
       fontWeight: "bold",
     },
-    "& > button + div": {
-      zIndex: "1",
-    },
     "&::-webkit-scrollbar": {
       width: "6px",
       height: "6px",

@@ -8,8 +8,6 @@ import PlayArrowRoundedIcon from "@material-ui/icons/PlayArrowRounded";
 import Button from "@material-ui/core/Button";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
 
-import Seasons from "./Seasons";
-
 const useStyles = makeStyles((theme) => ({
   info: {
     textAlign: "center",
@@ -67,14 +65,8 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function MovieInfo({
-  movie,
-  listID,
-  seasonsOpen,
-  handleSeasonsOpen,
-}) {
-  var { id, title, release_date, year, locale, media_type, details, seasons } =
-    movie;
+export default function MovieInfo({ movie, listID }) {
+  var { id, title, release_date, year, locale, media_type, details } = movie;
 
   if (details) {
     var {
@@ -82,7 +74,6 @@ export default function MovieInfo({
       number_of_episodes,
       vote_average,
       external_ids,
-      season_number,
       directors,
       creators,
       cast,
@@ -245,29 +236,14 @@ export default function MovieInfo({
         ) : (
           <span className={classes.media}>{media_type || "–"}</span>
         )}
-        {(number_of_episodes >= 0 || runtime || genres || release_date) &&
+        {(number_of_episodes === 0 || runtime || genres || release_date) &&
           " ● "}
-        {number_of_episodes > 0 && (
-          <>
-            <span className={classes.external} onClick={handleSeasonsOpen}>
-              {number_of_episodes +
-                (number_of_episodes === 1 ? " episode" : " episodes")}
-            </span>
-            <Seasons
-              open={seasonsOpen}
-              onClose={handleSeasonsOpen}
-              seasons={seasons}
-              lastSeason={season_number}
-              movieID={id}
-            />
-          </>
-        )}
         {number_of_episodes === 0 && (
           <span className={classes.nowrap}>
             {number_of_episodes + " episodes"}
           </span>
         )}
-        {number_of_episodes >= 0 &&
+        {number_of_episodes === 0 &&
           (runtime || genres || release_date) &&
           " ● "}
         {runtime}

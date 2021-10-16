@@ -17,7 +17,7 @@ const useStyles = makeStyles((theme) => ({
     "& svg": {
       color: theme.palette.primary.light,
       fontSize: "1.3rem",
-      opacity: 0.75,
+      opacity: 0.8,
     },
   },
 }));

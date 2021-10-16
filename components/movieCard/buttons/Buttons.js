@@ -1,4 +1,3 @@
-import { useRouter } from "next/router";
 import { makeStyles } from "@material-ui/core/styles";
 import IconButton from "@material-ui/core/IconButton";
 import HighlightOffRoundedIcon from "@material-ui/icons/HighlightOffRounded";
@@ -23,9 +22,6 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: "space-between",
     "& svg": {
       fontSize: "1.5rem",
-    },
-    "& > button + div": {
-      zIndex: "2",
     },
   },
   bigbutton: {
@@ -59,7 +55,6 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Buttons({
   movie,
-  listTitle,
   index,
   moviesLength,
   deleteMovie,
@@ -67,11 +62,10 @@ export default function Buttons({
   updating,
   setMessage,
 }) {
-  var { id, position } = movie;
+  var { position } = movie;
 
   const classes = useStyles();
   const matches2 = useMediaQuery("(max-width:500px)");
-  const contentType = "application/json";
 
   const handleDelete = async (idx) => {
     deleteMovie(idx);
