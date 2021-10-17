@@ -34,9 +34,25 @@ export default async function handler(req, res) {
       break;
     case "DELETE":
       try {
-        const deletedEmail = await Releasesemail.findOneAndDelete(
-          req.body
-        ).catch((err) => console.error(err));
+        const email = await Releasesemail.find(req.body).catch((err) =>
+          console.error(err)
+        );
+
+        var deletedEmail;
+        if (email.length !== 0) {
+          deletedEmail = await Releasesemail.findOneAndDelete(req.body).catch(
+            (err) => console.error(err)
+          );
+        } else {
+          deletedEmail = await Releasesemail.findOneAndDelete({
+            email: req.body.email,
+            listid: "",
+          }).catch((err) => console.error(err));
+        }
+
+        // const deletedEmail = await Releasesemail.findOneAndDelete(
+        //   req.body
+        // ).catch((err) => console.error(err));
         if (!deletedEmail) {
           console.error(`Email - ${req.body} - not found`);
           return res.status(400).json({ success: false });

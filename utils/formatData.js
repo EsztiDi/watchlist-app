@@ -40,7 +40,7 @@ export default function formatData(movie) {
         month: "short",
         year: "numeric",
       })
-    : "";
+    : "No date";
 
   // Getting directors or creators
   var directors = credits.crew.filter((member) => member.job === "Director");

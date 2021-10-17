@@ -67,21 +67,29 @@ export default function ListPanels({ setMessage, calendar = false }) {
   const classes = useStyles();
   const [session, loading] = useSession();
   const router = useRouter();
-  const { id } = router.query;
+  var { id } = router.query;
+  if (Array.isArray(id)) id = id[0];
+
   const matches = useMediaQuery("(max-width:1024px)");
   const matches2 = useMediaQuery("(max-width:480px)");
 
-  const { data: list, error } = useSWR(id ? `/api/lists/${id}` : null);
-  if (error) console.error(error);
+  var { data: list, error } = useSWR(id ? `/api/lists/${id}` : null);
+  if (error) {
+    console.error(error);
+  }
 
-  const auth = session && list?.user?.email === session?.user?.email;
+  React.useEffect(() => {
+    if (error) {
+      setMessage(error.message);
+    }
+    // eslint-disable-next-line
+  }, [error]);
 
   if (loading) return null;
+  if (!list && !session) return null;
 
   if (!loading && !session) {
     router.replace("/login");
-  } else if (list && !auth) {
-    router.replace("/lists");
   }
 
   if (!list) {
@@ -136,8 +144,8 @@ export default function ListPanels({ setMessage, calendar = false }) {
   }
 
   return (
-    auth &&
-    list && (
+    list &&
+    session && (
       <Paper
         elevation={4}
         className={matches ? classes.containerMobile : classes.container}

@@ -23,6 +23,7 @@ const useStyles = makeStyles((theme) => ({
 export default function DeleteDialog({
   open,
   listID,
+  auth,
   onOpenDelete,
   setMessage,
   updating,
@@ -30,20 +31,23 @@ export default function DeleteDialog({
 }) {
   const classes = useStyles();
   const router = useRouter();
+  const contentType = "application/json";
 
-  const handleDelete = async () => {
+  const deleteList = async (id) => {
     setUpdating(true);
     try {
-      await fetch(`/api/lists/${listID}`, {
+      await fetch(`/api/lists/${id}`, {
         method: "DELETE",
       });
 
       mutate("/api/lists", async (lists) => {
-        const filteredLists = lists.filter((list) => list._id !== listID);
+        const ids = lists.map((el) => el._id);
+        const index = ids.indexOf(id) - 1 >= 0 ? ids.indexOf(id) - 1 : 0;
+        const filteredLists = lists.filter((list) => list._id !== id);
         mutate("/api/lists/newuser", async (data) => {
-          return { ...data, id: filteredLists[0]?._id };
+          return { ...data, id: filteredLists[index]?._id };
         });
-        return lists.filter((list) => list._id !== listID);
+        return lists.filter((list) => list._id !== id);
       });
       setUpdating(false);
       router.push("/lists");
@@ -51,6 +55,47 @@ export default function DeleteDialog({
       setMessage(`${error.message} - Failed to delete list.`);
       setUpdating(false);
     }
+  };
+
+  const deleteSavedList = async (list) => {
+    try {
+      const res = await fetch(`/api/lists/saved`, {
+        method: "DELETE",
+        headers: {
+          Accept: contentType,
+          "Content-Type": contentType,
+        },
+        body: JSON.stringify(list),
+      });
+
+      if (!res.ok) {
+        throw new Error(res.status);
+      }
+
+      mutate("/api/lists/saved", async (lists) => {
+        const ids = lists.map((el) => el.listid);
+        const index =
+          ids.indexOf(list.id) - 1 >= 0 ? ids.indexOf(list.id) - 1 : 0;
+        const filteredLists = lists.filter((el) => el.listid !== list.id);
+        mutate("/api/lists/newuser", async (data) => {
+          return {
+            ...data,
+            id: filteredLists[index]?.listid,
+            uid: filteredLists[index]?.uid,
+          };
+        });
+        return lists.filter((el) => el.listid !== list.id);
+      });
+      setUpdating(false);
+      router.push("/lists");
+    } catch (error) {
+      setMessage(`${error.message} - Failed to delete list.`);
+      setUpdating(false);
+    }
+  };
+
+  const handleClick = () => {
+    auth ? deleteList(listID) : deleteSavedList({ id: listID });
   };
 
   return (
@@ -62,11 +107,13 @@ export default function DeleteDialog({
       className={classes.delete}
     >
       <DialogTitle id="alert-dialog-title">
-        {"Permanently delete watchlist?"}
+        {auth ? "Permanently delete watchlist?" : "Remove saved list?"}
       </DialogTitle>
       <DialogContent>
         <DialogContentText id="alert-dialog-description">
-          There is no going back.
+          {auth
+            ? "There is no going back."
+            : "You can save it again on the list's page."}
         </DialogContentText>
       </DialogContent>
       <DialogActions className={classes.buttons}>
@@ -87,7 +134,7 @@ export default function DeleteDialog({
           disableFocusRipple
           autoFocus
           disabled={updating}
-          onClick={handleDelete}
+          onClick={handleClick}
         >
           {updating ? (
             <CircularProgress size="1.5rem" thickness={5} />

@@ -36,17 +36,14 @@ export default function Lists() {
   const [session, loading] = useSession();
   const router = useRouter();
   var hasLists,
-    id = null;
+    hasSavedLists,
+    id,
+    uid = null;
 
   const { data, error } = useSWR("/api/lists/newuser");
-  const { data: savedLists, error2 } = useSWR(
-    session ? "/api/lists/saved" : null
-  );
   if (error) console.error(error);
-  if (error2) console.error(error2);
 
-  if (data) ({ hasLists, id } = data);
-  const hasSavedLists = savedLists && savedLists.length > 0;
+  if (data) ({ hasLists, hasSavedLists, id, uid } = data);
 
   if (loading) return null;
 
@@ -57,15 +54,14 @@ export default function Lists() {
   } else if (hasLists && id !== undefined) {
     router.replace(`/lists/${id}`);
     return <CircularProgress size="3rem" thickness={3} />;
-  } else if (!data?.movies && !hasLists && hasSavedLists) {
-    router.replace(`/lists/saved`);
+  } else if (!hasLists && id !== undefined && hasSavedLists) {
+    router.replace(`/lists/${id}${uid ? `/${uid}` : ""}`);
     return <CircularProgress size="3rem" thickness={3} />;
   }
 
   return (
     session &&
     data &&
-    !data?.movies &&
     !hasLists &&
     !hasSavedLists && (
       <Paper elevation={4} className={classes.container}>

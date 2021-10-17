@@ -51,7 +51,7 @@ export default async function checkSeasons(user, movieID, listID, add = true) {
         ).catch((err) => console.error(err));
 
         if (!updatedList) {
-          console.error(`List not found - ${listID}`);
+          console.error(`checkSeasons - List not found - ${listID}`);
         }
       }
     })

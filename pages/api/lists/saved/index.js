@@ -1,6 +1,7 @@
 import { getSession } from "next-auth/client";
 import dbConnect from "../../../../utils/dbConnect";
 import Savedlist from "../../../../models/Savedlist";
+import Releasesemail from "../../../../models/Releasesemail";
 
 export default async function handler(req, res) {
   const { method } = req;
@@ -11,7 +12,9 @@ export default async function handler(req, res) {
   switch (method) {
     case "GET":
       try {
-        const lists = await Savedlist.find({ user: session?.user });
+        const lists = await Savedlist.find({ user: session?.user }).sort({
+          createdAt: 1,
+        });
         res.status(200).json({ success: true, data: lists });
       } catch (err) {
         console.error(
@@ -38,34 +41,25 @@ export default async function handler(req, res) {
         res.status(400).json({ success: false });
       }
       break;
-    case "PUT":
-      try {
-        const deletedLists = await Savedlist.deleteMany({
-          user: session?.user,
-        }).catch((err) => console.error(err));
-        if (!deletedLists) {
-          console.error(
-            `Couldn't perform deleteMany() in MongoDB - user: ${JSON.stringify(
-              session?.user
-            )}`
-          );
-          return res.status(400).json({ success: false });
-        }
-        res.status(200).json({ success: true, data: deletedLists });
-      } catch (err) {
-        console.error(
-          `Couldn't delete lists - user: ${JSON.stringify(
-            session?.user
-          )} - ${JSON.stringify(err)}`
-        );
-        res.status(400).json({ success: false });
-      }
-      break;
     case "DELETE":
       try {
         const deletedList = await Savedlist.findOneAndDelete({
+          user: session?.user,
           listid: req.body.id,
         }).catch((err) => console.error(err));
+
+        if (deletedList.emails) {
+          const deletedEmail = await Releasesemail.findOneAndDelete({
+            email: deletedList?.user?.email,
+            listid: req.body.id,
+          }).catch((err) => console.error(err));
+
+          if (!deletedEmail) {
+            console.error(`Email - ${deletedList?.user?.email} - not found`);
+            return res.status(400).json({ success: false });
+          }
+        }
+
         if (!deletedList) {
           console.error(
             `Savedlist ${req.body.id} not found - user: ${JSON.stringify(
@@ -77,7 +71,7 @@ export default async function handler(req, res) {
         res.status(200).json({ success: true, data: deletedList });
       } catch (err) {
         console.error(
-          `Couldn't delete list ${id} - user: ${JSON.stringify(
+          `Couldn't delete list ${req.body.id} - user: ${JSON.stringify(
             session?.user
           )} - ${JSON.stringify(err)}`
         );

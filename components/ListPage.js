@@ -98,6 +98,7 @@ export default function ListPage({
   const [session, loading] = useSession();
   const router = useRouter();
   var { id } = router.query;
+
   const matches = useMediaQuery("(max-width:1024px)");
   const matches2 = useMediaQuery("(max-width:768px)");
 
@@ -110,13 +111,13 @@ export default function ListPage({
     refreshInterval: 2000,
     initialData: initialList, // For og metatags
   });
-  const { data: savedLists, error2 } = useSWR(
+  const { data: savedLists, error: error2 } = useSWR(
     session ? "/api/lists/saved" : null
   );
   if (error) console.error(error);
   if (error2) console.error(error2);
 
-  const sameUser = session && list?.user?.email === session?.user?.email;
+  const auth = session && list?.user?.email === session?.user?.email;
   const saved = savedLists?.map((list) => list.listid).includes(id[0]);
   const contentType = "application/json";
 
@@ -162,7 +163,16 @@ export default function ListPage({
         throw new Error(res.status);
       }
 
-      mutate("/api/lists/saved");
+      mutate("/api/lists/saved", async (lists) => {
+        mutate("/api/lists/newuser", async (data) => {
+          return {
+            ...data,
+            id: list.listid,
+            uid: list.uid,
+          };
+        });
+        return [...lists, list];
+      });
       setUpdating(false);
       setAlert("List saved!");
     } catch (error) {
@@ -186,7 +196,23 @@ export default function ListPage({
         throw new Error(res.status);
       }
 
-      mutate("/api/lists/saved");
+      mutate("/api/lists/saved", async (lists) => {
+        const ids = lists.map((el) => el.listid);
+        const index =
+          ids.indexOf(list.id) - 1 >= 0 ? ids.indexOf(list.id) - 1 : 0;
+        const filteredLists = lists.filter((el) => el.listid !== list.id);
+        mutate("/api/lists/newuser", async (data) => {
+          return {
+            ...data,
+            id:
+              filteredLists.length > 0
+                ? filteredLists[index]?.listid
+                : undefined,
+            uid: filteredLists[index]?.uid ? filteredLists[index]?.uid : "",
+          };
+        });
+        return lists.filter((el) => el.listid !== list.id);
+      });
       setUpdating(false);
       setAlert("List removed");
     } catch (error) {
@@ -206,16 +232,17 @@ export default function ListPage({
       } else {
         saveList({
           listid: id[0],
-          uid: editable ? uid : "",
+          uid: editable && !/^Watched$/i.test(list.title) ? uid : "",
           title: list?.title,
           creator: { name: list?.user.name, email: list?.user.email },
-          movies: list?.movies.map((movie) => {
-            return {
-              title: movie.title,
-              poster_path: movie.poster_path,
-              position: movie.position,
-            };
-          }),
+          // movies: list?.movies.map((movie) => {
+          //   return {
+          //     title: movie.title,
+          //     poster_path: movie.poster_path,
+          //     position: movie.position,
+          //   };
+          // }),
+          emails: false,
         });
       }
     }
@@ -290,8 +317,8 @@ export default function ListPage({
               }
             >
               <Typography variant="h4">
-                {sameUser !== undefined &&
-                  !sameUser &&
+                {auth !== undefined &&
+                  !auth &&
                   (saved ? (
                     <IconButton
                       aria-label="remove list"

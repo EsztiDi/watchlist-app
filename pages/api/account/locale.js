@@ -105,13 +105,12 @@ export default async function handler(req, res) {
             console.error(`Couldn't find watchlists - ${JSON.stringify(err)}`);
           });
 
-        if (!updates) {
-          console.error(
-            `Lists not found - user: ${JSON.stringify(session?.user)}`
-          );
-          return res.status(400).json({ success: false });
-        }
-
+        // if (!updates) {
+        //   console.error(
+        //     `Lists not found - user: ${JSON.stringify(session?.user)}`
+        //   );
+        //   return res.status(400).json({ success: false });
+        // }
         res.status(200).json({ success: true, data: updates });
       } catch (err) {
         console.error(

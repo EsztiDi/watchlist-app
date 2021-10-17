@@ -196,6 +196,7 @@ export default function Share({ listID, uid, title, open, onClose }) {
                 control={<Radio color="secondary" />}
                 label="Editable"
                 labelPlacement="start"
+                disabled={/^Watched$/i.test(title)}
               />
             </RadioGroup>
           </FormControl>

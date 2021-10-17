@@ -54,8 +54,8 @@ export default function SavedPanel({
     setUpdating(true);
     setLoading(true);
     try {
-      const res = await fetch("/api/lists/saved", {
-        method: "PUT",
+      const res = await fetch("/api/lists/saved/delete", {
+        method: "DELETE",
       });
 
       if (!res.ok) {

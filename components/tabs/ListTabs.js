@@ -52,6 +52,16 @@ const useStyles = makeStyles((theme) => ({
       },
     },
   },
+  tabSavedSelected: {
+    fontSize: "0.95rem",
+    minWidth: "100%",
+    minHeight: "3.6rem",
+    paddingLeft: `${theme.spacing(0.75)}px`,
+    "& > :first-child": {
+      display: "grid",
+      gridTemplateColumns: "auto auto",
+    },
+  },
   tabMobile: {
     fontSize: "0.875rem",
     maxWidth: "100%",
@@ -72,6 +82,16 @@ const useStyles = makeStyles((theme) => ({
         justifySelf: "end",
         marginBottom: "3px",
       },
+    },
+  },
+  tabSavedMobileSelected: {
+    fontSize: "0.875rem",
+    maxWidth: "100%",
+    minWidth: "50%",
+    minHeight: "60px",
+    "& > :first-child": {
+      display: "grid",
+      gridTemplateColumns: "auto auto",
     },
   },
   edit: {
@@ -104,6 +124,10 @@ const useStyles = makeStyles((theme) => ({
       backgroundColor: "rgba(0, 0, 0, 0.04)",
     },
   },
+  name: {
+    fontStyle: "italic",
+    fontSize: "0.75rem",
+  },
 }));
 
 function a11yProps(id, idx, val) {
@@ -128,18 +152,20 @@ export default function ListTabs({
   const [editTitle, setEditTitle] = React.useState(false);
 
   const { data: lists, error } = useSWR("/api/lists");
-  const { data: savedLists, error2 } = useSWR("/api/lists/saved");
+  const { data: savedLists, error: error2 } = useSWR("/api/lists/saved");
   if (error) console.error(error);
   if (error2) console.error(error2);
+
   const hasLists = lists && lists.length > 0;
   const hasSavedLists = savedLists && savedLists.length > 0;
-
+  const listIDs = hasLists && lists?.map((list) => list._id);
+  const savedListIDs = hasSavedLists && savedLists?.map((list) => list.listid);
   var value =
-    saved && hasSavedLists
-      ? lists?.length
-      : lists?.map((list) => list._id).indexOf(id) === -1
-      ? 0
-      : lists?.map((list) => list._id).indexOf(id);
+    listIDs && listIDs?.includes(id)
+      ? listIDs?.indexOf(id)
+      : savedListIDs && savedListIDs?.includes(id)
+      ? lists?.length + savedListIDs?.indexOf(id)
+      : 0;
 
   const openEditTitle = () => {
     setEditTitle(true);
@@ -160,7 +186,7 @@ export default function ListTabs({
     putData({ position: nextPos });
   };
 
-  if (!lists)
+  if (!lists || !savedLists)
     return (
       <div className={classes.loader}>
         <CircularProgress size={matches ? "2rem" : "3rem"} thickness={3} />
@@ -179,7 +205,7 @@ export default function ListTabs({
         className={matches ? classes.tabsMobile : classes.tabs}
         id="list-tabs"
       >
-        {lists.map((list, index) =>
+        {lists?.map((list, index) =>
           editTitle && value === index ? (
             <EditTitle
               key={list._id}
@@ -288,7 +314,60 @@ export default function ListTabs({
             </Link>
           )
         )}
-        {hasSavedLists && (
+        {savedLists?.map((list, index) => (
+          <Link
+            key={list._id}
+            href={
+              calendar
+                ? `/lists/calendar/${list.listid}`
+                : `/lists/${list.listid}${list.uid ? `/${list.uid}` : ""}`
+            }
+            replace
+            passHref
+          >
+            <Tab
+              label={
+                <span>
+                  {list.title}
+                  <br />
+                  <span className={classes.name}>
+                    by {list.creator?.name?.split(" ")[0] || "Nameless"}
+                  </span>
+                </span>
+              }
+              wrapped={matches ? false : true}
+              disableFocusRipple
+              disabled={updating}
+              onClick={editTitle ? closeEditTitle : null}
+              className={
+                matches && value === index + lists?.length
+                  ? classes.tabSavedMobileSelected
+                  : matches
+                  ? classes.tabMobile
+                  : value === index + lists?.length
+                  ? classes.tabSavedSelected
+                  : classes.tab
+              }
+              style={{
+                opacity: value === index + lists?.length ? 1 : undefined,
+                lineHeight: 1.2,
+              }}
+              {...a11yProps(list.listid, index, value)}
+              icon={
+                putData &&
+                value === index + lists?.length &&
+                updating && (
+                  <CircularProgress
+                    size={matches ? "1.2rem" : "1.5rem"}
+                    thickness={5}
+                    className={classes.updating}
+                  />
+                )
+              }
+            />
+          </Link>
+        ))}
+        {/* {hasSavedLists && (
           <Link href={`/lists/saved`} replace passHref>
             <Tab
               label="Saved Lists"
@@ -300,7 +379,7 @@ export default function ListTabs({
               {...a11yProps("saved", lists.length, lists.length)}
             />
           </Link>
-        )}
+        )} */}
       </Tabs>
     )
   );

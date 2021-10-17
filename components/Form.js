@@ -1,5 +1,5 @@
 import { useRouter } from "next/router";
-import { mutate } from "swr";
+import useSWR, { mutate } from "swr";
 import { useSession } from "next-auth/client";
 
 import { makeStyles } from "@material-ui/core/styles";
@@ -64,13 +64,30 @@ export default function Form({
   const classes = useStyles();
   const contentType = "application/json";
   const router = useRouter();
+  var uid;
   var { id } = router.query;
-  if (Array.isArray(id)) id = id[0];
+  if (Array.isArray(id)) {
+    uid = id[1] ? id[1] : "";
+    id = id[0];
+  }
   const matches = useMediaQuery("(max-width:1024px)");
   const matches2 = useMediaQuery("(max-width:768px)");
 
-  const [session, loading] = useSession();
+  const [session] = useSession();
   const email = session?.user?.email;
+  const auth = list?.user ? session && list?.user?.email === email : true;
+
+  const { data: savedList, error: error2 } = useSWR(
+    newList || newTab ? null : !auth && id ? `/api/lists/saved/${id}` : null
+  );
+  if (error2) console.error(error2);
+
+  React.useEffect(() => {
+    if (error2) {
+      setMessage("This list has been removed");
+    }
+    // eslint-disable-next-line
+  }, [error2]);
 
   const newMovie = React.useRef(false);
   const [updating, setUpdating] = React.useState(false);
@@ -88,7 +105,7 @@ export default function Form({
         title: list.title,
         movies: list.movies,
         private: list.private,
-        emails: list.emails,
+        emails: savedList ? savedList.emails : list.emails,
       });
 
       if (newMovie.current) newMovie.current = false;
@@ -97,17 +114,20 @@ export default function Form({
   }, [list]);
 
   React.useEffect(() => {
-    if (
-      !newList &&
-      (form.private !== list.private ||
-        form.emails !== list.emails ||
-        movies !== list.movies)
-    ) {
+    if (!newList && (form.private !== list.private || movies !== list.movies)) {
       setUpdating(true);
-      putData(form);
+      putData({ private: form.private, movies });
     }
+
+    if (savedList && savedList.title !== form.title) {
+      setUpdating(true);
+      updateSavedList({
+        title: form.title,
+      });
+    }
+
     // eslint-disable-next-line
-  }, [form.private, form.emails, movies]);
+  }, [form.private, form.emails, movies, form.title]);
 
   React.useEffect(() => {
     updating
@@ -130,8 +150,14 @@ export default function Form({
         throw new Error(res.statusText || res.status);
       }
 
-      mutate("/api/lists");
-      mutate("/api/lists/newuser", newForm);
+      mutate("/api/lists", async (lists) => {
+        if (lists) {
+          mutate("/api/lists/newuser", async (data) => {
+            return { ...data, id: lists[0]?.listid };
+          });
+        }
+        return lists;
+      });
       setUpdating(false);
       router.push("/lists");
     } catch (error) {
@@ -156,6 +182,32 @@ export default function Form({
       }
 
       await mutate("/api/lists");
+      await mutate(`/api/lists/${id}`);
+      setTimeout(() => {
+        setUpdating(false);
+      }, 500);
+    } catch (error) {
+      setMessage(`${error.message} - Failed to update list, please try again.`);
+      setUpdating(false);
+    }
+  };
+
+  const updateSavedList = async (list) => {
+    try {
+      const res = await fetch(`/api/lists/saved/${id}`, {
+        method: "PUT",
+        headers: {
+          Accept: contentType,
+          "Content-Type": contentType,
+        },
+        body: JSON.stringify(list),
+      });
+
+      if (!res.ok) {
+        throw new Error(res.status);
+      }
+
+      await mutate(`/api/lists/saved/${id}`);
       await mutate(`/api/lists/${id}`);
       setTimeout(() => {
         setUpdating(false);
@@ -232,12 +284,25 @@ export default function Form({
       postEmail({
         email: email,
         name: session?.user?.name,
+        listid: id ? id : "",
+        uid: uid ? uid : "",
       });
+      !newList
+        ? auth
+          ? putData({ emails: value })
+          : updateSavedList({ emails: value })
+        : null;
     } else if (target.name === "emails" && !target.checked) {
       setUpdating(true);
       deleteEmail({
         email: email,
+        listid: id ? id : "",
       });
+      !newList
+        ? auth
+          ? putData({ emails: value })
+          : updateSavedList({ emails: value })
+        : null;
     }
   };
 
@@ -373,6 +438,7 @@ export default function Form({
           setUpdating={setUpdating}
           putData={putData}
           calendar={calendar}
+          title={form.title}
         />
       )}
       <TabPanel
@@ -388,6 +454,7 @@ export default function Form({
         moveMovie={moveMovie}
         addingMovie={newMovie.current}
         calendar={calendar}
+        emails={form.emails}
       />
     </>
   ) : (

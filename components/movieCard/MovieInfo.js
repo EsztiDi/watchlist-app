@@ -1,3 +1,5 @@
+import { useSession } from "next-auth/client";
+
 import getLocalDate from "../../utils/getLocalDate";
 
 import { makeStyles } from "@material-ui/core/styles";
@@ -65,7 +67,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function MovieInfo({ movie, listID }) {
+export default function MovieInfo({ movie, listID, user }) {
   var { id, title, release_date, year, locale, media_type, details } = movie;
 
   if (details) {
@@ -124,6 +126,9 @@ export default function MovieInfo({ movie, listID }) {
   const contentType = "application/json";
   const isMounted = React.useRef(null);
 
+  const [session] = useSession();
+  const auth = user ? session && user?.email === session?.user?.email : false;
+
   const [date, setDate] = React.useState("");
   const [loc, setLoc] = React.useState("");
 
@@ -150,7 +155,7 @@ export default function MovieInfo({ movie, listID }) {
         .then((res) => res.json())
         .then(async (res) => {
           if (res.data && locale !== res.data) {
-            if (window.location.pathname.includes("/lists/")) {
+            if (auth) {
               await fetch("/api/account/locale", {
                 method: "PUT",
                 headers: {
@@ -176,14 +181,14 @@ export default function MovieInfo({ movie, listID }) {
         });
     };
 
-    if (movie.media_type === "movie") checkProps();
+    if (movie.media_type === "movie" && auth !== undefined) checkProps();
 
     return () => {
       controller.abort();
       isMounted.current = false;
     };
     // eslint-disable-next-line
-  }, []);
+  }, [auth]);
 
   React.useEffect(() => {
     var list1 = document.getElementById(`${id}-directors`);

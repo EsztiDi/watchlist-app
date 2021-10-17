@@ -86,69 +86,69 @@ export default function ListDetails({
   const contentType = "application/json";
 
   const [updating, setUpdating] = React.useState(false);
-  const [errorCheck, setError] = React.useState(false);
+  // const [errorCheck, setError] = React.useState(false);
   const [session, loading] = useSession();
   const router = useRouter();
 
   const { data: lists, error } = useSWR(session ? "/api/lists/saved" : null);
   if (error) console.error(error);
 
-  var { data: origList, error: error2 } = useSWR(
-    errorCheck ? null : listID ? `/api/lists/${listID}` : null
-  );
-  if (error2) {
-    console.error(error2);
-    setError(true);
-  }
+  // var { data: origList, error: error2 } = useSWR(
+  //   errorCheck ? null : listID ? `/api/lists/${listID}` : null
+  // );
+  // if (error2) {
+  //   console.error(error2);
+  //   setError(true);
+  // }
 
   const sameUser = session && creator?.email === session?.user?.email;
   const saved = lists?.map((list) => list.listid).includes(listID);
 
-  React.useEffect(() => {
-    if (window.location.pathname.includes("/lists/") && origList) {
-      const updateList = async (list) => {
-        try {
-          const res = await fetch("/api/lists/saved/update", {
-            method: "PUT",
-            headers: {
-              Accept: contentType,
-              "Content-Type": contentType,
-            },
-            body: JSON.stringify(list),
-          });
+  // React.useEffect(() => {
+  //   if (window.location.pathname.includes("/lists/") && origList) {
+  //     const updateList = async (list) => {
+  //       try {
+  //         const res = await fetch("/api/lists/saved", {
+  //           method: "PUT",
+  //           headers: {
+  //             Accept: contentType,
+  //             "Content-Type": contentType,
+  //           },
+  //           body: JSON.stringify(list),
+  //         });
 
-          if (!res.ok) {
-            throw new Error(res.status);
-          }
-          console.log("update");
-          mutate("/api/lists/saved");
-        } catch (error) {
-          console.error(error);
-        }
-      };
+  //         if (!res.ok) {
+  //           throw new Error(res.status);
+  //         }
 
-      var origMovies = origList.movies
-        ?.sort((a, b) => a.position - b.position)
-        .map((movie) => {
-          return {
-            title: movie.title,
-            poster_path: movie.poster_path,
-            position: movie.position,
-          };
-        });
+  //         mutate("/api/lists/saved");
+  //       } catch (error) {
+  //         console.error(error);
+  //       }
+  //     };
 
-      if (
-        origList.title !== title ||
-        JSON.stringify(origMovies) !== JSON.stringify(movies)
-      ) {
-        updateList({
-          id: listID,
-          list: { title: origList.title, movies: origMovies },
-        });
-      }
-    }
-    // eslint-disable-next-line
-  }, [origList]);
+  //     var origMovies = origList.movies
+  //       ?.sort((a, b) => a.position - b.position)
+  //       .map((movie) => {
+  //         return {
+  //           title: movie.title,
+  //           poster_path: movie.poster_path,
+  //           position: movie.position,
+  //         };
+  //       });
+
+  //     if (
+  //       origList.title !== title ||
+  //       JSON.stringify(origMovies) !== JSON.stringify(movies)
+  //     ) {
+  //       updateList({
+  //         id: listID,
+  //         list: { title: origList.title, movies: origMovies },
+  //       });
+  //     }
+  //   }
+  //   // eslint-disable-next-line
+  // }, [origList]);
 
   const handleMouse = () => {
     handleShowDetails();
@@ -215,7 +215,8 @@ export default function ListDetails({
           listid: listID,
           title,
           creator,
-          movies,
+          emails: false,
+          // movies,
         });
       }
     }
@@ -234,14 +235,14 @@ export default function ListDetails({
           </Typography>
         </a>
       </Link>
-      {errorCheck && (
+      {/* {errorCheck && (
         <Typography
           variant="caption"
           style={{ textTransform: "uppercase", fontSize: "0.7rem" }}
         >
           (deleted)
         </Typography>
-      )}
+      )} */}
       <Typography variant="subtitle1">By {name || "Nameless"}</Typography>
       <ul>
         {movies.map((movie, index) => {

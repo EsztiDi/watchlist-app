@@ -24,14 +24,14 @@ export default function Movies({
   setMessage,
 }) {
   const classes = useStyles();
-  var title;
+  var title, user;
 
   const { data: list, error } = useSWR(listID ? `/api/lists/${listID}` : null, {
     refreshInterval: 2000,
   });
   if (error) console.error(error);
   if (list) {
-    ({ movies, title } = list);
+    ({ movies, title, user } = list);
   }
 
   return !movies ? (
@@ -45,6 +45,7 @@ export default function Movies({
           movie={movie}
           listID={listID}
           listTitle={title}
+          user={user}
           index={index}
           moviesLength={movies.length}
           deleteMovie={deleteMovie}

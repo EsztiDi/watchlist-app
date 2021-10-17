@@ -11,6 +11,14 @@ const ReleasesemailSchema = new mongoose.Schema(
       type: String,
       trim: true,
     },
+    listid: {
+      type: String,
+      trim: true,
+    },
+    uid: {
+      type: String,
+      trim: true,
+    },
   },
   {
     timestamps: true,

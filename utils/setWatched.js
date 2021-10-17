@@ -13,7 +13,7 @@ export default async function setWatched(movieID, watched, tv, listID) {
   ).catch((err) => console.error(err));
 
   if (!updatedList) {
-    console.error(`List not found - ${listID}`);
+    console.error(`setWatched - List not found - ${listID}`);
   }
 
   // Changing all seasons and episodes to "watched" if tv show
@@ -46,7 +46,7 @@ export default async function setWatched(movieID, watched, tv, listID) {
     ).catch((err) => console.error(err));
 
     if (!updatedList2) {
-      console.error(`List not found - ${listID}`);
+      console.error(`setWatched - List not found - ${listID}`);
     }
   }
   return updatedList;

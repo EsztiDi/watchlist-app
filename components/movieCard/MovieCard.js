@@ -91,6 +91,7 @@ export default function MovieCard({
   movie,
   listID,
   listTitle,
+  user,
   index,
   moviesLength,
   deleteMovie,
@@ -244,7 +245,7 @@ export default function MovieCard({
             )}
           </Typography>
 
-          <MovieInfo movie={movie} listID={listID} />
+          <MovieInfo movie={movie} listID={listID} user={user} />
           <Overview overview={overview} movieCard={true} />
         </CardContent>
         {deleteMovie && (
