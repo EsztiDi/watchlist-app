@@ -319,7 +319,9 @@ export default function ListTabs({
             key={list._id}
             href={
               calendar
-                ? `/lists/calendar/${list.listid}`
+                ? `/lists/calendar/${list.listid}${
+                    list.uid ? `/${list.uid}` : ""
+                  }`
                 : `/lists/${list.listid}${list.uid ? `/${list.uid}` : ""}`
             }
             replace

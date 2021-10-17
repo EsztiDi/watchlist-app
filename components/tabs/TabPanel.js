@@ -226,7 +226,11 @@ export default function TabPanel(props) {
             <>
               {!matches ? (
                 calendar ? (
-                  <Link href={`/lists/${listID}`} replace passHref>
+                  <Link
+                    href={`/lists/${listID}${ids.length > 1 ? `/${uid}` : ""}`}
+                    replace
+                    passHref
+                  >
                     <IconButton
                       aria-label="list view"
                       title="List view"
@@ -238,7 +242,13 @@ export default function TabPanel(props) {
                     </IconButton>
                   </Link>
                 ) : (
-                  <Link href={`/lists/calendar/${listID}`} replace passHref>
+                  <Link
+                    href={`/lists/calendar/${listID}${
+                      ids.length > 1 ? `/${uid}` : ""
+                    }`}
+                    replace
+                    passHref
+                  >
                     <IconButton
                       id="calendar"
                       aria-label="calendar view"
@@ -339,7 +349,11 @@ export default function TabPanel(props) {
               />
               {matches ? (
                 calendar ? (
-                  <Link href={`/lists/${listID}`} replace passHref>
+                  <Link
+                    href={`/lists/${listID}${ids.length > 1 ? `/${uid}` : ""}`}
+                    replace
+                    passHref
+                  >
                     <IconButton
                       aria-label="list view"
                       title="List view"
@@ -351,7 +365,13 @@ export default function TabPanel(props) {
                     </IconButton>
                   </Link>
                 ) : (
-                  <Link href={`/lists/calendar/${listID}`} replace passHref>
+                  <Link
+                    href={`/lists/calendar/${listID}${
+                      ids.length > 1 ? `/${uid}` : ""
+                    }`}
+                    replace
+                    passHref
+                  >
                     <IconButton
                       id="calendar"
                       aria-label="calendar view"
@@ -384,7 +404,13 @@ export default function TabPanel(props) {
                 onClose={handleOpenShare}
               />
               <Link
-                href={calendar ? `/list/calendar/${listID}` : `/list/${listID}`}
+                href={
+                  calendar
+                    ? `/list/calendar/${listID}${
+                        ids.length > 1 ? `/${uid}` : ""
+                      }`
+                    : `/list/${listID}${ids.length > 1 ? `/${uid}` : ""}`
+                }
                 passHref
               >
                 <IconButton
