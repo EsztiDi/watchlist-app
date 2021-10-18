@@ -42,15 +42,15 @@ export default function ListPanel({ setMessage }) {
             {
               title: "Your watchlists",
               element: document.querySelector("#list-tabs"),
-              intro: `You will find all the watchlists you create here as well as your <b>saved lists</b> made by others.<br/><br/>
+              intro: `You will find all the watchlists you create here as well as any <b>saved lists</b> that others made.<br/><br/>
               You can change their <b>order</b> with the arrows and the <b>title</b> with the pen.`,
             },
             {
               title: "The Watched list",
               element: document.querySelector("a[data-id='watched-tab']"),
               intro: `The <b>Watched</b> list is different from other lists.<br/><br/>
-              Anything you add to it will be marked "watched", and anything you set "watched" will be added to the list. Just click the tick on the poster. ✅<br/><br/>
-              If you have a tv show on this list that has new episodes you haven't marked as watched, you'll see a "<b>NEW</b>" badge.`,
+              Anything you add to it will be marked "watched", and anything you set "watched" will be added to the list. Just click the tick on the movie poster. ✅<br/><br/>
+              If you have a tv show on this list that has new episodes you haven't marked as watched, you'll see a "<b>NEW</b>" badge at their title.`,
             },
             {
               title: "Privacy setting",

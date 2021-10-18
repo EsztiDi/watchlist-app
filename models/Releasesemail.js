@@ -19,6 +19,10 @@ const ReleasesemailSchema = new mongoose.Schema(
       type: String,
       trim: true,
     },
+    savedList: {
+      type: Boolean,
+      required: true,
+    },
   },
   {
     timestamps: true,

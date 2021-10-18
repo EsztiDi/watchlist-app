@@ -181,15 +181,10 @@ export default function ListPage({
     }
   };
 
-  const deleteList = async (list) => {
+  const deleteList = async (id) => {
     try {
-      const res = await fetch(`/api/lists/saved`, {
+      const res = await fetch(`/api/lists/saved/${id}`, {
         method: "DELETE",
-        headers: {
-          Accept: contentType,
-          "Content-Type": contentType,
-        },
-        body: JSON.stringify(list),
       });
 
       if (!res.ok) {
@@ -198,9 +193,8 @@ export default function ListPage({
 
       mutate("/api/lists/saved", async (lists) => {
         const ids = lists.map((el) => el.listid);
-        const index =
-          ids.indexOf(list.id) - 1 >= 0 ? ids.indexOf(list.id) - 1 : 0;
-        const filteredLists = lists.filter((el) => el.listid !== list.id);
+        const index = ids.indexOf(id) - 1 >= 0 ? ids.indexOf(id) - 1 : 0;
+        const filteredLists = lists.filter((el) => el.listid !== id);
         mutate("/api/lists/newuser", async (data) => {
           return {
             ...data,
@@ -211,7 +205,7 @@ export default function ListPage({
             uid: filteredLists[index]?.uid ? filteredLists[index]?.uid : "",
           };
         });
-        return lists.filter((el) => el.listid !== list.id);
+        return lists.filter((el) => el.listid !== id);
       });
       setUpdating(false);
       setAlert("List removed");
@@ -228,7 +222,7 @@ export default function ListPage({
     if (session) {
       setUpdating(true);
       if (saved) {
-        deleteList({ id: id[0] });
+        deleteList(id[0]);
       } else {
         saveList({
           listid: id[0],

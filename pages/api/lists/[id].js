@@ -110,7 +110,9 @@ export default async function handler(req, res) {
           );
           return res.status(400).json({ success: false });
         }
+
         if (deletedList.emails) {
+          // Check if subscription has listid attached and delete that or one without
           const email = await Releasesemail.find({
             email: deletedList?.user?.email,
             listid: id,
@@ -134,6 +136,19 @@ export default async function handler(req, res) {
             return res.status(400).json({ success: false });
           }
         }
+
+        // Deleting list for others if saved
+        await Savedlist.deleteMany({
+          listid: id,
+          "creator.email": session?.user?.email,
+        }).catch((err) => {
+          console.error(
+            `Couldn't delete saved list for others - user: ${JSON.stringify(
+              user
+            )} - ${JSON.stringify(err)}`
+          );
+          return res.status(400).json({ success: false });
+        });
 
         res.status(200).json({ success: true, data: deletedList });
       } catch (err) {

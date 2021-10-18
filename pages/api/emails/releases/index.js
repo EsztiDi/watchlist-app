@@ -34,6 +34,7 @@ export default async function handler(req, res) {
       break;
     case "DELETE":
       try {
+        // Check if subscription has listid attached and delete that or one without
         const email = await Releasesemail.find(req.body).catch((err) =>
           console.error(err)
         );
@@ -50,12 +51,8 @@ export default async function handler(req, res) {
           }).catch((err) => console.error(err));
         }
 
-        // const deletedEmail = await Releasesemail.findOneAndDelete(
-        //   req.body
-        // ).catch((err) => console.error(err));
         if (!deletedEmail) {
-          console.error(`Email - ${req.body} - not found`);
-          return res.status(400).json({ success: false });
+          console.error(`Email - ${JSON.stringify(req.body)} - not found`);
         }
         res.status(201).json({ success: true, data: deletedEmail });
       } catch (err) {

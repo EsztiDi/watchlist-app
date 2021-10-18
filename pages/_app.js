@@ -218,7 +218,8 @@ export default function MyApp({ Component, pageProps }) {
                       message.includes("saved!") || message.includes("deleted!")
                         ? "success"
                         : message.includes("already on the list") ||
-                          message.includes("ad blocker")
+                          message.includes("ad blocker") ||
+                          message.includes("Create a list")
                         ? "warning"
                         : "error"
                     }

@@ -43,35 +43,37 @@ export default async function handler(req, res) {
       break;
     case "DELETE":
       try {
-        const deletedList = await Savedlist.findOneAndDelete({
+        // Deleting all saved lists
+        const deletedLists = await Savedlist.deleteMany({
           user: session?.user,
-          listid: req.body.id,
         }).catch((err) => console.error(err));
-
-        if (deletedList.emails) {
-          const deletedEmail = await Releasesemail.findOneAndDelete({
-            email: deletedList?.user?.email,
-            listid: req.body.id,
-          }).catch((err) => console.error(err));
-
-          if (!deletedEmail) {
-            console.error(`Email - ${deletedList?.user?.email} - not found`);
-            return res.status(400).json({ success: false });
-          }
-        }
-
-        if (!deletedList) {
+        if (!deletedLists) {
           console.error(
-            `Savedlist ${req.body.id} not found - user: ${JSON.stringify(
+            `Couldn't perform deleteMany() in MongoDB - user: ${JSON.stringify(
               session?.user
             )}`
           );
           return res.status(400).json({ success: false });
         }
-        res.status(200).json({ success: true, data: deletedList });
+
+        // Deleting all subscriptions
+        const deletedEmails = await Releasesemail.deleteMany({
+          email: session?.user?.email,
+          savedList: true,
+        }).catch((err) => console.error(err));
+
+        if (!deletedEmails) {
+          console.error(
+            `Couldn't perform deleteMany() for emails in MongoDB - user: ${JSON.stringify(
+              session?.user
+            )}`
+          );
+        }
+
+        res.status(200).json({ success: true, data: deletedLists });
       } catch (err) {
         console.error(
-          `Couldn't delete list ${req.body.id} - user: ${JSON.stringify(
+          `Couldn't delete lists - user: ${JSON.stringify(
             session?.user
           )} - ${JSON.stringify(err)}`
         );

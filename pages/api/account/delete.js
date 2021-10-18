@@ -58,6 +58,18 @@ export default async function handler(req, res) {
                 return res.status(400).json({ success: false });
               });
 
+              // Deleting lists for others if saved
+              await Savedlist.deleteMany({
+                "creator.email": session?.user?.email,
+              }).catch((err) => {
+                console.error(
+                  `Couldn't delete saved lists for others - user: ${JSON.stringify(
+                    user
+                  )} - ${JSON.stringify(err)}`
+                );
+                return res.status(400).json({ success: false });
+              });
+
               // Deleting all user sessions
               mongoose.connection.db.collection("sessions", (err, sessions) => {
                 sessions

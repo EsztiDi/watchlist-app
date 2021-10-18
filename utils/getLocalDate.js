@@ -51,15 +51,13 @@ export default async function getLocalDate(movie, loc = null) {
           if (date.type === 5) dates.push(date);
         });
 
-        release_date = dates[0]?.release_date;
-
-        if (release_date) {
-          release_date = new Date(release_date).toLocaleDateString("en-GB", {
-            day: "numeric",
-            month: "short",
-            year: "numeric",
-          });
-        }
+        release_date = dates[0]?.release_date
+          ? new Date(dates[0]?.release_date).toLocaleDateString("en-GB", {
+              day: "numeric",
+              month: "short",
+              year: "numeric",
+            })
+          : "";
       })
       .catch((err) => {
         console.error(

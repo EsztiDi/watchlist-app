@@ -74,9 +74,7 @@ export default function ListPanels({ setMessage, calendar = false }) {
   const matches2 = useMediaQuery("(max-width:480px)");
 
   var { data: list, error } = useSWR(id ? `/api/lists/${id}` : null);
-  if (error) {
-    console.error(error);
-  }
+  if (error) console.error(error);
 
   React.useEffect(() => {
     if (error) {

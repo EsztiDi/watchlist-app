@@ -57,15 +57,10 @@ export default function DeleteDialog({
     }
   };
 
-  const deleteSavedList = async (list) => {
+  const deleteSavedList = async (id) => {
     try {
-      const res = await fetch(`/api/lists/saved`, {
+      const res = await fetch(`/api/lists/saved/${id}`, {
         method: "DELETE",
-        headers: {
-          Accept: contentType,
-          "Content-Type": contentType,
-        },
-        body: JSON.stringify(list),
       });
 
       if (!res.ok) {
@@ -74,9 +69,8 @@ export default function DeleteDialog({
 
       mutate("/api/lists/saved", async (lists) => {
         const ids = lists.map((el) => el.listid);
-        const index =
-          ids.indexOf(list.id) - 1 >= 0 ? ids.indexOf(list.id) - 1 : 0;
-        const filteredLists = lists.filter((el) => el.listid !== list.id);
+        const index = ids.indexOf(id) - 1 >= 0 ? ids.indexOf(id) - 1 : 0;
+        const filteredLists = lists.filter((el) => el.listid !== id);
         mutate("/api/lists/newuser", async (data) => {
           return {
             ...data,
@@ -84,7 +78,7 @@ export default function DeleteDialog({
             uid: filteredLists[index]?.uid,
           };
         });
-        return lists.filter((el) => el.listid !== list.id);
+        return lists.filter((el) => el.listid !== id);
       });
       setUpdating(false);
       router.push("/lists");
@@ -95,7 +89,7 @@ export default function DeleteDialog({
   };
 
   const handleClick = () => {
-    auth ? deleteList(listID) : deleteSavedList({ id: listID });
+    auth ? deleteList(listID) : deleteSavedList(listID);
   };
 
   return (

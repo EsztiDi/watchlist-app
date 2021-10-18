@@ -111,7 +111,7 @@ export default function Form({
       if (newMovie.current) newMovie.current = false;
     }
     // eslint-disable-next-line
-  }, [list]);
+  }, [list, savedList]);
 
   React.useEffect(() => {
     if (!newList && (form.private !== list.private || movies !== list.movies)) {
@@ -286,6 +286,7 @@ export default function Form({
         name: session?.user?.name,
         listid: id ? id : "",
         uid: uid ? uid : "",
+        savedList: auth ? false : true,
       });
       !newList
         ? auth

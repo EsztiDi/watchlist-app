@@ -272,7 +272,7 @@ export default function MovieInfo({ movie, listID, user }) {
             </Typography>
           )}
         </span>
-        {release_date && genres && " ● "}
+        {(release_date || date) && genres && " ● "}
         {genres}{" "}
         {vote_average ? (
           <a

@@ -1,8 +1,10 @@
 module.exports = {
   env: {
     BASE_URL:
-      process.env.NODE_ENV !== "production"
+      process.env.NODE_ENV === "development"
         ? "http://localhost:3000"
+        : process.env.NODE_ENV === "preview"
+        ? "https://mywatchlists.ml"
         : "https://mywatchlists.watch",
     TMDB_API_KEY: "592e824bf5b4f2ff01f370433fa8060e",
     TMDB_BEARER:

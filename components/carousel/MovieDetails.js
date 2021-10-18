@@ -158,7 +158,8 @@ export default function MovieDetails({
     if (!loading && !session) {
       router.push("/login");
     } else if (lists && lists.length === 0) {
-      router.push("/create");
+      setMessage("Create a list first.");
+      // router.push("/create");
     } else {
       setMenuOpen((prevOpen) => !prevOpen);
     }

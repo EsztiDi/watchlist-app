@@ -2,6 +2,7 @@ import { getSession } from "next-auth/client";
 import dbConnect from "../../../utils/dbConnect";
 import Watchlist from "../../../models/Watchlist";
 import Releasesemail from "../../../models/Releasesemail";
+import Savedlist from "../../../models/Savedlist";
 
 export default async function handler(req, res) {
   const { method } = req;
@@ -48,7 +49,7 @@ export default async function handler(req, res) {
 
     case "DELETE":
       try {
-        // Deletes all lists
+        // Deleting all lists
         const deletedLists = await Watchlist.deleteMany({
           user: session?.user,
         }).catch((err) => console.error(err));
@@ -61,8 +62,10 @@ export default async function handler(req, res) {
           return res.status(400).json({ success: false });
         }
 
+        // Deleting all subscriptions
         const deletedEmails = await Releasesemail.deleteMany({
           email: session?.user?.email,
+          savedList: false,
         }).catch((err) => console.error(err));
 
         if (!deletedEmails) {
@@ -72,6 +75,18 @@ export default async function handler(req, res) {
             )}`
           );
         }
+
+        // Deleting lists for others if saved
+        await Savedlist.deleteMany({
+          "creator.email": session?.user?.email,
+        }).catch((err) => {
+          console.error(
+            `Couldn't delete saved lists for others - user: ${JSON.stringify(
+              user
+            )} - ${JSON.stringify(err)}`
+          );
+          return res.status(400).json({ success: false });
+        });
 
         res.status(200).json({
           success: deletedLists.n === deletedLists.deletedCount,

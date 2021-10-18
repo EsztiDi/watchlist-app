@@ -369,19 +369,6 @@ export default function ListTabs({
             />
           </Link>
         ))}
-        {/* {hasSavedLists && (
-          <Link href={`/lists/saved`} replace passHref>
-            <Tab
-              label="Saved Lists"
-              wrapped={matches ? false : true}
-              disableFocusRipple
-              disabled={updating}
-              className={matches ? classes.tabMobile : classes.tab}
-              style={value === lists.length ? { opacity: 1 } : undefined}
-              {...a11yProps("saved", lists.length, lists.length)}
-            />
-          </Link>
-        )} */}
       </Tabs>
     )
   );

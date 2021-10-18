@@ -63,9 +63,14 @@ export default function Account({ setMessage }) {
   const [updatingPrivate, setUpdatingPrivate] = React.useState(false);
   const [updatingEmails, setUpdatingEmails] = React.useState(false);
   const [deletingLists, setDeletingLists] = React.useState(false);
+  const [deletingSavedLists, setDeletingSavedLists] = React.useState(false);
   const [deletingAccount, setDeletingAccount] = React.useState(false);
   var updating =
-    updatingPrivate || updatingEmails || deletingLists || deletingAccount;
+    updatingPrivate ||
+    updatingEmails ||
+    deletingLists ||
+    deletingSavedLists ||
+    deletingAccount;
   const matches = useMediaQuery("(max-width:1024px)");
 
   React.useEffect(() => {
@@ -152,6 +157,37 @@ export default function Account({ setMessage }) {
     }
   };
 
+  const deleteSavedLists = async () => {
+    try {
+      const res = await fetch("/api/lists/saved", {
+        method: "DELETE",
+      });
+
+      if (!res.ok) {
+        throw new Error(res.status);
+      }
+
+      const { success } = await res.json();
+
+      setMessage(
+        success
+          ? "Saved lists deleted!"
+          : "There was an error, please try again."
+      );
+      setDeletingSavedLists(false);
+    } catch (error) {
+      setMessage(`${error.message} - Failed to delete saved lists.}`);
+      setDeletingSavedLists(false);
+    }
+  };
+
+  const handleSavedDelete = () => {
+    if (confirm("Are you sure?")) {
+      setDeletingSavedLists(true);
+      deleteSavedLists();
+    }
+  };
+
   return (
     session && (
       <>
@@ -220,9 +256,31 @@ export default function Account({ setMessage }) {
               <Divider />
               <Grid item>
                 <Typography component="span">
-                  Delete <b>ALL</b> your lists:
+                  Delete ALL <b>SAVED</b> lists:
                   <Typography variant="caption" component="p">
-                    (Aaaaall of them.)
+                    (Lists others created and you saved.)
+                  </Typography>
+                </Typography>
+                <Button
+                  variant="contained"
+                  color="secondary"
+                  disableFocusRipple
+                  disabled={deletingSavedLists}
+                  onClick={handleSavedDelete}
+                >
+                  {deletingSavedLists ? (
+                    <CircularProgress size="1.5rem" thickness={5} />
+                  ) : (
+                    "Delete saved lists"
+                  )}
+                </Button>
+              </Grid>
+              <Divider />
+              <Grid item>
+                <Typography component="span">
+                  Delete ALL <b>YOUR</b> lists:
+                  <Typography variant="caption" component="p">
+                    (Aaaaall the lists created by you.)
                   </Typography>
                 </Typography>
                 <Button
@@ -235,7 +293,7 @@ export default function Account({ setMessage }) {
                   {deletingLists ? (
                     <CircularProgress size="1.5rem" thickness={5} />
                   ) : (
-                    <em>Delete all lists</em>
+                    <em>Delete your lists</em>
                   )}
                 </Button>
               </Grid>

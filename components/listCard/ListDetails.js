@@ -179,15 +179,10 @@ export default function ListDetails({
     }
   };
 
-  const deleteList = async (list) => {
+  const deleteList = async (id) => {
     try {
-      const res = await fetch(`/api/lists/saved`, {
+      const res = await fetch(`/api/lists/saved/${id}`, {
         method: "DELETE",
-        headers: {
-          Accept: contentType,
-          "Content-Type": contentType,
-        },
-        body: JSON.stringify(list),
       });
 
       if (!res.ok) {
@@ -209,7 +204,7 @@ export default function ListDetails({
     if (session) {
       setUpdating(true);
       if (saved) {
-        deleteList({ id: listID });
+        deleteList(listID);
       } else {
         saveList({
           listid: listID,
