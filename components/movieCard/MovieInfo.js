@@ -82,6 +82,7 @@ export default function MovieInfo({ movie, listID, user }) {
       runtime,
     } = details;
   }
+  release_date = release_date || "No date";
   var { imdb_id } = external_ids;
   var countries = [
     "AU",

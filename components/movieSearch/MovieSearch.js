@@ -1,3 +1,4 @@
+import { useRouter } from "next/router";
 import getDetails from "../../utils/getDetails";
 
 import TextField from "@material-ui/core/TextField";
@@ -29,11 +30,32 @@ export default function MovieSearch({
   const [message, setMessage] = React.useState("");
   const matches = useMediaQuery("(max-width:1024px)");
   const matches2 = useMediaQuery("(max-width:350px)");
+  const router = useRouter();
 
   React.useEffect(() => {
-    loading
-      ? window.addEventListener("beforeunload", unloadAlert)
-      : window.removeEventListener("beforeunload", unloadAlert);
+    const beforeRouteHandler = (url) => {
+      if (
+        router.pathname !== url &&
+        !confirm("Changes that you made may not be saved.")
+      ) {
+        router.events.emit("routeChangeError");
+        // tslint:disable-next-line: no-string-throw
+        throw `Route change to "${url}" was aborted (this error can be safely ignored). See https://github.com/zeit/next.js/issues/2476.`;
+      }
+    };
+
+    if (loading) {
+      window.addEventListener("beforeunload", unloadAlert);
+      router.events.on("routeChangeStart", beforeRouteHandler);
+    } else {
+      window.removeEventListener("beforeunload", unloadAlert);
+      router.events.off("routeChangeStart", beforeRouteHandler);
+    }
+    return () => {
+      window.removeEventListener("beforeunload", unloadAlert);
+      router.events.off("routeChangeStart", beforeRouteHandler);
+    };
+    // eslint-disable-next-line
   }, [loading]);
 
   React.useEffect(() => {

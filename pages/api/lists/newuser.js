@@ -34,7 +34,7 @@ export default async function handler(req, res) {
               { user: session?.user },
               "listid uid"
             ).sort({
-              createdAt: 1,
+              position: -1,
             });
             hasSavedLists = results2.length > 0;
           }

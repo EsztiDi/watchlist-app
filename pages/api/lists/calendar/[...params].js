@@ -25,7 +25,7 @@ const getDays = async (year, month, moviesList, loc) => {
   moviesList.length > 0 &&
     (await Promise.all(
       moviesList.map(async (movie) => {
-        if (movie.media_type === "tv" && movie.seasons.length > 0) {
+        if (movie.media_type === "tv" && movie.seasons?.length > 0) {
           movie.seasons.forEach((season) => {
             season.episodes.length > 0 &&
               season.episodes.forEach((episode) => {
@@ -47,6 +47,7 @@ const getDays = async (year, month, moviesList, loc) => {
           let releaseDate, release_date;
           if (movie.locale !== loc) {
             ({ release_date } = await getLocalDate(movie, loc));
+
             releaseDate = new Date(
               release_date ? release_date : movie.release_date
             );

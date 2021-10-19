@@ -130,11 +130,6 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const unloadAlert = (ev) => {
-  ev.preventDefault();
-  ev.returnValue = "";
-};
-
 export default function ListsCarousel({ setMessage }) {
   const classes = useStyles();
 
@@ -152,7 +147,7 @@ export default function ListsCarousel({ setMessage }) {
       sliced.push(lists.slice(i, matches2 ? i + 1 : matches ? i + 2 : i + 4));
     }
   }
-
+  console.log(sliced);
   // For list search
   const [loading, setLoading] = React.useState(false);
   const [query, setQuery] = React.useState("");
@@ -165,12 +160,6 @@ export default function ListsCarousel({ setMessage }) {
       sliced.push(results.slice(i, matches2 ? i + 1 : matches ? i + 2 : i + 4));
     }
   }
-
-  React.useEffect(() => {
-    loading
-      ? window.addEventListener("beforeunload", unloadAlert)
-      : window.removeEventListener("beforeunload", unloadAlert);
-  }, [loading]);
 
   const updateQuery = (ev) => {
     setQuery(ev.target.value);

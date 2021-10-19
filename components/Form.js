@@ -130,9 +130,29 @@ export default function Form({
   }, [form.private, form.emails, movies, form.title]);
 
   React.useEffect(() => {
-    updating
-      ? window.addEventListener("beforeunload", unloadAlert)
-      : window.removeEventListener("beforeunload", unloadAlert);
+    const beforeRouteHandler = (url) => {
+      if (
+        router.pathname !== url &&
+        !confirm("Changes that you made may not be saved.")
+      ) {
+        router.events.emit("routeChangeError");
+        // tslint:disable-next-line: no-string-throw
+        throw `Route change to "${url}" was aborted (this error can be safely ignored). See https://github.com/zeit/next.js/issues/2476.`;
+      }
+    };
+
+    if (updating) {
+      window.addEventListener("beforeunload", unloadAlert);
+      router.events.on("routeChangeStart", beforeRouteHandler);
+    } else {
+      window.removeEventListener("beforeunload", unloadAlert);
+      router.events.off("routeChangeStart", beforeRouteHandler);
+    }
+    return () => {
+      window.removeEventListener("beforeunload", unloadAlert);
+      router.events.off("routeChangeStart", beforeRouteHandler);
+    };
+    // eslint-disable-next-line
   }, [updating]);
 
   const postData = async (newForm) => {
@@ -183,6 +203,8 @@ export default function Form({
 
       await mutate("/api/lists");
       await mutate(`/api/lists/${id}`);
+      await mutate("/api/lists/saved");
+      await mutate(`/api/lists/saved/${id}`);
       setTimeout(() => {
         setUpdating(false);
       }, 500);
@@ -207,8 +229,10 @@ export default function Form({
         throw new Error(res.status);
       }
 
-      await mutate(`/api/lists/saved/${id}`);
+      await mutate("/api/lists");
       await mutate(`/api/lists/${id}`);
+      await mutate("/api/lists/saved");
+      await mutate(`/api/lists/saved/${id}`);
       setTimeout(() => {
         setUpdating(false);
       }, 500);
@@ -438,6 +462,7 @@ export default function Form({
           updating={updating}
           setUpdating={setUpdating}
           putData={putData}
+          updateSavedList={updateSavedList}
           calendar={calendar}
           title={form.title}
         />

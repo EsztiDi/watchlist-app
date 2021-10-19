@@ -19,7 +19,7 @@ export default function formatData(movie) {
     var season_number =
       next_episode_to_air?.season_number || last_episode_to_air?.season_number;
 
-  // Year for the title part
+  // Year for the title part and TV shows
   var year = release_date
     ? new Date(release_date).getFullYear()
     : "No release date";
@@ -40,11 +40,10 @@ export default function formatData(movie) {
         month: "short",
         year: "numeric",
       })
-    : "No date";
+    : "";
 
   // Getting directors or creators
   var directors = credits.crew.filter((member) => member.job === "Director");
-  // }
   directors = getNames(directors); // Returns an array with the names
 
   var creators, cast;

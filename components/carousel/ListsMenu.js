@@ -1,3 +1,4 @@
+import { useRouter } from "next/router";
 import useSWR, { mutate } from "swr";
 
 import { makeStyles } from "@material-ui/core/styles";
@@ -40,8 +41,10 @@ export default function ListsMenu({
   setMessage,
 }) {
   const classes = useStyles();
+  const router = useRouter();
   const contentType = "application/json";
   movieID = movieID ? movieID : movie.id;
+
   const [updating, setUpdating] = React.useState(false);
   const [added, setAdded] = React.useState(false);
   const [value, setValue] = React.useState("");
@@ -57,10 +60,35 @@ export default function ListsMenu({
     };
   }, []);
 
+  React.useEffect(() => {
+    const beforeRouteHandler = (url) => {
+      if (
+        router.pathname !== url &&
+        !confirm("Changes that you made may not be saved.")
+      ) {
+        router.events.emit("routeChangeError");
+        // tslint:disable-next-line: no-string-throw
+        throw `Route change to "${url}" was aborted (this error can be safely ignored). See https://github.com/zeit/next.js/issues/2476.`;
+      }
+    };
+
+    if (updating) {
+      window.addEventListener("beforeunload", unloadAlert);
+      router.events.on("routeChangeStart", beforeRouteHandler);
+    } else {
+      window.removeEventListener("beforeunload", unloadAlert);
+      router.events.off("routeChangeStart", beforeRouteHandler);
+    }
+    return () => {
+      window.removeEventListener("beforeunload", unloadAlert);
+      router.events.off("routeChangeStart", beforeRouteHandler);
+    };
+    // eslint-disable-next-line
+  }, [updating]);
+
   const add = async (id, idx) => {
     setUpdating(true);
     setValue(idx);
-    window.addEventListener("beforeunload", unloadAlert);
 
     try {
       const res = await fetch(`/api/lists/add/${id}`, {
@@ -79,15 +107,12 @@ export default function ListsMenu({
       }
       const { success } = await res.json();
 
-      window.removeEventListener("beforeunload", unloadAlert);
-
       await mutate(`/api/lists/${id}`);
       await mutate("/api/lists");
 
       if (isMounted.current && success) setAdded(true);
       if (isMounted.current) setUpdating(false);
     } catch (error) {
-      window.removeEventListener("beforeunload", unloadAlert);
       setMessage(`${error.message} - Failed to update, please try again.`);
       setUpdating(false);
     }

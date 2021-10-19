@@ -49,7 +49,7 @@ export default function ListCard({ list, index, setMessage }) {
         onTouchStart={touch && !show ? handleShowDetails : undefined}
         data-index={index}
       >
-        {list.movies.length > 0
+        {list.movies?.length > 0
           ? list.movies
               .sort((a, b) => a.position - b.position)
               .slice(0, 4)
@@ -90,14 +90,9 @@ export default function ListCard({ list, index, setMessage }) {
               );
             })}
         <ListDetails
-          listID={list.listid ? list.listid : list._id}
-          uid={list.uid}
+          listID={list._id}
           title={list.title}
-          creator={
-            list.creator
-              ? list.creator
-              : { name: list.user.name, email: list.user.email }
-          }
+          creator={{ name: list.user.name, email: list.user.email }}
           movies={list.movies
             .sort((a, b) => a.position - b.position)
             .map((movie) => {

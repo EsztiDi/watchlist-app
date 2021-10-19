@@ -13,7 +13,7 @@ export default async function handler(req, res) {
     case "GET":
       try {
         const lists = await Savedlist.find({ user: session?.user }).sort({
-          createdAt: 1,
+          position: -1,
         });
         res.status(200).json({ success: true, data: lists });
       } catch (err) {
@@ -27,7 +27,18 @@ export default async function handler(req, res) {
       break;
     case "POST":
       try {
+        const lists = await Savedlist.find({ user: session?.user }).sort({
+          position: -1,
+        });
+
+        if (lists.length > 0) {
+          req.body.position = lists[0].position + 1;
+        } else if (req.body.position === undefined) {
+          req.body.position = 0;
+        }
+
         req.body.user = session?.user;
+
         const list = await Savedlist.create(req.body).catch((err) =>
           console.error(err)
         );

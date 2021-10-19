@@ -1,6 +1,7 @@
 import { useSession } from "next-auth/client";
 import { useRouter } from "next/router";
 import Head from "next/head";
+import { mutate } from "swr";
 
 import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
@@ -74,9 +75,29 @@ export default function Account({ setMessage }) {
   const matches = useMediaQuery("(max-width:1024px)");
 
   React.useEffect(() => {
-    updating
-      ? window.addEventListener("beforeunload", unloadAlert)
-      : window.removeEventListener("beforeunload", unloadAlert);
+    const beforeRouteHandler = (url) => {
+      if (
+        router.pathname !== url &&
+        !confirm("Changes that you made may not be saved.")
+      ) {
+        router.events.emit("routeChangeError");
+        // tslint:disable-next-line: no-string-throw
+        throw `Route change to "${url}" was aborted (this error can be safely ignored). See https://github.com/zeit/next.js/issues/2476.`;
+      }
+    };
+
+    if (updating) {
+      window.addEventListener("beforeunload", unloadAlert);
+      router.events.on("routeChangeStart", beforeRouteHandler);
+    } else {
+      window.removeEventListener("beforeunload", unloadAlert);
+      router.events.off("routeChangeStart", beforeRouteHandler);
+    }
+    return () => {
+      window.removeEventListener("beforeunload", unloadAlert);
+      router.events.off("routeChangeStart", beforeRouteHandler);
+    };
+    // eslint-disable-next-line
   }, [updating]);
 
   if (loading) return null;
@@ -139,6 +160,8 @@ export default function Account({ setMessage }) {
         setTimeout(() => {
           router.reload();
         }, 1000);
+      } else {
+        mutate("/api/lists");
       }
     } catch (error) {
       setMessage(
@@ -175,6 +198,7 @@ export default function Account({ setMessage }) {
           : "There was an error, please try again."
       );
       setDeletingSavedLists(false);
+      mutate("/api/lists/saved");
     } catch (error) {
       setMessage(`${error.message} - Failed to delete saved lists.}`);
       setDeletingSavedLists(false);

@@ -50,7 +50,6 @@ export default async function handler(req, res) {
           console.error(`List not found - ${listID}`);
           return res.status(400).json({ success: false });
         }
-        // }
 
         // Set show "watched" if all seasons are watched
         await checkSeasons(session?.user, movieID, listID);

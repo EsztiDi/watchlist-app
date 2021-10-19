@@ -24,13 +24,12 @@ const SavedlistSchema = new mongoose.Schema(
       type: Object,
       required: true,
     },
-    // movies: {
-    //   type: Array,
-    //   required: true,
-    // },
     emails: {
       type: Boolean,
       default: false,
+    },
+    position: {
+      type: Number,
     },
   },
   {

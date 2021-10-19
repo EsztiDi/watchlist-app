@@ -908,7 +908,9 @@ export default function weeklyHTML(lists) {
                       valign="top"
                       width="100%"
                     ><a
-                    href="https://mywatchlists.watch/lists/${list.id}"
+                    href="https://mywatchlists.watch/lists/${list.id}${
+      list.uid ? `/${list.uid}` : ""
+    }"
                     rel="noopener"
                     style="text-decoration: none; color: #000"
                     target="_blank"

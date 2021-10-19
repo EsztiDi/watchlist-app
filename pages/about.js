@@ -81,9 +81,9 @@ export default function About() {
           <Typography>
             This watchlist app is a passion project of mine. Born from the idea
             of having watchlists that are easy to edit and can be shared or even
-            edited together instead of scrolling back in group chats with
-            friends to find the links we sent each other to plan the next movie
-            night. 🎬&nbsp;+&nbsp;🍕
+            edited together with others. Otherwise, it is a lot of scrolling
+            back in group chats with my friends to find the links we sent while
+            planning the next movie night. 🎬&nbsp;+&nbsp;🍕
           </Typography>
           <Typography>
             I&apos;m an office worker by day, aspiring web developer by night

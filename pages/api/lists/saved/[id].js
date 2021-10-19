@@ -37,28 +37,85 @@ export default async function handler(req, res) {
       break;
     case "PUT":
       try {
-        const updatedList = await Savedlist.findOneAndUpdate(
-          {
-            user: session?.user,
-            listid: id,
-          },
-          req.body,
-          {
-            new: true,
-            runValidators: true,
-          }
-        ).catch((err) => console.error(err));
+        console.log(req.body);
+        var list, list2;
+        if (req.body.hasOwnProperty("position")) {
+          const lists = await Savedlist.find(
+            { user: session?.user },
+            "listid position"
+          ).sort({
+            position: -1,
+          });
 
-        if (!updatedList) {
+          var { position } = req.body;
+          const index = lists
+            .map((list) => JSON.stringify(list.listid))
+            .indexOf(JSON.stringify(id));
+          console.log(id, index);
+          const data1 = position < 0 ? { position: -position } : req.body; // "-" only indicates direction, the sign needs to be changed
+          const data2 = { position: lists[index].position }; // Selected list's position for the swap
+          // Selected list
+          list = await Savedlist.findOneAndUpdate(
+            {
+              user: session?.user,
+              listid: id,
+            },
+            data1,
+            {
+              new: true,
+              runValidators: true,
+              timestamps: false,
+            }
+          ).catch((err) => console.error(err));
+          // Adjacent list, id depends on the direction
+          list2 = await Savedlist.findOneAndUpdate(
+            {
+              user: session?.user,
+              listid:
+                position < 0
+                  ? lists[index - 1].listid
+                  : lists[index + 1].listid,
+            },
+            data2,
+            {
+              new: true,
+              runValidators: true,
+              timestamps: false,
+            }
+          ).catch((err) => console.error(err));
+
+          if (!list2) {
+            console.error(
+              `Adjacent savedlist not found for ${id} - user: ${JSON.stringify(
+                session?.user
+              )}`
+            );
+            return res.status(400).json({ success: false });
+          }
+        } else {
+          list = await Savedlist.findOneAndUpdate(
+            {
+              user: session?.user,
+              listid: id,
+            },
+            req.body,
+            {
+              new: true,
+              runValidators: true,
+            }
+          ).catch((err) => console.error(err));
+        }
+
+        if (!list) {
           console.error(
-            `List not found - user: ${JSON.stringify(session?.user)}`
+            `Savedlist not found - user: ${JSON.stringify(session?.user)}`
           );
           return res.status(400).json({ success: false });
         }
-        res.status(200).json({ success: true, data: updatedList });
+        res.status(200).json({ success: true, data: list });
       } catch (err) {
         console.error(
-          `Couldn't update list ${id} - user: ${JSON.stringify(
+          `Couldn't update savedlist ${id} - user: ${JSON.stringify(
             session?.user
           )} - ${JSON.stringify(err)}`
         );

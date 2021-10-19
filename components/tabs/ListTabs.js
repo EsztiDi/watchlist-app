@@ -52,16 +52,6 @@ const useStyles = makeStyles((theme) => ({
       },
     },
   },
-  tabSavedSelected: {
-    fontSize: "0.95rem",
-    minWidth: "100%",
-    minHeight: "3.6rem",
-    paddingLeft: `${theme.spacing(0.75)}px`,
-    "& > :first-child": {
-      display: "grid",
-      gridTemplateColumns: "auto auto",
-    },
-  },
   tabMobile: {
     fontSize: "0.875rem",
     maxWidth: "100%",
@@ -82,16 +72,6 @@ const useStyles = makeStyles((theme) => ({
         justifySelf: "end",
         marginBottom: "3px",
       },
-    },
-  },
-  tabSavedMobileSelected: {
-    fontSize: "0.875rem",
-    maxWidth: "100%",
-    minWidth: "50%",
-    minHeight: "60px",
-    "& > :first-child": {
-      display: "grid",
-      gridTemplateColumns: "auto auto",
     },
   },
   edit: {
@@ -144,8 +124,8 @@ export default function ListTabs({
   updating,
   setUpdating,
   putData,
+  updateSavedList,
   calendar,
-  saved = false,
 }) {
   const classes = useStyles();
   const matches = useMediaQuery("(max-width:1024px)");
@@ -184,6 +164,18 @@ export default function ListTabs({
     setUpdating(true);
     const nextPos = lists[idx + 1].position;
     putData({ position: nextPos });
+  };
+
+  const moveSavedListUp = (idx) => {
+    setUpdating(true);
+    const prevPos = savedLists[idx - 1].position;
+    updateSavedList({ position: -prevPos });
+  };
+
+  const moveSavedListDown = (idx) => {
+    setUpdating(true);
+    const nextPos = savedLists[idx + 1].position;
+    updateSavedList({ position: nextPos });
   };
 
   if (!lists || !savedLists)
@@ -314,61 +306,127 @@ export default function ListTabs({
             </Link>
           )
         )}
-        {savedLists?.map((list, index) => (
-          <Link
-            key={list._id}
-            href={
-              calendar
-                ? `/lists/calendar/${list.listid}${
-                    list.uid ? `/${list.uid}` : ""
-                  }`
-                : `/lists/${list.listid}${list.uid ? `/${list.uid}` : ""}`
-            }
-            replace
-            passHref
-          >
-            <Tab
-              label={
-                <span>
-                  {list.title}
-                  <br />
-                  <span className={classes.name}>
-                    by {list.creator?.name?.split(" ")[0] || "Nameless"}
-                  </span>
-                </span>
-              }
-              wrapped={matches ? false : true}
-              disableFocusRipple
-              disabled={updating}
-              onClick={editTitle ? closeEditTitle : null}
-              className={
-                matches && value === index + lists?.length
-                  ? classes.tabSavedMobileSelected
-                  : matches
-                  ? classes.tabMobile
-                  : value === index + lists?.length
-                  ? classes.tabSavedSelected
-                  : classes.tab
-              }
-              style={{
-                opacity: value === index + lists?.length ? 1 : undefined,
-                lineHeight: 1.2,
-              }}
-              {...a11yProps(list.listid, index, value)}
-              icon={
-                putData &&
-                value === index + lists?.length &&
-                updating && (
-                  <CircularProgress
-                    size={matches ? "1.2rem" : "1.5rem"}
-                    thickness={5}
-                    className={classes.updating}
-                  />
-                )
-              }
+        {savedLists?.map((list, index) =>
+          editTitle && value === index + lists?.length ? (
+            <EditTitle
+              key={list._id}
+              title={list.title}
+              closeEditTitle={closeEditTitle}
+              updating={updating}
+              setUpdating={setUpdating}
+              putData={putData}
             />
-          </Link>
-        ))}
+          ) : (
+            <Link
+              key={list._id}
+              href={
+                calendar
+                  ? `/lists/calendar/${list.listid}${
+                      list.uid ? `/${list.uid}` : ""
+                    }`
+                  : `/lists/${list.listid}${list.uid ? `/${list.uid}` : ""}`
+              }
+              replace
+              passHref
+            >
+              <Tab
+                label={
+                  <span>
+                    {list.title}
+                    <br />
+                    <span className={classes.name}>
+                      by {list.creator?.name?.split(" ")[0] || "Nameless"}
+                    </span>
+                  </span>
+                }
+                wrapped={matches ? false : true}
+                disableFocusRipple
+                disabled={updating}
+                onClick={editTitle ? closeEditTitle : null}
+                className={
+                  matches && value === index + lists?.length
+                    ? classes.tabMobileSelected
+                    : matches
+                    ? classes.tabMobile
+                    : value === index + lists?.length
+                    ? classes.tabSelected
+                    : classes.tab
+                }
+                style={{
+                  opacity: value === index + lists?.length ? 1 : undefined,
+                  lineHeight: 1.2,
+                }}
+                {...a11yProps(list.listid, index + lists?.length, value)}
+                icon={
+                  putData &&
+                  value === index + lists?.length && (
+                    <>
+                      {updating ? (
+                        <CircularProgress
+                          size={matches ? "1.2rem" : "1.5rem"}
+                          thickness={5}
+                          className={classes.updating}
+                        />
+                      ) : (
+                        <span title="Edit title">
+                          {list.uid && (
+                            <EditRoundedIcon
+                              aria-label="edit title"
+                              className={classes.edit}
+                              style={
+                                matches
+                                  ? { fontSize: "1.5rem" }
+                                  : { fontSize: "1.8rem" }
+                              }
+                              onClick={openEditTitle}
+                            />
+                          )}
+                        </span>
+                      )}
+                      <span
+                        className={classes.arrows}
+                        style={
+                          matches
+                            ? { flexDirection: "row" }
+                            : { flexDirection: "column" }
+                        }
+                      >
+                        {index !== 0 && (
+                          <span title="Move up">
+                            <KeyboardArrowUpRoundedIcon
+                              aria-label="move list up"
+                              className={classes.arrow}
+                              style={
+                                matches
+                                  ? { fontSize: "1.5rem" }
+                                  : { fontSize: "1.8rem" }
+                              }
+                              onClick={() => moveSavedListUp(index)}
+                            />
+                          </span>
+                        )}
+                        {index !== savedLists.length - 1 && (
+                          <span title="Move down">
+                            <KeyboardArrowDownRoundedIcon
+                              aria-label="move list down"
+                              className={classes.arrow}
+                              style={
+                                matches
+                                  ? { fontSize: "1.5rem" }
+                                  : { fontSize: "1.8rem" }
+                              }
+                              onClick={() => moveSavedListDown(index)}
+                            />
+                          </span>
+                        )}
+                      </span>
+                    </>
+                  )
+                }
+              />
+            </Link>
+          )
+        )}
       </Tabs>
     )
   );
