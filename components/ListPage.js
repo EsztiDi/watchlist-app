@@ -163,14 +163,7 @@ export default function ListPage({
         throw new Error(res.status);
       }
 
-      mutate("/api/lists/saved", async (lists) => {
-        mutate("/api/lists/newuser", async (data) => {
-          return {
-            ...data,
-            id: list.listid,
-            uid: list.uid,
-          };
-        });
+      mutate("/api/lists/saved", (lists) => {
         return [...lists, list];
       });
       setUpdating(false);
@@ -191,22 +184,7 @@ export default function ListPage({
         throw new Error(res.status);
       }
 
-      mutate("/api/lists/saved", async (lists) => {
-        const ids = lists.map((el) => el.listid);
-        const index = ids.indexOf(id) - 1 >= 0 ? ids.indexOf(id) - 1 : 0;
-        const filteredLists = lists.filter((el) => el.listid !== id);
-        mutate("/api/lists/newuser", async (data) => {
-          return {
-            ...data,
-            id:
-              filteredLists.length > 0
-                ? filteredLists[index]?.listid
-                : undefined,
-            uid: filteredLists[index]?.uid ? filteredLists[index]?.uid : "",
-          };
-        });
-        return lists.filter((el) => el.listid !== id);
-      });
+      mutate("/api/lists/saved");
       setUpdating(false);
       setAlert("List removed");
     } catch (error) {

@@ -87,7 +87,6 @@ export default function Month({ listID, year, month }) {
             colSpan={7}
             style={{
               height: "37.9px",
-              // borderBottom: "2px solid rgba(224, 224, 224, 1)",
             }}
           ></td>
         </tr>

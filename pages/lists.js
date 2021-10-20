@@ -51,10 +51,10 @@ export default function Lists() {
 
   if (!loading && !session) {
     router.replace("/login");
-  } else if (hasLists && id !== undefined) {
+  } else if (hasLists && id) {
     router.replace(`/lists/${id}`);
     return <CircularProgress size="3rem" thickness={3} />;
-  } else if (!hasLists && id !== undefined && hasSavedLists) {
+  } else if (!hasLists && hasSavedLists && id) {
     router.replace(`/lists/${id}${uid ? `/${uid}` : ""}`);
     return <CircularProgress size="3rem" thickness={3} />;
   }

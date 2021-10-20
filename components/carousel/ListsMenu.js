@@ -10,6 +10,8 @@ import MenuList from "@material-ui/core/MenuList";
 import MenuItem from "@material-ui/core/MenuItem";
 import Typography from "@material-ui/core/Typography";
 
+import SavedListItem from "./SavedListItem";
+
 const useStyles = makeStyles((theme) => ({
   item: {
     whiteSpace: "unset",
@@ -51,7 +53,9 @@ export default function ListsMenu({
   const isMounted = React.useRef(null);
 
   const { data: lists, error } = useSWR("/api/lists");
+  const { data: savedLists, error: error2 } = useSWR("/api/lists/saved");
   if (error) console.error(error);
+  if (error2) console.error(error2);
 
   React.useEffect(() => {
     isMounted.current = true;
@@ -118,7 +122,7 @@ export default function ListsMenu({
     }
   };
 
-  if (!lists) return null;
+  if (!lists || !savedLists) return null;
 
   return (
     <Popper
@@ -147,7 +151,7 @@ export default function ListsMenu({
                   lists.map((list, index) => {
                     return (
                       <MenuItem
-                        key={index}
+                        key={list._id}
                         disabled={updating}
                         onClick={() => add(list._id, index)}
                         className={classes.item}
@@ -171,6 +175,25 @@ export default function ListsMenu({
                       </MenuItem>
                     );
                   })}
+                {savedLists &&
+                  savedLists
+                    .filter((list) => {
+                      return list?.uid;
+                    })
+                    .map((list, index) => {
+                      return (
+                        <SavedListItem
+                          key={list.listid}
+                          movieID={movieID}
+                          listID={list.listid}
+                          index={index + lists?.length}
+                          value={value}
+                          updating={updating}
+                          add={add}
+                          added={added}
+                        />
+                      );
+                    })}
               </MenuList>
             </ClickAwayListener>
           </Paper>

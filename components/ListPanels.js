@@ -77,9 +77,7 @@ export default function ListPanels({ setMessage, calendar = false }) {
   if (error) console.error(error);
 
   React.useEffect(() => {
-    if (error) {
-      setMessage(error.message);
-    }
+    if (error) setMessage(error.message);
     // eslint-disable-next-line
   }, [error]);
 

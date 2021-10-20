@@ -147,7 +147,7 @@ export default function ListsCarousel({ setMessage }) {
       sliced.push(lists.slice(i, matches2 ? i + 1 : matches ? i + 2 : i + 4));
     }
   }
-  console.log(sliced);
+
   // For list search
   const [loading, setLoading] = React.useState(false);
   const [query, setQuery] = React.useState("");

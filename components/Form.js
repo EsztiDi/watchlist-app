@@ -84,7 +84,7 @@ export default function Form({
 
   React.useEffect(() => {
     if (error2) {
-      setMessage("This list has been removed");
+      setMessage("This list has been removed.");
     }
     // eslint-disable-next-line
   }, [error2]);
@@ -170,9 +170,9 @@ export default function Form({
         throw new Error(res.statusText || res.status);
       }
 
-      mutate("/api/lists", async (lists) => {
+      mutate("/api/lists", (lists) => {
         if (lists) {
-          mutate("/api/lists/newuser", async (data) => {
+          mutate("/api/lists/newuser", (data) => {
             return { ...data, id: lists[0]?.listid };
           });
         }

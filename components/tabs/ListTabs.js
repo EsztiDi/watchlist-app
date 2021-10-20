@@ -94,7 +94,7 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     color: theme.palette.primary.light,
     "& > *": {
-      lineHeight: 1,
+      height: "28.5px",
     },
   },
   arrow: {

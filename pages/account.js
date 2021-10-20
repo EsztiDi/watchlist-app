@@ -162,6 +162,9 @@ export default function Account({ setMessage }) {
         }, 1000);
       } else {
         mutate("/api/lists");
+        mutate("/api/lists/newuser", (data) => {
+          return { ...data, hasLists: false, id: undefined, uid: undefined };
+        });
       }
     } catch (error) {
       setMessage(
@@ -199,6 +202,9 @@ export default function Account({ setMessage }) {
       );
       setDeletingSavedLists(false);
       mutate("/api/lists/saved");
+      mutate("/api/lists/newuser", (data) => {
+        return { ...data, hasSavedLists: false, id: undefined, uid: undefined };
+      });
     } catch (error) {
       setMessage(`${error.message} - Failed to delete saved lists.}`);
       setDeletingSavedLists(false);

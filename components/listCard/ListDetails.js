@@ -112,7 +112,9 @@ export default function ListDetails({
         throw new Error(res.status);
       }
 
-      mutate("/api/lists/saved");
+      mutate("/api/lists/saved", (lists) => {
+        return [...lists, list];
+      });
       setTimeout(() => {
         setUpdating(false);
       }, 500);

@@ -31,7 +31,6 @@ export default function DeleteDialog({
 }) {
   const classes = useStyles();
   const router = useRouter();
-  const contentType = "application/json";
 
   const deleteList = async (id) => {
     setUpdating(true);
@@ -44,7 +43,7 @@ export default function DeleteDialog({
         const ids = lists.map((el) => el._id);
         const index = ids.indexOf(id) - 1 >= 0 ? ids.indexOf(id) - 1 : 0;
         const filteredLists = lists.filter((list) => list._id !== id);
-        mutate("/api/lists/newuser", async (data) => {
+        await mutate("/api/lists/newuser", (data) => {
           return { ...data, id: filteredLists[index]?._id };
         });
         return lists.filter((list) => list._id !== id);
@@ -71,7 +70,7 @@ export default function DeleteDialog({
         const ids = lists.map((el) => el.listid);
         const index = ids.indexOf(id) - 1 >= 0 ? ids.indexOf(id) - 1 : 0;
         const filteredLists = lists.filter((el) => el.listid !== id);
-        mutate("/api/lists/newuser", async (data) => {
+        await mutate("/api/lists/newuser", (data) => {
           return {
             ...data,
             id: filteredLists[index]?.listid,

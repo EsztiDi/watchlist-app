@@ -37,7 +37,6 @@ export default async function handler(req, res) {
       break;
     case "PUT":
       try {
-        console.log(req.body);
         var list, list2;
         if (req.body.hasOwnProperty("position")) {
           const lists = await Savedlist.find(
@@ -51,7 +50,7 @@ export default async function handler(req, res) {
           const index = lists
             .map((list) => JSON.stringify(list.listid))
             .indexOf(JSON.stringify(id));
-          console.log(id, index);
+
           const data1 = position < 0 ? { position: -position } : req.body; // "-" only indicates direction, the sign needs to be changed
           const data2 = { position: lists[index].position }; // Selected list's position for the swap
           // Selected list
