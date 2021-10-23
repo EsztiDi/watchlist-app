@@ -303,7 +303,7 @@ export default function Form({
       [name]: value,
     });
 
-    if (target.name === "emails" && target.checked) {
+    if (name === "emails" && target.checked) {
       setUpdating(true);
       postEmail({
         email: email,
@@ -317,7 +317,7 @@ export default function Form({
           ? putData({ emails: value })
           : updateSavedList({ emails: value })
         : null;
-    } else if (target.name === "emails" && !target.checked) {
+    } else if (name === "emails" && !target.checked) {
       setUpdating(true);
       deleteEmail({
         email: email,

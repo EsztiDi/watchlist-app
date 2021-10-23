@@ -5,6 +5,7 @@ import Head from "next/head";
 import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
 import Paper from "@material-ui/core/Paper";
+import EmailRoundedIcon from "@material-ui/icons/EmailRounded";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
 import {
   FacebookLoginButton,
@@ -12,6 +13,8 @@ import {
   TwitterLoginButton,
   GithubLoginButton,
 } from "react-social-login-buttons";
+
+import EmailLogin from "../components/EmailLogin";
 
 const useStyles = makeStyles((theme) => ({
   login: {
@@ -46,13 +49,46 @@ const useStyles = makeStyles((theme) => ({
       },
     },
   },
+  emailButton: {
+    border: "0px",
+    borderRadius: "3px",
+    boxShadow: "rgb(0 0 0 / 50%) 0px 1px 2px",
+    color: "white",
+    cursor: "pointer",
+    fontSize: "19px",
+    overflow: "hidden",
+    padding: "0px 10px",
+    userSelect: "none",
+    height: "50px",
+    background: theme.palette.primary.dark,
+    "& > div": {
+      alignItems: "center",
+      display: "flex",
+      height: "100%",
+    },
+    "& > div > div:nth-child(3)": {
+      marginLeft: "-5px",
+      textAlign: "left",
+      width: "100%",
+    },
+    "&:hover": {
+      background: theme.palette.primary.main,
+    },
+  },
 }));
 
-export default function Login() {
+export default function Login({ setMessage }) {
   const classes = useStyles();
   const [session, loading] = useSession();
   const router = useRouter();
   const matches = useMediaQuery("(max-width:700px)");
+
+  // For EmailLogin
+  const [openEmail, setOpenEmail] = React.useState(false);
+
+  const handleOpenEmail = () => {
+    setOpenEmail((prev) => !prev);
+  };
 
   if (loading) return null;
 
@@ -76,13 +112,23 @@ export default function Login() {
             <FacebookLoginButton onClick={() => signIn("facebook")} />
             <TwitterLoginButton onClick={() => signIn("twitter")} />
             <GithubLoginButton onClick={() => signIn("github")} />
-            {/* <button
-              onClick={() =>
-                signIn("email", { email: "etrackerproject@gmail.com" })
-              }
-            >
-              Sign in with Email
-            </button> */}
+            <button onClick={handleOpenEmail} className={classes.emailButton}>
+              <div>
+                <EmailRoundedIcon
+                  style={{
+                    fontSize: "1.7rem",
+                  }}
+                />
+                <div></div>
+                <div>Log in with email</div>
+              </div>
+            </button>
+            <EmailLogin
+              open={openEmail}
+              onOpenEmail={handleOpenEmail}
+              signIn={signIn}
+              setMessage={setMessage}
+            />
           </Paper>
         </Container>
       </>

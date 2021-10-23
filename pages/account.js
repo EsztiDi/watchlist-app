@@ -12,6 +12,7 @@ import Button from "@material-ui/core/Button";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import Divider from "@material-ui/core/Divider";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
+import AccountForm from "../components/AccountForm";
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -23,9 +24,14 @@ const useStyles = makeStyles((theme) => ({
   paperMobile: {
     padding: theme.spacing(1),
   },
+  title: {
+    marginBottom: theme.spacing(2),
+  },
   grid: {
     margin: "auto",
     textAlign: "left",
+    border: `1px solid ${theme.palette.divider}`,
+    borderRadius: "5px",
     "& > div": {
       display: "flex",
       alignItems: "center",
@@ -33,7 +39,7 @@ const useStyles = makeStyles((theme) => ({
       flexWrap: "wrap",
       columnGap: theme.spacing(2.5),
       rowGap: theme.spacing(2.5),
-      padding: `${theme.spacing(3.5)}px 0`,
+      padding: `${theme.spacing(3.5)}px ${theme.spacing(2)}px`,
       "& > button": {
         flex: "30%",
         minWidth: "150px",
@@ -44,11 +50,10 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   subtitle: {
-    fontSize: "1rem",
-    fontStyle: "italic",
+    textAlign: "center",
+    fontSize: "1.1rem",
     color: theme.palette.secondary.dark,
-    marginTop: theme.spacing(1),
-    marginBottom: theme.spacing(3),
+    padding: `${theme.spacing(2)}px ${theme.spacing(2)}px 0`,
   },
 }));
 
@@ -61,12 +66,14 @@ export default function Account({ setMessage }) {
   const classes = useStyles();
   const router = useRouter();
   const [session, loading] = useSession();
+  const [updatingForm, setUpdatingForm] = React.useState(false);
   const [updatingPrivate, setUpdatingPrivate] = React.useState(false);
   const [updatingEmails, setUpdatingEmails] = React.useState(false);
   const [deletingLists, setDeletingLists] = React.useState(false);
   const [deletingSavedLists, setDeletingSavedLists] = React.useState(false);
   const [deletingAccount, setDeletingAccount] = React.useState(false);
   var updating =
+    updatingForm ||
     updatingPrivate ||
     updatingEmails ||
     deletingLists ||
@@ -233,10 +240,14 @@ export default function Account({ setMessage }) {
             elevation={4}
             className={matches ? classes.paperMobile : classes.paper}
           >
-            <Typography variant="h4">Settings</Typography>
-            <Typography variant="subtitle2" className={classes.subtitle}>
-              Clicking any of these buttons cannot be taken back
+            <Typography variant="h4" className={classes.title}>
+              Settings
             </Typography>
+            <AccountForm
+              setMessage={setMessage}
+              updatingForm={updatingForm}
+              setUpdatingForm={setUpdatingForm}
+            />
             <Grid
               container
               direction="column"
@@ -244,27 +255,12 @@ export default function Account({ setMessage }) {
               className={classes.grid}
               style={matches ? { width: "90%" } : { width: "60%" }}
             >
+              <Typography variant="button" className={classes.subtitle}>
+                Danger zone
+              </Typography>
               <Grid item>
                 <Typography component="span">
-                  Set <b>ALL</b> your lists private:
-                  <Typography variant="caption" component="p">
-                    (Remove them from the public Discover page.)
-                  </Typography>
-                </Typography>
-                <Button
-                  variant="contained"
-                  color="secondary"
-                  disableFocusRipple
-                  disabled={updatingPrivate}
-                  onClick={() => handleUpdate(false)}
-                >
-                  Set all private
-                </Button>
-              </Grid>
-              <Divider />
-              <Grid item>
-                <Typography component="span">
-                  Unsubscribe from <b>ALL</b> emails:
+                  Unsubscribe from <b>all</b> emails:
                   <Typography variant="caption" component="p">
                     (The weekly upcoming releases summary.)
                   </Typography>
@@ -286,7 +282,25 @@ export default function Account({ setMessage }) {
               <Divider />
               <Grid item>
                 <Typography component="span">
-                  Delete ALL <b>SAVED</b> lists:
+                  Set <b>all</b> your lists private:
+                  <Typography variant="caption" component="p">
+                    (Remove them from the public Discover page.)
+                  </Typography>
+                </Typography>
+                <Button
+                  variant="contained"
+                  color="secondary"
+                  disableFocusRipple
+                  disabled={updatingPrivate}
+                  onClick={() => handleUpdate(false)}
+                >
+                  Set all private
+                </Button>
+              </Grid>
+              <Divider />
+              <Grid item>
+                <Typography component="span">
+                  Delete all <b>saved</b> lists:
                   <Typography variant="caption" component="p">
                     (Lists others created and you saved.)
                   </Typography>
@@ -308,9 +322,9 @@ export default function Account({ setMessage }) {
               <Divider />
               <Grid item>
                 <Typography component="span">
-                  Delete ALL <b>YOUR</b> lists:
+                  Delete all <b>your</b> lists:
                   <Typography variant="caption" component="p">
-                    (Aaaaall the lists created by you.)
+                    (All the lists created by you.)
                   </Typography>
                 </Typography>
                 <Button
@@ -332,7 +346,7 @@ export default function Account({ setMessage }) {
                 <Typography component="span">
                   <b>Delete your account:</b>
                   <Typography variant="caption" component="p">
-                    (Delete ALL your account details and ALL your lists from our
+                    (Delete ALL your account details and lists from our
                     database.)
                   </Typography>
                 </Typography>

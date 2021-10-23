@@ -156,7 +156,7 @@ export default function Navbar() {
                     onClick={handleMenuToggle}
                   >
                     <Image
-                      src={user.image ? user.image : "/avatar.jpg"}
+                      src={user.image ? user.image : "/deadpool.jpg"}
                       alt=""
                       width={46}
                       height={46}

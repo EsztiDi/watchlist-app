@@ -215,7 +215,9 @@ export default function MyApp({ Component, pageProps }) {
                 <Fade in={message.length > 0}>
                   <Alert
                     severity={
-                      message.includes("saved!") || message.includes("deleted!")
+                      message.includes("saved!") ||
+                      message.includes("deleted!") ||
+                      message.includes("A sign in link has been sent")
                         ? "success"
                         : message.includes("already on the list") ||
                           message.includes("ad blocker") ||

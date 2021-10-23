@@ -80,7 +80,6 @@ export default function ListDetails({
   setMessage,
 }) {
   const classes = useStyles();
-  const name = creator?.name?.split(" ")[0];
   const contentType = "application/json";
 
   const [updating, setUpdating] = React.useState(false);
@@ -176,7 +175,9 @@ export default function ListDetails({
           </Typography>
         </a>
       </Link>
-      <Typography variant="subtitle1">By {name || "Nameless"}</Typography>
+      <Typography variant="subtitle1">
+        By {creator?.name || "Nameless"}
+      </Typography>
       <ul>
         {movies?.map((movie, index) => {
           return <li key={index}>{movie.title}</li>;

@@ -156,7 +156,7 @@ export default function Share({ listID, uid, title, open, onClose }) {
             <EmailShareButton
               url={shareLink}
               subject={title}
-              body={`Hi,${"\n\n"}Look what I have created!${"\n"}${"\n"}${title}${"\n"}`}
+              body={`Hi,${"\n\n"}Look what I have created!${"\n\n"}${title}${"\n"}`}
             >
               <EmailIcon size={iconSize} round />
               <Typography variant={textVariant}>Email</Typography>

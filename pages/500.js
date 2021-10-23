@@ -21,7 +21,7 @@ export default function Custom500() {
           href="https://www.pexels.com/photo/adult-black-pug-1851164/"
           target="_blank"
           rel="noopener noreferrer"
-          style={{ fontSize: "0.7rem" }}
+          style={{ fontSize: "0.8rem" }}
         >
           Photo by Charles from Pexels
         </a>

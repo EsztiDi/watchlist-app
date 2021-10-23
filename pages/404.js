@@ -20,7 +20,7 @@ export default function Custom404() {
           href="https://www.pexels.com/photo/dog-lying-on-shore-during-day-2252311/"
           target="_blank"
           rel="noopener noreferrer"
-          style={{ fontSize: "0.7rem" }}
+          style={{ fontSize: "0.8rem" }}
         >
           Photo by Laura Stanley from Pexels
         </a>

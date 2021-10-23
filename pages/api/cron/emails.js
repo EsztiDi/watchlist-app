@@ -6,7 +6,8 @@ import dbConnect from "../../../utils/dbConnect";
 import Watchlist from "../../../models/Watchlist";
 import Savedlist from "../../../models/Savedlist";
 import Releasesemail from "../../../models/Releasesemail";
-import weeklyHTML from "../../../templates/weekly";
+import weeklyHTML from "../../../templates/weeklyHtml";
+import weeklyText from "../../../templates/weeklyText";
 
 export default async function handler(req, res) {
   const { method } = req;
@@ -147,9 +148,7 @@ export default async function handler(req, res) {
                               id: list._id,
                               uid: savedList.uid,
                               title: list.title,
-                              creator:
-                                savedList.creator?.name?.split(" ")[0] ||
-                                "Nameless",
+                              creator: savedList.creator?.name || "Nameless",
                               movies: movies.sort(
                                 (a, b) =>
                                   new Date(a.release_date) -
@@ -173,6 +172,7 @@ export default async function handler(req, res) {
 
             if (recipient.length > 0) {
               const html = weeklyHTML(upcoming);
+              const text = weeklyText(upcoming);
 
               const emailParams = new EmailParams()
                 .setFrom("releases@mywatchlists.watch")
@@ -180,7 +180,7 @@ export default async function handler(req, res) {
                 .setRecipients(recipient)
                 .setSubject("Your weekly releases summary")
                 .setHtml(html)
-                .setText("Upcoming releases from your watchlists");
+                .setText(text);
 
               await mailersend
                 .send(emailParams)
@@ -203,7 +203,7 @@ export default async function handler(req, res) {
                 })
                 .catch((err) => {
                   console.error(
-                    `MailerSend couldn't send the email - ${JSON.stringify(
+                    `MailerSend couldn't send the weekly releases email - ${JSON.stringify(
                       err
                     )}`
                   );

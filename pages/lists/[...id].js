@@ -49,8 +49,12 @@ export default function ListPanel({ setMessage }) {
               title: "The Watched list",
               element: document.querySelector("a[data-id='watched-tab']"),
               intro: `The <b>Watched</b> list is different from other lists.<br/><br/>
-              Anything you add to it will be marked "watched", and anything you set "watched" will be added to the list. Just click the tick on the movie poster. ✅<br/><br/>
-              If you have a tv show on this list that has new episodes you haven't marked as watched, you'll see a "<b>NEW</b>" badge at their title.`,
+              Anything you add to it will be marked "watched", and anything you set "watched" will be added to the list. Just click the tick on the movie poster. ✅`,
+            },
+            {
+              title: "The Watched list",
+              element: document.querySelector("a[data-id='watched-tab']"),
+              intro: `If you have a tv show on this list that has new episodes you haven't marked as watched, you'll see a "<b>NEW</b>" badge at their title.`,
             },
             {
               title: "Privacy setting",
@@ -68,7 +72,7 @@ export default function ListPanel({ setMessage }) {
               title: "Share",
               element: document.querySelector("#share"),
               intro: `You can share a read-only or editable version of your list.<br/><br/>
-              On the <b>editable</b> version the movies can be changed by anyone you share the link with.<br/><br/>
+              On the <b>editable</b> version the movies and the title can be changed by anyone you share the link with.<br/><br/>
               It's great for planning movie nights. 🤗`,
             },
             {
@@ -83,7 +87,7 @@ export default function ListPanel({ setMessage }) {
           ],
         })
         .onbeforeexit(() => {
-          return confirm("Close the tutorial?");
+          return confirm("Close tutorial?");
         })
         .start();
     };

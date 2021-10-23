@@ -335,7 +335,7 @@ export default function ListTabs({
                     {list.title}
                     <br />
                     <span className={classes.name}>
-                      by {list.creator?.name?.split(" ")[0] || "Nameless"}
+                      by {list.creator?.name || "Nameless"}
                     </span>
                   </span>
                 }
