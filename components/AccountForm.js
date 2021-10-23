@@ -105,7 +105,11 @@ export default function AccountForm({
 
       mutate("/api/account");
       setUpdatingForm(false);
-      if (newForm.image !== user?.image) router.reload();
+      if (newForm.image !== user?.image) {
+        setTimeout(() => {
+          router.reload();
+        }, 1000);
+      }
     } catch (error) {
       setMessage(
         `${error.message} - Failed to update your account, please try again.`

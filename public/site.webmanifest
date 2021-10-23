@@ -1,6 +1,11 @@
 {
-    "name": "The Watchlist App",
+    "name": "Watchlist App",
     "short_name": "Watchlists",
+    "description": "An app to create watchlists for movies and TV shows with a 'share to edit' option",
+    "theme_color": "#ffffff",
+    "background_color": "#ffffff",
+    "display": "standalone",
+    "start_url": "/lists",
     "icons": [
         {
             "src": "android-chrome-192x192.png",
@@ -11,9 +16,17 @@
             "src": "android-chrome-256x256.png",
             "sizes": "256x256",
             "type": "image/png"
-        }
-    ],
-    "theme_color": "#ffffff",
-    "background_color": "#ffffff",
-    "display": "standalone"
+        },
+        {
+            "src": "android-chrome-512x512.png",
+            "sizes": "512x512",
+            "type": "image/png"
+        },
+        {
+            "src": "maskable_icon.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "any maskable"
+          }
+    ]
 }

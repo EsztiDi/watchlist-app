@@ -19,6 +19,7 @@ module.exports = {
       "media-exp3.licdn.com",
       "image.tmdb.org",
       "mywatchlists.watch",
+      "mywatchlists.ml",
       "localhost",
     ],
   },

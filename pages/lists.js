@@ -67,7 +67,7 @@ export default function Lists() {
       <Paper elevation={4} className={classes.container}>
         <Typography variant="h4">Create a watchlist</Typography>
         <Link href="/create" passHref>
-          <IconButton className={classes.button}>
+          <IconButton aria-label="create new list" className={classes.button}>
             <AddCircleRoundedIcon className={classes.add} />
           </IconButton>
         </Link>

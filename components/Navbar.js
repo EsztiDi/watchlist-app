@@ -50,7 +50,7 @@ const useStyles = makeStyles((theme) => ({
     fontFamily: "'Carter One', cursive",
   },
   menu: {
-    marginLeft: theme.spacing(2),
+    marginLeft: theme.spacing(1.5),
     padding: 0,
   },
   avatar: {
@@ -59,6 +59,7 @@ const useStyles = makeStyles((theme) => ({
   menuItem: {
     width: "100%",
     textAlign: "center",
+    justifyContent: "center",
     fontSize: "15px",
   },
   popup: {
@@ -151,6 +152,7 @@ export default function Navbar() {
                     size="medium"
                     className={classes.menu}
                     ref={anchorRef}
+                    aria-label="menu"
                     aria-controls={menuOpen ? "menu-list" : undefined}
                     aria-haspopup="true"
                     onClick={handleMenuToggle}
@@ -158,8 +160,8 @@ export default function Navbar() {
                     <Image
                       src={user.image ? user.image : "/deadpool.jpg"}
                       alt=""
-                      width={46}
-                      height={46}
+                      width={50}
+                      height={50}
                       className={classes.avatar}
                     />
                   </IconButton>
@@ -237,6 +239,7 @@ export default function Navbar() {
                 size="medium"
                 className={classes.menu}
                 ref={anchorRef}
+                aria-label="menu"
                 aria-controls={menuOpen ? "menu-list" : undefined}
                 aria-haspopup="true"
                 onClick={handleMenuToggle}
@@ -265,6 +268,31 @@ export default function Navbar() {
                           id="menu-list"
                           onKeyDown={handleListKeyDown}
                         >
+                          {loading
+                            ? null
+                            : user && (
+                                <Link href="/account">
+                                  <a>
+                                    <MenuItem
+                                      aria-label="account"
+                                      onClick={handleMenuClose}
+                                      className={classes.menuItem}
+                                    >
+                                      <Image
+                                        src={
+                                          user.image
+                                            ? user.image
+                                            : "/deadpool.jpg"
+                                        }
+                                        alt=""
+                                        width={46}
+                                        height={46}
+                                        className={classes.avatar}
+                                      />
+                                    </MenuItem>
+                                  </a>
+                                </Link>
+                              )}
                           <Link href="/" passHref>
                             <a>
                               <MenuItem onClick={handleMenuClose}>
@@ -278,7 +306,7 @@ export default function Navbar() {
                             </a>
                           </Link>
                           {loading ? null : user ? (
-                            <span>
+                            <>
                               <Link href="/create">
                                 <a>
                                   <MenuItem onClick={handleMenuClose}>
@@ -303,18 +331,6 @@ export default function Navbar() {
                                   </MenuItem>
                                 </a>
                               </Link>
-                              <Link href="/account">
-                                <a>
-                                  <MenuItem onClick={handleMenuClose}>
-                                    <Typography
-                                      variant="button"
-                                      className={classes.menuItem}
-                                    >
-                                      Account
-                                    </Typography>
-                                  </MenuItem>
-                                </a>
-                              </Link>
                               <MenuItem
                                 onClick={() =>
                                   signOut({
@@ -334,7 +350,7 @@ export default function Navbar() {
                                   Log out
                                 </Typography>
                               </MenuItem>
-                            </span>
+                            </>
                           ) : (
                             <Link href="/login">
                               <a>

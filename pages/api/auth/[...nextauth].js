@@ -25,8 +25,6 @@ export default NextAuth({
       clientSecret: process.env.GITHUB_CLIENT_SECRET,
     }),
     Providers.Email({
-      // server: process.env.EMAIL_SERVER,
-      // from: process.env.EMAIL_FROM,
       sendVerificationRequest: ({
         identifier: email,
         url,
