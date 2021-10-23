@@ -16,7 +16,7 @@ export default async function handler(req, res) {
         // Unsubscribes all lists from weekly emails
         const update = await Watchlist.updateMany(
           {
-            user: session?.user,
+            "user.email": session?.user?.email,
             emails: true,
           },
           { emails: false },
@@ -36,7 +36,7 @@ export default async function handler(req, res) {
 
         const update2 = await Savedlist.updateMany(
           {
-            user: session?.user,
+            "user.email": session?.user?.email,
             emails: true,
           },
           { emails: false },

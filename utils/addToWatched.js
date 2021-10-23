@@ -4,7 +4,7 @@ export default async function addToWatched(user, id, watched, movie) {
   var tv = movie?.seasons?.length > 0;
   var list;
   await Watchlist.findOne({
-    user: user,
+    "user.email": user?.email,
     title: /^Watched$/i,
   })
     .then(async (res) => {
@@ -36,7 +36,7 @@ export default async function addToWatched(user, id, watched, movie) {
 
         var updatedList = await Watchlist.findOneAndUpdate(
           {
-            user: user,
+            "user.email": user?.email,
             title: /^Watched$/i,
           },
           list,
@@ -57,7 +57,7 @@ export default async function addToWatched(user, id, watched, movie) {
   // Changing all seasons and episodes to "watched" if tv show
   if (tv) {
     var updatedList2 = await Watchlist.findOneAndUpdate(
-      { user: user, title: /^Watched$/i },
+      { "user.email": user?.email, title: /^Watched$/i },
       {
         $set: {
           "movies.$[movie].seasons.$[season].watched": watched,

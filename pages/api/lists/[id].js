@@ -39,7 +39,7 @@ export default async function handler(req, res) {
         var list, list2;
         if (req.body.hasOwnProperty("position")) {
           const lists = await Watchlist.find(
-            { user: session?.user },
+            { "user.email": session?.user?.email },
             "_id position"
           ).sort({
             position: -1,

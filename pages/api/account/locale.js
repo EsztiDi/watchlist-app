@@ -35,7 +35,7 @@ export default async function handler(req, res) {
 
         var updatedLists = await Watchlist.updateMany(
           {
-            user: session?.user,
+            "user.email": session?.user?.email,
           },
           {
             $set: {
@@ -59,7 +59,7 @@ export default async function handler(req, res) {
 
         // Update local release date on all lists
         const updates = await Watchlist.find({
-          user: session?.user,
+          "user.email": session?.user?.email,
         })
           .then(async (lists) => {
             var movies = lists.reduce(
@@ -80,7 +80,7 @@ export default async function handler(req, res) {
 
                   var updatedLists2 = await Watchlist.updateMany(
                     {
-                      user: session?.user,
+                      "user.email": session?.user?.email,
                       "movies.id": movie.id,
                     },
                     {

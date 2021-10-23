@@ -21,7 +21,7 @@ export default async function handler(req, res) {
 
         if (session) {
           var results = await Watchlist.find(
-            { user: session?.user },
+            { "user.email": session?.user?.email },
             "_id"
           ).sort({
             position: -1,
@@ -31,7 +31,7 @@ export default async function handler(req, res) {
             id = await JSON.parse(JSON.stringify(results[0]._id));
           } else {
             var results2 = await Savedlist.find(
-              { user: session?.user },
+              { "user.email": session?.user?.email },
               "listid uid"
             ).sort({
               position: -1,
@@ -112,7 +112,7 @@ export default async function handler(req, res) {
             console.error(err.message + " - Failed to add first lists");
           }
           var results = await Watchlist.find(
-            { user: session?.user },
+            { "user.email": session?.user?.email },
             "_id"
           ).sort({
             position: -1,

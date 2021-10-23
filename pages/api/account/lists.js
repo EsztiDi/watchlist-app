@@ -16,7 +16,7 @@ export default async function handler(req, res) {
         // Sets all lists private
         const update = await Watchlist.updateMany(
           {
-            user: session?.user,
+            "user.email": session?.user?.email,
             private: false,
           },
           { private: true },
@@ -51,7 +51,7 @@ export default async function handler(req, res) {
       try {
         // Deleting all lists
         const deletedLists = await Watchlist.deleteMany({
-          user: session?.user,
+          "user.email": session?.user?.email,
         }).catch((err) => console.error(err));
         if (!deletedLists) {
           console.error(

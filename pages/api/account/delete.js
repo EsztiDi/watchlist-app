@@ -24,7 +24,7 @@ export default async function handler(req, res) {
 
               // Deleting all lists
               await Watchlist.deleteMany({
-                user: session?.user,
+                "user.email": session?.user?.email,
               }).catch((err) => {
                 console.error(
                   `Couldn't delete lists - user: ${JSON.stringify(
@@ -48,7 +48,7 @@ export default async function handler(req, res) {
 
               // Deleting all saved lists
               await Savedlist.deleteMany({
-                user: session?.user,
+                "user.email": session?.user?.email,
               }).catch((err) => {
                 console.error(
                   `Couldn't delete saved lists - user: ${JSON.stringify(

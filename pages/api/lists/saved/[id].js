@@ -16,7 +16,7 @@ export default async function handler(req, res) {
     case "GET":
       try {
         const list = await Savedlist.findOne({
-          user: session?.user,
+          "user.email": session?.user?.email,
           listid: id,
         });
         if (!list) {
@@ -40,7 +40,7 @@ export default async function handler(req, res) {
         var list, list2;
         if (req.body.hasOwnProperty("position")) {
           const lists = await Savedlist.find(
-            { user: session?.user },
+            { "user.email": session?.user?.email },
             "listid position"
           ).sort({
             position: -1,
@@ -56,7 +56,7 @@ export default async function handler(req, res) {
           // Selected list
           list = await Savedlist.findOneAndUpdate(
             {
-              user: session?.user,
+              "user.email": session?.user?.email,
               listid: id,
             },
             data1,
@@ -69,7 +69,7 @@ export default async function handler(req, res) {
           // Adjacent list, id depends on the direction
           list2 = await Savedlist.findOneAndUpdate(
             {
-              user: session?.user,
+              "user.email": session?.user?.email,
               listid:
                 position < 0
                   ? lists[index - 1].listid
@@ -94,7 +94,7 @@ export default async function handler(req, res) {
         } else {
           list = await Savedlist.findOneAndUpdate(
             {
-              user: session?.user,
+              "user.email": session?.user?.email,
               listid: id,
             },
             req.body,
@@ -124,7 +124,7 @@ export default async function handler(req, res) {
     case "DELETE":
       try {
         const deletedList = await Savedlist.findOneAndDelete({
-          user: session?.user,
+          "user.email": session?.user?.email,
           listid: id,
         }).catch((err) => console.error(err));
 

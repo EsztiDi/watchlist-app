@@ -12,7 +12,7 @@ export default async function handler(req, res) {
     case "GET":
       try {
         const lists = await Watchlist.find(
-          { user: session?.user },
+          { "user.email": session?.user?.email },
           "_id title movies position"
         ).sort({
           position: -1,
@@ -30,14 +30,16 @@ export default async function handler(req, res) {
     case "POST":
       try {
         const watchedList = await Watchlist.findOne({
-          user: session?.user,
+          "user.email": session?.user?.email,
           title: /^Watched$/i,
         });
         if (watchedList && /^Watched$/i.test(req.body.title)) {
           res.statusMessage = `You already have a Watched list`;
           res.status(400).end();
         } else {
-          const lists = await Watchlist.find({ user: session?.user }).sort({
+          const lists = await Watchlist.find({
+            "user.email": session?.user?.email,
+          }).sort({
             position: -1,
           });
 
@@ -52,7 +54,7 @@ export default async function handler(req, res) {
           // Adding all watched movies to the list if it's titled "Watched"
           if (/^Watched$/i.test(req.body.title)) {
             await Watchlist.find({
-              user: session?.user,
+              "user.email": session?.user?.email,
               "movies.watched": "true",
             }).then(async (lists) => {
               var movies = lists.reduce(

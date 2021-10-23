@@ -2,8 +2,8 @@ import { getSession } from "next-auth/client";
 import mongoose from "mongoose";
 import dbConnect from "../../../utils/dbConnect";
 import Watchlist from "../../../models/Watchlist";
-import Releasesemail from "../../../models/Releasesemail";
 import Savedlist from "../../../models/Savedlist";
+import Releasesemail from "../../../models/Releasesemail";
 
 export default async function handler(req, res) {
   const { method } = req;
@@ -20,7 +20,6 @@ export default async function handler(req, res) {
               const user = await users.findOne({
                 email: session?.user.email,
               });
-              const { _id: userID } = user;
 
               if (!user) {
                 console.error(
@@ -167,7 +166,7 @@ export default async function handler(req, res) {
 
               if (!updatedEmails) {
                 console.error(
-                  `Couldn't perform updateMany() for saved lists in MongoDB - user: ${JSON.stringify(
+                  `Couldn't perform updateMany() for emails in MongoDB - user: ${JSON.stringify(
                     session?.user
                   )}`
                 );

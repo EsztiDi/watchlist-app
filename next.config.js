@@ -18,6 +18,7 @@ module.exports = {
       "avatars.githubusercontent.com",
       "media-exp3.licdn.com",
       "image.tmdb.org",
+      "mywatchlists.watch",
       "localhost",
     ],
   },

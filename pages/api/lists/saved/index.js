@@ -12,7 +12,9 @@ export default async function handler(req, res) {
   switch (method) {
     case "GET":
       try {
-        const lists = await Savedlist.find({ user: session?.user }).sort({
+        const lists = await Savedlist.find({
+          "user.email": session?.user?.email,
+        }).sort({
           position: -1,
         });
         res.status(200).json({ success: true, data: lists });
@@ -27,7 +29,9 @@ export default async function handler(req, res) {
       break;
     case "POST":
       try {
-        const lists = await Savedlist.find({ user: session?.user }).sort({
+        const lists = await Savedlist.find({
+          "user.email": session?.user?.email,
+        }).sort({
           position: -1,
         });
 
@@ -56,7 +60,7 @@ export default async function handler(req, res) {
       try {
         // Deleting all saved lists
         const deletedLists = await Savedlist.deleteMany({
-          user: session?.user,
+          "user.email": session?.user?.email,
         }).catch((err) => console.error(err));
         if (!deletedLists) {
           console.error(
