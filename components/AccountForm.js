@@ -44,7 +44,6 @@ export default function AccountForm({
   const router = useRouter();
 
   const contentType = "application/json";
-  // const matches = useMediaQuery("(max-width:1024px)");
   const matches2 = useMediaQuery("(max-width:768px)");
 
   const { data: user, error } = useSWR(`/api/account`);
@@ -77,7 +76,7 @@ export default function AccountForm({
       setForm({
         name: user.name,
         email: user.email,
-        image: user.image,
+        image: user.image ? user.image : `${process.env.BASE_URL}/deadpool.jpg`,
         origName: user.origName ? user.origName : user.name,
         origImage: user.origImage ? user.origImage : user.image,
       });
@@ -162,7 +161,7 @@ export default function AccountForm({
         <Grid item>
           <TextField
             name="origName"
-            label="Name"
+            label="Full name"
             value={form.origName}
             variant="outlined"
             required
@@ -191,31 +190,16 @@ export default function AccountForm({
             onChange={handleChange}
             style={{ justifyContent: "center" }}
           >
-            <FormControlLabel
-              value={
-                form.origImage
-                  ? form.origImage
-                  : form.image
-                  ? form.image
-                  : `${process.env.BASE_URL}/deadpool.jpg`
-              }
-              control={<Radio color="primary" />}
-              labelPlacement="bottom"
-              label={
-                <Image
-                  src={
-                    form.origImage
-                      ? form.origImage
-                      : form.image
-                      ? form.image
-                      : "/deadpool.jpg"
-                  }
-                  alt=""
-                  width={60}
-                  height={60}
-                />
-              }
-            />
+            {form.origImage && !avatars.includes(form.origImage) && (
+              <FormControlLabel
+                value={form.origImage}
+                control={<Radio color="primary" />}
+                labelPlacement="bottom"
+                label={
+                  <Image src={form.origImage} alt="" width={60} height={60} />
+                }
+              />
+            )}
             {avatars.map((url, index) => {
               return (
                 <FormControlLabel

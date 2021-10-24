@@ -27,6 +27,7 @@ import RadioGroup from "@material-ui/core/RadioGroup";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import FormControl from "@material-ui/core/FormControl";
 import Collapse from "@material-ui/core/Collapse";
+import useMediaQuery from "@material-ui/core/useMediaQuery";
 
 const useStyles = makeStyles((theme) => ({
   modal: {
@@ -83,6 +84,7 @@ export default function Share({ listID, uid, title, open, onClose }) {
   const [shareLink, setShareLink] = React.useState("");
   const [editable, setEditable] = React.useState("false");
   const [copied, setCopied] = React.useState(false);
+  const touch = useMediaQuery("(hover: none)");
 
   React.useEffect(() => {
     setShareLink(`${window.location.origin}/list/${listID}`);
@@ -105,11 +107,13 @@ export default function Share({ listID, uid, title, open, onClose }) {
     let link = document.getElementById("shareLink");
     link.select();
     navigator.clipboard.writeText(shareLink);
-    setCopied(true);
-    setTimeout(() => {
-      link.blur();
-      setCopied(false);
-    }, 2000);
+    if (!touch) {
+      setCopied(true);
+      setTimeout(() => {
+        link.blur();
+        setCopied(false);
+      }, 2000);
+    }
   };
 
   return (

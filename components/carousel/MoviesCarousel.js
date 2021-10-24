@@ -98,10 +98,12 @@ export default function MoviesCarousel({
           autoPlay={false}
           interval={5000}
           timeout={300}
+          navButtonsAlwaysVisible
           className={classes.carousel}
           navButtonsProps={{
             style: {
               margin: 0,
+              opacity: 0.25,
             },
           }}
           indicatorContainerProps={{

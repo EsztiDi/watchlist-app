@@ -59,7 +59,8 @@ export default function ListPanel({ setMessage }) {
             {
               title: "Privacy setting",
               element: document.querySelector("#private"),
-              intro: `Private lists are <b>not</b> featured on the <b>Discover</b> page but can still be shared by you.`,
+              intro: `Private lists are <b>not</b> featured on the <b>Discover</b> page but can still be shared by you.<br/><br/>
+              You can change your <b>display name</b> for public and shared lists on your <b>Account</b> page.`,
             },
             {
               title: "Weekly email",

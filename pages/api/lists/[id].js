@@ -3,6 +3,7 @@ import { getSession } from "next-auth/client";
 import dbConnect from "../../../utils/dbConnect";
 import Watchlist from "../../../models/Watchlist";
 import Releasesemail from "../../../models/Releasesemail";
+import Savedlist from "../../../models/Savedlist";
 
 export default async function handler(req, res) {
   const {

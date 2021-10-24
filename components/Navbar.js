@@ -160,8 +160,8 @@ export default function Navbar() {
                     <Image
                       src={user.image ? user.image : "/deadpool.jpg"}
                       alt=""
-                      width={50}
-                      height={50}
+                      width={48}
+                      height={48}
                       className={classes.avatar}
                     />
                   </IconButton>

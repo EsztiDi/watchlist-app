@@ -104,7 +104,52 @@ export default function MyApp({ Component, pageProps }) {
   const router = useRouter();
 
   const [message, setMessage] = React.useState("");
+  const [install, setInstall] = React.useState(false);
   const matches = useMediaQuery("(max-width:768px)");
+  const touch = useMediaQuery("(hover: none)");
+
+  React.useEffect(() => {
+    // Register service worker to control making site work offline
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", () => {
+        // Only alert about installing if it's the first beforeinstallprompt event
+        navigator.serviceWorker.getRegistrations().then((registrations) => {
+          if (registrations?.length === 0) setInstall(true);
+        });
+        navigator.serviceWorker.register("/sw.js").then(() => {
+          console.log("Service Worker Registered");
+        });
+      });
+    }
+    // Add to home screen prompt - https://developer.mozilla.org/en-US/docs/Web/Progressive_web_apps/Add_to_home_screen
+    let deferredPrompt;
+    window.addEventListener("beforeinstallprompt", (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      const installBtn = document.querySelector("#install");
+
+      if (installBtn) {
+        installBtn.addEventListener("click", (e) => {
+          setInstall(false);
+          deferredPrompt.prompt();
+          deferredPrompt.userChoice.then((choiceResult) => {
+            console.log(
+              `User response to the install prompt: ${JSON.stringify(
+                choiceResult
+              )}`
+            );
+            deferredPrompt = null;
+          });
+        });
+      }
+    });
+
+    window.addEventListener("appinstalled", () => {
+      setInstall(false);
+      deferredPrompt = null;
+      console.log("PWA was installed");
+    });
+  }, []);
 
   React.useEffect(() => {
     // Removing the server-side injected CSS
@@ -134,6 +179,9 @@ export default function MyApp({ Component, pageProps }) {
 
   const handleMessage = () => {
     setMessage("");
+  };
+  const handleInstall = () => {
+    setInstall(false);
   };
 
   return (
@@ -230,6 +278,23 @@ export default function MyApp({ Component, pageProps }) {
                     className={classes.message}
                   >
                     {message}
+                  </Alert>
+                </Fade>
+              </ClickAwayListener>
+            )}
+            {install && (
+              <ClickAwayListener onClickAway={handleInstall}>
+                <Fade in={install}>
+                  <Alert
+                    id="install"
+                    severity="info"
+                    variant="filled"
+                    className={classes.message}
+                    style={{ cursor: "pointer", textAlign: "center" }}
+                  >
+                    {touch
+                      ? "For best experience, click here to add to home screen."
+                      : "Click here to add a link to your desktop."}
                   </Alert>
                 </Fade>
               </ClickAwayListener>
