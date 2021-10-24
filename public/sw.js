@@ -5,18 +5,18 @@
 self.addEventListener("install", (e) => {
   e.waitUntil(
     caches
-      .open("watchlists-store")
+      .open("my-watchlists-cache")
       .then((cache) =>
         cache.addAll([
           "/",
-          "/lists",
-          "/create",
-          "/account",
-          "/login",
           "/about",
+          "/offline",
+          "/privacy",
           "/logo.png",
           "/movieIcon.png",
           "/tmdb-logo.svg",
+          "/favicon.ico",
+          "/dog_meme.jpg",
         ])
       )
   );
@@ -24,6 +24,11 @@ self.addEventListener("install", (e) => {
 
 self.addEventListener("fetch", (e) => {
   e.respondWith(
-    caches.match(e.request).then((response) => response || fetch(e.request))
+    caches
+      .match(e.request)
+      .then((response) => response || fetch(e.request))
+      .catch(() => {
+        return caches.match("/offline");
+      })
   );
 });
