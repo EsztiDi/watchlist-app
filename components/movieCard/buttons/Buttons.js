@@ -74,7 +74,15 @@ export default function Buttons({
   return (
     <div className={matches2 ? classes.buttonsMobile : classes.buttons}>
       {matches2 && (
-        <AddButton movie={movie} updating={updating} setMessage={setMessage} />
+        <IconButton
+          aria-label="remove"
+          title="Remove"
+          className={classes.button}
+          disabled={updating}
+          onClick={() => handleDelete(index)}
+        >
+          <HighlightOffRoundedIcon className={classes.delete} />
+        </IconButton>
       )}
       {index > 0 && (
         <>
@@ -136,15 +144,7 @@ export default function Buttons({
         </>
       )}
       {matches2 && (
-        <IconButton
-          aria-label="remove"
-          title="Remove"
-          className={classes.button}
-          disabled={updating}
-          onClick={() => handleDelete(index)}
-        >
-          <HighlightOffRoundedIcon className={classes.delete} />
-        </IconButton>
+        <AddButton movie={movie} updating={updating} setMessage={setMessage} />
       )}
     </div>
   );

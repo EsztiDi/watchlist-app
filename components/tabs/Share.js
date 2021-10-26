@@ -107,13 +107,11 @@ export default function Share({ listID, uid, title, open, onClose }) {
     let link = document.getElementById("shareLink");
     link.select();
     navigator.clipboard.writeText(shareLink);
-    if (!touch) {
-      setCopied(true);
-      setTimeout(() => {
-        link.blur();
-        setCopied(false);
-      }, 2000);
-    }
+    setCopied(true);
+    setTimeout(() => {
+      if (!touch) link.blur();
+      setCopied(false);
+    }, 2000);
   };
 
   return (

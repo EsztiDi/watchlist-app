@@ -1,7 +1,6 @@
 # https://www.robotstxt.org/robotstxt.html
 
 User-agent: Twitterbot
-Allow: /android-chrome-256x256.png
 Disallow: /_next/
 Disallow: /api/
 Disallow: /lists/
@@ -11,6 +10,8 @@ Disallow: /*.svg$
 Disallow: /*.ico$
 
 User-agent: *
+Allow: /android-chrome-256x256.png
+Allow: /screenshot.png
 Disallow: /_next/
 Disallow: /api/
 Disallow: /list/

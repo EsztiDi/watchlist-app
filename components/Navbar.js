@@ -306,7 +306,7 @@ export default function Navbar() {
                             </a>
                           </Link>
                           {loading ? null : user ? (
-                            <>
+                            <span>
                               <Link href="/create">
                                 <a>
                                   <MenuItem onClick={handleMenuClose}>
@@ -350,7 +350,7 @@ export default function Navbar() {
                                   Log out
                                 </Typography>
                               </MenuItem>
-                            </>
+                            </span>
                           ) : (
                             <Link href="/login">
                               <a>

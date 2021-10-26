@@ -1,5 +1,6 @@
 import Link from "next/link";
 import useSWR from "swr";
+import intro from "../../utils/intro";
 
 import { makeStyles } from "@material-ui/core/styles";
 import Tabs from "@material-ui/core/Tabs";
@@ -177,6 +178,39 @@ export default function ListTabs({
     const nextPos = savedLists[idx + 1].position;
     updateSavedList({ position: nextPos });
   };
+
+  // For introJs tutorial on first login
+  const [fetching, setFetching] = React.useState(true);
+  const [newUser, setNewUser] = React.useState(false);
+  const [email, setEmail] = React.useState("");
+
+  React.useEffect(() => {
+    const controller = new AbortController();
+    const signal = controller.signal;
+
+    const getProps = async () => {
+      await fetch("/api/lists/newuser", { signal })
+        .then((res) => res.json())
+        .then((res) => {
+          setNewUser(res?.data?.newUser);
+          setEmail(res?.data?.email);
+        });
+      setFetching(false);
+    };
+    getProps();
+
+    return () => {
+      controller.abort();
+    };
+  }, []);
+
+  React.useEffect(() => {
+    if (!fetching && newUser && lists) {
+      setTimeout(() => {
+        intro(email);
+      }, 1000);
+    }
+  }, [newUser, email, fetching, lists]);
 
   if (!lists || !savedLists)
     return (

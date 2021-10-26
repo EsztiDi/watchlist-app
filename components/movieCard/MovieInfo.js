@@ -67,7 +67,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function MovieInfo({ movie, listID, user }) {
+export default function MovieInfo({ movie, listID, loc, user }) {
   var { id, title, release_date, year, locale, media_type, details } = movie;
 
   if (details) {
@@ -126,12 +126,17 @@ export default function MovieInfo({ movie, listID, user }) {
   const matches2 = useMediaQuery("(max-width:500px)");
   const contentType = "application/json";
   const isMounted = React.useRef(null);
+  React.useEffect(() => {
+    isMounted.current = true;
+    return () => {
+      isMounted.current = false;
+    };
+  }, []);
 
   const [session] = useSession();
   const auth = user ? session && user?.email === session?.user?.email : false;
 
   const [date, setDate] = React.useState("");
-  const [loc, setLoc] = React.useState("");
 
   // For directors and cast "more" buttons
   const [overflows1, setOverflows1] = React.useState(false);
@@ -146,50 +151,30 @@ export default function MovieInfo({ movie, listID, user }) {
   }, [id, listID]);
 
   React.useEffect(() => {
-    isMounted.current = true;
-    const controller = new AbortController();
-    const signal = controller.signal;
-
     // Check if locale is different and get local release date
     const checkProps = async () => {
-      await fetch("/api/account/locale", { signal })
-        .then((res) => res.json())
-        .then(async (res) => {
-          if (res.data && locale !== res.data) {
-            if (auth) {
-              await fetch("/api/account/locale", {
-                method: "PUT",
-                headers: {
-                  Accept: contentType,
-                  "Content-Type": contentType,
-                },
-                body: JSON.stringify({ loc: res.data }),
-              }).catch((err) => {
-                console.error(err);
-              });
-            } else {
-              if (isMounted.current) setLoc(res.data);
-              var { release_date: localDate } = await getLocalDate(
-                movie,
-                res.data
-              );
-              if (localDate && isMounted.current) setDate(localDate);
-            }
-          }
-        })
-        .catch((err) => {
-          console.error(err);
-        });
+      if (loc && locale !== loc) {
+        if (auth) {
+          await fetch("/api/account/locale", {
+            method: "PUT",
+            headers: {
+              Accept: contentType,
+              "Content-Type": contentType,
+            },
+            body: JSON.stringify({ loc }),
+          }).catch((err) => {
+            console.error(err);
+          });
+        } else {
+          var { release_date: localDate } = await getLocalDate(movie, loc);
+          if (localDate && isMounted.current) setDate(localDate);
+        }
+      }
     };
 
-    if (movie.media_type === "movie" && auth !== undefined) checkProps();
-
-    return () => {
-      controller.abort();
-      isMounted.current = false;
-    };
+    if (movie.media_type === "movie" && auth !== undefined && loc) checkProps();
     // eslint-disable-next-line
-  }, [auth]);
+  }, [auth, loc]);
 
   React.useEffect(() => {
     var list1 = document.getElementById(`${id}-directors`);

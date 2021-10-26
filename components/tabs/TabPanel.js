@@ -90,7 +90,7 @@ const useStyles = makeStyles((theme) => ({
     marginLeft: theme.spacing(0.25),
   },
   label: {
-    width: "44%",
+    width: "45%",
     whiteSpace: "nowrap",
   },
   button: {
@@ -263,11 +263,56 @@ export default function TabPanel(props) {
                 ""
               )}
               {auth && (
+                <span className={matches3 ? classes.label : undefined}>
+                  <FormControlLabel
+                    id="private"
+                    label={
+                      <>
+                        <span>Private</span>
+                        <Tooltip
+                          arrow
+                          enterDelay={400}
+                          enterNextDelay={400}
+                          enterTouchDelay={50}
+                          leaveTouchDelay={5000}
+                          classes={{
+                            tooltip: classes.tooltipPadding,
+                          }}
+                          title={
+                            <p className={classes.tooltip}>
+                              Private lists are NOT featured on the{" "}
+                              <em>Discover</em> page but can still be shared by
+                              you
+                            </p>
+                          }
+                        >
+                          <HelpOutlineRoundedIcon
+                            onClick={(ev) => {
+                              ev.preventDefault();
+                            }}
+                            className={classes.miniIcon}
+                          />
+                        </Tooltip>
+                      </>
+                    }
+                    labelPlacement={!matches3 ? "start" : "end"}
+                    control={
+                      <Switch
+                        color="primary"
+                        name="private"
+                        checked={privateList}
+                        onChange={onChange}
+                      />
+                    }
+                  />
+                </span>
+              )}
+              <span className={matches3 ? classes.label : undefined}>
                 <FormControlLabel
-                  id="private"
+                  id="emails"
                   label={
                     <>
-                      <span>Private</span>
+                      <span>Emails</span>
                       <Tooltip
                         arrow
                         enterDelay={400}
@@ -279,9 +324,8 @@ export default function TabPanel(props) {
                         }}
                         title={
                           <p className={classes.tooltip}>
-                            Private lists are NOT featured on the{" "}
-                            <em>Discover</em> page but can still be shared by
-                            you
+                            Include this list in the weekly releases summary
+                            email on Thursdays
                           </p>
                         }
                       >
@@ -295,58 +339,16 @@ export default function TabPanel(props) {
                     </>
                   }
                   labelPlacement={!matches3 ? "start" : "end"}
-                  className={matches3 ? classes.label : undefined}
                   control={
                     <Switch
                       color="primary"
-                      name="private"
-                      checked={privateList}
+                      name="emails"
+                      checked={emails}
                       onChange={onChange}
                     />
                   }
                 />
-              )}
-              <FormControlLabel
-                id="emails"
-                label={
-                  <>
-                    <span>Emails</span>
-                    <Tooltip
-                      arrow
-                      enterDelay={400}
-                      enterNextDelay={400}
-                      enterTouchDelay={50}
-                      leaveTouchDelay={5000}
-                      classes={{
-                        tooltip: classes.tooltipPadding,
-                      }}
-                      title={
-                        <p className={classes.tooltip}>
-                          Include this list in the weekly releases summary email
-                          on Thursdays
-                        </p>
-                      }
-                    >
-                      <HelpOutlineRoundedIcon
-                        onClick={(ev) => {
-                          ev.preventDefault();
-                        }}
-                        className={classes.miniIcon}
-                      />
-                    </Tooltip>
-                  </>
-                }
-                labelPlacement={!matches3 ? "start" : "end"}
-                className={matches3 ? classes.label : undefined}
-                control={
-                  <Switch
-                    color="primary"
-                    name="emails"
-                    checked={emails}
-                    onChange={onChange}
-                  />
-                }
-              />
+              </span>
               {matches ? (
                 calendar ? (
                   <Link

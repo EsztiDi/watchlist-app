@@ -34,6 +34,32 @@ export default function Movies({
     ({ movies, title, user } = list);
   }
 
+  const [loc, setLoc] = React.useState("");
+  React.useEffect(() => {
+    var isMounted = true;
+    const controller = new AbortController();
+    const signal = controller.signal;
+
+    // Check if locale is different and get local release date
+    const getLocale = async () => {
+      await fetch("/api/account/locale", { signal })
+        .then((res) => res.json())
+        .then((res) => {
+          if (isMounted) setLoc(res.data || "US");
+        })
+        .catch((err) => {
+          console.error(err);
+        });
+    };
+    getLocale();
+
+    return () => {
+      controller.abort();
+      isMounted = false;
+    };
+    // eslint-disable-next-line
+  }, []);
+
   return !movies ? (
     <CircularProgress size="3rem" thickness={3} />
   ) : (
@@ -45,6 +71,7 @@ export default function Movies({
           movie={movie}
           listID={listID}
           listTitle={title}
+          loc={loc}
           user={user}
           index={index}
           moviesLength={movies.length}

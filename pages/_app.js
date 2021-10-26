@@ -99,6 +99,39 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+const schemaData = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  url: process.env.BASE_URL,
+  logo: `${process.env.BASE_URL}/android-chrome-256x256.png`,
+  name: "The Watchlist App",
+  description:
+    "An app to create watchlists for movies and TV shows with a 'share to edit' option",
+  applicationCategory: "WebApplication",
+  applicationSubCategory: "Watchlist App",
+  featureList:
+    "share to edit, episode tracking, weekly summary email, calendar view",
+  screenshot: `${process.env.BASE_URL}/screenshot.png`,
+  offers: {
+    "@type": "Offer",
+    price: "0",
+  },
+  review: {
+    "@type": "Review",
+    name: "The Watchlist App",
+    reviewRating: {
+      "@type": "Rating",
+      ratingValue: "4/5",
+    },
+    author: {
+      "@type": "Person",
+      name: "Diana",
+    },
+    reviewBody: `A great app to plan our movie nights online and to track the tv shows we are watching. I love the weekly summary email that reminds us of upcoming releases`,
+    datePublished: "2021-10-26",
+  },
+};
+
 export default function MyApp({ Component, pageProps }) {
   const classes = useStyles();
   const router = useRouter();
@@ -210,8 +243,9 @@ export default function MyApp({ Component, pageProps }) {
           href="/favicon-16x16.png"
         />
         <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#f8d070" />
-        <meta name="apple-mobile-web-app-title" content="The Watchlist App" />
-        <meta name="application-name" content="The Watchlist App" />
+        <meta name="theme-color" content="#ffffff" />
+        <meta name="apple-mobile-web-app-title" content="Watchlist App" />
+        <meta name="application-name" content="Watchlist App" />
         <meta name="msapplication-TileColor" content="#ffc40d" />
         <meta name="msapplication-config" content="/browserconfig.xml" />
         <link rel="manifest" href="/site.webmanifest" />
@@ -240,6 +274,10 @@ export default function MyApp({ Component, pageProps }) {
           content="Create, share and edit watchlists for films and TV shows to plan movie nights or to keep track of your shows 🎬 + 🍕"
         />
         <title>My Watchlists</title>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(schemaData) }}
+        />
       </Head>
       <Provider session={pageProps.session}>
         <SWRConfig

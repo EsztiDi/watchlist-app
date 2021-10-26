@@ -1,4 +1,5 @@
 import { useRouter } from "next/router";
+import { useSession } from "next-auth/client";
 import useSWR, { mutate } from "swr";
 
 import { makeStyles } from "@material-ui/core/styles";
@@ -52,8 +53,11 @@ export default function ListsMenu({
   const [value, setValue] = React.useState("");
   const isMounted = React.useRef(null);
 
-  const { data: lists, error } = useSWR("/api/lists");
-  const { data: savedLists, error: error2 } = useSWR("/api/lists/saved");
+  const [session] = useSession();
+  const { data: lists, error } = useSWR(session ? "/api/lists" : null);
+  const { data: savedLists, error: error2 } = useSWR(
+    session ? "/api/lists/saved" : null
+  );
   if (error) console.error(error);
   if (error2) console.error(error2);
 

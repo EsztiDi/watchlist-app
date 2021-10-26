@@ -42,7 +42,7 @@ export default function Footer() {
   const year = new Date().getFullYear();
   return (
     <Box className={classes.footer}>
-      <Typography component="div" className={classes.tmdb}>
+      <Typography component="div" className={classes.tmdb} data-nosnippet>
         This product uses the TMDb API but is not endorsed or certified by TMDb.
         <a
           href="https://www.themoviedb.org/"
@@ -52,11 +52,11 @@ export default function Footer() {
           <Image src="/tmdb-logo.svg" alt="" width={50} height={21.5} />
         </a>
       </Typography>
-      <Typography component="span">
+      <Typography component="span" data-nosnippet>
         Copyright &copy; 2021{year > 2021 ? `-${year}` : ""}, The Watchlist App
         by Eszter Diana Toth
       </Typography>
-      <Typography>
+      <Typography data-nosnippet>
         <Link href="/about">
           <a>About & Contact</a>
         </Link>
