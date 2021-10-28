@@ -1,7 +1,7 @@
 {
     "name": "My Watchlists",
     "short_name": "Watchlists",
-    "description": "An app to create watchlists for movies and TV shows with a 'share to edit' option",
+    "description": "Create, share and edit watchlists for films and TV shows to plan movie nights or to keep track of your shows.",
     "theme_color": "#ffffff",
     "background_color": "#ffffff",
     "display": "standalone",

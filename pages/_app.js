@@ -100,35 +100,40 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const schemaData = {
-  "@context": "https://schema.org",
+  "@context": "http://schema.org",
   "@type": "WebApplication",
-  url: process.env.BASE_URL,
-  logo: `${process.env.BASE_URL}/android-chrome-256x256.png`,
   name: "The Watchlist App",
+  logo: `${process.env.BASE_URL}/android-chrome-256x256.png`,
+  url: process.env.BASE_URL,
+  applicationCategory: "Watchlist",
   description:
-    "An app to create watchlists for movies and TV shows with a 'share to edit' option",
-  applicationCategory: "WebApplication",
-  applicationSubCategory: "Watchlist App",
+    "Create, share and edit watchlists for films and TV shows to plan movie nights or to keep track of your shows.",
   featureList:
-    "share to edit, episode tracking, weekly summary email, calendar view",
+    "Share to edit, Episode tracking, Weekly summary email, Calendar view",
   screenshot: `${process.env.BASE_URL}/screenshot.png`,
-  offers: {
-    "@type": "Offer",
-    price: "0",
+  genre: "movie, TV, cinema, watchlist",
+  about: {
+    "@type": "Thing",
+    description: "watchlist, movie, TV show, TV series",
+  },
+  keywords: "watchlist, watchlists, watchlist app, movie, TV show, TV series",
+  softwareHelp: {
+    "@type": "CreativeWork",
+    url: `${process.env.BASE_URL}/about`,
   },
   review: {
     "@type": "Review",
-    name: "The Watchlist App",
-    reviewRating: {
-      "@type": "Rating",
-      ratingValue: "4/5",
-    },
     author: {
       "@type": "Person",
       name: "Diana",
     },
-    reviewBody: `A great app to plan our movie nights online and to track the tv shows we are watching. I love the weekly summary email that reminds us of upcoming releases`,
     datePublished: "2021-10-26",
+    reviewRating: {
+      "@type": "Rating",
+      ratingValue: "4/5",
+    },
+    reviewBody:
+      "A great app to plan our movie nights online and to track the tv shows we are watching. I love the weekly summary email that reminds us of upcoming releases.",
   },
 };
 
@@ -142,12 +147,13 @@ export default function MyApp({ Component, pageProps }) {
   const touch = useMediaQuery("(hover: none)");
 
   React.useEffect(() => {
+    var registered = true;
     // Register service worker to control making site work offline
     if ("serviceWorker" in navigator) {
       window.addEventListener("load", () => {
         // Only alert about installing if it's the first beforeinstallprompt event
         navigator.serviceWorker.getRegistrations().then((registrations) => {
-          if (registrations?.length === 0) setInstall(true);
+          if (registrations?.length === 0) registered = false;
         });
         navigator.serviceWorker.register("/sw.js").then(() => {
           console.log("Service Worker Registered");
@@ -159,11 +165,13 @@ export default function MyApp({ Component, pageProps }) {
     window.addEventListener("beforeinstallprompt", (e) => {
       e.preventDefault();
       deferredPrompt = e;
+      if (!registered) setInstall(true);
       const installBtn = document.querySelector("#install");
 
       if (installBtn) {
         installBtn.addEventListener("click", (e) => {
           setInstall(false);
+          registered = true;
           deferredPrompt.prompt();
           deferredPrompt.userChoice.then((choiceResult) => {
             console.log(
@@ -179,6 +187,7 @@ export default function MyApp({ Component, pageProps }) {
 
     window.addEventListener("appinstalled", () => {
       setInstall(false);
+      registered = true;
       deferredPrompt = null;
       console.log("PWA was installed");
     });

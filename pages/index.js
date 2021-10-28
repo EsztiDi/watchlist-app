@@ -1,7 +1,10 @@
 import Head from "next/head";
+import Link from "next/link";
+import { useSession } from "next-auth/client";
 
 import { makeStyles } from "@material-ui/core/styles";
 import Paper from "@material-ui/core/Paper";
+import Typography from "@material-ui/core/Typography";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
 
 import MoviesCarousel from "../components/carousel/MoviesCarousel";
@@ -20,11 +23,21 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: "space-evenly",
     padding: theme.spacing(1),
   },
+  welcome: {
+    flexBasis: "100%",
+    textAlign: "center",
+    "& a": {
+      textDecoration: "underline",
+      fontWeight: "bold",
+      lineHeight: 3,
+    },
+  },
 }));
 
 export default function Discover({ setMessage }) {
   const classes = useStyles();
   const matches = useMediaQuery("(max-width:1024px)");
+  const [session, loading2] = useSession();
 
   const [locale, setLocale] = React.useState("");
   const [loading, setLoading] = React.useState(false);
@@ -207,6 +220,27 @@ export default function Discover({ setMessage }) {
         elevation={4}
         className={matches ? classes.paperMobile : classes.paper}
       >
+        {!loading2 && !session && (
+          <div
+            className={classes.welcome}
+            style={matches ? { padding: "0 8px" } : { padding: "0 24px" }}
+          >
+            <Typography variant="h5">Welcome to The Watchlist App!</Typography>
+            <Typography variant="button">
+              <Link href="/login">
+                <a>Log in</a>
+              </Link>{" "}
+              to create or save watchlists
+            </Typography>
+            <Typography variant="subtitle1">
+              Plan movie nights with the &quot;share to edit&quot; option&nbsp;●
+              Receive a weekly summary of upcoming releases from your
+              lists&nbsp;● Track the TV shows you are watching&nbsp;● And see
+              the releases in calendar view&nbsp;● Enjoy!&nbsp;🎬&nbsp;+&nbsp;🍕
+            </Typography>
+          </div>
+        )}
+
         {carousels
           .sort((a, b) => a.position - b.position)
           .map((carousel, index) => {
