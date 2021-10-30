@@ -65,7 +65,7 @@ export default function Form({
   const contentType = "application/json";
   const router = useRouter();
   var uid;
-  var { id } = router.query;
+  var { id } = router?.query;
   if (Array.isArray(id)) {
     uid = id[1] ? id[1] : "";
     id = id[0];
@@ -132,10 +132,10 @@ export default function Form({
   React.useEffect(() => {
     const beforeRouteHandler = (url) => {
       if (
-        router.pathname !== url &&
+        router?.pathname !== url &&
         !confirm("Changes that you made may not be saved.")
       ) {
-        router.events.emit("routeChangeError");
+        router?.events?.emit("routeChangeError");
         // tslint:disable-next-line: no-string-throw
         throw `Route change to "${url}" was aborted (this error can be safely ignored). See https://github.com/zeit/next.js/issues/2476.`;
       }
@@ -143,14 +143,14 @@ export default function Form({
 
     if (updating) {
       window.addEventListener("beforeunload", unloadAlert);
-      router.events.on("routeChangeStart", beforeRouteHandler);
+      router?.events?.on("routeChangeStart", beforeRouteHandler);
     } else {
       window.removeEventListener("beforeunload", unloadAlert);
-      router.events.off("routeChangeStart", beforeRouteHandler);
+      router?.events?.off("routeChangeStart", beforeRouteHandler);
     }
     return () => {
       window.removeEventListener("beforeunload", unloadAlert);
-      router.events.off("routeChangeStart", beforeRouteHandler);
+      router?.events?.off("routeChangeStart", beforeRouteHandler);
     };
     // eslint-disable-next-line
   }, [updating]);
@@ -179,7 +179,7 @@ export default function Form({
         return lists;
       });
       setUpdating(false);
-      router.push("/lists");
+      router?.push("/lists");
     } catch (error) {
       setMessage(`${error.message} - Failed to add list, please try again.`);
       setUpdating(false);
@@ -346,7 +346,7 @@ export default function Form({
     }
 
     var ids = movies.map((mov) => mov.id);
-    if (ids.includes(movie.id)) {
+    if (ids?.includes(movie.id)) {
       newMovie.current = false;
       setMessage("It's already on the list \\(^-^)/");
       if (newTab || newList) {

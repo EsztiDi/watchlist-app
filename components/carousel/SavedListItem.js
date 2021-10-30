@@ -52,14 +52,14 @@ export default function SavedListItem({
       <Typography
         variant="button"
         className={
-          savedList?.movies?.map((mov) => mov.id).includes(movieID)
+          savedList?.movies?.map((mov) => mov.id)?.includes(movieID)
             ? classes.added
             : classes.text
         }
       >
         {savedList?.title}
         {index === value &&
-          savedList?.movies?.map((mov) => mov.id).includes(movieID) &&
+          savedList?.movies?.map((mov) => mov.id)?.includes(movieID) &&
           added &&
           " ✔"}
       </Typography>

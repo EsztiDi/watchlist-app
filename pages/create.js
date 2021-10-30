@@ -18,7 +18,7 @@ export default function Create({ setMessage }) {
   if (loading) return null;
 
   if (!loading && !session) {
-    router.replace("/login");
+    router?.replace("/login");
   }
 
   return (

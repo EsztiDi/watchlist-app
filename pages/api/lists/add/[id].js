@@ -24,18 +24,18 @@ export default async function handler(req, res) {
         var { _doc: list } = await Watchlist.findById(id);
         var { movies } = list;
 
-        if (movies.length > 0) {
+        if (movies?.length > 0) {
           movie.position =
-            movies.sort((a, b) => b.position - a.position)[0].position + 1;
+            movies?.sort((a, b) => b.position - a.position)[0].position + 1;
         } else {
           movie.position = 0;
         }
 
-        var ids = movies.map((mov) => mov.id);
-        if (ids.includes(movie.id)) {
+        var ids = movies?.map((mov) => mov.id);
+        if (ids?.includes(movie.id)) {
           list = {
             ...list,
-            movies: [...movies.filter((mov) => mov.id !== movie.id)],
+            movies: [...movies?.filter((mov) => mov.id !== movie.id)],
           };
         } else {
           list = { ...list, movies: [...movies, movie] };
@@ -56,7 +56,7 @@ export default async function handler(req, res) {
         // If adding to the "Watched" list, change movie to "watched"
         if (/^Watched$/i.test(list.title)) {
           var tv = movie.seasons?.length > 0;
-          if (!ids.includes(movie.id)) {
+          if (!ids?.includes(movie.id)) {
             await setWatched(movie.id, "true", tv, id);
           }
         }

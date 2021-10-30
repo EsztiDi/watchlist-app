@@ -106,7 +106,7 @@ export default function AccountForm({
       setUpdatingForm(false);
       if (newForm.image !== user?.image) {
         setTimeout(() => {
-          router.reload();
+          router?.reload();
         }, 1000);
       }
     } catch (error) {

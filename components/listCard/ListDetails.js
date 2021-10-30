@@ -90,7 +90,7 @@ export default function ListDetails({
   if (error) console.error(error);
 
   const sameUser = session && creator?.email === session?.user?.email;
-  const saved = lists?.map((list) => list.listid).includes(listID);
+  const saved = lists?.map((list) => list.listid)?.includes(listID);
 
   const handleMouse = () => {
     handleShowDetails();
@@ -143,7 +143,7 @@ export default function ListDetails({
 
   const handleButtonClick = () => {
     if (!loading && !session) {
-      router.push("/login");
+      router?.push("/login");
     }
     if (session) {
       setUpdating(true);

@@ -42,6 +42,19 @@ export default function Footer() {
   const year = new Date().getFullYear();
   return (
     <Box className={classes.footer}>
+      <Typography style={{ fontSize: "0.95rem" }} data-nosnippet>
+        <Link href="/about">
+          <a>About & Contact</a>
+        </Link>
+        {" | "}
+        <Link href="/privacy">
+          <a>Privacy Notice</a>
+        </Link>
+      </Typography>
+      <Typography component="span" data-nosnippet>
+        Copyright &copy; 2021{year > 2021 ? `-${year}` : ""}, The Watchlist App
+        by Eszter Diana Toth
+      </Typography>
       <Typography component="div" className={classes.tmdb} data-nosnippet>
         This product uses the TMDb API but is not endorsed or certified by TMDb.
         <a
@@ -51,19 +64,6 @@ export default function Footer() {
         >
           <Image src="/tmdb-logo.svg" alt="" width={50} height={21.5} />
         </a>
-      </Typography>
-      <Typography component="span" data-nosnippet>
-        Copyright &copy; 2021{year > 2021 ? `-${year}` : ""}, The Watchlist App
-        by Eszter Diana Toth
-      </Typography>
-      <Typography data-nosnippet>
-        <Link href="/about">
-          <a>About & Contact</a>
-        </Link>
-        {" | "}
-        <Link href="/privacy">
-          <a>Privacy Notice</a>
-        </Link>
       </Typography>
     </Box>
   );

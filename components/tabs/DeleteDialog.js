@@ -49,7 +49,7 @@ export default function DeleteDialog({
         return lists.filter((list) => list._id !== id);
       });
       setUpdating(false);
-      router.push("/lists");
+      router?.push("/lists");
     } catch (error) {
       setMessage(`${error.message} - Failed to delete list.`);
       setUpdating(false);
@@ -80,7 +80,7 @@ export default function DeleteDialog({
         return lists.filter((el) => el.listid !== id);
       });
       setUpdating(false);
-      router.push("/lists");
+      router?.push("/lists");
     } catch (error) {
       setMessage(`${error.message} - Failed to delete list.`);
       setUpdating(false);

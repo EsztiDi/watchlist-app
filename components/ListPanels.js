@@ -67,7 +67,7 @@ export default function ListPanels({ setMessage, calendar = false }) {
   const classes = useStyles();
   const [session, loading] = useSession();
   const router = useRouter();
-  var { id } = router.query;
+  var { id } = router?.query;
   if (Array.isArray(id)) id = id[0];
 
   const matches = useMediaQuery("(max-width:1024px)");
@@ -85,7 +85,7 @@ export default function ListPanels({ setMessage, calendar = false }) {
   if (!list && !session) return null;
 
   if (!loading && !session) {
-    router.replace("/login");
+    router?.replace("/login");
   }
 
   if (!list) {

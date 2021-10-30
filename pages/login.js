@@ -93,7 +93,7 @@ export default function Login({ setMessage }) {
   if (loading) return null;
 
   if (session) {
-    router.replace("/lists");
+    router?.replace("/lists");
   }
 
   return (

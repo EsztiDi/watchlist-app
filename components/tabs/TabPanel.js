@@ -159,7 +159,7 @@ export default function TabPanel(props) {
   const matches3 = useMediaQuery("(max-width:490px)");
 
   const router = useRouter();
-  const { id: ids } = router.query;
+  const { id: ids } = router?.query;
   const [session] = useSession();
 
   const { data: lists } = useSWR("/api/lists");

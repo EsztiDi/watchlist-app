@@ -97,7 +97,7 @@ export default function ListPage({
   const classes = useStyles();
   const [session, loading] = useSession();
   const router = useRouter();
-  var { id } = router.query;
+  var { id } = router?.query;
 
   const matches = useMediaQuery("(max-width:1024px)");
   const matches2 = useMediaQuery("(max-width:768px)");
@@ -118,7 +118,7 @@ export default function ListPage({
   if (error2) console.error(error2);
 
   const auth = session && list?.user?.email === session?.user?.email;
-  const saved = savedLists?.map((list) => list.listid).includes(id[0]);
+  const saved = savedLists?.map((list) => list.listid)?.includes(id[0]);
   const contentType = "application/json";
 
   const uid = new Date(list?.createdAt).getTime().toString().substring(0, 12);
@@ -139,7 +139,7 @@ export default function ListPage({
   React.useEffect(() => {
     if (error) {
       setMessage(error.message);
-      router.push("/");
+      router?.push("/");
     }
     // eslint-disable-next-line
   }, [error]);
@@ -195,7 +195,7 @@ export default function ListPage({
 
   const handleButtonClick = () => {
     if (!loading && !session) {
-      router.push("/login");
+      router?.push("/login");
     }
     if (session) {
       setUpdating(true);

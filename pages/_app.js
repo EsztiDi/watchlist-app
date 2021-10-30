@@ -202,22 +202,22 @@ export default function MyApp({ Component, pageProps }) {
   }, []);
 
   React.useEffect(() => {
-    if (router.query.error?.includes("OAuthAccountNotLinked")) {
+    if (router?.query?.error?.includes("OAuthAccountNotLinked")) {
       setMessage(
         "Please sign in with the same account you used originally or email contact@mywatchlists.watch"
       );
-    } else if (router.query.error) {
+    } else if (router?.query?.error) {
       setMessage(
-        `${router.query.error} – Please try again or email contact@mywatchlists.watch`
+        `${router?.query?.error} – Please try again or email contact@mywatchlists.watch`
       );
     }
-  }, [router.query]);
+  }, [router?.query]);
 
   React.useEffect(() => {
     return () => {
       setMessage("");
     };
-  }, [router.query.error]);
+  }, [router?.query?.error]);
 
   const handleMessage = () => {
     setMessage("");
@@ -352,8 +352,8 @@ export default function MyApp({ Component, pageProps }) {
               }
               style={{
                 height:
-                  router.pathname.includes("/lists/[id]") ||
-                  router.pathname.includes("/lists/calendar/[id]")
+                  router?.pathname?.includes("/lists/[...id]") ||
+                  router?.pathname?.includes("/lists/calendar/[...id]")
                     ? "auto"
                     : "calc(100% - 56px)",
               }}

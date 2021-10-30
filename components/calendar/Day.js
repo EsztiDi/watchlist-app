@@ -48,17 +48,17 @@ export default function Day({ date, month, year, movies }) {
   // Series episodes released on the same day to appear under one image on the calendar
   const names =
     movies &&
-    movies.reduce(
+    movies?.reduce(
       (ep, { mainTitle }) => ep.set(mainTitle, ep.has(mainTitle)),
       new Map()
     );
   const sameSeries =
     movies &&
-    movies.filter(({ mainTitle }) => mainTitle && names.get(mainTitle));
+    movies?.filter(({ mainTitle }) => mainTitle && names.get(mainTitle));
 
   var same = {};
-  if (sameSeries && sameSeries.length > 0) {
-    same = sameSeries.reduce((r, a) => {
+  if (sameSeries && sameSeries?.length > 0) {
+    same = sameSeries?.reduce((r, a) => {
       r[a.mainTitle] = r[a.mainTitle] || [];
       r[a.mainTitle].push(a);
       return r;
@@ -66,15 +66,15 @@ export default function Day({ date, month, year, movies }) {
   }
   const cellWidth =
     movies &&
-    movies.length > 1 &&
-    (sameSeries.length !== movies.length || Object.entries(same).length > 1)
+    movies?.length > 1 &&
+    (sameSeries?.length !== movies?.length || Object.entries(same)?.length > 1)
       ? "141px"
       : "76px";
 
   const divWidth =
     movies &&
-    movies.length > 1 &&
-    (sameSeries.length !== movies.length || Object.entries(same).length > 1)
+    movies?.length > 1 &&
+    (sameSeries?.length !== movies?.length || Object.entries(same)?.length > 1)
       ? "125px"
       : "60px";
 
@@ -96,7 +96,7 @@ export default function Day({ date, month, year, movies }) {
         }}
       >
         {movies
-          .filter((episode) => !sameSeries.includes(episode))
+          .filter((episode) => !sameSeries?.includes(episode))
           .map((movie, index) => {
             return (
               <Tooltip
@@ -149,8 +149,8 @@ export default function Day({ date, month, year, movies }) {
             );
           })}
 
-        {sameSeries.length > 0 &&
-          Object.entries(same).map((series, index) => {
+        {sameSeries?.length > 0 &&
+          Object.entries(same)?.map((series, index) => {
             return (
               <Tooltip
                 key={index}

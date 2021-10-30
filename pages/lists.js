@@ -50,12 +50,12 @@ export default function Lists() {
   if (!data) return <CircularProgress size="3rem" thickness={3} />;
 
   if (!loading && !session) {
-    router.replace("/login");
+    router?.replace("/login");
   } else if (hasLists && id) {
-    router.replace(`/lists/${id}`);
+    router?.replace(`/lists/${id}`);
     return <CircularProgress size="3rem" thickness={3} />;
   } else if (!hasLists && hasSavedLists && id) {
-    router.replace(`/lists/${id}${uid ? `/${uid}` : ""}`);
+    router?.replace(`/lists/${id}${uid ? `/${uid}` : ""}`);
     return <CircularProgress size="3rem" thickness={3} />;
   }
 

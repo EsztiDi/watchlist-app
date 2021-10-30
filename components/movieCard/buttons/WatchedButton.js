@@ -41,7 +41,7 @@ export default function WatchedButton({
   const isMounted = React.useRef(null);
 
   const router = useRouter();
-  var { id: ids } = router.query;
+  var { id: ids } = router?.query;
   var listID = Array.isArray(ids) ? ids[0] : ids;
 
   const { data: list, error } = useSWR(listID ? `/api/lists/${listID}` : null);
@@ -60,10 +60,10 @@ export default function WatchedButton({
   React.useEffect(() => {
     const beforeRouteHandler = (url) => {
       if (
-        router.pathname !== url &&
+        router?.pathname !== url &&
         !confirm("Changes that you made may not be saved.")
       ) {
-        router.events.emit("routeChangeError");
+        router?.events?.emit("routeChangeError");
         // tslint:disable-next-line: no-string-throw
         throw `Route change to "${url}" was aborted (this error can be safely ignored). See https://github.com/zeit/next.js/issues/2476.`;
       }
@@ -71,14 +71,14 @@ export default function WatchedButton({
 
     if (updating) {
       window.addEventListener("beforeunload", unloadAlert);
-      router.events.on("routeChangeStart", beforeRouteHandler);
+      router?.events?.on("routeChangeStart", beforeRouteHandler);
     } else {
       window.removeEventListener("beforeunload", unloadAlert);
-      router.events.off("routeChangeStart", beforeRouteHandler);
+      router?.events?.off("routeChangeStart", beforeRouteHandler);
     }
     return () => {
       window.removeEventListener("beforeunload", unloadAlert);
-      router.events.off("routeChangeStart", beforeRouteHandler);
+      router?.events?.off("routeChangeStart", beforeRouteHandler);
     };
     // eslint-disable-next-line
   }, [updating]);

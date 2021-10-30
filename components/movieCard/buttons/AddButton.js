@@ -41,7 +41,7 @@ export default function AddButton({ movie, updating, setMessage }) {
 
   const handleButtonClick = () => {
     if (!loading && !session) {
-      router.push("/login");
+      router?.push("/login");
     } else if (lists && lists.length === 0) {
       setMessage("Create a list first.");
     } else {

@@ -22,12 +22,12 @@ export default async function addToWatched(user, id, watched, movie) {
         }
 
         var ids = movies.map((mov) => mov.id);
-        if (watched === "true" && movie && !ids.includes(id)) {
+        if (watched === "true" && movie && !ids?.includes(id)) {
           list = {
             ...list,
             movies: [...movies, { ...movie, watched: "true" }],
           };
-        } else if (watched === "false" && ids.includes(id)) {
+        } else if (watched === "false" && ids?.includes(id)) {
           list = {
             ...list,
             movies: [...movies.filter((mov) => mov.id !== id)],

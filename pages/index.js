@@ -1,6 +1,6 @@
 import Head from "next/head";
 import Link from "next/link";
-import { useSession } from "next-auth/client";
+import { getSession } from "next-auth/client";
 
 import { makeStyles } from "@material-ui/core/styles";
 import Paper from "@material-ui/core/Paper";
@@ -34,10 +34,9 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function Discover({ setMessage }) {
+export default function Discover({ session, setMessage }) {
   const classes = useStyles();
   const matches = useMediaQuery("(max-width:1024px)");
-  const [session, loading2] = useSession();
 
   const [locale, setLocale] = React.useState("");
   const [loading, setLoading] = React.useState(false);
@@ -220,7 +219,7 @@ export default function Discover({ setMessage }) {
         elevation={4}
         className={matches ? classes.paperMobile : classes.paper}
       >
-        {!loading2 && !session && (
+        {!session && (
           <div
             className={classes.welcome}
             style={matches ? { padding: "0 8px" } : { padding: "0 24px" }}
@@ -260,4 +259,8 @@ export default function Discover({ setMessage }) {
       </Paper>
     </>
   );
+}
+
+export async function getServerSideProps(context) {
+  return { props: { session: await getSession(context) } };
 }

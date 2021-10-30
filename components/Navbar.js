@@ -205,7 +205,7 @@ export default function Navbar() {
                                 onClick={() =>
                                   signOut({
                                     callbackUrl:
-                                      window.location.pathname.includes(
+                                      window?.location?.pathname?.includes(
                                         "/list/"
                                       )
                                         ? undefined
@@ -335,7 +335,7 @@ export default function Navbar() {
                                 onClick={() =>
                                   signOut({
                                     callbackUrl:
-                                      window.location.pathname.includes(
+                                      window?.location?.pathname?.includes(
                                         "/list/"
                                       )
                                         ? undefined
