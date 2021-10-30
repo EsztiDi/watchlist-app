@@ -88,9 +88,7 @@ workbox.routing.registerRoute(
 // Cache CSS, JS, and Web Worker requests with a stale-while-revalidate strategy
 workbox.routing.registerRoute(
   ({ request }) =>
-    request.destination === "style" ||
-    request.destination === "script" ||
-    request.destination === "worker",
+    request.destination === "style" || request.destination === "worker",
   new workbox.strategies.StaleWhileRevalidate({
     cacheName: "assets",
     plugins: [
