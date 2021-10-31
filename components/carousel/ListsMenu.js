@@ -191,7 +191,7 @@ export default function ListsMenu({
                         <SavedListItem
                           key={list.listid}
                           movieID={movieID}
-                          listID={list.listid}
+                          listID={list?.listid}
                           index={index + lists?.length}
                           value={value}
                           updating={updating}

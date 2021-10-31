@@ -101,6 +101,7 @@ export default function MovieDetails({
   } = movie;
 
   React.useEffect(() => {
+    var isMounted = true;
     const controller = new AbortController();
     const signal = controller.signal;
 
@@ -116,14 +117,16 @@ export default function MovieDetails({
       signal,
     };
 
-    fetch(fullUrl, options)
-      .then((res) => res.json())
-      .then((data) => {
-        setExternalIDs({ imdb_id: data.imdb_id || "" });
-      });
+    if (isMounted)
+      fetch(fullUrl, options)
+        .then((res) => res.json())
+        .then((data) => {
+          if (isMounted) setExternalIDs({ imdb_id: data.imdb_id || "" });
+        });
 
     return () => {
       controller.abort();
+      isMounted = false;
     };
     // eslint-disable-next-line
   }, []);
