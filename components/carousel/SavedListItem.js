@@ -37,7 +37,7 @@ export default function SavedListItem({
   var { data: savedList, error } = useSWR(
     listID ? `/api/lists/${listID}` : null
   );
-  if (error) console.error(error);
+  if (error) console.error("savedList - " + error);
 
   return !savedList ? (
     <div className={classes.empty}>

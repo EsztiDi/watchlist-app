@@ -8,7 +8,6 @@ self.addEventListener("install", (e) => {
       .open("my-watchlists-cache")
       .then((cache) =>
         cache.addAll([
-          "/",
           "/about",
           "/offline",
           "/privacy",

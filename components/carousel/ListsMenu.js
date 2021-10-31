@@ -58,8 +58,8 @@ export default function ListsMenu({
   const { data: savedLists, error: error2 } = useSWR(
     session ? "/api/lists/saved" : null
   );
-  if (error) console.error(error);
-  if (error2) console.error(error2);
+  if (error) console.error("lists - " + error);
+  if (error2) console.error("savedLists - " + error2);
 
   React.useEffect(() => {
     isMounted.current = true;

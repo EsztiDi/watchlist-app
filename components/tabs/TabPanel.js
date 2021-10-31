@@ -181,6 +181,32 @@ export default function TabPanel(props) {
       document.getElementById(`tabpanel-${listID}`).scrollTop = 0;
   }, [listID, newTab]);
 
+  // Locale for Calendar and Movies
+  const [loc, setLoc] = React.useState("");
+  React.useEffect(() => {
+    var isMounted = true;
+    const controller = new AbortController();
+    const signal = controller.signal;
+
+    const getLocale = async () => {
+      await fetch("/api/account/locale", { signal })
+        .then((res) => res.json())
+        .then((res) => {
+          if (isMounted) setLoc(res.data || "US");
+        })
+        .catch((err) => {
+          console.error(err);
+        });
+    };
+    getLocale();
+
+    return () => {
+      controller.abort();
+      isMounted = false;
+    };
+    // eslint-disable-next-line
+  }, []);
+
   // For DeleteDialog
   const [openDelete, setOpenDelete] = React.useState(false);
 
@@ -448,10 +474,11 @@ export default function TabPanel(props) {
         </div>
 
         {calendar ? (
-          <Calendar listID={listID} newTab={newTab} />
+          <Calendar listID={listID} loc={loc} newTab={newTab} />
         ) : (
           <Movies
             listID={listID}
+            loc={loc}
             deleteMovie={editable ? deleteMovie : undefined}
             moveMovie={editable ? moveMovie : undefined}
             updating={updating}

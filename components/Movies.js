@@ -17,6 +17,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Movies({
   listID,
+  loc,
   movies,
   deleteMovie,
   moveMovie,
@@ -33,32 +34,6 @@ export default function Movies({
   if (list) {
     ({ movies, title, user } = list);
   }
-
-  const [loc, setLoc] = React.useState("");
-  React.useEffect(() => {
-    var isMounted = true;
-    const controller = new AbortController();
-    const signal = controller.signal;
-
-    // Check if locale is different and get local release date
-    const getLocale = async () => {
-      await fetch("/api/account/locale", { signal })
-        .then((res) => res.json())
-        .then((res) => {
-          if (isMounted) setLoc(res.data || "US");
-        })
-        .catch((err) => {
-          console.error(err);
-        });
-    };
-    getLocale();
-
-    return () => {
-      controller.abort();
-      isMounted = false;
-    };
-    // eslint-disable-next-line
-  }, []);
 
   return !movies ? (
     <CircularProgress size="3rem" thickness={3} />

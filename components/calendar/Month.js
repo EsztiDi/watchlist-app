@@ -1,33 +1,7 @@
 import useSWR from "swr";
 import Week from "./Week";
 
-export default function Month({ listID, year, month }) {
-  const [loc, setLoc] = React.useState("");
-
-  React.useEffect(() => {
-    var isMounted = true;
-    const controller = new AbortController();
-    const signal = controller.signal;
-
-    const getLocale = async () => {
-      await fetch(`/api/account/locale`, { signal })
-        .then((res) => res.json())
-        .then((res) => {
-          if (isMounted) setLoc(res.data || "US");
-        })
-        .catch((err) => {
-          console.error(err);
-        });
-    };
-    getLocale();
-
-    return () => {
-      controller.abort();
-      isMounted = false;
-    };
-    // eslint-disable-next-line
-  }, []);
-
+export default function Month({ listID, year, month, loc }) {
   const { data: dates, error } = useSWR(
     listID && loc
       ? `/api/lists/calendar/${listID}/${year}/${month}/${loc}`

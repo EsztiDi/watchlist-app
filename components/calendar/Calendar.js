@@ -91,7 +91,7 @@ const useStyles = makeStyles((theme) => ({
 const days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 const today = new Date();
 
-export default function Calendar({ listID, newTab = false }) {
+export default function Calendar({ listID, loc, newTab = false }) {
   const classes = useStyles();
   const matches = useMediaQuery("(max-width:780px)");
 
@@ -199,7 +199,7 @@ export default function Calendar({ listID, newTab = false }) {
               </TableRow>
             </TableHead>
             <TableBody>
-              <Month listID={listID} month={month} year={year} />
+              <Month listID={listID} month={month} year={year} loc={loc} />
             </TableBody>
           </Table>
         </TableContainer>
