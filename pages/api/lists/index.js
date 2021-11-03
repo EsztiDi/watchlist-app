@@ -11,13 +11,19 @@ export default async function handler(req, res) {
   switch (method) {
     case "GET":
       try {
-        const lists = await Watchlist.find(
-          { "user.email": session?.user?.email },
-          "_id title movies position"
-        ).sort({
-          position: -1,
-        });
-        res.status(200).json({ success: true, data: lists });
+        if (session) {
+          const lists = await Watchlist.find(
+            { "user.email": session?.user?.email },
+            "_id title movies position"
+          )
+            .sort({
+              position: -1,
+            })
+            .catch((err) => console.error(err));
+          res.status(200).json({ success: true, data: lists });
+        } else {
+          res.status(200).json({ success: true, data: [] });
+        }
       } catch (err) {
         console.error(
           `Lists not found -  user: ${JSON.stringify(

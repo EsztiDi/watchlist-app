@@ -189,7 +189,7 @@ export default function ListsMenu({
                     .map((list, index) => {
                       return (
                         <SavedListItem
-                          key={list.listid}
+                          key={list?.listid}
                           movieID={movieID}
                           listID={list?.listid}
                           index={index + lists?.length}

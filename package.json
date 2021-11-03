@@ -8,6 +8,7 @@
     "type": "git",
     "url": "https://github.com/EsztiDi/watchlist-app"
   },
+  "homepage": "https://mywatchlists.watch",
   "scripts": {
     "dev": "next dev",
     "build": "next build",

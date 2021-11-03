@@ -12,12 +12,18 @@ export default async function handler(req, res) {
   switch (method) {
     case "GET":
       try {
-        const lists = await Savedlist.find({
-          "user.email": session?.user?.email,
-        }).sort({
-          position: -1,
-        });
-        res.status(200).json({ success: true, data: lists });
+        if (session) {
+          const lists = await Savedlist.find({
+            "user.email": session?.user?.email,
+          })
+            .sort({
+              position: -1,
+            })
+            .catch((err) => console.error(err));
+          res.status(200).json({ success: true, data: lists });
+        } else {
+          res.status(200).json({ success: true, data: [] });
+        }
       } catch (err) {
         console.error(
           `Savedlists not found -  user: ${JSON.stringify(

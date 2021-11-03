@@ -106,6 +106,8 @@ const schemaData = {
   logo: `${process.env.BASE_URL}/android-chrome-256x256.png`,
   url: process.env.BASE_URL,
   applicationCategory: "Watchlist",
+  operatingSystem: "All",
+  browserRequirements: "Requires JavaScript",
   description:
     "Create, share and edit watchlists for films and TV shows to plan movie nights or to keep track of your shows.",
   featureList:
@@ -120,6 +122,10 @@ const schemaData = {
   softwareHelp: {
     "@type": "CreativeWork",
     url: `${process.env.BASE_URL}/about`,
+  },
+  offers: {
+    "@type": "Offer",
+    price: "0",
   },
   review: {
     "@type": "Review",
@@ -233,6 +239,10 @@ export default function MyApp({ Component, pageProps }) {
           name="viewport"
           content="minimum-scale=1, initial-scale=1, width=device-width"
         />
+        <link
+          rel="manifest"
+          href={`${process.env.BASE_URL}/site.webmanifest`}
+        />
         <link rel="shortcut icon" href="/favicon.ico" />
         <link
           rel="apple-touch-icon"
@@ -256,8 +266,10 @@ export default function MyApp({ Component, pageProps }) {
         <meta name="apple-mobile-web-app-title" content="Watchlist App" />
         <meta name="application-name" content="Watchlist App" />
         <meta name="msapplication-TileColor" content="#ffc40d" />
-        <meta name="msapplication-config" content="/browserconfig.xml" />
-        <link rel="manifest" href="/site.webmanifest" />
+        <meta
+          name="msapplication-config"
+          content={`${process.env.BASE_URL}/browserconfig.xml`}
+        />
         <meta name="robots" content="noimageindex, nofollow" />
 
         <meta property="og:url" content={process.env.BASE_URL} key="url" />
