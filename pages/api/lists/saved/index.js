@@ -7,12 +7,12 @@ export default async function handler(req, res) {
   const { method } = req;
   const session = await getSession({ req });
 
-  await dbConnect();
+  var db = await dbConnect();
 
   switch (method) {
     case "GET":
       try {
-        if (session) {
+        if (session && db) {
           const lists = await Savedlist.find({
             "user.email": session?.user?.email,
           })
