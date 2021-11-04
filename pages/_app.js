@@ -126,6 +126,12 @@ const schemaData = {
   offers: {
     "@type": "Offer",
     price: "0",
+    priceCurrency: "GBP",
+  },
+  aggregateRating: {
+    "@type": "AggregateRating",
+    ratingValue: "4/5",
+    ratingCount: "1",
   },
   review: {
     "@type": "Review",

@@ -5,6 +5,14 @@ import { getSession } from "next-auth/client";
 import { makeStyles } from "@material-ui/core/styles";
 import Paper from "@material-ui/core/Paper";
 import Typography from "@material-ui/core/Typography";
+import List from "@material-ui/core/List";
+import ListItem from "@material-ui/core/ListItem";
+import ListItemIcon from "@material-ui/core/ListItemIcon";
+import ListItemText from "@material-ui/core/ListItemText";
+import ShareRoundedIcon from "@material-ui/icons/ShareRounded";
+import MailOutlineRoundedIcon from "@material-ui/icons/MailOutlineRounded";
+import FormatListBulletedRoundedIcon from "@material-ui/icons/FormatListBulletedRounded";
+import TodayRoundedIcon from "@material-ui/icons/TodayRounded";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
 
 import MoviesCarousel from "../components/carousel/MoviesCarousel";
@@ -26,11 +34,48 @@ const useStyles = makeStyles((theme) => ({
   welcome: {
     flexBasis: "100%",
     textAlign: "center",
+    "& > h5": {
+      fontFamily: "'Carter One', cursive",
+    },
     "& a": {
       textDecoration: "underline",
       fontWeight: "bold",
-      lineHeight: 3,
     },
+    "& > div": {
+      padding: `${theme.spacing(1.5)}px 0`,
+      fontSize: "0.95rem",
+    },
+    "& > h6:first-of-type": {
+      padding: `${theme.spacing(1)}px 0`,
+      display: "flex",
+      flexWrap: "wrap",
+      justifyContent: "center",
+      columnGap: theme.spacing(3),
+      rowGap: theme.spacing(1.5),
+      "& > :last-child": {
+        flexBasis: "100%",
+      },
+      "& > span": {
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        gap: theme.spacing(1.5),
+      },
+    },
+    "& li": {
+      justifyContent: "center",
+      paddingBottom: theme.spacing(0.5),
+    },
+  },
+  listIcon: {
+    minWidth: "46px",
+  },
+  icon: {
+    fontSize: "1.9rem",
+    color: theme.palette.primary.light,
+  },
+  text: {
+    flex: "unset",
   },
 }));
 
@@ -222,21 +267,110 @@ export default function Discover({ session, setMessage }) {
         {!session && (
           <div
             className={classes.welcome}
-            style={matches ? { padding: "0 8px" } : { padding: "0 24px" }}
+            style={matches ? { padding: "12px 8px" } : { padding: "0 24px" }}
           >
             <Typography variant="h5">Welcome to The Watchlist App!</Typography>
-            <Typography variant="button">
+            <Typography variant="button" component="div">
               <Link href="/login">
                 <a>Log in</a>
               </Link>{" "}
               to create or save watchlists
             </Typography>
-            <Typography variant="subtitle1">
-              Plan movie nights with the &quot;share to edit&quot; option&nbsp;●
-              Receive a weekly summary of upcoming releases from your
-              lists&nbsp;● Track the TV shows you are watching&nbsp;● And see
-              the releases in calendar view&nbsp;● Enjoy!&nbsp;🎬&nbsp;+&nbsp;🍕
-            </Typography>
+            {matches ? (
+              <List disablePadding>
+                <ListItem disableGutters>
+                  <ListItemIcon
+                    classes={{
+                      root: classes.listIcon,
+                    }}
+                  >
+                    <ShareRoundedIcon className={classes.icon} />
+                  </ListItemIcon>
+                  <ListItemText
+                    primary='Plan movie nights with the "share to edit" option'
+                    classes={{
+                      root: classes.text,
+                    }}
+                  />
+                </ListItem>
+                <ListItem disableGutters>
+                  <ListItemIcon
+                    classes={{
+                      root: classes.listIcon,
+                    }}
+                  >
+                    <MailOutlineRoundedIcon className={classes.icon} />
+                  </ListItemIcon>
+                  <ListItemText
+                    primary="Receive a weekly summary of upcoming releases from your lists"
+                    classes={{
+                      root: classes.text,
+                    }}
+                  />
+                </ListItem>
+                <ListItem disableGutters>
+                  <ListItemIcon
+                    classes={{
+                      root: classes.listIcon,
+                    }}
+                  >
+                    <FormatListBulletedRoundedIcon className={classes.icon} />
+                  </ListItemIcon>
+                  <ListItemText
+                    primary="Track the TV shows you are watching"
+                    classes={{
+                      root: classes.text,
+                    }}
+                  />
+                </ListItem>
+                <ListItem disableGutters>
+                  <ListItemIcon
+                    classes={{
+                      root: classes.listIcon,
+                    }}
+                  >
+                    <TodayRoundedIcon className={classes.icon} />
+                  </ListItemIcon>
+                  <ListItemText
+                    primary="And see the releases in calendar view"
+                    classes={{
+                      root: classes.text,
+                    }}
+                  />
+                </ListItem>
+                <ListItem disableGutters>
+                  <ListItemText
+                    primary="Enjoy!&nbsp;🎬&nbsp;+&nbsp;🍕"
+                    classes={{
+                      root: classes.text,
+                    }}
+                  />
+                </ListItem>
+              </List>
+            ) : (
+              <>
+                <Typography variant="subtitle1">
+                  <span>
+                    <ShareRoundedIcon className={classes.icon} />
+                    Plan movie nights with the &quot;share to edit&quot; option
+                  </span>
+                  <span>
+                    <MailOutlineRoundedIcon className={classes.icon} />
+                    Receive a weekly summary of upcoming releases from your
+                    lists
+                  </span>
+                  <span>
+                    <FormatListBulletedRoundedIcon className={classes.icon} />
+                    Track the TV shows you are watching
+                  </span>
+                  <span>
+                    <TodayRoundedIcon className={classes.icon} />
+                    And see the releases in calendar view
+                  </span>
+                  <span>Enjoy!&nbsp;🎬&nbsp;+&nbsp;🍕</span>
+                </Typography>
+              </>
+            )}
           </div>
         )}
 
