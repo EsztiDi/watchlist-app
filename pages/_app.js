@@ -105,7 +105,7 @@ const schemaData = {
   name: "The Watchlist App",
   logo: `${process.env.BASE_URL}/android-chrome-256x256.png`,
   url: process.env.BASE_URL,
-  applicationCategory: "Watchlist",
+  applicationCategory: "EntertainmentApplication",
   operatingSystem: "All",
   browserRequirements: "Requires JavaScript",
   description:
