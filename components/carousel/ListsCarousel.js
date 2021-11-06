@@ -1,3 +1,4 @@
+import { useState } from "react";
 import useSWR from "swr";
 
 import { makeStyles } from "@material-ui/core/styles";
@@ -149,10 +150,10 @@ export default function ListsCarousel({ setMessage }) {
   }
 
   // For list search
-  const [loading, setLoading] = React.useState(false);
-  const [query, setQuery] = React.useState("");
-  const [results, setResults] = React.useState([]);
-  const [alert, setAlert] = React.useState("");
+  const [loading, setLoading] = useState(false);
+  const [query, setQuery] = useState("");
+  const [results, setResults] = useState([]);
+  const [alert, setAlert] = useState("");
 
   if (results.length > 0 && query) {
     sliced = [];

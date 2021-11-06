@@ -1,3 +1,4 @@
+import { useState, useEffect, useRef } from "react";
 import { useSession } from "next-auth/client";
 
 import getLocalDate from "../../utils/getLocalDate";
@@ -125,8 +126,8 @@ export default function MovieInfo({ movie, listID, loc, user }) {
   const matches = useMediaQuery("(max-width:768px)");
   const matches2 = useMediaQuery("(max-width:500px)");
   const contentType = "application/json";
-  const isMounted = React.useRef(null);
-  React.useEffect(() => {
+  const isMounted = useRef(null);
+  useEffect(() => {
     isMounted.current = true;
     return () => {
       isMounted.current = false;
@@ -136,21 +137,21 @@ export default function MovieInfo({ movie, listID, loc, user }) {
   const [session] = useSession();
   const auth = user ? session && user?.email === session?.user?.email : false;
 
-  const [date, setDate] = React.useState("");
+  const [date, setDate] = useState("");
 
   // For directors and cast "more" buttons
-  const [overflows1, setOverflows1] = React.useState(false);
-  const [overflows2, setOverflows2] = React.useState(false);
-  const [visible1, setVisible1] = React.useState(false);
-  const [visible2, setVisible2] = React.useState(false);
+  const [overflows1, setOverflows1] = useState(false);
+  const [overflows2, setOverflows2] = useState(false);
+  const [visible1, setVisible1] = useState(false);
+  const [visible2, setVisible2] = useState(false);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (visible1) handleLess1();
     if (visible2) handleLess2();
     // eslint-disable-next-line
   }, [id, listID]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     // Check if locale is different and get local release date
     const checkProps = async () => {
       if (loc && locale !== loc) {
@@ -176,7 +177,7 @@ export default function MovieInfo({ movie, listID, loc, user }) {
     // eslint-disable-next-line
   }, [auth, loc]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     var list1 = document.getElementById(`${id}-directors`);
     var list2 = document.getElementById(`${id}-cast`);
     if (isMounted.current) setOverflows1(list1.offsetWidth < list1.scrollWidth);

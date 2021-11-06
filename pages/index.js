@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import Head from "next/head";
 import Link from "next/link";
 import { getSession } from "next-auth/client";
@@ -33,9 +34,16 @@ const useStyles = makeStyles((theme) => ({
   },
   welcome: {
     flexBasis: "100%",
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    padding: theme.spacing(2),
     textAlign: "center",
     "& > h5": {
       fontFamily: "'Carter One', cursive",
+      background: `-webkit-linear-gradient(0deg, ${theme.palette.primary.dark}, ${theme.palette.secondary.dark} 90%)`,
+      "-webkit-background-clip": "text",
+      "-webkit-text-fill-color": "transparent",
     },
     "& a": {
       textDecoration: "underline",
@@ -83,16 +91,16 @@ export default function Discover({ session, setMessage }) {
   const classes = useStyles();
   const matches = useMediaQuery("(max-width:1024px)");
 
-  const [locale, setLocale] = React.useState("");
-  const [loading, setLoading] = React.useState(false);
-  const [thisMonthMovies, setThisMonthMovies] = React.useState([]);
-  const [nextMonthMovies, setNextMonthMovies] = React.useState([]);
-  const [popularMovies, setPopularMovies] = React.useState([]);
-  const [thisMonthTV, setThisMonthTV] = React.useState([]);
-  const [nextMonthTV, setNextMonthTV] = React.useState([]);
-  const [popularTV, setPopularTV] = React.useState([]);
+  const [locale, setLocale] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [thisMonthMovies, setThisMonthMovies] = useState([]);
+  const [nextMonthMovies, setNextMonthMovies] = useState([]);
+  const [popularMovies, setPopularMovies] = useState([]);
+  const [thisMonthTV, setThisMonthTV] = useState([]);
+  const [nextMonthTV, setNextMonthTV] = useState([]);
+  const [popularTV, setPopularTV] = useState([]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     var isMounted = true;
 
     const year = new Date().getFullYear();
@@ -265,9 +273,10 @@ export default function Discover({ session, setMessage }) {
         className={matches ? classes.paperMobile : classes.paper}
       >
         {!session && (
-          <div
+          <Paper
+            elevation={1}
             className={classes.welcome}
-            style={matches ? { padding: "12px 8px" } : { padding: "0 24px" }}
+            style={matches ? { maxWidth: "560px" } : { maxWidth: "970px" }}
           >
             <Typography variant="h5">Welcome to The Watchlist App!</Typography>
             <Typography variant="button" component="div">
@@ -371,7 +380,7 @@ export default function Discover({ session, setMessage }) {
                 </Typography>
               </>
             )}
-          </div>
+          </Paper>
         )}
 
         {carousels

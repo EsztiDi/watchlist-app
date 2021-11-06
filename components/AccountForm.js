@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import useSWR, { mutate } from "swr";
@@ -63,7 +64,7 @@ export default function AccountForm({
     `${process.env.BASE_URL}/deadpool.jpg`,
   ];
 
-  const [form, setForm] = React.useState({
+  const [form, setForm] = useState({
     name: "",
     email: "",
     image: "",
@@ -71,7 +72,7 @@ export default function AccountForm({
     origImage: "",
   });
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (user) {
       setForm({
         name: user.name,
@@ -133,6 +134,15 @@ export default function AccountForm({
     setUpdatingForm(true);
     putData(form);
   };
+
+  if (!user)
+    return (
+      <CircularProgress
+        size="3rem"
+        thickness={3}
+        style={{ marginBottom: "1rem" }}
+      />
+    );
 
   return (
     <form
@@ -196,7 +206,13 @@ export default function AccountForm({
                 control={<Radio color="primary" />}
                 labelPlacement="bottom"
                 label={
-                  <Image src={form.origImage} alt="" width={60} height={60} />
+                  <Image
+                    priority
+                    src={form.origImage}
+                    alt=""
+                    width={60}
+                    height={60}
+                  />
                 }
               />
             )}

@@ -1,3 +1,4 @@
+import { useState } from "react";
 import Image from "next/image";
 
 import { makeStyles } from "@material-ui/core/styles";
@@ -39,7 +40,7 @@ export default function CarouselMovieCard({
   setMessage,
 }) {
   const classes = useStyles();
-  const [data, setData] = React.useState(undefined);
+  const [data, setData] = useState(undefined);
   const show = index.toString() === data;
   const touch = useMediaQuery("(hover: none)");
 
@@ -91,6 +92,7 @@ export default function CarouselMovieCard({
           </div>
         )}
         <Image
+          priority
           onMouseEnter={!touch && !show ? handleShowDetails : undefined}
           onTouchStart={touch && !show ? handleShowDetails : undefined}
           data-index={index}

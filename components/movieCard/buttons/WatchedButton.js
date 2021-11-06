@@ -1,3 +1,4 @@
+import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/router";
 import { useSession } from "next-auth/client";
 import useSWR, { mutate } from "swr";
@@ -37,8 +38,8 @@ export default function WatchedButton({
 
   const classes = useStyles();
   const contentType = "application/json";
-  const [updating, setUpdating] = React.useState(false);
-  const isMounted = React.useRef(null);
+  const [updating, setUpdating] = useState(false);
+  const isMounted = useRef(null);
 
   const router = useRouter();
   var { id: ids } = router?.query;
@@ -57,7 +58,7 @@ export default function WatchedButton({
     editable = ids[1] === uid;
   }
 
-  React.useEffect(() => {
+  useEffect(() => {
     const beforeRouteHandler = (url) => {
       if (
         router?.pathname !== url &&
@@ -83,7 +84,7 @@ export default function WatchedButton({
     // eslint-disable-next-line
   }, [updating]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     isMounted.current = true;
     return () => {
       isMounted.current = false;

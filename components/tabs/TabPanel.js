@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useSession } from "next-auth/client";
@@ -176,14 +177,14 @@ export default function TabPanel(props) {
     ({ title, private: privateList, createdAt } = list);
   }
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (!newTab && document.getElementById(`tabpanel-${listID}`))
       document.getElementById(`tabpanel-${listID}`).scrollTop = 0;
   }, [listID, newTab]);
 
   // Locale for Calendar and Movies
-  const [loc, setLoc] = React.useState("");
-  React.useEffect(() => {
+  const [loc, setLoc] = useState("");
+  useEffect(() => {
     var isMounted = true;
     const controller = new AbortController();
     const signal = controller.signal;
@@ -208,14 +209,14 @@ export default function TabPanel(props) {
   }, []);
 
   // For DeleteDialog
-  const [openDelete, setOpenDelete] = React.useState(false);
+  const [openDelete, setOpenDelete] = useState(false);
 
   const handleOpenDelete = () => {
     setOpenDelete((prev) => !prev);
   };
 
   // For Share modal and editable parts
-  const [openShare, setOpenShare] = React.useState(false);
+  const [openShare, setOpenShare] = useState(false);
   const uid = new Date(createdAt).getTime().toString().substring(0, 12);
   const auth = session && list?.user?.email === session?.user?.email;
   const editable = ids.length > 1 ? ids[1] === uid : auth;

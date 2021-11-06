@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
@@ -103,9 +104,9 @@ export default function ListPage({
   const matches2 = useMediaQuery("(max-width:768px)");
 
   var movies = (list) => list?.movies?.sort((a, b) => a.position - b.position);
-  const [updating, setUpdating] = React.useState(false);
-  const [backdrop, setBackdrop] = React.useState("");
-  const [alert, setAlert] = React.useState("");
+  const [updating, setUpdating] = useState(false);
+  const [backdrop, setBackdrop] = useState("");
+  const [alert, setAlert] = useState("");
 
   const { data: list, error } = useSWR(id[0] ? `/api/lists/${id[0]}` : null, {
     refreshInterval: 2000,
@@ -124,7 +125,7 @@ export default function ListPage({
   const uid = new Date(list?.createdAt).getTime().toString().substring(0, 12);
   const editable = id.length > 1 ? id[1] === uid : false;
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (
       list?.movies &&
       list.movies.length > 0 &&
@@ -136,7 +137,7 @@ export default function ListPage({
     }
   }, [list]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (error) {
       setMessage(error.message);
       router?.push("/");
@@ -249,7 +250,13 @@ export default function ListPage({
         >
           {Object.keys(list).length !== 0 && backdrop.length > 0 && (
             <div className={classes.backdrop} data-background="backdrop">
-              <Image layout="fill" objectFit="cover" src={backdrop} alt="" />
+              <Image
+                priority
+                layout="fill"
+                objectFit="cover"
+                src={backdrop}
+                alt=""
+              />
             </div>
           )}
           {alert && (

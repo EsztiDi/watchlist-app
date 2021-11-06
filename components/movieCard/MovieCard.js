@@ -1,3 +1,4 @@
+import { useState, useEffect, useRef } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
@@ -124,16 +125,16 @@ export default function MovieCard({
   const matches = useMediaQuery("(max-width:768px)");
   const matches2 = useMediaQuery("(max-width:500px)");
   const contentType = "application/json";
-  const isMounted = React.useRef(null);
+  const isMounted = useRef(null);
 
   // For Seasons modal
-  const [seasonsOpen, setSeasonsOpen] = React.useState(false);
+  const [seasonsOpen, setSeasonsOpen] = useState(false);
 
   const handleSeasonsOpen = () => {
     setSeasonsOpen((prev) => !prev);
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     const details = document.querySelectorAll("details");
     details.forEach((detail) => {
       detail.removeAttribute("open");
@@ -143,7 +144,7 @@ export default function MovieCard({
     // eslint-disable-next-line
   }, [id, listID]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     isMounted.current = true;
     const checkProps = async () => {
       if (media_type === "tv") {

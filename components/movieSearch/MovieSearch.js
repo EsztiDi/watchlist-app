@@ -1,3 +1,4 @@
+import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/router";
 import getDetails from "../../utils/getDetails";
 
@@ -24,15 +25,15 @@ export default function MovieSearch({
   setUpdating,
   listID,
 }) {
-  const [loading, setLoading] = React.useState(false);
-  const [query, setQuery] = React.useState("");
-  const [results, setResults] = React.useState([]);
-  const [message, setMessage] = React.useState("");
+  const [loading, setLoading] = useState(false);
+  const [query, setQuery] = useState("");
+  const [results, setResults] = useState([]);
+  const [message, setMessage] = useState("");
   const matches = useMediaQuery("(max-width:1024px)");
   const matches2 = useMediaQuery("(max-width:350px)");
   const router = useRouter();
 
-  React.useEffect(() => {
+  useEffect(() => {
     const beforeRouteHandler = (url) => {
       if (
         router?.pathname !== url &&
@@ -58,7 +59,7 @@ export default function MovieSearch({
     // eslint-disable-next-line
   }, [loading]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     var input = document.getElementById(`${listID}-input`);
     if (listID) {
       return () => {
@@ -174,15 +175,15 @@ export default function MovieSearch({
   };
 
   // For dropdown search list
-  const [open, setOpen] = React.useState(false);
-  const anchorRef = React.useRef(null);
-  const prevOpen = React.useRef(open);
+  const [open, setOpen] = useState(false);
+  const anchorRef = useRef(null);
+  const prevOpen = useRef(open);
 
   const handleToggle = () => {
     setOpen((prev) => !prev);
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (prevOpen.current === true && open === false) {
       anchorRef.current.focus();
     }

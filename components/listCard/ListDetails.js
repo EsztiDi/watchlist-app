@@ -1,3 +1,4 @@
+import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useSession } from "next-auth/client";
@@ -82,7 +83,7 @@ export default function ListDetails({
   const classes = useStyles();
   const contentType = "application/json";
 
-  const [updating, setUpdating] = React.useState(false);
+  const [updating, setUpdating] = useState(false);
   const [session, loading] = useSession();
   const router = useRouter();
 

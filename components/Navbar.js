@@ -1,3 +1,4 @@
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { signOut, useSession } from "next-auth/client";
@@ -74,8 +75,8 @@ export default function Navbar() {
   const [session, loading] = useSession();
   const user = session?.user;
 
-  const [menuOpen, setMenuOpen] = React.useState(false);
-  const anchorRef = React.useRef(null);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const anchorRef = useRef(null);
 
   const handleMenuToggle = () => {
     setMenuOpen((prevOpen) => !prevOpen);
@@ -100,8 +101,8 @@ export default function Navbar() {
   };
 
   // Return focus to button when menu is closed
-  const prevOpen = React.useRef(menuOpen);
-  React.useEffect(() => {
+  const prevOpen = useRef(menuOpen);
+  useEffect(() => {
     if (prevOpen.current === true && menuOpen === false) {
       anchorRef.current.focus();
     }
@@ -117,6 +118,7 @@ export default function Navbar() {
             <Link href="/">
               <a style={{ height: matches ? "40px" : "48px" }}>
                 <Image
+                  priority
                   src="/logo.png"
                   alt=""
                   width={matches ? 40 : 48}
@@ -158,6 +160,7 @@ export default function Navbar() {
                     onClick={handleMenuToggle}
                   >
                     <Image
+                      priority
                       src={user.image ? user.image : "/deadpool.jpg"}
                       alt=""
                       width={48}

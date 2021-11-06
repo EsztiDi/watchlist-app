@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import useSWR from "swr";
 import intro from "../../utils/intro";
@@ -130,7 +131,7 @@ export default function ListTabs({
 }) {
   const classes = useStyles();
   const matches = useMediaQuery("(max-width:1024px)");
-  const [editTitle, setEditTitle] = React.useState(false);
+  const [editTitle, setEditTitle] = useState(false);
 
   const { data: lists, error } = useSWR("/api/lists");
   const { data: savedLists, error: error2 } = useSWR("/api/lists/saved");
@@ -180,11 +181,11 @@ export default function ListTabs({
   };
 
   // For introJs tutorial on first login
-  const [fetching, setFetching] = React.useState(true);
-  const [newUser, setNewUser] = React.useState(false);
-  const [email, setEmail] = React.useState("");
+  const [fetching, setFetching] = useState(true);
+  const [newUser, setNewUser] = useState(false);
+  const [email, setEmail] = useState("");
 
-  React.useEffect(() => {
+  useEffect(() => {
     const controller = new AbortController();
     const signal = controller.signal;
 
@@ -204,7 +205,7 @@ export default function ListTabs({
     };
   }, []);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (!fetching && newUser && lists) {
       setTimeout(() => {
         intro(email);

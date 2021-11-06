@@ -1,3 +1,4 @@
+import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/router";
 import { useSession } from "next-auth/client";
 import useSWR, { mutate } from "swr";
@@ -48,10 +49,10 @@ export default function ListsMenu({
   const contentType = "application/json";
   movieID = movieID ? movieID : movie.id;
 
-  const [updating, setUpdating] = React.useState(false);
-  const [added, setAdded] = React.useState(false);
-  const [value, setValue] = React.useState("");
-  const isMounted = React.useRef(null);
+  const [updating, setUpdating] = useState(false);
+  const [added, setAdded] = useState(false);
+  const [value, setValue] = useState("");
+  const isMounted = useRef(null);
 
   const [session] = useSession();
   const { data: lists, error } = useSWR(session ? "/api/lists" : null);
@@ -61,14 +62,14 @@ export default function ListsMenu({
   if (error) console.error("lists - " + error);
   if (error2) console.error("savedLists - " + error2);
 
-  React.useEffect(() => {
+  useEffect(() => {
     isMounted.current = true;
     return () => {
       isMounted.current = false;
     };
   }, []);
 
-  React.useEffect(() => {
+  useEffect(() => {
     const beforeRouteHandler = (url) => {
       if (
         router?.pathname !== url &&

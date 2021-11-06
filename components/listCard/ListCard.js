@@ -1,8 +1,8 @@
+import { useState } from "react";
 import Image from "next/image";
 
 import { makeStyles } from "@material-ui/core/styles";
 import ClickAwayListener from "@material-ui/core/ClickAwayListener";
-import Typography from "@material-ui/core/Typography";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
 
 import ListDetails from "./ListDetails";
@@ -25,7 +25,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function ListCard({ list, index, setMessage }) {
   const classes = useStyles();
-  const [data, setData] = React.useState(undefined);
+  const [data, setData] = useState(undefined);
   const show = index.toString() === data;
   const touch = useMediaQuery("(hover: none)");
 

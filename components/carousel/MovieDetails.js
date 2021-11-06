@@ -1,3 +1,4 @@
+import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/router";
 import { useSession } from "next-auth/client";
 import useSWR from "swr";
@@ -89,7 +90,7 @@ export default function MovieDetails({
   const { data: lists, error } = useSWR(session ? "/api/lists" : null);
   if (error) console.error(error);
 
-  const [external_ids, setExternalIDs] = React.useState({});
+  const [external_ids, setExternalIDs] = useState({});
   var {
     id,
     title,
@@ -100,7 +101,7 @@ export default function MovieDetails({
     first_air_date,
   } = movie;
 
-  React.useEffect(() => {
+  useEffect(() => {
     var isMounted = true;
     const controller = new AbortController();
     const signal = controller.signal;
@@ -131,7 +132,7 @@ export default function MovieDetails({
     // eslint-disable-next-line
   }, []);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (!show) handleMenuClose();
   }, [show]);
 
@@ -154,8 +155,8 @@ export default function MovieDetails({
     : "No release date";
 
   // For ListsMenu
-  const [menuOpen, setMenuOpen] = React.useState(false);
-  const anchorRef = React.useRef(null);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const anchorRef = useRef(null);
 
   const handleButtonClick = () => {
     if (!loading && !session) {

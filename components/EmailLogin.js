@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
@@ -27,7 +28,7 @@ const useStyles = makeStyles((theme) => ({
 export default function EmailLogin({ open, onOpenEmail, signIn, setMessage }) {
   const classes = useStyles();
   const matches = useMediaQuery("(max-width:400px)");
-  const [email, setEmail] = React.useState("");
+  const [email, setEmail] = useState("");
 
   const handleChange = (ev) => {
     setEmail(ev.target.value);

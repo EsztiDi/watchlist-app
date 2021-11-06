@@ -1,3 +1,4 @@
+import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/router";
 import useSWR, { mutate } from "swr";
 import { useSession } from "next-auth/client";
@@ -82,16 +83,16 @@ export default function Form({
   );
   if (error2) console.error(error2);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (error2) {
       setMessage("This list has been removed.");
     }
     // eslint-disable-next-line
   }, [error2]);
 
-  const newMovie = React.useRef(false);
-  const [updating, setUpdating] = React.useState(false);
-  const [form, setForm] = React.useState({
+  const newMovie = useRef(false);
+  const [updating, setUpdating] = useState(false);
+  const [form, setForm] = useState({
     title: list.title,
     movies: list.movies,
     private: list.private,
@@ -99,7 +100,7 @@ export default function Form({
   });
   var { movies } = form;
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (!newList) {
       setForm({
         title: list.title,
@@ -113,7 +114,7 @@ export default function Form({
     // eslint-disable-next-line
   }, [list, savedList]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (!newList && (form.private !== list.private || movies !== list.movies)) {
       setUpdating(true);
       putData({ private: form.private, movies });
@@ -129,7 +130,7 @@ export default function Form({
     // eslint-disable-next-line
   }, [form.private, form.emails, movies, form.title]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     const beforeRouteHandler = (url) => {
       if (
         router?.pathname !== url &&

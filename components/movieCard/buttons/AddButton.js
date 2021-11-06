@@ -1,3 +1,4 @@
+import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/router";
 import { useSession } from "next-auth/client";
 import useSWR from "swr";
@@ -30,10 +31,10 @@ export default function AddButton({ movie, updating, setMessage }) {
   const { data: lists, error } = useSWR(session ? "/api/lists" : null);
   if (error) console.error(error);
 
-  const [menuOpen, setMenuOpen] = React.useState(false);
-  const anchorRef = React.useRef(null);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const anchorRef = useRef(null);
 
-  React.useEffect(() => {
+  useEffect(() => {
     return () => {
       setMenuOpen(false);
     };

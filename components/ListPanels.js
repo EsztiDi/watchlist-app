@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { useRouter } from "next/router";
 import { useSession } from "next-auth/client";
 import useSWR from "swr";
@@ -76,7 +77,7 @@ export default function ListPanels({ setMessage, calendar = false }) {
   var { data: list, error } = useSWR(id ? `/api/lists/${id}` : null);
   if (error) console.error(error);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (error) setMessage(error.message);
     // eslint-disable-next-line
   }, [error]);

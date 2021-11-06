@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import ClickAwayListener from "@material-ui/core/ClickAwayListener";
 import TextField from "@material-ui/core/TextField";
@@ -34,7 +35,7 @@ export default function EditTitle({
   const matches = useMediaQuery("(max-width:1024px)");
   const matches2 = useMediaQuery("(max-width:768px)");
 
-  const [newTitle, setTitle] = React.useState({ title });
+  const [newTitle, setTitle] = useState({ title });
 
   const handleChange = (ev) => {
     setTitle({

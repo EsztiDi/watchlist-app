@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Box from "@material-ui/core/Box";
 import CardHeader from "@material-ui/core/CardHeader";
@@ -95,8 +96,8 @@ export default function Calendar({ listID, loc, newTab = false }) {
   const classes = useStyles();
   const matches = useMediaQuery("(max-width:780px)");
 
-  var [year, setYear] = React.useState(today.getFullYear());
-  var [month, setMonth] = React.useState(today.getMonth());
+  var [year, setYear] = useState(today.getFullYear());
+  var [month, setMonth] = useState(today.getMonth());
 
   const thisMonth = () => {
     setYear(today.getFullYear());

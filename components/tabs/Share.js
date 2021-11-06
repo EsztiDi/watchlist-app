@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import {
   EmailShareButton,
   FacebookShareButton,
@@ -81,17 +82,17 @@ export default function Share({ listID, uid, title, open, onClose }) {
   const textVariant = "caption";
   const shareUrl = `${window.location.origin}/list/${listID}`;
   const editableUrl = `${window.location.origin}/list/${listID}/${uid}`;
-  const [shareLink, setShareLink] = React.useState("");
-  const [editable, setEditable] = React.useState("false");
-  const [copied, setCopied] = React.useState(false);
+  const [shareLink, setShareLink] = useState("");
+  const [editable, setEditable] = useState("false");
+  const [copied, setCopied] = useState(false);
   const touch = useMediaQuery("(hover: none)");
 
-  React.useEffect(() => {
+  useEffect(() => {
     setShareLink(`${window.location.origin}/list/${listID}`);
     setEditable("false");
   }, [listID]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     setCopied(false);
   }, [editable]);
 

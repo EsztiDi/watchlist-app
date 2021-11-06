@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import { useSession } from "next-auth/client";
 import { useRouter } from "next/router";
 import Head from "next/head";
@@ -66,12 +67,12 @@ export default function Account({ setMessage }) {
   const classes = useStyles();
   const router = useRouter();
   const [session, loading] = useSession();
-  const [updatingForm, setUpdatingForm] = React.useState(false);
-  const [updatingPrivate, setUpdatingPrivate] = React.useState(false);
-  const [updatingEmails, setUpdatingEmails] = React.useState(false);
-  const [deletingLists, setDeletingLists] = React.useState(false);
-  const [deletingSavedLists, setDeletingSavedLists] = React.useState(false);
-  const [deletingAccount, setDeletingAccount] = React.useState(false);
+  const [updatingForm, setUpdatingForm] = useState(false);
+  const [updatingPrivate, setUpdatingPrivate] = useState(false);
+  const [updatingEmails, setUpdatingEmails] = useState(false);
+  const [deletingLists, setDeletingLists] = useState(false);
+  const [deletingSavedLists, setDeletingSavedLists] = useState(false);
+  const [deletingAccount, setDeletingAccount] = useState(false);
   var updating =
     updatingForm ||
     updatingPrivate ||
@@ -81,7 +82,7 @@ export default function Account({ setMessage }) {
     deletingAccount;
   const matches = useMediaQuery("(max-width:1024px)");
 
-  React.useEffect(() => {
+  useEffect(() => {
     const beforeRouteHandler = (url) => {
       if (
         router?.pathname !== url &&

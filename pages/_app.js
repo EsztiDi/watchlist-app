@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { Provider } from "next-auth/client";
@@ -153,12 +154,12 @@ export default function MyApp({ Component, pageProps }) {
   const classes = useStyles();
   const router = useRouter();
 
-  const [message, setMessage] = React.useState("");
-  const [install, setInstall] = React.useState(false);
+  const [message, setMessage] = useState("");
+  const [install, setInstall] = useState(false);
   const matches = useMediaQuery("(max-width:768px)");
   const touch = useMediaQuery("(hover: none)");
 
-  React.useEffect(() => {
+  useEffect(() => {
     var registered = true;
     // Register service worker to control making site work offline
     if ("serviceWorker" in navigator) {
@@ -205,7 +206,7 @@ export default function MyApp({ Component, pageProps }) {
     });
   }, []);
 
-  React.useEffect(() => {
+  useEffect(() => {
     // Removing the server-side injected CSS
     const jssStyles = document.querySelector("#jss-server-side");
     if (jssStyles) {
@@ -213,7 +214,7 @@ export default function MyApp({ Component, pageProps }) {
     }
   }, []);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (router?.query?.error?.includes("OAuthAccountNotLinked")) {
       setMessage(
         "Please sign in with the same account you used originally or email contact@mywatchlists.watch"
@@ -225,7 +226,7 @@ export default function MyApp({ Component, pageProps }) {
     }
   }, [router?.query]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     return () => {
       setMessage("");
     };

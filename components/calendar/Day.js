@@ -129,6 +129,7 @@ export default function Day({ date, month, year, movies }) {
                   rel="noopener noreferrer"
                 >
                   <Image
+                    priority
                     width={60}
                     height={90}
                     objectFit={movie.poster_path ? "cover" : "contain"}
@@ -178,6 +179,7 @@ export default function Day({ date, month, year, movies }) {
                   rel="noopener noreferrer"
                 >
                   <Image
+                    priority
                     width={60}
                     height={90}
                     objectFit={series[1][0].poster_path ? "cover" : "contain"}

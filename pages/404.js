@@ -14,7 +14,7 @@ export default function Custom404() {
         <Typography variant="h6" style={{ paddingBottom: "1rem" }}>
           We&apos;re sorry, this page can&apos;t be found.
         </Typography>
-        <Image src="/puppy2.jpg" alt="" width={360} height={480} />
+        <Image priority src="/puppy2.jpg" alt="" width={360} height={480} />
         <br />
         <a
           href="https://www.pexels.com/photo/dog-lying-on-shore-during-day-2252311/"

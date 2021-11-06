@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Modal from "@material-ui/core/Modal";
 import Backdrop from "@material-ui/core/Backdrop";
@@ -98,11 +99,9 @@ export default function Seasons({
   const classes = useStyles();
   const matches = useMediaQuery("(max-width:1024px)");
 
-  const [seasonTab, setSeasonTab] = React.useState(
-    lastSeason ? lastSeason - 1 : 0
-  );
+  const [seasonTab, setSeasonTab] = useState(lastSeason ? lastSeason - 1 : 0);
 
-  React.useEffect(() => {
+  useEffect(() => {
     setSeasonTab(lastSeason ? lastSeason - 1 : 0);
   }, [open, lastSeason]);
 

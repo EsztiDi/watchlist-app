@@ -1,5 +1,4 @@
-import React from "react";
-
+import { Fragment } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Modal from "@material-ui/core/Modal";
 import Backdrop from "@material-ui/core/Backdrop";
@@ -77,7 +76,7 @@ export default function DropdownModal({ dropdownProps, results }) {
           onClick={handleClose}
         >
           {results.map((movie, index) => (
-            <React.Fragment key={index}>
+            <Fragment key={index}>
               <ListItem
                 button
                 onClick={() => handleListItemClick(index)}
@@ -86,7 +85,7 @@ export default function DropdownModal({ dropdownProps, results }) {
                 <MovieListItem movie={movie} />
               </ListItem>
               <Divider />
-            </React.Fragment>
+            </Fragment>
           ))}
         </Paper>
       </Fade>
