@@ -9,7 +9,9 @@ export default async function handler(req, res) {
   switch (method) {
     case "GET":
       try {
-        const emails = await Releasesemail.find();
+        const emails = await Releasesemail.find().catch((err) =>
+          console.error(err)
+        );
         res.status(200).json({
           success: true,
           data: emails

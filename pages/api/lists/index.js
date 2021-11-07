@@ -11,7 +11,7 @@ export default async function handler(req, res) {
   switch (method) {
     case "GET":
       try {
-        if (session && db) {
+        if (db) {
           const lists = await Watchlist.find(
             { "user.email": session?.user?.email },
             "_id title movies position"
@@ -38,16 +38,18 @@ export default async function handler(req, res) {
         const watchedList = await Watchlist.findOne({
           "user.email": session?.user?.email,
           title: /^Watched$/i,
-        });
+        }).catch((err) => console.error(err));
         if (watchedList && /^Watched$/i.test(req.body.title)) {
           res.statusMessage = `You already have a Watched list`;
           res.status(400).end();
         } else {
           const lists = await Watchlist.find({
             "user.email": session?.user?.email,
-          }).sort({
-            position: -1,
-          });
+          })
+            .sort({
+              position: -1,
+            })
+            .catch((err) => console.error(err));
 
           if (lists.length > 0) {
             req.body.position = lists[0].position + 1;
@@ -62,24 +64,26 @@ export default async function handler(req, res) {
             await Watchlist.find({
               "user.email": session?.user?.email,
               "movies.watched": "true",
-            }).then(async (lists) => {
-              var movies = lists.reduce(
-                (list1, list2) => [...list1, ...list2.movies],
-                []
-              );
-              var uniques = movies
-                .filter((movie) => movie.watched === "true")
-                ?.filter(
-                  (movie, index, array) =>
-                    array.findIndex((el) => el.id === movie.id) === index
+            })
+              .then(async (lists) => {
+                var movies = lists.reduce(
+                  (list1, list2) => [...list1, ...list2.movies],
+                  []
                 );
-              if (uniques.length > 0) {
-                req.body.movies = [...req.body.movies, ...uniques].filter(
-                  (movie, index, array) =>
-                    array.findIndex((el) => el.id === movie.id) === index
-                );
-              }
-            });
+                var uniques = movies
+                  .filter((movie) => movie.watched === "true")
+                  ?.filter(
+                    (movie, index, array) =>
+                      array.findIndex((el) => el.id === movie.id) === index
+                  );
+                if (uniques.length > 0) {
+                  req.body.movies = [...req.body.movies, ...uniques].filter(
+                    (movie, index, array) =>
+                      array.findIndex((el) => el.id === movie.id) === index
+                  );
+                }
+              })
+              .catch((err) => console.error(err));
           }
 
           const list = await Watchlist.create(req.body).catch((err) =>

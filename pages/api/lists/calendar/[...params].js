@@ -118,7 +118,9 @@ export default async function handler(req, res) {
         month = parseInt(month);
         var movies;
 
-        const list = await Watchlist.findById(id);
+        const list = await Watchlist.findById(id).catch((err) =>
+          console.error(err)
+        );
 
         if (!list) {
           console.error(

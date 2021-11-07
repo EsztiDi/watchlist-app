@@ -10,22 +10,28 @@ export default async function handler(req, res) {
   } = req;
   const session = await getSession({ req });
 
-  await dbConnect();
+  var db = await dbConnect();
 
   switch (method) {
     case "GET":
       try {
-        const list = await Savedlist.findOne({
-          "user.email": session?.user?.email,
-          listid: id,
-        });
-        if (!list) {
-          console.error(
-            `Savedlist ${id} not found - user: ${JSON.stringify(session?.user)}`
-          );
-          return res.status(400).json({ success: false });
+        if (db) {
+          const list = await Savedlist.findOne({
+            "user.email": session?.user?.email,
+            listid: id,
+          }).catch((err) => console.error(err));
+          if (!list) {
+            console.error(
+              `Savedlist ${id} not found - user: ${JSON.stringify(
+                session?.user
+              )}`
+            );
+            return res.status(400).json({ success: false });
+          }
+          res.status(200).json({ success: true, data: list });
+        } else {
+          res.status(200).json({ success: true, data: [] });
         }
-        res.status(200).json({ success: true, data: list });
       } catch (err) {
         console.error(
           `Savedlist not found -  user: ${JSON.stringify(
@@ -42,9 +48,11 @@ export default async function handler(req, res) {
           const lists = await Savedlist.find(
             { "user.email": session?.user?.email },
             "listid position"
-          ).sort({
-            position: -1,
-          });
+          )
+            .sort({
+              position: -1,
+            })
+            .catch((err) => console.error(err));
 
           var { position } = req.body;
           const index = lists

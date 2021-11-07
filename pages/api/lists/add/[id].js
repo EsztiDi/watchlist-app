@@ -21,7 +21,9 @@ export default async function handler(req, res) {
           ? req.body
           : await getDetails(req.body);
 
-        var { _doc: list } = await Watchlist.findById(id);
+        var { _doc: list } = await Watchlist.findById(id).catch((err) =>
+          console.error(err)
+        );
         var { movies } = list;
 
         if (movies?.length > 0) {

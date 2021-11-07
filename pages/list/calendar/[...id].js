@@ -35,7 +35,9 @@ export async function getServerSideProps(context) {
 
   if (id) {
     try {
-      var result = await Watchlist.findById(id);
+      var result = await Watchlist.findById(id).catch((err) =>
+        console.error(err)
+      );
     } catch (error) {
       return {
         redirect: {

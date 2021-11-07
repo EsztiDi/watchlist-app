@@ -12,7 +12,7 @@ export default async function handler(req, res) {
   switch (method) {
     case "GET":
       try {
-        if (session && db) {
+        if (db) {
           const lists = await Savedlist.find({
             "user.email": session?.user?.email,
           })
@@ -37,9 +37,11 @@ export default async function handler(req, res) {
       try {
         const lists = await Savedlist.find({
           "user.email": session?.user?.email,
-        }).sort({
-          position: -1,
-        });
+        })
+          .sort({
+            position: -1,
+          })
+          .catch((err) => console.error(err));
 
         if (lists.length > 0) {
           req.body.position = lists[0].position + 1;

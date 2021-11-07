@@ -12,7 +12,7 @@ import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
 import ShareRoundedIcon from "@material-ui/icons/ShareRounded";
 import MailOutlineRoundedIcon from "@material-ui/icons/MailOutlineRounded";
-import FormatListBulletedRoundedIcon from "@material-ui/icons/FormatListBulletedRounded";
+import CheckCircleOutlineRoundedIcon from "@material-ui/icons/CheckCircleOutlineRounded";
 import TodayRoundedIcon from "@material-ui/icons/TodayRounded";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
 
@@ -68,11 +68,17 @@ const useStyles = makeStyles((theme) => ({
         alignItems: "center",
         justifyContent: "center",
         gap: theme.spacing(1.5),
+        "&:hover svg": {
+          color: theme.palette.secondary.main,
+        },
       },
     },
     "& li": {
       justifyContent: "center",
       paddingBottom: theme.spacing(0.5),
+      "&:hover svg": {
+        color: theme.palette.secondary.main,
+      },
     },
   },
   listIcon: {
@@ -81,6 +87,7 @@ const useStyles = makeStyles((theme) => ({
   icon: {
     fontSize: "1.9rem",
     color: theme.palette.primary.light,
+    transition: "color, fill 200ms cubic-bezier(0.4, 0, 0.2, 1) 0ms",
   },
   text: {
     flex: "unset",
@@ -323,7 +330,7 @@ export default function Discover({ session, setMessage }) {
                       root: classes.listIcon,
                     }}
                   >
-                    <FormatListBulletedRoundedIcon className={classes.icon} />
+                    <CheckCircleOutlineRoundedIcon className={classes.icon} />
                   </ListItemIcon>
                   <ListItemText
                     primary="Track the TV shows you are watching"
@@ -369,7 +376,7 @@ export default function Discover({ session, setMessage }) {
                     lists
                   </span>
                   <span>
-                    <FormatListBulletedRoundedIcon className={classes.icon} />
+                    <CheckCircleOutlineRoundedIcon className={classes.icon} />
                     Track the TV shows you are watching
                   </span>
                   <span>
