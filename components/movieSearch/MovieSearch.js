@@ -217,6 +217,7 @@ export default function MovieSearch({
 
   const handleListItemClick = (index) => {
     getMovieDetails(results[index]);
+    document.querySelector("input[type='search']").focus();
   };
 
   return (
