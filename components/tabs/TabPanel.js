@@ -33,7 +33,6 @@ const useStyles = makeStyles((theme) => ({
     height: "100%",
     overflow: "auto",
     textAlign: "center",
-    scrollBehavior: "smooth",
     "&::-webkit-scrollbar": {
       width: "7px",
       height: "7px",
@@ -170,6 +169,7 @@ export default function TabPanel(props) {
     var panel = document.getElementById(`tabpanel-${listID}`);
     if (!newTab && panel) {
       panel.scrollTop = 0;
+      setOpenSearch(false);
     }
   }, [listID, newTab]);
 
