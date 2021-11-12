@@ -33,6 +33,7 @@ const useStyles = makeStyles((theme) => ({
   delete: {
     fontSize: "1.8rem",
     color: theme.palette.secondary.light,
+    transition: "color 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms",
     "&:hover": {
       color: theme.palette.secondary.main,
     },
@@ -40,6 +41,7 @@ const useStyles = makeStyles((theme) => ({
   bigarrow: {
     fontSize: "1.5rem",
     color: theme.palette.primary.light,
+    transition: "color 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms",
     "&:hover": {
       color: theme.palette.primary.main,
     },
@@ -47,6 +49,7 @@ const useStyles = makeStyles((theme) => ({
   arrow: {
     fontSize: "1.8rem",
     color: theme.palette.primary.light,
+    transition: "color 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms",
     "&:hover": {
       color: theme.palette.primary.main,
     },

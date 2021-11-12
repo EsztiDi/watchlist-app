@@ -60,8 +60,8 @@ export default function MovieSearch({
   }, [loading]);
 
   useEffect(() => {
-    var input = document.getElementById(`${listID}-input`);
     if (listID) {
+      var input = document.getElementById(`${listID}-input`);
       return () => {
         input.value = "";
       };

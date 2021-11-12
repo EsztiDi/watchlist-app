@@ -81,7 +81,8 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(0.5),
     borderRadius: "50%",
     color: theme.palette.primary.light,
-    transition: "background-color 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms",
+    transition:
+      "color, background-color 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms",
     "&:hover": {
       color: theme.palette.primary.main,
       backgroundColor: "rgba(0, 0, 0, 0.04)",
@@ -101,6 +102,8 @@ const useStyles = makeStyles((theme) => ({
   },
   arrow: {
     borderRadius: "50%",
+    transition:
+      "color, background-color 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms",
     "&:hover": {
       color: theme.palette.primary.main,
       backgroundColor: "rgba(0, 0, 0, 0.04)",

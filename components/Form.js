@@ -59,6 +59,8 @@ export default function Form({
   list,
   setMessage,
   calendar,
+  openSearch2, // For ListPage titlebar
+  setUpdating2, // For ListPage titlebar
   newList = true,
   newTab = false,
 }) {
@@ -117,11 +119,13 @@ export default function Form({
   useEffect(() => {
     if (!newList && (form.private !== list.private || movies !== list.movies)) {
       setUpdating(true);
+      if (setUpdating2) setUpdating2(true);
       putData({ private: form.private, movies });
     }
 
     if (savedList && savedList.title !== form.title) {
       setUpdating(true);
+      if (setUpdating2) setUpdating2(true);
       updateSavedList({
         title: form.title,
       });
@@ -208,10 +212,12 @@ export default function Form({
       await mutate(`/api/lists/saved/${id}`);
       setTimeout(() => {
         setUpdating(false);
+        if (setUpdating2) setUpdating2(false);
       }, 500);
     } catch (error) {
       setMessage(`${error.message} - Failed to update list, please try again.`);
       setUpdating(false);
+      if (setUpdating2) setUpdating2(false);
     }
   };
 
@@ -236,10 +242,12 @@ export default function Form({
       await mutate(`/api/lists/saved/${id}`);
       setTimeout(() => {
         setUpdating(false);
+        if (setUpdating2) setUpdating2(false);
       }, 500);
     } catch (error) {
       setMessage(`${error.message} - Failed to update list, please try again.`);
       setUpdating(false);
+      if (setUpdating2) setUpdating2(false);
     }
   };
 
@@ -482,6 +490,7 @@ export default function Form({
         addingMovie={newMovie.current}
         calendar={calendar}
         emails={form.emails}
+        openSearch2={openSearch2}
       />
     </>
   ) : (

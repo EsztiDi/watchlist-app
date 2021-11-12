@@ -116,15 +116,16 @@ export default function ListPanels({ setMessage, calendar = false }) {
             <Skeleton variant="circle" width={30} height={30} />
             <Skeleton variant="circle" width={30} height={30} />
             <Skeleton variant="circle" width={30} height={30} />
+            <Skeleton variant="circle" width={30} height={30} />
             <Skeleton variant="rect" width={"100%"} height={210} />
             <Skeleton variant="rect" width={"100%"} height={210} />
-            <Skeleton variant="rect" width={"100%"} height={60} />
           </>
         ) : (
           <>
             <Skeleton variant="rect" width={"25%"} height={"100%"} />
             <div className={classes.circles}>
               <Skeleton variant="circle" width={30} height={30} />
+              <Skeleton variant="circle" width={30} height={30} />
               <Skeleton variant="rect" width={100} height={30} />
               <Skeleton variant="rect" width={100} height={30} />
               <Skeleton variant="circle" width={30} height={30} />
@@ -132,7 +133,6 @@ export default function ListPanels({ setMessage, calendar = false }) {
               <Skeleton variant="circle" width={30} height={30} />
               <Skeleton variant="rect" width={"100%"} height={210} />
               <Skeleton variant="rect" width={"100%"} height={210} />
-              <Skeleton variant="rect" width={"100%"} height={60} />
             </div>
           </>
         )}

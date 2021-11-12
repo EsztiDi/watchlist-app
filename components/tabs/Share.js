@@ -30,6 +30,8 @@ import FormControl from "@material-ui/core/FormControl";
 import Collapse from "@material-ui/core/Collapse";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
 
+import CloseModalButton from "../CloseModalButton";
+
 const useStyles = makeStyles((theme) => ({
   modal: {
     display: "flex",
@@ -130,6 +132,7 @@ export default function Share({ listID, uid, title, open, onClose }) {
     >
       <Fade in={open}>
         <div className={classes.share}>
+          <CloseModalButton onClose={onClose} />
           <Typography variant="h5" id="modal-title" className={classes.title}>
             Share
           </Typography>
@@ -199,7 +202,7 @@ export default function Share({ listID, uid, title, open, onClose }) {
                 control={<Radio color="secondary" />}
                 label="Editable"
                 labelPlacement="start"
-                disabled={/^Watched$/i.test(title)}
+                disabled={/^Watched$/i.test(title) || !uid}
               />
             </RadioGroup>
           </FormControl>

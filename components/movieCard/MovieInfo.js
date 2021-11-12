@@ -52,6 +52,7 @@ const useStyles = makeStyles((theme) => ({
     minWidth: 0,
     fontWeight: "normal",
     lineHeight: 1.6,
+    transition: "background-color 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms",
     "&:hover": {
       backgroundColor: "#f5f5f5",
     },
@@ -62,6 +63,7 @@ const useStyles = makeStyles((theme) => ({
     boxShadow: "none",
     minWidth: "45px",
     lineHeight: 1.2,
+    transition: "background-color 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms",
     "&:hover": {
       backgroundColor: "#f5f5f5",
     },

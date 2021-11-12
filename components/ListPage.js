@@ -21,6 +21,7 @@ import TodayRoundedIcon from "@material-ui/icons/TodayRounded";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
 
 import Form from "./Form";
+import AddMovieButton from "./tabs/AddMovieButton";
 
 const useStyles = makeStyles((theme) => ({
   containerMobile: {
@@ -37,26 +38,21 @@ const useStyles = makeStyles((theme) => ({
   titleContainer: {
     margin: theme.spacing(1.5),
     padding: theme.spacing(1),
-    "& > h4": {
-      display: "flex",
-      justifyContent: "center",
-      alignItems: "center",
-      "& > span": {
-        flexGrow: 1,
-      },
-    },
   },
   titleContainerMobile: {
     margin: 0,
     marginTop: theme.spacing(1.5),
     padding: theme.spacing(0.5),
-    "& > h4": {
-      display: "flex",
-      justifyContent: "center",
-      alignItems: "center",
-      "& > span": {
-        flexGrow: 1,
-      },
+  },
+  title: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    flexWrap: "wrap",
+    gap: "4px",
+    "& > span": {
+      flexGrow: 1,
+      overflowWrap: "anywhere",
     },
   },
   backdrop: {
@@ -75,6 +71,7 @@ const useStyles = makeStyles((theme) => ({
     fontSize: "2.1rem",
     color: theme.palette.primary.light,
     opacity: 0.75,
+    transition: "color 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms",
     "&:hover": {
       color: theme.palette.primary.main,
     },
@@ -82,6 +79,7 @@ const useStyles = makeStyles((theme) => ({
   topIcon: {
     fontSize: "1.9rem",
     color: theme.palette.primary.light,
+    transition: "color 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms",
     "&:hover": {
       color: theme.palette.primary.main,
     },
@@ -104,7 +102,7 @@ export default function ListPage({
   const matches2 = useMediaQuery("(max-width:768px)");
 
   var movies = (list) => list?.movies?.sort((a, b) => a.position - b.position);
-  const [updating, setUpdating] = useState(false);
+  const [updating2, setUpdating2] = useState(false);
   const [backdrop, setBackdrop] = useState("");
   const [alert, setAlert] = useState("");
 
@@ -167,11 +165,11 @@ export default function ListPage({
       mutate("/api/lists/saved", (lists) => {
         return [...lists, list];
       });
-      setUpdating(false);
+      setUpdating2(false);
       setAlert("List saved!");
     } catch (error) {
       setMessage(`${error.message} - Failed to add list, please try again.`);
-      setUpdating(false);
+      setUpdating2(false);
     }
   };
 
@@ -186,12 +184,18 @@ export default function ListPage({
       }
 
       mutate("/api/lists/saved");
-      setUpdating(false);
+      setUpdating2(false);
       setAlert("List removed");
     } catch (error) {
       setMessage(`${error.message} - Failed to delete list.`);
-      setUpdating(false);
+      setUpdating2(false);
     }
+  };
+
+  // For AddMovieButton
+  const [openSearch2, setOpenSearch] = useState(false);
+  const handleOpenSearch2 = () => {
+    setOpenSearch((prev) => !prev);
   };
 
   const handleButtonClick = () => {
@@ -199,7 +203,7 @@ export default function ListPage({
       router?.push("/login");
     }
     if (session) {
-      setUpdating(true);
+      setUpdating2(true);
       if (saved) {
         deleteList(id[0]);
       } else {
@@ -288,14 +292,14 @@ export default function ListPage({
                 matches2 ? classes.titleContainerMobile : classes.titleContainer
               }
             >
-              <Typography variant="h4">
+              <Typography variant="h4" className={classes.title}>
                 {auth !== undefined &&
                   !auth &&
                   (saved ? (
                     <IconButton
                       aria-label="remove list"
                       title="Remove list"
-                      disabled={updating}
+                      disabled={updating2}
                       onClick={handleButtonClick}
                       className={classes.button}
                     >
@@ -305,53 +309,66 @@ export default function ListPage({
                     <IconButton
                       aria-label="save list"
                       title="Save list"
-                      disabled={updating}
+                      disabled={updating2}
                       onClick={handleButtonClick}
                       className={classes.button}
                     >
                       <StarBorderRoundedIcon className={classes.star} />
                     </IconButton>
                   ))}
+                {updating2 && <CircularProgress size="1.5rem" thickness={5} />}
                 <span>{list.title}</span>
-                {calendar ? (
-                  <Link
-                    href={editable ? `/list/${id[0]}/${uid}` : `/list/${id[0]}`}
-                    passHref
-                  >
-                    <IconButton
-                      aria-label="list view"
-                      title="List view"
-                      className={classes.button}
+                <div>
+                  {editable && !calendar && (
+                    <AddMovieButton
+                      openSearch={openSearch2}
+                      handleOpenSearch={handleOpenSearch2}
+                    />
+                  )}
+                  {calendar ? (
+                    <Link
+                      href={
+                        editable ? `/list/${id[0]}/${uid}` : `/list/${id[0]}`
+                      }
+                      passHref
                     >
-                      <FormatListBulletedRoundedIcon
-                        className={classes.topIcon}
-                      />
-                    </IconButton>
-                  </Link>
-                ) : (
-                  <Link
-                    href={
-                      editable
-                        ? `/list/calendar/${id[0]}/${uid}`
-                        : `/list/calendar/${id[0]}`
-                    }
-                    passHref
-                  >
-                    <IconButton
-                      aria-label="calendar view"
-                      title="Calendar view"
-                      className={classes.button}
+                      <IconButton
+                        aria-label="list view"
+                        title="List view"
+                        className={classes.button}
+                      >
+                        <FormatListBulletedRoundedIcon
+                          className={classes.topIcon}
+                        />
+                      </IconButton>
+                    </Link>
+                  ) : (
+                    <Link
+                      href={
+                        editable
+                          ? `/list/calendar/${id[0]}/${uid}`
+                          : `/list/calendar/${id[0]}`
+                      }
+                      passHref
                     >
-                      <TodayRoundedIcon className={classes.topIcon} />
-                    </IconButton>
-                  </Link>
-                )}
+                      <IconButton
+                        aria-label="calendar view"
+                        title="Calendar view"
+                        className={classes.button}
+                      >
+                        <TodayRoundedIcon className={classes.topIcon} />
+                      </IconButton>
+                    </Link>
+                  )}
+                </div>
               </Typography>
             </Paper>
             <Form
               list={list ? list : initialList}
               setMessage={setMessage}
               calendar={calendar}
+              openSearch2={openSearch2}
+              setUpdating2={setUpdating2}
               newList={false}
               newTab={true}
             />

@@ -6,7 +6,6 @@ import useSWR from "swr";
 
 import { makeStyles } from "@material-ui/core/styles";
 import Box from "@material-ui/core/Box";
-import CircularProgress from "@material-ui/core/CircularProgress";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Switch from "@material-ui/core/Switch";
 import Tooltip from "@material-ui/core/Tooltip";
@@ -17,6 +16,7 @@ import TodayRoundedIcon from "@material-ui/icons/TodayRounded";
 import ShareRoundedIcon from "@material-ui/icons/ShareRounded";
 import OpenInNewRoundedIcon from "@material-ui/icons/OpenInNewRounded";
 import HighlightOffRoundedIcon from "@material-ui/icons/HighlightOffRounded";
+import Collapse from "@material-ui/core/Collapse";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
 
 import Calendar from "../calendar/Calendar";
@@ -24,6 +24,7 @@ import Movies from "../Movies";
 import MovieSearch from "../movieSearch/MovieSearch";
 import DeleteDialog from "./DeleteDialog";
 import Share from "./Share";
+import AddMovieButton from "./AddMovieButton";
 
 const useStyles = makeStyles((theme) => ({
   panel: {
@@ -32,6 +33,7 @@ const useStyles = makeStyles((theme) => ({
     height: "100%",
     overflow: "auto",
     textAlign: "center",
+    scrollBehavior: "smooth",
     "&::-webkit-scrollbar": {
       width: "7px",
       height: "7px",
@@ -91,7 +93,7 @@ const useStyles = makeStyles((theme) => ({
     marginLeft: theme.spacing(0.25),
   },
   label: {
-    width: "45%",
+    width: "48%",
     whiteSpace: "nowrap",
   },
   button: {
@@ -100,39 +102,26 @@ const useStyles = makeStyles((theme) => ({
   topIcon: {
     fontSize: "1.9rem",
     color: theme.palette.primary.light,
+    transition: "color 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms",
     "&:hover": {
       color: theme.palette.primary.main,
     },
   },
-  updating: {
-    position: "absolute",
-    bottom: "29px",
-    left: "50px",
-  },
-  updatingMobile: {
-    position: "absolute",
-    bottom: "37px",
-    left: "60px",
-  },
-  updatingMobile2: {
-    position: "absolute",
-    bottom: "20px",
-    left: "13px",
-  },
   delete: {
     fontSize: "1.9rem",
     color: theme.palette.secondary.light,
+    transition: "color 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms",
     "&:hover": {
       color: theme.palette.secondary.main,
     },
   },
   search: {
     position: "relative",
-    margin: `${theme.spacing(4)}px ${theme.spacing(2)}px 0`,
+    margin: `${theme.spacing(4)}px ${theme.spacing(2)}px ${theme.spacing(2)}px`,
   },
   searchMobile: {
     position: "relative",
-    margin: `${theme.spacing(4)}px 0 0`,
+    margin: `${theme.spacing(4)}px 0 ${theme.spacing(2)}px`,
   },
 }));
 
@@ -151,13 +140,13 @@ export default function TabPanel(props) {
     addingMovie,
     calendar,
     emails,
+    openSearch2,
     ...other
   } = props;
 
   const classes = useStyles();
   const matches = useMediaQuery("(max-width:1024px)");
   const matches2 = useMediaQuery("(max-width:768px)");
-  const matches3 = useMediaQuery("(max-width:490px)");
 
   const router = useRouter();
   const { id: ids } = router?.query;
@@ -178,8 +167,10 @@ export default function TabPanel(props) {
   }
 
   useEffect(() => {
-    if (!newTab && document.getElementById(`tabpanel-${listID}`))
-      document.getElementById(`tabpanel-${listID}`).scrollTop = 0;
+    var panel = document.getElementById(`tabpanel-${listID}`);
+    if (!newTab && panel) {
+      panel.scrollTop = 0;
+    }
   }, [listID, newTab]);
 
   // Locale for Calendar and Movies
@@ -208,9 +199,14 @@ export default function TabPanel(props) {
     // eslint-disable-next-line
   }, []);
 
+  // For AddMovieButton
+  const [openSearch, setOpenSearch] = useState(false);
+  const handleOpenSearch = () => {
+    setOpenSearch((prev) => !prev);
+  };
+
   // For DeleteDialog
   const [openDelete, setOpenDelete] = useState(false);
-
   const handleOpenDelete = () => {
     setOpenDelete((prev) => !prev);
   };
@@ -219,7 +215,7 @@ export default function TabPanel(props) {
   const [openShare, setOpenShare] = useState(false);
   const uid = new Date(createdAt).getTime().toString().substring(0, 12);
   const auth = session && list?.user?.email === session?.user?.email;
-  const editable = ids.length > 1 ? ids[1] === uid : auth;
+  const editable = ids.length > 1 ? ids[1] === uid : auth && !newTab;
 
   const handleOpenShare = () => {
     setOpenShare((prev) => !prev);
@@ -236,19 +232,6 @@ export default function TabPanel(props) {
         {...other}
       >
         <div className={matches ? classes.buttonsMobile : classes.buttons}>
-          {newTab && updating && (
-            <CircularProgress
-              size="1.5rem"
-              thickness={5}
-              className={
-                matches2
-                  ? classes.updatingMobile2
-                  : matches
-                  ? classes.updatingMobile
-                  : classes.updating
-              }
-            />
-          )}
           {!newTab && (
             <>
               {!matches ? (
@@ -289,8 +272,14 @@ export default function TabPanel(props) {
               ) : (
                 ""
               )}
+              {!matches && editable && !calendar && (
+                <AddMovieButton
+                  openSearch={openSearch}
+                  handleOpenSearch={handleOpenSearch}
+                />
+              )}
               {auth && (
-                <span className={matches3 ? classes.label : undefined}>
+                <span className={matches2 ? classes.label : undefined}>
                   <FormControlLabel
                     id="private"
                     label={
@@ -322,7 +311,7 @@ export default function TabPanel(props) {
                         </Tooltip>
                       </>
                     }
-                    labelPlacement={!matches3 ? "start" : "end"}
+                    labelPlacement={!matches2 ? "start" : "end"}
                     control={
                       <Switch
                         color="primary"
@@ -334,7 +323,7 @@ export default function TabPanel(props) {
                   />
                 </span>
               )}
-              <span className={matches3 ? classes.label : undefined}>
+              <span className={matches2 ? classes.label : undefined}>
                 <FormControlLabel
                   id="emails"
                   label={
@@ -365,7 +354,7 @@ export default function TabPanel(props) {
                       </Tooltip>
                     </>
                   }
-                  labelPlacement={!matches3 ? "start" : "end"}
+                  labelPlacement={!matches2 ? "start" : "end"}
                   control={
                     <Switch
                       color="primary"
@@ -376,6 +365,18 @@ export default function TabPanel(props) {
                   }
                 />
               </span>
+
+              {matches && (
+                <IconButton
+                  aria-label="delete watchlist"
+                  title={auth ? "Delete" : "Remove"}
+                  disabled={updating}
+                  onClick={handleOpenDelete}
+                  className={classes.button}
+                >
+                  <HighlightOffRoundedIcon className={classes.delete} />
+                </IconButton>
+              )}
               {matches ? (
                 calendar ? (
                   <Link
@@ -427,7 +428,7 @@ export default function TabPanel(props) {
               </IconButton>
               <Share
                 listID={listID}
-                uid={uid}
+                uid={editable || auth ? uid : ""}
                 title={title}
                 open={openShare}
                 onClose={handleOpenShare}
@@ -452,15 +453,24 @@ export default function TabPanel(props) {
                   <OpenInNewRoundedIcon className={classes.topIcon} />
                 </IconButton>
               </Link>
-              <IconButton
-                aria-label="delete watchlist"
-                title={auth ? "Delete" : "Remove"}
-                disabled={updating}
-                onClick={handleOpenDelete}
-                className={classes.button}
-              >
-                <HighlightOffRoundedIcon className={classes.delete} />
-              </IconButton>
+              {matches && editable && !calendar && (
+                <AddMovieButton
+                  listID={listID}
+                  openSearch={openSearch}
+                  handleOpenSearch={handleOpenSearch}
+                />
+              )}
+              {!matches && (
+                <IconButton
+                  aria-label="delete watchlist"
+                  title={auth ? "Delete" : "Remove"}
+                  disabled={updating}
+                  onClick={handleOpenDelete}
+                  className={classes.button}
+                >
+                  <HighlightOffRoundedIcon className={classes.delete} />
+                </IconButton>
+              )}
               <DeleteDialog
                 open={openDelete}
                 listID={listID}
@@ -473,7 +483,19 @@ export default function TabPanel(props) {
             </>
           )}
         </div>
-
+        {editable && !calendar && (
+          <Collapse in={openSearch || openSearch2}>
+            <div className={matches2 ? classes.searchMobile : classes.search}>
+              <MovieSearch
+                addMovie={addMovie}
+                addingMovie={addingMovie}
+                newList={newList}
+                setUpdating={setUpdating}
+                listID={listID}
+              />
+            </div>
+          </Collapse>
+        )}
         {calendar ? (
           <Calendar listID={listID} loc={loc} newTab={newTab} />
         ) : (
@@ -485,17 +507,6 @@ export default function TabPanel(props) {
             updating={updating}
             setMessage={setMessage}
           />
-        )}
-        {editable && !calendar && (
-          <div className={matches2 ? classes.searchMobile : classes.search}>
-            <MovieSearch
-              addMovie={addMovie}
-              addingMovie={addingMovie}
-              newList={newList}
-              setUpdating={setUpdating}
-              listID={listID}
-            />
-          </div>
         )}
       </Box>
     )

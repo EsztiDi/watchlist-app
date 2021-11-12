@@ -5,7 +5,6 @@ import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
 import Paper from "@material-ui/core/Paper";
 import Typography from "@material-ui/core/Typography";
-import OpenInNewRoundedIcon from "@material-ui/icons/OpenInNewRounded";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
 
 const useStyles = makeStyles((theme) => ({
@@ -66,24 +65,13 @@ export default function About() {
             <b>Email: </b>
             contact@mywatchlists.watch
           </Typography>
-          <Typography>
-            <b>GitHub: </b>
-            <a
-              href="https://github.com/EsztiDi/watchlist-app"
-              target="_blank"
-              rel="noopener noreferrer"
-              className={classes.flex}
-            >
-              EsztiDi <OpenInNewRoundedIcon fontSize="small" />
-            </a>
-          </Typography>
           <Typography variant="h4">About</Typography>
           <Typography>
-            This watchlist app is a passion project of mine. Born from the idea
-            of having watchlists that are easy to edit and can be shared or even
-            edited together with others. Otherwise, it is a lot of scrolling
-            back in group chats with my friends to find the links we sent while
-            planning the next movie night. 🎬&nbsp;+&nbsp;🍕
+            This watchlist app is a passion project. Born from the idea of
+            having watchlists that are easy to edit and can be shared or even
+            edited with others. Otherwise, it is a lot of scrolling back in
+            group chats with my friends to find the links we sent while planning
+            the next movie night. 🎬&nbsp;+&nbsp;🍕
           </Typography>
           <Typography>
             I&apos;m an office worker by day, aspiring web developer by night

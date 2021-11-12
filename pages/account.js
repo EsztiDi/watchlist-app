@@ -42,8 +42,8 @@ const useStyles = makeStyles((theme) => ({
       rowGap: theme.spacing(2.5),
       padding: `${theme.spacing(3.5)}px ${theme.spacing(2)}px`,
       "& > button": {
-        flex: "30%",
-        minWidth: "150px",
+        minWidth: "175px",
+        margin: "auto",
       },
       "& > span": {
         flex: "50%",
