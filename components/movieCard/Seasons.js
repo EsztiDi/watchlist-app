@@ -1,10 +1,11 @@
 import { useState, useEffect } from "react";
+import dynamic from "next/dynamic";
+import PropTypes from "prop-types";
+
+const Modal = dynamic(() => import("@material-ui/core/Modal"));
 import { makeStyles } from "@material-ui/core/styles";
-import Modal from "@material-ui/core/Modal";
 import Backdrop from "@material-ui/core/Backdrop";
 import Fade from "@material-ui/core/Fade";
-
-import PropTypes from "prop-types";
 import AppBar from "@material-ui/core/AppBar";
 import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";

@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import dynamic from "next/dynamic";
 import Link from "next/link";
 import useSWR from "swr";
 import intro from "../../utils/intro";
@@ -12,7 +13,7 @@ import KeyboardArrowDownRoundedIcon from "@material-ui/icons/KeyboardArrowDownRo
 import CircularProgress from "@material-ui/core/CircularProgress";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
 
-import EditTitle from "./EditTitle";
+const EditTitle = dynamic(() => import("./EditTitle"));
 
 const useStyles = makeStyles((theme) => ({
   tabs: {
@@ -198,8 +199,12 @@ export default function ListTabs({
         .then((res) => {
           setNewUser(res?.data?.newUser);
           setEmail(res?.data?.email);
+          setFetching(false);
+        })
+        .catch((err) => {
+          console.error(err);
+          setFetching(false);
         });
-      setFetching(false);
     };
     getProps();
 
@@ -209,7 +214,8 @@ export default function ListTabs({
   }, []);
 
   useEffect(() => {
-    if (!fetching && newUser && lists) {
+    var tab = document.querySelector("a[data-id='watched-tab']");
+    if (!fetching && newUser && lists && tab) {
       setTimeout(() => {
         intro(email);
       }, 1000);

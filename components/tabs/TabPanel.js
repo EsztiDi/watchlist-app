@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import dynamic from "next/dynamic";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useSession } from "next-auth/client";
@@ -19,12 +20,12 @@ import HighlightOffRoundedIcon from "@material-ui/icons/HighlightOffRounded";
 import Collapse from "@material-ui/core/Collapse";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
 
-import Calendar from "../calendar/Calendar";
-import Movies from "../Movies";
-import MovieSearch from "../movieSearch/MovieSearch";
-import DeleteDialog from "./DeleteDialog";
-import Share from "./Share";
 import AddMovieButton from "./AddMovieButton";
+import Share from "./Share";
+import DeleteDialog from "./DeleteDialog";
+const MovieSearch = dynamic(() => import("../movieSearch/MovieSearch"));
+const Calendar = dynamic(() => import("../calendar/Calendar"));
+const Movies = dynamic(() => import("../Movies"));
 
 const useStyles = makeStyles((theme) => ({
   panel: {

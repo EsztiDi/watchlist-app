@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import dynamic from "next/dynamic";
 import {
   EmailShareButton,
   FacebookShareButton,
@@ -14,9 +15,9 @@ import {
   WhatsappIcon,
 } from "react-share";
 
+const Modal = dynamic(() => import("@material-ui/core/Modal"));
 import { makeStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
-import Modal from "@material-ui/core/Modal";
 import Backdrop from "@material-ui/core/Backdrop";
 import Fade from "@material-ui/core/Fade";
 import Divider from "@material-ui/core/Divider";

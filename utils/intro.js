@@ -1,6 +1,6 @@
-import introJs from "intro.js";
+export default async function intro(email) {
+  var { default: introJs } = await import("intro.js");
 
-export default function intro(email) {
   introJs()
     .setOptions({
       disableInteraction: true,
