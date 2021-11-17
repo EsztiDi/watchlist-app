@@ -21,6 +21,11 @@ const useStyles = makeStyles((theme) => ({
     width: "100%",
     color: "#009688",
   },
+  name: {
+    fontStyle: "italic",
+    fontSize: "0.65rem",
+    lineHeight: 1,
+  },
 }));
 
 export default function SavedListItem({
@@ -62,6 +67,9 @@ export default function SavedListItem({
           savedList?.movies?.map((mov) => mov.id)?.includes(movieID) &&
           added &&
           " ✔"}
+        <div className={classes.name}>
+          by {savedList?.user?.name || "Nameless"}
+        </div>
       </Typography>
     </MenuItem>
   );

@@ -135,6 +135,7 @@ export default async function handler(req, res) {
                   creator: {
                     name: req.body.name,
                     email: req.body.email,
+                    image: req.body.image,
                   },
                 },
                 {

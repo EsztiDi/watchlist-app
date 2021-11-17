@@ -1,5 +1,6 @@
 import { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { useRouter } from "next/router";
 import { useSession } from "next-auth/client";
 import useSWR, { mutate } from "swr";
@@ -36,9 +37,6 @@ const useStyles = makeStyles((theme) => ({
         color: theme.palette.primary.light,
       },
     },
-    "& > h6": {
-      fontStyle: "italic",
-    },
     "& > ul": {
       fontSize: "0.95rem",
       textAlign: "left",
@@ -64,6 +62,17 @@ const useStyles = makeStyles((theme) => ({
       margin: `auto 0 ${theme.spacing(1)}px`,
       fontWeight: "bold",
     },
+  },
+  name: {
+    fontStyle: "italic",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    flexWrap: "wrap",
+    gap: "8px",
+  },
+  avatar: {
+    borderRadius: "50%",
   },
   // open: {
   //   fontSize: "1rem",
@@ -176,8 +185,17 @@ export default function ListDetails({
           </Typography>
         </a>
       </Link>
-      <Typography variant="subtitle1">
+      <Typography variant="subtitle1" className={classes.name}>
         By {creator?.name || "Nameless"}
+        {creator?.image && (
+          <Image
+            src={creator?.image}
+            alt=""
+            width={32}
+            height={32}
+            className={classes.avatar}
+          />
+        )}
       </Typography>
       <ul>
         {movies?.map((movie, index) => {

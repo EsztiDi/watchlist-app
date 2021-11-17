@@ -92,7 +92,7 @@ export default function ListCard({ list, index, setMessage }) {
         <ListDetails
           listID={list._id}
           title={list.title}
-          creator={{ name: list.user.name, email: list.user.email }}
+          creator={list.user}
           movies={list.movies
             .sort((a, b) => a.position - b.position)
             .map((movie) => {

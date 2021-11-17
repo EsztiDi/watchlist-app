@@ -211,7 +211,7 @@ export default function ListPage({
           listid: id[0],
           uid: editable && !/^Watched$/i.test(list.title) ? uid : "",
           title: list?.title,
-          creator: { name: list?.user.name, email: list?.user.email },
+          creator: list?.user,
           emails: false,
         });
       }

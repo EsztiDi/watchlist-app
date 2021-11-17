@@ -59,13 +59,23 @@ export default function CarouselMovieCard({
       <div key={index} className={classes.movie}>
         {!movie?.poster_path && (
           <div
+            onMouseEnter={!touch && !show ? handleShowDetails : undefined}
+            data-index={index}
             style={!show ? { zIndex: "1" } : undefined}
             className={classes.title}
           >
-            <Typography variant="h6">
+            <Typography
+              variant="h6"
+              onTouchStart={touch && !show ? handleShowDetails : undefined}
+              data-index={index}
+            >
               {movie.title ? movie.title : movie.name ? movie.name : "Untitled"}
             </Typography>
-            <Typography variant="subtitle1">
+            <Typography
+              variant="subtitle1"
+              onTouchStart={touch && !show ? handleShowDetails : undefined}
+              data-index={index}
+            >
               {movie?.release_date
                 ? new Date(movie?.release_date).toLocaleDateString("en-GB", {
                     day: "numeric",
