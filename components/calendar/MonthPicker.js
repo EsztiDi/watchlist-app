@@ -26,7 +26,7 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(0.5),
   },
   arrow: {
-    fontSize: "1.8rem",
+    fontSize: "1.6rem",
     color: theme.palette.primary.light,
     transition: "color 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms",
     "&:hover": {

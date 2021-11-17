@@ -17,7 +17,7 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(0.5),
   },
   icon: {
-    fontSize: "2rem",
+    fontSize: "1.8rem",
   },
   iconMobile: {
     fontSize: "1.6rem",

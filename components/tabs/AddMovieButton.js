@@ -23,7 +23,7 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(0.5),
   },
   topIcon: {
-    fontSize: "1.9rem",
+    fontSize: "1.7rem",
     color: theme.palette.primary.light,
     transition: "color, transform 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms",
     "&:hover": {

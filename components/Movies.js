@@ -39,7 +39,7 @@ export default function Movies({
     <CircularProgress size="3rem" thickness={3} />
   ) : (
     movies
-      .sort((a, b) => a.position - b.position)
+      .sort((a, b) => b.position - a.position)
       .map((movie, index) => (
         <MovieCard
           key={index}

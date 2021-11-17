@@ -51,7 +51,7 @@ export default function ListCard({ list, index, setMessage }) {
       >
         {list.movies?.length > 0
           ? list.movies
-              .sort((a, b) => a.position - b.position)
+              .sort((a, b) => b.position - a.position)
               .slice(0, 4)
               .map((movie, index) => {
                 return (
@@ -94,7 +94,7 @@ export default function ListCard({ list, index, setMessage }) {
           title={list.title}
           creator={list.user}
           movies={list.movies
-            .sort((a, b) => a.position - b.position)
+            .sort((a, b) => b.position - a.position)
             .map((movie) => {
               return {
                 title: movie.title,

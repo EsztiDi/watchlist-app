@@ -68,7 +68,7 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(0.5),
   },
   star: {
-    fontSize: "2.1rem",
+    fontSize: "2rem",
     color: theme.palette.primary.light,
     opacity: 0.75,
     transition: "color 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms",
@@ -77,7 +77,7 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   topIcon: {
-    fontSize: "1.9rem",
+    fontSize: "1.7rem",
     color: theme.palette.primary.light,
     transition: "color 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms",
     "&:hover": {
@@ -101,7 +101,7 @@ export default function ListPage({
   const matches = useMediaQuery("(max-width:1024px)");
   const matches2 = useMediaQuery("(max-width:768px)");
 
-  var movies = (list) => list?.movies?.sort((a, b) => a.position - b.position);
+  var movies = (list) => list?.movies?.sort((a, b) => b.position - a.position);
   const [updating2, setUpdating2] = useState(false);
   const [backdrop, setBackdrop] = useState("");
   const [alert, setAlert] = useState("");

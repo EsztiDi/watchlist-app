@@ -57,12 +57,13 @@ const useStyles = makeStyles((theme) => ({
     position: "relative",
     display: "flex",
     alignItems: "center",
-    "& > *": {
-      marginRight: theme.spacing(1),
-    },
+    columnGap: theme.spacing(1),
     "& > *:first-child": {
       marginLeft: theme.spacing(1),
       marginRight: "auto",
+    },
+    "& > *:last-child": {
+      marginRight: theme.spacing(1),
     },
   },
   buttonsMobile: {
@@ -70,12 +71,19 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     flexWrap: "wrap",
     alignItems: "center",
-    justifyContent: "space-evenly",
+    justifyContent: "center",
     columnGap: theme.spacing(1),
+    rowGap: theme.spacing(0.5),
     padding: theme.spacing(0.5),
     "& svg": {
-      fontSize: "1.7rem",
+      fontSize: "1.6rem",
     },
+  },
+  subButtons: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-around",
+    columnGap: theme.spacing(1),
   },
   tooltip: {
     fontSize: "0.85rem",
@@ -95,12 +103,15 @@ const useStyles = makeStyles((theme) => ({
   label: {
     width: "48%",
     whiteSpace: "nowrap",
+    "& *": {
+      fontSize: "0.95rem",
+    },
   },
   button: {
     padding: theme.spacing(0.5),
   },
   topIcon: {
-    fontSize: "1.9rem",
+    fontSize: "1.7rem",
     color: theme.palette.primary.light,
     transition: "color 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms",
     "&:hover": {
@@ -108,7 +119,7 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   delete: {
-    fontSize: "1.9rem",
+    fontSize: "1.7rem",
     color: theme.palette.secondary.light,
     transition: "color 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms",
     "&:hover": {
@@ -366,112 +377,116 @@ export default function TabPanel(props) {
                   }
                 />
               </span>
-
-              {matches && (
-                <IconButton
-                  aria-label="delete watchlist"
-                  title={auth ? "Delete" : "Remove"}
-                  disabled={updating}
-                  onClick={handleOpenDelete}
-                  className={classes.button}
-                >
-                  <HighlightOffRoundedIcon className={classes.delete} />
-                </IconButton>
-              )}
-              {matches ? (
-                calendar ? (
-                  <Link
-                    href={`/lists/${listID}${ids.length > 1 ? `/${uid}` : ""}`}
-                    replace
-                    passHref
-                  >
+              <span
+                className={classes.subButtons}
+                style={matches ? { flexGrow: 1 } : undefined}
+              >
+                {matches && (
+                  <>
                     <IconButton
-                      aria-label="list view"
-                      title="List view"
+                      aria-label="delete watchlist"
+                      title={auth ? "Delete" : "Remove"}
+                      disabled={updating}
+                      onClick={handleOpenDelete}
                       className={classes.button}
                     >
-                      <FormatListBulletedRoundedIcon
-                        className={classes.topIcon}
-                      />
+                      <HighlightOffRoundedIcon className={classes.delete} />
                     </IconButton>
-                  </Link>
-                ) : (
-                  <Link
-                    href={`/lists/calendar/${listID}${
-                      ids.length > 1 ? `/${uid}` : ""
-                    }`}
-                    replace
-                    passHref
-                  >
-                    <IconButton
-                      id="calendar"
-                      aria-label="calendar view"
-                      title="Calendar view"
-                      className={classes.button}
-                    >
-                      <TodayRoundedIcon className={classes.topIcon} />
-                    </IconButton>
-                  </Link>
-                )
-              ) : (
-                ""
-              )}
-              <IconButton
-                id="share"
-                aria-label="share watchlist"
-                title="Share"
-                component="span"
-                onClick={handleOpenShare}
-                className={classes.button}
-                disabled={openShare}
-              >
-                <ShareRoundedIcon className={classes.topIcon} />
-              </IconButton>
-              <Share
-                listID={listID}
-                uid={editable || auth ? uid : ""}
-                title={title}
-                open={openShare}
-                onClose={handleOpenShare}
-              />
-              <Link
-                href={
-                  calendar
-                    ? `/list/calendar/${listID}${
-                        ids.length > 1 ? `/${uid}` : ""
-                      }`
-                    : `/list/${listID}${ids.length > 1 ? `/${uid}` : ""}`
-                }
-                passHref
-              >
+                    {calendar ? (
+                      <Link
+                        href={`/lists/${listID}${
+                          ids.length > 1 ? `/${uid}` : ""
+                        }`}
+                        replace
+                        passHref
+                      >
+                        <IconButton
+                          aria-label="list view"
+                          title="List view"
+                          className={classes.button}
+                        >
+                          <FormatListBulletedRoundedIcon
+                            className={classes.topIcon}
+                          />
+                        </IconButton>
+                      </Link>
+                    ) : (
+                      <Link
+                        href={`/lists/calendar/${listID}${
+                          ids.length > 1 ? `/${uid}` : ""
+                        }`}
+                        replace
+                        passHref
+                      >
+                        <IconButton
+                          id="calendar"
+                          aria-label="calendar view"
+                          title="Calendar view"
+                          className={classes.button}
+                        >
+                          <TodayRoundedIcon className={classes.topIcon} />
+                        </IconButton>
+                      </Link>
+                    )}
+                  </>
+                )}
                 <IconButton
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label="open in new tab"
-                  title="Open in new tab"
+                  id="share"
+                  aria-label="share watchlist"
+                  title="Share"
+                  component="span"
+                  onClick={handleOpenShare}
                   className={classes.button}
+                  disabled={openShare}
                 >
-                  <OpenInNewRoundedIcon className={classes.topIcon} />
+                  <ShareRoundedIcon className={classes.topIcon} />
                 </IconButton>
-              </Link>
-              {matches && editable && !calendar && (
-                <AddMovieButton
+                <Share
                   listID={listID}
-                  openSearch={openSearch}
-                  handleOpenSearch={handleOpenSearch}
+                  uid={editable || auth ? uid : ""}
+                  title={title}
+                  open={openShare}
+                  onClose={handleOpenShare}
                 />
-              )}
-              {!matches && (
-                <IconButton
-                  aria-label="delete watchlist"
-                  title={auth ? "Delete" : "Remove"}
-                  disabled={updating}
-                  onClick={handleOpenDelete}
-                  className={classes.button}
+                <Link
+                  href={
+                    calendar
+                      ? `/list/calendar/${listID}${
+                          ids.length > 1 ? `/${uid}` : ""
+                        }`
+                      : `/list/${listID}${ids.length > 1 ? `/${uid}` : ""}`
+                  }
+                  passHref
                 >
-                  <HighlightOffRoundedIcon className={classes.delete} />
-                </IconButton>
-              )}
+                  <IconButton
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label="open in new tab"
+                    title="Open in new tab"
+                    className={classes.button}
+                  >
+                    <OpenInNewRoundedIcon className={classes.topIcon} />
+                  </IconButton>
+                </Link>
+                {matches && editable && !calendar && (
+                  <AddMovieButton
+                    listID={listID}
+                    openSearch={openSearch}
+                    handleOpenSearch={handleOpenSearch}
+                  />
+                )}
+                {!matches && (
+                  <IconButton
+                    aria-label="delete watchlist"
+                    title={auth ? "Delete" : "Remove"}
+                    disabled={updating}
+                    onClick={handleOpenDelete}
+                    className={classes.button}
+                  >
+                    <HighlightOffRoundedIcon className={classes.delete} />
+                  </IconButton>
+                )}
+              </span>
               <DeleteDialog
                 open={openDelete}
                 listID={listID}

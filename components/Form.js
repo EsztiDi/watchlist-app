@@ -413,7 +413,6 @@ export default function Form({
       movies: [...movies.filter((movie, i) => i !== index)],
     });
   };
-
   const moveMovie = (action, index, position) => {
     // Getting adjacent position
     switch (action) {
@@ -429,12 +428,15 @@ export default function Form({
 
     let updatedMovies = [
       ...movies
-        .sort((a, b) => a.position - b.position)
-        .map((movie, i) => {
+        .sort((a, b) => b.position - a.position)
+        .map((movie, i, arr) => {
           switch (action) {
             case "top":
-              if (movie.position < position) ++movie.position;
-              if (i === index) movie.position = 0;
+              if (i === index) {
+                movie.position =
+                  movies.sort((a, b) => b.position - a.position)[0].position +
+                  1;
+              }
               break;
             case "up":
               if (i === index - 1) movie.position = position;
@@ -445,9 +447,8 @@ export default function Form({
               if (i === index + 1) movie.position = position;
               break;
             case "bottom":
-              if (i === index) {
-                movie.position = movies[movies.length - 1].position + 1;
-              }
+              if (movie.position < position) ++movie.position;
+              if (i === index) movie.position = 0;
               break;
 
             default:

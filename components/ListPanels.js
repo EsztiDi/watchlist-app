@@ -22,7 +22,7 @@ const useStyles = makeStyles((theme) => ({
     },
     "& span": {
       display: "inline-block",
-      margin: theme.spacing(1.5),
+      margin: theme.spacing(1.3),
     },
   },
   circles: {

@@ -25,7 +25,7 @@ export async function getServerSideProps(context) {
     width: "256",
     height: "256",
   };
-  var movies = (list) => list?.movies.sort((a, b) => a.position - b.position);
+  var movies = (list) => list?.movies.sort((a, b) => b.position - a.position);
 
   if (id) {
     try {

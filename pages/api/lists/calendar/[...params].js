@@ -88,7 +88,7 @@ const getDays = async (year, month, moviesList, loc) => {
         if (dayMovies.length > 0) {
           dates.push({
             date: date,
-            movies: dayMovies.sort((a, b) => a.position - b.position),
+            movies: dayMovies.sort((a, b) => b.position - a.position),
           });
         } else {
           dates.push({ date: date });
