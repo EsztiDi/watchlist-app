@@ -7,10 +7,10 @@ import { makeStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 import StarRoundedIcon from "@material-ui/icons/StarRounded";
 import TheatersRoundedIcon from "@material-ui/icons/TheatersRounded";
-import PlayArrowRoundedIcon from "@material-ui/icons/PlayArrowRounded";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
 
 import Cast from "./Cast";
+import JustWatchLink from "./JustWatchLink";
 
 const useStyles = makeStyles((theme) => ({
   info: {
@@ -55,44 +55,14 @@ export default function MovieInfo({ movie, listID, loc, user }) {
       runtime,
     } = details;
   }
+  var this_year = new Date().getFullYear();
+  var end_year;
+  if (release_date && media_type === "tv") {
+    end_year = new Date(release_date).getFullYear();
+  }
+
   release_date = release_date || "No date";
   var { imdb_id } = external_ids;
-  var countries = [
-    "AU",
-    "BG",
-    "CA",
-    "DK",
-    "GR",
-    "HK",
-    "HU",
-    "ID",
-    "IE",
-    "IN",
-    "LT",
-    "LV",
-    "MY",
-    "NL",
-    "NO",
-    "NZ",
-    "PH",
-    "PL",
-    "RO",
-    "SE",
-    "SG",
-    "TH",
-    "TW",
-    "US",
-    "ZA",
-  ];
-  var justWatchLink = `https://www.justwatch.com/${
-    loc === "GB" || locale === "GB"
-      ? "UK"
-      : countries.includes(loc)
-      ? loc
-      : countries.includes(locale)
-      ? locale
-      : "us"
-  }/search?q=${encodeURIComponent(title)}`;
 
   const classes = useStyles();
   const matches = useMediaQuery("(max-width:768px)");
@@ -110,6 +80,10 @@ export default function MovieInfo({ movie, listID, loc, user }) {
   const auth = user ? session && user?.email === session?.user?.email : false;
 
   const [date, setDate] = useState("");
+  var justWatch =
+    release_date && year >= this_year
+      ? new Date(date || release_date) < new Date()
+      : true;
 
   useEffect(() => {
     // Check if locale is different and get local release date
@@ -152,7 +126,13 @@ export default function MovieInfo({ movie, listID, loc, user }) {
         }
       >
         {media_type === "tv" ? (
-          `TV series, ${year}–`
+          `Series, ${year}${
+            end_year < this_year && year !== end_year
+              ? "–" + end_year
+              : year !== end_year
+              ? "–"
+              : ""
+          }`
         ) : (
           <span className={classes.media}>{media_type || "–"}</span>
         )}
@@ -212,15 +192,14 @@ export default function MovieInfo({ movie, listID, loc, user }) {
             <TheatersRoundedIcon className={classes.miniIcon} /> IMDb
           </a>
         )}{" "}
-        <a
-          href={justWatchLink}
-          target="_blank"
-          rel="noopener noreferrer"
-          className={classes.external}
-        >
-          <PlayArrowRoundedIcon className={classes.miniIcon} />
-          JustWatch
-        </a>
+        {justWatch && (
+          <JustWatchLink
+            loc={loc}
+            locale={locale}
+            title={title}
+            classes={{ external: classes.external, miniIcon: classes.miniIcon }}
+          />
+        )}
       </Typography>
       <Cast
         variant="directors"

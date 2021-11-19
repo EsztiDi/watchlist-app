@@ -298,7 +298,7 @@ export default function ListTabs({
                               className={classes.edit}
                               style={
                                 matches
-                                  ? { fontSize: "1.5rem" }
+                                  ? { fontSize: "1.6rem" }
                                   : { fontSize: "1.8rem" }
                               }
                               onClick={openEditTitle}
@@ -321,7 +321,7 @@ export default function ListTabs({
                               className={classes.arrow}
                               style={
                                 matches
-                                  ? { fontSize: "1.5rem" }
+                                  ? { fontSize: "1.6rem" }
                                   : { fontSize: "1.8rem" }
                               }
                               onClick={() => moveListUp(index)}
@@ -335,7 +335,7 @@ export default function ListTabs({
                               className={classes.arrow}
                               style={
                                 matches
-                                  ? { fontSize: "1.5rem" }
+                                  ? { fontSize: "1.6rem" }
                                   : { fontSize: "1.8rem" }
                               }
                               onClick={() => moveListDown(index)}
@@ -419,7 +419,7 @@ export default function ListTabs({
                               className={classes.edit}
                               style={
                                 matches
-                                  ? { fontSize: "1.5rem" }
+                                  ? { fontSize: "1.6rem" }
                                   : { fontSize: "1.8rem" }
                               }
                               onClick={openEditTitle}
@@ -442,7 +442,7 @@ export default function ListTabs({
                               className={classes.arrow}
                               style={
                                 matches
-                                  ? { fontSize: "1.5rem" }
+                                  ? { fontSize: "1.6rem" }
                                   : { fontSize: "1.8rem" }
                               }
                               onClick={() => moveSavedListUp(index)}
@@ -456,7 +456,7 @@ export default function ListTabs({
                               className={classes.arrow}
                               style={
                                 matches
-                                  ? { fontSize: "1.5rem" }
+                                  ? { fontSize: "1.6rem" }
                                   : { fontSize: "1.8rem" }
                               }
                               onClick={() => moveSavedListDown(index)}

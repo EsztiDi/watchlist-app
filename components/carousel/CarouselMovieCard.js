@@ -68,6 +68,7 @@ export default function CarouselMovieCard({
               variant="h6"
               onTouchStart={touch && !show ? handleShowDetails : undefined}
               data-index={index}
+              style={{ lineHeight: 1.4 }}
             >
               {movie.title ? movie.title : movie.name ? movie.name : "Untitled"}
             </Typography>

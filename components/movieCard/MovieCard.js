@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+
 import { makeStyles } from "@material-ui/core/styles";
 import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
@@ -178,90 +179,88 @@ export default function MovieCard({
   }, []);
 
   return (
-    <>
-      <Card
-        id={id}
-        className={matches ? classes.moviecardMobile : classes.moviecard}
+    <Card
+      id={id}
+      className={matches ? classes.moviecardMobile : classes.moviecard}
+    >
+      <CardMedia
+        data-image="background"
+        className={matches2 ? classes.imageMobile : classes.image}
+        image={poster}
       >
-        <CardMedia
-          data-image="background"
-          className={matches2 ? classes.imageMobile : classes.image}
-          image={poster}
+        <WatchedButton movie={movie} />
+      </CardMedia>
+      <CardContent
+        className={matches ? classes.contentMobile : classes.content}
+      >
+        <Typography
+          variant="h6"
+          className={classes.title}
+          style={
+            matches2
+              ? { fontSize: "0.9rem" }
+              : matches
+              ? { fontSize: "1.1rem" }
+              : { fontSize: "1.25rem" }
+          }
         >
-          <WatchedButton movie={movie} />
-        </CardMedia>
-        <CardContent
-          className={matches ? classes.contentMobile : classes.content}
-        >
-          <Typography
-            variant="h6"
-            className={classes.title}
-            style={
-              matches2
-                ? { fontSize: "0.9rem" }
-                : matches
-                ? { fontSize: "1.1rem" }
-                : { fontSize: "1.25rem" }
-            }
-          >
-            {number_of_episodes > 0 && (
-              <>
-                <Button
-                  size="small"
-                  variant="outlined"
-                  onClick={handleSeasonsOpen}
-                  style={{
-                    fontSize: matches2 ? "0.65rem" : "0.75rem",
-                  }}
-                >
-                  {number_of_episodes + (matches2 ? " ep" : " episodes")}
-                </Button>
-                <Seasons
-                  open={seasonsOpen}
-                  onClose={handleSeasonsOpen}
-                  seasons={seasons}
-                  lastSeason={season_number}
-                  movieID={id}
-                />
-              </>
-            )}
-            {newEpisode && (
-              <Typography
-                variant="caption"
-                component="div"
-                className={classes.new}
+          {number_of_episodes > 0 && (
+            <>
+              <Button
+                size="small"
+                variant="outlined"
+                onClick={handleSeasonsOpen}
                 style={{
-                  fontSize: matches2 ? "0.6rem" : "0.7rem",
+                  fontSize: matches2 ? "0.65rem" : "0.75rem",
                 }}
               >
-                New
-              </Typography>
-            )}
-            <span>{title || "Untitled"}</span>
-            {(!matches2 || !deleteMovie) && (
-              <AddButton
-                movie={movie}
-                updating={updating}
-                setMessage={setMessage}
+                {number_of_episodes + (matches2 ? " ep" : " episodes")}
+              </Button>
+              <Seasons
+                open={seasonsOpen}
+                onClose={handleSeasonsOpen}
+                seasons={seasons}
+                lastSeason={season_number}
+                movieID={id}
               />
-            )}
-          </Typography>
+            </>
+          )}
+          {newEpisode && (
+            <Typography
+              variant="caption"
+              component="div"
+              className={classes.new}
+              style={{
+                fontSize: matches2 ? "0.6rem" : "0.7rem",
+              }}
+            >
+              New
+            </Typography>
+          )}
+          <span>{title || "Untitled"}</span>
+          {(!matches2 || !deleteMovie) && (
+            <AddButton
+              movie={movie}
+              updating={updating}
+              setMessage={setMessage}
+            />
+          )}
+        </Typography>
 
-          <MovieInfo movie={movie} listID={listID} loc={loc} user={user} />
-          <Overview overview={overview} movieCard={true} />
-        </CardContent>
-        {deleteMovie && (
-          <Buttons
-            movie={movie}
-            index={index}
-            moviesLength={moviesLength}
-            deleteMovie={deleteMovie}
-            moveMovie={moveMovie}
-            updating={updating}
-            setMessage={setMessage}
-          />
-        )}
-      </Card>
-    </>
+        <MovieInfo movie={movie} listID={listID} loc={loc} user={user} />
+        <Overview overview={overview} movieCard={true} />
+      </CardContent>
+      {deleteMovie && (
+        <Buttons
+          movie={movie}
+          index={index}
+          moviesLength={moviesLength}
+          deleteMovie={deleteMovie}
+          moveMovie={moveMovie}
+          updating={updating}
+          setMessage={setMessage}
+        />
+      )}
+    </Card>
   );
 }

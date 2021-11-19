@@ -12,6 +12,7 @@ import PlaylistAddRoundedIcon from "@material-ui/icons/PlaylistAddRounded";
 
 import Overview from "../movieCard/Overview";
 import ListsMenu from "./ListsMenu";
+import JustWatchLink from "../movieCard/JustWatchLink";
 
 const useStyles = makeStyles((theme) => ({
   details: {
@@ -30,7 +31,7 @@ const useStyles = makeStyles((theme) => ({
     paddingTop: theme.spacing(1.5),
     color: "#fff",
     "& > :nth-child(2)": {
-      marginTop: theme.spacing(0.5),
+      marginTop: theme.spacing(0.75),
       marginBottom: theme.spacing(1),
     },
     "& > details": {
@@ -68,6 +69,7 @@ const useStyles = makeStyles((theme) => ({
   external: {
     whiteSpace: "nowrap",
     fontWeight: "700",
+    lineHeight: 1.6,
     transition: "color 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms",
     "&:hover": {
       color: theme.palette.primary.light,
@@ -154,6 +156,11 @@ export default function MovieDetails({
       })
     : "No release date";
 
+  var justWatch =
+    release_date === "No release date"
+      ? true
+      : release_date && new Date(release_date) < new Date();
+
   // For ListsMenu
   const [menuOpen, setMenuOpen] = useState(false);
   const anchorRef = useRef(null);
@@ -192,7 +199,9 @@ export default function MovieDetails({
       style={!show ? { zIndex: "-99", opacity: 0 } : undefined}
       onMouseLeave={handleMouse}
     >
-      <Typography variant="h6">{title}</Typography>
+      <Typography variant="h6" style={{ lineHeight: 1.4 }}>
+        {title}
+      </Typography>
       <Typography variant="subtitle1">
         {release_date}
         {media_type === "movie" && (
@@ -231,6 +240,13 @@ export default function MovieDetails({
             {" "}
             <TheatersRoundedIcon className={classes.miniIcon} /> IMDb
           </a>
+        )}
+        {justWatch && (
+          <JustWatchLink
+            locale={locale}
+            title={title}
+            classes={{ external: classes.external, miniIcon: classes.miniIcon }}
+          />
         )}
       </span>
       <Overview overview={overview} carousel={true} />

@@ -31,7 +31,7 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: "#fff",
     boxShadow: "none",
     minWidth: "45px",
-    lineHeight: 1.2,
+    lineHeight: 1.4,
     transition: "background-color 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms",
     "&:hover": {
       backgroundColor: "#f5f5f5",
@@ -112,8 +112,9 @@ export default function Cast({
         </Button>
       )}
       {visible && (
-        <>
-          <br />
+        <span
+          style={{ display: "block", textAlign: "right", marginTop: "-6px" }}
+        >
           <Button
             size="small"
             className={classes.less}
@@ -122,7 +123,7 @@ export default function Cast({
           >
             Less
           </Button>
-        </>
+        </span>
       )}
     </Typography>
   );
