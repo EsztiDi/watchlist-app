@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
 import getDetails from "../../utils/getDetails";
 
@@ -10,8 +11,8 @@ import Snackbar from "@material-ui/core/Snackbar";
 import Alert from "@material-ui/lab/Alert";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
 
-import Dropdown from "./Dropdown";
-import DropdownModal from "./DropdownModal";
+const Dropdown = dynamic(() => import("./Dropdown"));
+const DropdownModal = dynamic(() => import("./DropdownModal"));
 
 const unloadAlert = (ev) => {
   ev.preventDefault();

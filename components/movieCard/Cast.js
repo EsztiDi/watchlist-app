@@ -87,7 +87,7 @@ export default function Cast({
     <Typography
       id={`${id}-${variant}`}
       className={classes.hidden}
-      style={matches2 ? { fontSize: "0.8rem" } : { fontSize: "0.95rem" }}
+      style={matches2 ? { fontSize: "0.8rem" } : { fontSize: "0.9rem" }}
     >
       {variant === "cast" ? (
         <>

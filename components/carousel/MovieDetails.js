@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
 import { useSession } from "next-auth/client";
 import useSWR from "swr";
@@ -11,8 +12,8 @@ import Button from "@material-ui/core/Button";
 import PlaylistAddRoundedIcon from "@material-ui/icons/PlaylistAddRounded";
 
 import Overview from "../movieCard/Overview";
-import ListsMenu from "./ListsMenu";
 import JustWatchLink from "../movieCard/JustWatchLink";
+const ListsMenu = dynamic(() => import("./ListsMenu"));
 
 const useStyles = makeStyles((theme) => ({
   details: {
@@ -262,7 +263,7 @@ export default function MovieDetails({
         <PlaylistAddRoundedIcon />
         &nbsp;Add
       </Button>
-      {session && (
+      {session && menuOpen && (
         <ListsMenu
           menuOpen={menuOpen}
           anchorEl={anchorRef.current}

@@ -38,8 +38,7 @@ const useStyles = makeStyles((theme) => ({
       alignItems: "center",
       justifyContent: "space-between",
       flexWrap: "wrap",
-      columnGap: theme.spacing(2.5),
-      rowGap: theme.spacing(2.5),
+      gap: theme.spacing(2.5),
       padding: `${theme.spacing(3.5)}px ${theme.spacing(2)}px`,
       "& > button": {
         minWidth: "175px",
@@ -301,7 +300,7 @@ export default function Account({ setMessage }) {
               <Divider />
               <Grid item>
                 <Typography component="span">
-                  Delete all <b>saved</b> lists:
+                  Remove all <b>saved</b> lists:
                   <Typography variant="caption" component="p">
                     (Lists others created and you saved.)
                   </Typography>
@@ -316,7 +315,7 @@ export default function Account({ setMessage }) {
                   {deletingSavedLists ? (
                     <CircularProgress size="1.5rem" thickness={5} />
                   ) : (
-                    "Delete saved lists"
+                    "Remove saved lists"
                   )}
                 </Button>
               </Grid>

@@ -8,7 +8,7 @@ const useStyles = makeStyles((theme) => ({
     marginTop: theme.spacing(1),
     marginBottom: theme.spacing(0.5),
     "& *": {
-      fontSize: "0.95rem",
+      fontSize: "0.9rem",
     },
   },
   overviewMobile: {

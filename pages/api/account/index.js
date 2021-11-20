@@ -18,7 +18,7 @@ export default async function handler(req, res) {
           mongoose.connection.db.collection("users", async (err, users) => {
             try {
               const user = await users.findOne({
-                email: session?.user.email,
+                email: session?.user?.email,
               });
 
               if (!user) {
@@ -47,8 +47,10 @@ export default async function handler(req, res) {
         res.status(400).json({ success: false });
       }
       break;
-    case "PUT":
+    case "POST":
+      // Update profile picture
       try {
+        const email = req.body.email;
         return new Promise((resolve, reject) => {
           mongoose.connection.db.collection("users", async (err, users) => {
             try {
@@ -56,7 +58,52 @@ export default async function handler(req, res) {
               const updatedUser = await users
                 .findOneAndUpdate(
                   {
-                    email: session?.user.email,
+                    email,
+                  },
+                  { $set: { origImage: req.body.origImage } },
+                  {
+                    returnNewDocument: true,
+                  }
+                )
+                .catch((err) => console.error(err));
+
+              if (!updatedUser) {
+                console.error(
+                  `User was not found - user: ${JSON.stringify(
+                    email
+                  )} - ${JSON.stringify(err)}`
+                );
+                return res.status(400).json({ success: false });
+              }
+
+              res.status(200).json({
+                success: updatedUser.ok,
+                data: updatedUser.value,
+              });
+              resolve();
+            } catch (err) {
+              console.error(`Error updating user - ${JSON.stringify(err)}`);
+              res.status(400).json({ success: false });
+              return resolve();
+            }
+          });
+        });
+      } catch (err) {
+        console.error(`Error in users collection - ${JSON.stringify(err)}`);
+        res.status(400).json({ success: false });
+      }
+      break;
+    case "PUT":
+      try {
+        const email = session?.user?.email;
+        return new Promise((resolve, reject) => {
+          mongoose.connection.db.collection("users", async (err, users) => {
+            try {
+              // Updating user
+              const updatedUser = await users
+                .findOneAndUpdate(
+                  {
+                    email,
                   },
                   { $set: req.body },
                   {
@@ -68,7 +115,7 @@ export default async function handler(req, res) {
               if (!updatedUser) {
                 console.error(
                   `User was not found - user: ${JSON.stringify(
-                    session?.user
+                    email
                   )} - ${JSON.stringify(err)}`
                 );
                 return res.status(400).json({ success: false });
@@ -77,7 +124,7 @@ export default async function handler(req, res) {
               // Updating Watchlist user
               const updatedLists = await Watchlist.updateMany(
                 {
-                  "user.email": session?.user?.email,
+                  "user.email": email,
                 },
                 {
                   user: {
@@ -103,7 +150,7 @@ export default async function handler(req, res) {
               // Updating Savedlist user
               const updatedSavedLists = await Savedlist.updateMany(
                 {
-                  "user.email": session?.user?.email,
+                  "user.email": email,
                 },
                 {
                   user: {
@@ -129,7 +176,7 @@ export default async function handler(req, res) {
               // Updating Savedlist creator
               const updatedSavedLists2 = await Savedlist.updateMany(
                 {
-                  "creator.email": session?.user?.email,
+                  "creator.email": email,
                 },
                 {
                   creator: {
@@ -155,7 +202,7 @@ export default async function handler(req, res) {
               // Updating Releasesemail name
               const updatedEmails = await Releasesemail.updateMany(
                 {
-                  email: session?.user?.email,
+                  email,
                 },
                 {
                   name: req.body.name,

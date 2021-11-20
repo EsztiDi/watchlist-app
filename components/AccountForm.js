@@ -36,6 +36,20 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+var avatars = [
+  `${process.env.BASE_URL}/batman.png`,
+  `${process.env.BASE_URL}/harley.png`,
+  `${process.env.BASE_URL}/heisenberg.png`,
+  `${process.env.BASE_URL}/spirited.png`,
+  `${process.env.BASE_URL}/jason.png`,
+  `${process.env.BASE_URL}/chaplin.png`,
+  `${process.env.BASE_URL}/marilyn.png`,
+  `${process.env.BASE_URL}/sloth.png`,
+  `${process.env.BASE_URL}/sheep.png`,
+  `${process.env.BASE_URL}/avocado.png`,
+  `${process.env.BASE_URL}/deadpool.jpg`,
+];
+
 export default function AccountForm({
   setMessage,
   updatingForm,
@@ -50,20 +64,6 @@ export default function AccountForm({
   const { data: user, error } = useSWR(`/api/account`);
   if (error) console.error(error);
 
-  var avatars = [
-    `${process.env.BASE_URL}/batman.png`,
-    `${process.env.BASE_URL}/harley.png`,
-    `${process.env.BASE_URL}/heisenberg.png`,
-    `${process.env.BASE_URL}/spirited.png`,
-    `${process.env.BASE_URL}/jason.png`,
-    `${process.env.BASE_URL}/chaplin.png`,
-    `${process.env.BASE_URL}/marilyn.png`,
-    `${process.env.BASE_URL}/sloth.png`,
-    `${process.env.BASE_URL}/sheep.png`,
-    `${process.env.BASE_URL}/avocado.png`,
-    `${process.env.BASE_URL}/deadpool.jpg`,
-  ];
-
   const [form, setForm] = useState({
     name: "",
     email: "",
@@ -75,10 +75,10 @@ export default function AccountForm({
   useEffect(() => {
     if (user) {
       setForm({
-        name: user.name,
+        name: user.name || "",
         email: user.email,
         image: user.image ? user.image : `${process.env.BASE_URL}/deadpool.jpg`,
-        origName: user.origName ? user.origName : user.name,
+        origName: user.origName ? user.origName : user.name || "",
         origImage: user.origImage ? user.origImage : user.image,
       });
     }

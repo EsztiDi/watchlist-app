@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import dynamic from "next/dynamic";
 
 import { makeStyles } from "@material-ui/core/styles";
 import Card from "@material-ui/core/Card";
@@ -8,7 +9,7 @@ import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
 
-import Seasons from "./Seasons";
+const Seasons = dynamic(() => import("./Seasons"));
 import WatchedButton from "./buttons/WatchedButton";
 import AddButton from "./buttons/AddButton";
 import MovieInfo from "./MovieInfo";
@@ -54,8 +55,8 @@ const useStyles = makeStyles((theme) => ({
   },
   image: {
     position: "relative",
-    minWidth: "16%",
-    paddingTop: "24%",
+    minWidth: "15%",
+    paddingTop: "22.5%",
     backgroundSize: "contain",
   },
   imageMobile: {
@@ -106,6 +107,7 @@ export default function MovieCard({
     id,
     poster_path,
     title,
+    release_date,
     media_type,
     overview,
     details,
@@ -146,32 +148,36 @@ export default function MovieCard({
   }, [id, listID]);
 
   useEffect(() => {
+    // Check for unwatched episodes
     isMounted.current = true;
     const checkProps = async () => {
-      if (media_type === "tv") {
-        try {
-          const res = await fetch(`/api/lists/watched/check`, {
-            method: "POST",
-            headers: {
-              Accept: contentType,
-              "Content-Type": contentType,
-            },
-            body: JSON.stringify({
-              movieID: id,
-              season_number,
-              listID,
-            }),
-          });
+      try {
+        const res = await fetch(`/api/lists/watched/check`, {
+          method: "POST",
+          headers: {
+            Accept: contentType,
+            "Content-Type": contentType,
+          },
+          body: JSON.stringify({
+            movieID: id,
+            season_number,
+            listID,
+          }),
+        });
 
-          if (!res.ok) {
-            throw new Error(res.status);
-          }
-        } catch (error) {
-          console.error(error);
+        if (!res.ok) {
+          throw new Error(res.status);
         }
+      } catch (error) {
+        console.error(error);
       }
     };
-    checkProps();
+    var this_year = new Date().getFullYear();
+    var end_year;
+    if (release_date) {
+      end_year = new Date(release_date).getFullYear();
+    }
+    if (media_type === "tv" && end_year >= this_year) checkProps();
     return () => {
       isMounted.current = false;
     };
@@ -216,13 +222,15 @@ export default function MovieCard({
               >
                 {number_of_episodes + (matches2 ? " ep" : " episodes")}
               </Button>
-              <Seasons
-                open={seasonsOpen}
-                onClose={handleSeasonsOpen}
-                seasons={seasons}
-                lastSeason={season_number}
-                movieID={id}
-              />
+              {seasonsOpen && (
+                <Seasons
+                  open={seasonsOpen}
+                  onClose={handleSeasonsOpen}
+                  seasons={seasons}
+                  lastSeason={season_number}
+                  movieID={id}
+                />
+              )}
             </>
           )}
           {newEpisode && (

@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import dynamic from "next/dynamic";
+import { mutate } from "swr";
 import {
   EmailShareButton,
   FacebookShareButton,
@@ -15,8 +15,8 @@ import {
   WhatsappIcon,
 } from "react-share";
 
-const Modal = dynamic(() => import("@material-ui/core/Modal"));
 import { makeStyles } from "@material-ui/core/styles";
+import Modal from "@material-ui/core/Modal";
 import Typography from "@material-ui/core/Typography";
 import Backdrop from "@material-ui/core/Backdrop";
 import Fade from "@material-ui/core/Fade";
@@ -78,8 +78,9 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function Share({ listID, uid, title, open, onClose }) {
+export default function Share({ listID, uid, auth, title, open, onClose }) {
   const classes = useStyles();
+  const touch = useMediaQuery("(hover: none)");
 
   const iconSize = 48;
   const textVariant = "caption";
@@ -88,7 +89,7 @@ export default function Share({ listID, uid, title, open, onClose }) {
   const [shareLink, setShareLink] = useState("");
   const [editable, setEditable] = useState("false");
   const [copied, setCopied] = useState(false);
-  const touch = useMediaQuery("(hover: none)");
+  const [updating, setUpdating] = useState(false);
 
   useEffect(() => {
     setShareLink(`${window.location.origin}/list/${listID}`);
@@ -99,12 +100,46 @@ export default function Share({ listID, uid, title, open, onClose }) {
     setCopied(false);
   }, [editable]);
 
+  const contentType = "application/json";
+  const updateShared = async (value) => {
+    try {
+      const res = await fetch(`/api/lists/${listID}`, {
+        method: "PUT",
+        headers: {
+          Accept: contentType,
+          "Content-Type": contentType,
+        },
+        body: JSON.stringify({ shared: value }),
+      });
+
+      if (!res.ok) {
+        throw new Error(res.status);
+      }
+
+      mutate(`/api/lists/shared/${listID}`);
+      setUpdating(false);
+    } catch (error) {
+      console.error(error);
+      setUpdating(false);
+    }
+  };
+
   const handleEditableChange = (ev) => {
     setEditable(ev.target.value);
 
-    ev.target.value === "true"
-      ? setShareLink(editableUrl)
-      : setShareLink(shareUrl);
+    if (ev.target.value === "true") {
+      setShareLink(editableUrl);
+      if (auth) {
+        setUpdating(true);
+        updateShared(true);
+      }
+    } else {
+      setShareLink(shareUrl);
+      // if (auth) {
+      //   setUpdating(true);
+      //   updateShared(false);
+      // }
+    }
   };
 
   const copyLink = () => {
@@ -197,13 +232,14 @@ export default function Share({ listID, uid, title, open, onClose }) {
                 control={<Radio color="primary" />}
                 label="Read-only"
                 labelPlacement="start"
+                disabled={updating}
               />
               <FormControlLabel
                 value="true"
                 control={<Radio color="secondary" />}
                 label="Editable"
                 labelPlacement="start"
-                disabled={/^Watched$/i.test(title) || !uid}
+                disabled={/^Watched$/i.test(title) || !uid || updating}
               />
             </RadioGroup>
           </FormControl>

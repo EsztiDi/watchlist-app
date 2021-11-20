@@ -27,14 +27,17 @@ export default function Movies({
   const classes = useStyles();
   var title, user;
 
+  const { data: shared, error: error2 } = useSWR(
+    listID ? `/api/lists/shared/${listID}` : null
+  );
   const { data: list, error } = useSWR(listID ? `/api/lists/${listID}` : null, {
-    refreshInterval: 2000,
+    refreshInterval: shared ? 2000 : 0,
   });
   if (error) console.error(error);
+  if (error2) console.error(error2);
   if (list) {
     ({ movies, title, user } = list);
   }
-
   return !movies ? (
     <CircularProgress size="3rem" thickness={3} />
   ) : (

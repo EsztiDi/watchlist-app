@@ -937,8 +937,8 @@ export default function weeklyHTML(lists) {
                         >&#x2197;</span></a>
                       </h3>
                       ${
-                        list.creator && (
-                          <p
+                        list.creator
+                          ? `<p
                             style="
                         color: #000;
                         direction: ltr;
@@ -951,15 +951,15 @@ export default function weeklyHTML(lists) {
                         letter-spacing: normal;
                         line-height: 150%;
                         text-align: center;
-                        text-indent: -17px;
+                        margin-left: -15px;
                         font-style: italic;
                         margin-top: 0;
                         margin-bottom: 0;
                       "
                           >
-                            By ${list.creator}
-                          </p>
-                        )
+                            by ${list.creator}
+                          </p>`
+                          : ""
                       }
                     </td>
                   </tr>

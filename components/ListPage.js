@@ -106,8 +106,11 @@ export default function ListPage({
   const [backdrop, setBackdrop] = useState("");
   const [alert, setAlert] = useState("");
 
+  const { data: shared, error: error3 } = useSWR(
+    id[0] ? `/api/lists/shared/${id[0]}` : null
+  );
   const { data: list, error } = useSWR(id[0] ? `/api/lists/${id[0]}` : null, {
-    refreshInterval: 2000,
+    refreshInterval: shared ? 2000 : 0,
     initialData: initialList, // For og metatags
   });
   const { data: savedLists, error: error2 } = useSWR(
@@ -115,6 +118,7 @@ export default function ListPage({
   );
   if (error) console.error(error);
   if (error2) console.error(error2);
+  if (error3) console.error(error3);
 
   const auth = session && list?.user?.email === session?.user?.email;
   const saved = savedLists?.map((list) => list.listid)?.includes(id[0]);

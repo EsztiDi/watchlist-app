@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
 import { useSession } from "next-auth/client";
 import useSWR from "swr";
@@ -7,7 +8,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import IconButton from "@material-ui/core/IconButton";
 import PlaylistAddRoundedIcon from "@material-ui/icons/PlaylistAddRounded";
 
-import ListsMenu from "../../carousel/ListsMenu";
+const ListsMenu = dynamic(() => import("../../carousel/ListsMenu"));
 
 const useStyles = makeStyles((theme) => ({
   button: {
@@ -79,7 +80,7 @@ export default function AddButton({ movie, updating, setMessage }) {
       >
         <PlaylistAddRoundedIcon className={classes.icon} />
       </IconButton>
-      {session && (
+      {session && menuOpen && (
         <ListsMenu
           menuOpen={menuOpen}
           anchorEl={anchorRef.current}

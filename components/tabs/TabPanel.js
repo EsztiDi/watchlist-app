@@ -21,8 +21,8 @@ import Collapse from "@material-ui/core/Collapse";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
 
 import AddMovieButton from "./AddMovieButton";
-import Share from "./Share";
-import DeleteDialog from "./DeleteDialog";
+const DeleteDialog = dynamic(() => import("./DeleteDialog"));
+const Share = dynamic(() => import("./Share"));
 const MovieSearch = dynamic(() => import("../movieSearch/MovieSearch"));
 const Calendar = dynamic(() => import("../calendar/Calendar"));
 const Movies = dynamic(() => import("../Movies"));
@@ -243,104 +243,15 @@ export default function TabPanel(props) {
         aria-labelledby={!newTab ? `tab-${listID}` : null}
         {...other}
       >
-        <div className={matches ? classes.buttonsMobile : classes.buttons}>
-          {!newTab && (
-            <>
-              {!matches ? (
-                calendar ? (
-                  <Link
-                    href={`/lists/${listID}${ids.length > 1 ? `/${uid}` : ""}`}
-                    replace
-                    passHref
-                  >
-                    <IconButton
-                      aria-label="list view"
-                      title="List view"
-                      className={classes.button}
-                    >
-                      <FormatListBulletedRoundedIcon
-                        className={classes.topIcon}
-                      />
-                    </IconButton>
-                  </Link>
-                ) : (
-                  <Link
-                    href={`/lists/calendar/${listID}${
-                      ids.length > 1 ? `/${uid}` : ""
-                    }`}
-                    replace
-                    passHref
-                  >
-                    <IconButton
-                      id="calendar"
-                      aria-label="calendar view"
-                      title="Calendar view"
-                      className={classes.button}
-                    >
-                      <TodayRoundedIcon className={classes.topIcon} />
-                    </IconButton>
-                  </Link>
-                )
-              ) : (
-                ""
-              )}
-              {!matches && editable && !calendar && (
-                <AddMovieButton
-                  openSearch={openSearch}
-                  handleOpenSearch={handleOpenSearch}
-                />
-              )}
-              {auth && (
-                <span className={matches2 ? classes.label : undefined}>
-                  <FormControlLabel
-                    id="private"
-                    label={
-                      <>
-                        <span>Private</span>
-                        <Tooltip
-                          arrow
-                          enterDelay={400}
-                          enterNextDelay={400}
-                          enterTouchDelay={50}
-                          leaveTouchDelay={5000}
-                          classes={{
-                            tooltip: classes.tooltipPadding,
-                          }}
-                          title={
-                            <p className={classes.tooltip}>
-                              Private lists are NOT featured on the{" "}
-                              <em>Discover</em> page but can still be shared by
-                              you
-                            </p>
-                          }
-                        >
-                          <HelpOutlineRoundedIcon
-                            onClick={(ev) => {
-                              ev.preventDefault();
-                            }}
-                            className={classes.miniIcon}
-                          />
-                        </Tooltip>
-                      </>
-                    }
-                    labelPlacement={!matches2 ? "start" : "end"}
-                    control={
-                      <Switch
-                        color="primary"
-                        name="private"
-                        checked={privateList}
-                        onChange={onChange}
-                      />
-                    }
-                  />
-                </span>
-              )}
+        {matches && !newTab && (
+          <div className={classes.buttonsMobile}>
+            {auth && (
               <span className={matches2 ? classes.label : undefined}>
                 <FormControlLabel
-                  id="emails"
+                  id="private"
                   label={
                     <>
-                      <span>Emails</span>
+                      <span>Private</span>
                       <Tooltip
                         arrow
                         enterDelay={400}
@@ -352,8 +263,9 @@ export default function TabPanel(props) {
                         }}
                         title={
                           <p className={classes.tooltip}>
-                            Include this list in the weekly releases summary
-                            email on Thursdays
+                            Private lists are NOT featured on the{" "}
+                            <em>Discover</em> page but can still be shared by
+                            you
                           </p>
                         }
                       >
@@ -370,123 +282,325 @@ export default function TabPanel(props) {
                   control={
                     <Switch
                       color="primary"
-                      name="emails"
-                      checked={emails}
+                      name="private"
+                      checked={privateList}
                       onChange={onChange}
                     />
                   }
                 />
               </span>
-              <span
-                className={classes.subButtons}
-                style={matches ? { flexGrow: 1 } : undefined}
-              >
-                {matches && (
+            )}
+            <span className={matches2 ? classes.label : undefined}>
+              <FormControlLabel
+                id="emails"
+                label={
                   <>
-                    <IconButton
-                      aria-label="delete watchlist"
-                      title={auth ? "Delete" : "Remove"}
-                      disabled={updating}
-                      onClick={handleOpenDelete}
-                      className={classes.button}
+                    <span>Emails</span>
+                    <Tooltip
+                      arrow
+                      enterDelay={400}
+                      enterNextDelay={400}
+                      enterTouchDelay={50}
+                      leaveTouchDelay={5000}
+                      classes={{
+                        tooltip: classes.tooltipPadding,
+                      }}
+                      title={
+                        <p className={classes.tooltip}>
+                          Include this list in the weekly releases summary email
+                          on Thursdays
+                        </p>
+                      }
                     >
-                      <HighlightOffRoundedIcon className={classes.delete} />
-                    </IconButton>
-                    {calendar ? (
-                      <Link
-                        href={`/lists/${listID}${
-                          ids.length > 1 ? `/${uid}` : ""
-                        }`}
-                        replace
-                        passHref
-                      >
-                        <IconButton
-                          aria-label="list view"
-                          title="List view"
-                          className={classes.button}
-                        >
-                          <FormatListBulletedRoundedIcon
-                            className={classes.topIcon}
-                          />
-                        </IconButton>
-                      </Link>
-                    ) : (
-                      <Link
-                        href={`/lists/calendar/${listID}${
-                          ids.length > 1 ? `/${uid}` : ""
-                        }`}
-                        replace
-                        passHref
-                      >
-                        <IconButton
-                          id="calendar"
-                          aria-label="calendar view"
-                          title="Calendar view"
-                          className={classes.button}
-                        >
-                          <TodayRoundedIcon className={classes.topIcon} />
-                        </IconButton>
-                      </Link>
-                    )}
+                      <HelpOutlineRoundedIcon
+                        onClick={(ev) => {
+                          ev.preventDefault();
+                        }}
+                        className={classes.miniIcon}
+                      />
+                    </Tooltip>
                   </>
-                )}
+                }
+                labelPlacement={!matches2 ? "start" : "end"}
+                control={
+                  <Switch
+                    color="primary"
+                    name="emails"
+                    checked={emails}
+                    onChange={onChange}
+                  />
+                }
+              />
+            </span>
+            <span className={classes.subButtons} style={{ flexGrow: 1 }}>
+              <IconButton
+                aria-label="delete watchlist"
+                title={auth ? "Delete" : "Remove"}
+                disabled={updating}
+                onClick={handleOpenDelete}
+                className={classes.button}
+              >
+                <HighlightOffRoundedIcon className={classes.delete} />
+              </IconButton>
+              <Link
+                href={
+                  calendar
+                    ? `/list/calendar/${listID}${
+                        ids.length > 1 ? `/${uid}` : ""
+                      }`
+                    : `/list/${listID}${ids.length > 1 ? `/${uid}` : ""}`
+                }
+                passHref
+              >
                 <IconButton
-                  id="share"
-                  aria-label="share watchlist"
-                  title="Share"
-                  component="span"
-                  onClick={handleOpenShare}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="open in new tab"
+                  title="Open in new tab"
                   className={classes.button}
-                  disabled={openShare}
                 >
-                  <ShareRoundedIcon className={classes.topIcon} />
+                  <OpenInNewRoundedIcon className={classes.topIcon} />
                 </IconButton>
-                <Share
-                  listID={listID}
-                  uid={editable || auth ? uid : ""}
-                  title={title}
-                  open={openShare}
-                  onClose={handleOpenShare}
-                />
+              </Link>
+              <IconButton
+                id="share"
+                aria-label="share watchlist"
+                title="Share"
+                component="span"
+                onClick={handleOpenShare}
+                className={classes.button}
+                disabled={openShare}
+              >
+                <ShareRoundedIcon className={classes.topIcon} />
+              </IconButton>
+              {calendar ? (
                 <Link
-                  href={
-                    calendar
-                      ? `/list/calendar/${listID}${
-                          ids.length > 1 ? `/${uid}` : ""
-                        }`
-                      : `/list/${listID}${ids.length > 1 ? `/${uid}` : ""}`
-                  }
+                  href={`/lists/${listID}${ids.length > 1 ? `/${uid}` : ""}`}
+                  replace
                   passHref
                 >
                   <IconButton
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    aria-label="open in new tab"
-                    title="Open in new tab"
+                    aria-label="list view"
+                    title="List view"
                     className={classes.button}
                   >
-                    <OpenInNewRoundedIcon className={classes.topIcon} />
+                    <FormatListBulletedRoundedIcon
+                      className={classes.topIcon}
+                    />
                   </IconButton>
                 </Link>
-                {matches && editable && !calendar && (
-                  <AddMovieButton
-                    listID={listID}
-                    openSearch={openSearch}
-                    handleOpenSearch={handleOpenSearch}
-                  />
-                )}
-                {!matches && (
+              ) : (
+                <Link
+                  href={`/lists/calendar/${listID}${
+                    ids.length > 1 ? `/${uid}` : ""
+                  }`}
+                  replace
+                  passHref
+                >
                   <IconButton
-                    aria-label="delete watchlist"
-                    title={auth ? "Delete" : "Remove"}
-                    disabled={updating}
-                    onClick={handleOpenDelete}
+                    id="calendar"
+                    aria-label="calendar view"
+                    title="Calendar view"
                     className={classes.button}
                   >
-                    <HighlightOffRoundedIcon className={classes.delete} />
+                    <TodayRoundedIcon className={classes.topIcon} />
                   </IconButton>
-                )}
+                </Link>
+              )}
+              {editable && !calendar && (
+                <AddMovieButton
+                  listID={listID}
+                  openSearch={openSearch}
+                  handleOpenSearch={handleOpenSearch}
+                />
+              )}
+            </span>
+          </div>
+        )}
+        {!matches && !newTab && (
+          <div className={classes.buttons}>
+            {calendar ? (
+              <Link
+                href={`/lists/${listID}${ids.length > 1 ? `/${uid}` : ""}`}
+                replace
+                passHref
+              >
+                <IconButton
+                  aria-label="list view"
+                  title="List view"
+                  className={classes.button}
+                >
+                  <FormatListBulletedRoundedIcon className={classes.topIcon} />
+                </IconButton>
+              </Link>
+            ) : (
+              <Link
+                href={`/lists/calendar/${listID}${
+                  ids.length > 1 ? `/${uid}` : ""
+                }`}
+                replace
+                passHref
+              >
+                <IconButton
+                  id="calendar"
+                  aria-label="calendar view"
+                  title="Calendar view"
+                  className={classes.button}
+                >
+                  <TodayRoundedIcon className={classes.topIcon} />
+                </IconButton>
+              </Link>
+            )}
+            {editable && !calendar && (
+              <AddMovieButton
+                openSearch={openSearch}
+                handleOpenSearch={handleOpenSearch}
+              />
+            )}
+            {auth && (
+              <span className={matches2 ? classes.label : undefined}>
+                <FormControlLabel
+                  id="private"
+                  label={
+                    <>
+                      <span>Private</span>
+                      <Tooltip
+                        arrow
+                        enterDelay={400}
+                        enterNextDelay={400}
+                        enterTouchDelay={50}
+                        leaveTouchDelay={5000}
+                        classes={{
+                          tooltip: classes.tooltipPadding,
+                        }}
+                        title={
+                          <p className={classes.tooltip}>
+                            Private lists are NOT featured on the{" "}
+                            <em>Discover</em> page but can still be shared by
+                            you
+                          </p>
+                        }
+                      >
+                        <HelpOutlineRoundedIcon
+                          onClick={(ev) => {
+                            ev.preventDefault();
+                          }}
+                          className={classes.miniIcon}
+                        />
+                      </Tooltip>
+                    </>
+                  }
+                  labelPlacement={!matches2 ? "start" : "end"}
+                  control={
+                    <Switch
+                      color="primary"
+                      name="private"
+                      checked={privateList}
+                      onChange={onChange}
+                    />
+                  }
+                />
               </span>
+            )}
+            <span className={matches2 ? classes.label : undefined}>
+              <FormControlLabel
+                id="emails"
+                label={
+                  <>
+                    <span>Emails</span>
+                    <Tooltip
+                      arrow
+                      enterDelay={400}
+                      enterNextDelay={400}
+                      enterTouchDelay={50}
+                      leaveTouchDelay={5000}
+                      classes={{
+                        tooltip: classes.tooltipPadding,
+                      }}
+                      title={
+                        <p className={classes.tooltip}>
+                          Include this list in the weekly releases summary email
+                          on Thursdays
+                        </p>
+                      }
+                    >
+                      <HelpOutlineRoundedIcon
+                        onClick={(ev) => {
+                          ev.preventDefault();
+                        }}
+                        className={classes.miniIcon}
+                      />
+                    </Tooltip>
+                  </>
+                }
+                labelPlacement={!matches2 ? "start" : "end"}
+                control={
+                  <Switch
+                    color="primary"
+                    name="emails"
+                    checked={emails}
+                    onChange={onChange}
+                  />
+                }
+              />
+            </span>
+            <span className={classes.subButtons}>
+              <IconButton
+                id="share"
+                aria-label="share watchlist"
+                title="Share"
+                component="span"
+                onClick={handleOpenShare}
+                className={classes.button}
+                disabled={openShare}
+              >
+                <ShareRoundedIcon className={classes.topIcon} />
+              </IconButton>
+              <Link
+                href={
+                  calendar
+                    ? `/list/calendar/${listID}${
+                        ids.length > 1 ? `/${uid}` : ""
+                      }`
+                    : `/list/${listID}${ids.length > 1 ? `/${uid}` : ""}`
+                }
+                passHref
+              >
+                <IconButton
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="open in new tab"
+                  title="Open in new tab"
+                  className={classes.button}
+                >
+                  <OpenInNewRoundedIcon className={classes.topIcon} />
+                </IconButton>
+              </Link>
+              <IconButton
+                aria-label="delete watchlist"
+                title={auth ? "Delete" : "Remove"}
+                disabled={updating}
+                onClick={handleOpenDelete}
+                className={classes.button}
+              >
+                <HighlightOffRoundedIcon className={classes.delete} />
+              </IconButton>
+            </span>
+          </div>
+        )}
+        {!newTab && (
+          <>
+            {openShare && (
+              <Share
+                listID={listID}
+                uid={editable || auth ? uid : ""}
+                auth={auth}
+                title={title}
+                open={openShare}
+                onClose={handleOpenShare}
+              />
+            )}
+            {openDelete && (
               <DeleteDialog
                 open={openDelete}
                 listID={listID}
@@ -496,9 +610,9 @@ export default function TabPanel(props) {
                 updating={updating}
                 setUpdating={setUpdating}
               />
-            </>
-          )}
-        </div>
+            )}
+          </>
+        )}
         {editable && !calendar && (
           <Collapse in={openSearch || openSearch2}>
             <div className={matches2 ? classes.searchMobile : classes.search}>

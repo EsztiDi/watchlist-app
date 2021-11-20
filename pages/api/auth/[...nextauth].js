@@ -68,6 +68,41 @@ export default NextAuth({
     }),
   ],
 
+  callbacks: {
+    // Update profile picture on login
+    async signIn(user, account, profile) {
+      if (
+        user?.email &&
+        (profile?.picture || // Google
+          profile?.profile_pic?.data || // Facebook
+          profile?.profile_image_url_https || // Twitter
+          profile?.avatar_url) // GitHub
+      ) {
+        try {
+          await fetch(`${process.env.BASE_URL}/api/account`, {
+            method: "POST",
+            headers: {
+              Accept: "application/json",
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              email: user.email,
+              origImage:
+                profile?.picture?.data?.url ||
+                profile?.picture ||
+                profile?.profile_pic?.data?.url ||
+                profile?.profile_image_url_https ||
+                profile?.avatar_url,
+            }),
+          });
+        } catch (error) {
+          console.error(`${error.message} - Failed to update user image`);
+        }
+      }
+      return true;
+    },
+  },
+
   pages: {
     signIn: "/login",
   },

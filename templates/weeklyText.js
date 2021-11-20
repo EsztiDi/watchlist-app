@@ -17,7 +17,9 @@ export default function weeklyText(lists) {
 
   var middle = ``;
   for (const list of lists) {
-    var movies = `\n${list.title}\n\n`;
+    var movies = `\n${list.title}${
+      list.creator ? `\nby ${list.creator}` : ""
+    }\n\n`;
 
     for (const movie of list.movies) {
       movies += `${movie.title}\n${

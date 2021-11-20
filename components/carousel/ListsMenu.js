@@ -1,11 +1,10 @@
 import { useState, useEffect, useRef } from "react";
-import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
 import { useSession } from "next-auth/client";
 import useSWR, { mutate } from "swr";
 
-const Popper = dynamic(() => import("@material-ui/core/Popper"));
 import { makeStyles } from "@material-ui/core/styles";
+import Popper from "@material-ui/core/Popper";
 import ClickAwayListener from "@material-ui/core/ClickAwayListener";
 import Grow from "@material-ui/core/Grow";
 import Paper from "@material-ui/core/Paper";
