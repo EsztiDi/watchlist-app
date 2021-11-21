@@ -45,16 +45,14 @@ export default function EditTitle({
 
   const handleSubmit = (ev) => {
     ev.preventDefault();
-    setUpdating(true);
 
     if (newTitle.title !== title) {
+      setUpdating(true);
       putData(newTitle).then(() => {
         closeEditTitle();
-        setUpdating(false);
       });
     } else {
       closeEditTitle();
-      setUpdating(false);
     }
   };
 

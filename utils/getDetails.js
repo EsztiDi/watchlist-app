@@ -20,7 +20,7 @@ var getCreators = (obj) =>
   obj?.created_by?.map((member) => {
     return { name: member.name };
   });
-var getEpisodes = (obj, seasons) =>
+var getEpisodes = (obj, seasons, watched) =>
   obj?.episodes?.map((ep) => {
     let episode = seasons
       ?.filter((season) => season.season_number === ep.season_number)[0]
@@ -34,14 +34,14 @@ var getEpisodes = (obj, seasons) =>
       overview: ep.overview,
       still_path: ep.still_path,
       season_number: ep.season_number,
-      watched: episode?.watched || "false",
+      watched: episode?.watched || watched || "false",
     };
   });
 var getSeasonWatched = (arr, num) => {
   return arr?.filter((season) => season.season_number === num)[0]?.watched;
 };
 
-export default async function getDetails(movie) {
+export default async function getDetails(movie, watched) {
   var { release_date, locale } = await getLocalDate(
     movie,
     movie.locale ? movie.locale : null
@@ -67,7 +67,7 @@ export default async function getDetails(movie) {
           ? {
               ...movie,
               locale: locale,
-              watched: movie.watched || "false",
+              watched: movie.watched || watched || "false",
               poster_path: data?.poster_path,
               backdrop_path: data?.backdrop_path,
               title: data?.name,
@@ -98,7 +98,7 @@ export default async function getDetails(movie) {
           : {
               ...movie,
               locale: locale,
-              watched: movie.watched || "false",
+              watched: movie.watched || watched || "false",
               poster_path: data?.poster_path,
               backdrop_path: data?.backdrop_path,
               title: data?.title,
@@ -128,10 +128,11 @@ export default async function getDetails(movie) {
             .then((res) => res.json())
             .then((data) => {
               seasons.push({
-                episodes: getEpisodes(data, movie.seasons) || [],
+                episodes: getEpisodes(data, movie.seasons, watched) || [],
                 season_number: data?.season_number,
                 watched:
                   getSeasonWatched(movie.seasons, data?.season_number) ||
+                  watched ||
                   "false",
               });
             })

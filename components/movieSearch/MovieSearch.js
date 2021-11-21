@@ -21,10 +21,10 @@ const unloadAlert = (ev) => {
 
 export default function MovieSearch({
   addMovie,
-  addingMovie,
   newList,
   setUpdating,
   listID,
+  watched,
 }) {
   const [loading, setLoading] = useState(false);
   const [query, setQuery] = useState("");
@@ -157,12 +157,15 @@ export default function MovieSearch({
     if (newList) setUpdating(true);
 
     try {
-      var newMovie = await getDetails({
-        id: movie.id,
-        media_type: movie.media_type,
-      });
+      var newMovie = await getDetails(
+        {
+          id: movie.id,
+          media_type: movie.media_type,
+        },
+        watched
+      );
 
-      addMovie(newMovie);
+      await addMovie(newMovie);
       setLoading(false);
       if (newList) setUpdating(false);
     } catch (err) {
@@ -236,8 +239,8 @@ export default function MovieSearch({
         InputProps={{
           endAdornment: (
             <InputAdornment position="end">
-              <Button onClick={handleSearch} disabled={loading || addingMovie}>
-                {loading || addingMovie ? (
+              <Button onClick={handleSearch} disabled={loading}>
+                {loading ? (
                   <CircularProgress size="1.5rem" thickness={5} />
                 ) : (
                   "Search"

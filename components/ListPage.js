@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import Head from "next/head";
 import Image from "next/image";
-import Link from "next/link";
 import { useRouter } from "next/router";
 import { useSession } from "next-auth/client";
 import useSWR, { mutate } from "swr";
@@ -16,12 +15,11 @@ import StarBorderRoundedIcon from "@material-ui/icons/StarBorderRounded";
 import StarRoundedIcon from "@material-ui/icons/StarRounded";
 import Snackbar from "@material-ui/core/Snackbar";
 import Alert from "@material-ui/lab/Alert";
-import FormatListBulletedRoundedIcon from "@material-ui/icons/FormatListBulletedRounded";
-import TodayRoundedIcon from "@material-ui/icons/TodayRounded";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
 
 import Form from "./Form";
-import AddMovieButton from "./tabs/AddMovieButton";
+import AddMovieButton from "./tabs/buttons/AddMovieButton";
+import ViewButton from "./tabs/buttons/ViewButton";
 
 const useStyles = makeStyles((theme) => ({
   containerMobile: {
@@ -330,39 +328,28 @@ export default function ListPage({
                     />
                   )}
                   {calendar ? (
-                    <Link
-                      href={
-                        editable ? `/list/${id[0]}/${uid}` : `/list/${id[0]}`
-                      }
-                      passHref
-                    >
-                      <IconButton
-                        aria-label="list view"
-                        title="List view"
-                        className={classes.button}
-                      >
-                        <FormatListBulletedRoundedIcon
-                          className={classes.topIcon}
-                        />
-                      </IconButton>
-                    </Link>
+                    <ViewButton
+                      newTab={true}
+                      listID={id[0]}
+                      editable={editable}
+                      uid={uid}
+                      classes={{
+                        button: classes.button,
+                        topIcon: classes.topIcon,
+                      }}
+                    />
                   ) : (
-                    <Link
-                      href={
-                        editable
-                          ? `/list/calendar/${id[0]}/${uid}`
-                          : `/list/calendar/${id[0]}`
-                      }
-                      passHref
-                    >
-                      <IconButton
-                        aria-label="calendar view"
-                        title="Calendar view"
-                        className={classes.button}
-                      >
-                        <TodayRoundedIcon className={classes.topIcon} />
-                      </IconButton>
-                    </Link>
+                    <ViewButton
+                      newTab={true}
+                      calendar={true}
+                      listID={id[0]}
+                      editable={editable}
+                      uid={uid}
+                      classes={{
+                        button: classes.button,
+                        topIcon: classes.topIcon,
+                      }}
+                    />
                   )}
                 </div>
               </Typography>

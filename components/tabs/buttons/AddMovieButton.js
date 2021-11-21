@@ -40,7 +40,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function AddMovie({ openSearch, handleOpenSearch }) {
+export default function AddMovieButton({ openSearch, handleOpenSearch }) {
   const classes = useStyles();
 
   return (

@@ -1,26 +1,20 @@
 import { useState, useEffect } from "react";
 import dynamic from "next/dynamic";
-import Link from "next/link";
 import { useRouter } from "next/router";
 import { useSession } from "next-auth/client";
 import useSWR from "swr";
 
 import { makeStyles } from "@material-ui/core/styles";
 import Box from "@material-ui/core/Box";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
-import Switch from "@material-ui/core/Switch";
-import Tooltip from "@material-ui/core/Tooltip";
-import HelpOutlineRoundedIcon from "@material-ui/icons/HelpOutlineRounded";
-import IconButton from "@material-ui/core/IconButton";
-import FormatListBulletedRoundedIcon from "@material-ui/icons/FormatListBulletedRounded";
-import TodayRoundedIcon from "@material-ui/icons/TodayRounded";
-import ShareRoundedIcon from "@material-ui/icons/ShareRounded";
-import OpenInNewRoundedIcon from "@material-ui/icons/OpenInNewRounded";
-import HighlightOffRoundedIcon from "@material-ui/icons/HighlightOffRounded";
 import Collapse from "@material-ui/core/Collapse";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
 
-import AddMovieButton from "./AddMovieButton";
+import AddMovieButton from "./buttons/AddMovieButton";
+import Toggle from "./buttons/Toggle";
+import DeleteButton from "./buttons/DeleteButton";
+import ViewButton from "./buttons/ViewButton";
+import NewTabButton from "./buttons/NewTabButton";
+import ShareButton from "./buttons/ShareButton";
 const DeleteDialog = dynamic(() => import("./DeleteDialog"));
 const Share = dynamic(() => import("./Share"));
 const MovieSearch = dynamic(() => import("../movieSearch/MovieSearch"));
@@ -85,28 +79,6 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: "space-around",
     columnGap: theme.spacing(1),
   },
-  tooltip: {
-    fontSize: "0.85rem",
-    textAlign: "center",
-    lineHeight: 1.3,
-    margin: theme.spacing(0.6),
-  },
-  tooltipPadding: {
-    padding: `${theme.spacing(0.5)}px ${theme.spacing(1)}px`,
-    margin: `${theme.spacing(2.5)}px 0 ${theme.spacing(1)}px`,
-  },
-  miniIcon: {
-    fontSize: "1rem!important",
-    color: theme.palette.text.hint,
-    marginLeft: theme.spacing(0.25),
-  },
-  label: {
-    width: "48%",
-    whiteSpace: "nowrap",
-    "& *": {
-      fontSize: "0.95rem",
-    },
-  },
   button: {
     padding: theme.spacing(0.5),
   },
@@ -116,14 +88,6 @@ const useStyles = makeStyles((theme) => ({
     transition: "color 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms",
     "&:hover": {
       color: theme.palette.primary.main,
-    },
-  },
-  delete: {
-    fontSize: "1.7rem",
-    color: theme.palette.secondary.light,
-    transition: "color 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms",
-    "&:hover": {
-      color: theme.palette.secondary.main,
     },
   },
   search: {
@@ -148,7 +112,6 @@ export default function TabPanel(props) {
     addMovie,
     deleteMovie,
     moveMovie,
-    addingMovie,
     calendar,
     emails,
     openSearch2,
@@ -246,166 +209,47 @@ export default function TabPanel(props) {
         {matches && !newTab && (
           <div className={classes.buttonsMobile}>
             {auth && (
-              <span className={matches2 ? classes.label : undefined}>
-                <FormControlLabel
-                  id="private"
-                  label={
-                    <>
-                      <span>Private</span>
-                      <Tooltip
-                        arrow
-                        enterDelay={400}
-                        enterNextDelay={400}
-                        enterTouchDelay={50}
-                        leaveTouchDelay={5000}
-                        classes={{
-                          tooltip: classes.tooltipPadding,
-                        }}
-                        title={
-                          <p className={classes.tooltip}>
-                            Private lists are NOT featured on the{" "}
-                            <em>Discover</em> page but can still be shared by
-                            you
-                          </p>
-                        }
-                      >
-                        <HelpOutlineRoundedIcon
-                          onClick={(ev) => {
-                            ev.preventDefault();
-                          }}
-                          className={classes.miniIcon}
-                        />
-                      </Tooltip>
-                    </>
-                  }
-                  labelPlacement={!matches2 ? "start" : "end"}
-                  control={
-                    <Switch
-                      color="primary"
-                      name="private"
-                      checked={privateList}
-                      onChange={onChange}
-                    />
-                  }
-                />
-              </span>
-            )}
-            <span className={matches2 ? classes.label : undefined}>
-              <FormControlLabel
-                id="emails"
-                label={
-                  <>
-                    <span>Emails</span>
-                    <Tooltip
-                      arrow
-                      enterDelay={400}
-                      enterNextDelay={400}
-                      enterTouchDelay={50}
-                      leaveTouchDelay={5000}
-                      classes={{
-                        tooltip: classes.tooltipPadding,
-                      }}
-                      title={
-                        <p className={classes.tooltip}>
-                          Include this list in the weekly releases summary email
-                          on Thursdays
-                        </p>
-                      }
-                    >
-                      <HelpOutlineRoundedIcon
-                        onClick={(ev) => {
-                          ev.preventDefault();
-                        }}
-                        className={classes.miniIcon}
-                      />
-                    </Tooltip>
-                  </>
-                }
-                labelPlacement={!matches2 ? "start" : "end"}
-                control={
-                  <Switch
-                    color="primary"
-                    name="emails"
-                    checked={emails}
-                    onChange={onChange}
-                  />
-                }
+              <Toggle
+                privateToggle={true}
+                privateList={privateList}
+                onChange={onChange}
               />
-            </span>
+            )}
+            <Toggle privateToggle={false} emails={emails} onChange={onChange} />
             <span className={classes.subButtons} style={{ flexGrow: 1 }}>
-              <IconButton
-                aria-label="delete watchlist"
-                title={auth ? "Delete" : "Remove"}
-                disabled={updating}
-                onClick={handleOpenDelete}
-                className={classes.button}
-              >
-                <HighlightOffRoundedIcon className={classes.delete} />
-              </IconButton>
-              <Link
-                href={
-                  calendar
-                    ? `/list/calendar/${listID}${
-                        ids.length > 1 ? `/${uid}` : ""
-                      }`
-                    : `/list/${listID}${ids.length > 1 ? `/${uid}` : ""}`
-                }
-                passHref
-              >
-                <IconButton
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label="open in new tab"
-                  title="Open in new tab"
-                  className={classes.button}
-                >
-                  <OpenInNewRoundedIcon className={classes.topIcon} />
-                </IconButton>
-              </Link>
-              <IconButton
-                id="share"
-                aria-label="share watchlist"
-                title="Share"
-                component="span"
-                onClick={handleOpenShare}
-                className={classes.button}
-                disabled={openShare}
-              >
-                <ShareRoundedIcon className={classes.topIcon} />
-              </IconButton>
+              <DeleteButton
+                auth={auth}
+                updating={updating}
+                handleOpenDelete={handleOpenDelete}
+                classes={{ button: classes.button }}
+              />
+              <NewTabButton
+                calendar={calendar}
+                listID={listID}
+                editable={ids?.length > 0}
+                uid={uid}
+                classes={{ button: classes.button, topIcon: classes.topIcon }}
+              />
+              <ShareButton
+                handleOpenShare={handleOpenShare}
+                openShare={openShare}
+                classes={{ button: classes.button, topIcon: classes.topIcon }}
+              />
               {calendar ? (
-                <Link
-                  href={`/lists/${listID}${ids.length > 1 ? `/${uid}` : ""}`}
-                  replace
-                  passHref
-                >
-                  <IconButton
-                    aria-label="list view"
-                    title="List view"
-                    className={classes.button}
-                  >
-                    <FormatListBulletedRoundedIcon
-                      className={classes.topIcon}
-                    />
-                  </IconButton>
-                </Link>
+                <ViewButton
+                  listID={listID}
+                  editable={ids?.length > 0}
+                  uid={uid}
+                  classes={{ button: classes.button, topIcon: classes.topIcon }}
+                />
               ) : (
-                <Link
-                  href={`/lists/calendar/${listID}${
-                    ids.length > 1 ? `/${uid}` : ""
-                  }`}
-                  replace
-                  passHref
-                >
-                  <IconButton
-                    id="calendar"
-                    aria-label="calendar view"
-                    title="Calendar view"
-                    className={classes.button}
-                  >
-                    <TodayRoundedIcon className={classes.topIcon} />
-                  </IconButton>
-                </Link>
+                <ViewButton
+                  calendar={true}
+                  listID={listID}
+                  editable={ids?.length > 0}
+                  uid={uid}
+                  classes={{ button: classes.button, topIcon: classes.topIcon }}
+                />
               )}
               {editable && !calendar && (
                 <AddMovieButton
@@ -420,36 +264,20 @@ export default function TabPanel(props) {
         {!matches && !newTab && (
           <div className={classes.buttons}>
             {calendar ? (
-              <Link
-                href={`/lists/${listID}${ids.length > 1 ? `/${uid}` : ""}`}
-                replace
-                passHref
-              >
-                <IconButton
-                  aria-label="list view"
-                  title="List view"
-                  className={classes.button}
-                >
-                  <FormatListBulletedRoundedIcon className={classes.topIcon} />
-                </IconButton>
-              </Link>
+              <ViewButton
+                listID={listID}
+                editable={ids?.length > 0}
+                uid={uid}
+                classes={{ button: classes.button, topIcon: classes.topIcon }}
+              />
             ) : (
-              <Link
-                href={`/lists/calendar/${listID}${
-                  ids.length > 1 ? `/${uid}` : ""
-                }`}
-                replace
-                passHref
-              >
-                <IconButton
-                  id="calendar"
-                  aria-label="calendar view"
-                  title="Calendar view"
-                  className={classes.button}
-                >
-                  <TodayRoundedIcon className={classes.topIcon} />
-                </IconButton>
-              </Link>
+              <ViewButton
+                calendar={true}
+                listID={listID}
+                editable={ids?.length > 0}
+                uid={uid}
+                classes={{ button: classes.button, topIcon: classes.topIcon }}
+              />
             )}
             {editable && !calendar && (
               <AddMovieButton
@@ -458,133 +286,32 @@ export default function TabPanel(props) {
               />
             )}
             {auth && (
-              <span className={matches2 ? classes.label : undefined}>
-                <FormControlLabel
-                  id="private"
-                  label={
-                    <>
-                      <span>Private</span>
-                      <Tooltip
-                        arrow
-                        enterDelay={400}
-                        enterNextDelay={400}
-                        enterTouchDelay={50}
-                        leaveTouchDelay={5000}
-                        classes={{
-                          tooltip: classes.tooltipPadding,
-                        }}
-                        title={
-                          <p className={classes.tooltip}>
-                            Private lists are NOT featured on the{" "}
-                            <em>Discover</em> page but can still be shared by
-                            you
-                          </p>
-                        }
-                      >
-                        <HelpOutlineRoundedIcon
-                          onClick={(ev) => {
-                            ev.preventDefault();
-                          }}
-                          className={classes.miniIcon}
-                        />
-                      </Tooltip>
-                    </>
-                  }
-                  labelPlacement={!matches2 ? "start" : "end"}
-                  control={
-                    <Switch
-                      color="primary"
-                      name="private"
-                      checked={privateList}
-                      onChange={onChange}
-                    />
-                  }
-                />
-              </span>
-            )}
-            <span className={matches2 ? classes.label : undefined}>
-              <FormControlLabel
-                id="emails"
-                label={
-                  <>
-                    <span>Emails</span>
-                    <Tooltip
-                      arrow
-                      enterDelay={400}
-                      enterNextDelay={400}
-                      enterTouchDelay={50}
-                      leaveTouchDelay={5000}
-                      classes={{
-                        tooltip: classes.tooltipPadding,
-                      }}
-                      title={
-                        <p className={classes.tooltip}>
-                          Include this list in the weekly releases summary email
-                          on Thursdays
-                        </p>
-                      }
-                    >
-                      <HelpOutlineRoundedIcon
-                        onClick={(ev) => {
-                          ev.preventDefault();
-                        }}
-                        className={classes.miniIcon}
-                      />
-                    </Tooltip>
-                  </>
-                }
-                labelPlacement={!matches2 ? "start" : "end"}
-                control={
-                  <Switch
-                    color="primary"
-                    name="emails"
-                    checked={emails}
-                    onChange={onChange}
-                  />
-                }
+              <Toggle
+                privateToggle={true}
+                privateList={privateList}
+                onChange={onChange}
               />
-            </span>
+            )}
+            <Toggle privateToggle={false} emails={emails} onChange={onChange} />
             <span className={classes.subButtons}>
-              <IconButton
-                id="share"
-                aria-label="share watchlist"
-                title="Share"
-                component="span"
-                onClick={handleOpenShare}
-                className={classes.button}
-                disabled={openShare}
-              >
-                <ShareRoundedIcon className={classes.topIcon} />
-              </IconButton>
-              <Link
-                href={
-                  calendar
-                    ? `/list/calendar/${listID}${
-                        ids.length > 1 ? `/${uid}` : ""
-                      }`
-                    : `/list/${listID}${ids.length > 1 ? `/${uid}` : ""}`
-                }
-                passHref
-              >
-                <IconButton
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label="open in new tab"
-                  title="Open in new tab"
-                  className={classes.button}
-                >
-                  <OpenInNewRoundedIcon className={classes.topIcon} />
-                </IconButton>
-              </Link>
-              <IconButton
-                aria-label="delete watchlist"
-                title={auth ? "Delete" : "Remove"}
-                disabled={updating}
-                onClick={handleOpenDelete}
-                className={classes.button}
-              >
-                <HighlightOffRoundedIcon className={classes.delete} />
-              </IconButton>
+              <ShareButton
+                handleOpenShare={handleOpenShare}
+                openShare={openShare}
+                classes={{ button: classes.button, topIcon: classes.topIcon }}
+              />
+              <NewTabButton
+                calendar={calendar}
+                listID={listID}
+                editable={ids?.length > 0}
+                uid={uid}
+                classes={{ button: classes.button, topIcon: classes.topIcon }}
+              />
+              <DeleteButton
+                auth={auth}
+                updating={updating}
+                handleOpenDelete={handleOpenDelete}
+                classes={{ button: classes.button }}
+              />
             </span>
           </div>
         )}
@@ -618,10 +345,10 @@ export default function TabPanel(props) {
             <div className={matches2 ? classes.searchMobile : classes.search}>
               <MovieSearch
                 addMovie={addMovie}
-                addingMovie={addingMovie}
                 newList={newList}
                 setUpdating={setUpdating}
                 listID={listID}
+                watched={/^Watched$/i.test(title).toString()}
               />
             </div>
           </Collapse>

@@ -233,7 +233,7 @@ export default function MovieCard({
               )}
             </>
           )}
-          {newEpisode && (
+          {newEpisode && deleteMovie && (
             <Typography
               variant="caption"
               component="div"

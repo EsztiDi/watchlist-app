@@ -1,4 +1,4 @@
-export default async function intro(email) {
+export default async function intro(email, setNewUser) {
   var { default: introJs } = await import("intro.js");
 
   introJs()
@@ -27,7 +27,7 @@ export default async function intro(email) {
         {
           title: "The Watched list",
           element: document.querySelector("a[data-id='watched-tab']"),
-          intro: `If you have a tv show on this list that has new episodes you haven't marked as watched, you'll see a "<b>NEW</b>" badge at their title.`,
+          intro: `If you have a tv show on this list that has episodes you haven't seen, you'll see a "<b>NEW</b>" badge at their title.`,
         },
         {
           title: "Add movies",
@@ -66,6 +66,7 @@ export default async function intro(email) {
       ],
     })
     .onbeforeexit(() => {
+      setNewUser(false);
       return confirm("Close tutorial?");
     })
     .start();

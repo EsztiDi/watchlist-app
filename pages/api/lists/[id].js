@@ -90,6 +90,23 @@ export default async function handler(req, res) {
             new: true,
             runValidators: true,
           }).catch((err) => console.error(err));
+
+          if (req.body.hasOwnProperty("title")) {
+            const savedLists = await Savedlist.updateMany(
+              { listid: id },
+              req.body,
+              {
+                timestamps: false,
+              }
+            ).catch((err) => console.error(err));
+            if (!savedLists) {
+              console.error(
+                `Couldn't perform updateMany() for Savedlist title in MongoDB - list: ${id} - user: ${JSON.stringify(
+                  session?.user
+                )}`
+              );
+            }
+          }
         }
         if (!list) {
           console.error(

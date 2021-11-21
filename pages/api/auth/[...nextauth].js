@@ -69,17 +69,17 @@ export default NextAuth({
   ],
 
   callbacks: {
-    // Update profile picture on login
+    // Update original profile picture on login
     async signIn(user, account, profile) {
       if (
         user?.email &&
-        (profile?.picture || // Google
-          profile?.profile_pic?.data || // Facebook
+        (profile?.picture?.data || // Facebook
+          profile?.picture || // Google
           profile?.profile_image_url_https || // Twitter
           profile?.avatar_url) // GitHub
       ) {
         try {
-          await fetch(`${process.env.BASE_URL}/api/account`, {
+          const res = await fetch(`${process.env.BASE_URL}/api/account`, {
             method: "POST",
             headers: {
               Accept: "application/json",
@@ -90,11 +90,16 @@ export default NextAuth({
               origImage:
                 profile?.picture?.data?.url ||
                 profile?.picture ||
-                profile?.profile_pic?.data?.url ||
-                profile?.profile_image_url_https ||
+                profile?.profile_image_url_https?.replace(
+                  /_normal\.(jpg|png|gif)$/,
+                  ".$1"
+                ) ||
                 profile?.avatar_url,
             }),
           });
+          if (!res.ok) {
+            throw new Error(res.status);
+          }
         } catch (error) {
           console.error(`${error.message} - Failed to update user image`);
         }

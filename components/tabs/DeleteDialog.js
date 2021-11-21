@@ -131,8 +131,10 @@ export default function DeleteDialog({
         >
           {updating ? (
             <CircularProgress size="1.5rem" thickness={5} />
-          ) : (
+          ) : auth ? (
             "Delete"
+          ) : (
+            "Remove"
           )}
         </Button>
       </DialogActions>

@@ -13,7 +13,7 @@ import KeyboardArrowDownRoundedIcon from "@material-ui/icons/KeyboardArrowDownRo
 import CircularProgress from "@material-ui/core/CircularProgress";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
 
-const EditTitle = dynamic(() => import("./EditTitle"));
+import EditTitle from "./EditTitle";
 
 const useStyles = makeStyles((theme) => ({
   tabs: {
@@ -146,6 +146,7 @@ export default function ListTabs({
   const hasSavedLists = savedLists && savedLists.length > 0;
   const listIDs = hasLists && lists?.map((list) => list._id);
   const savedListIDs = hasSavedLists && savedLists?.map((list) => list.listid);
+
   var value =
     listIDs && listIDs?.includes(id)
       ? listIDs?.indexOf(id)
@@ -217,7 +218,7 @@ export default function ListTabs({
     var tab = document.querySelector("a[data-id='watched-tab']");
     if (!fetching && newUser && lists && tab) {
       setTimeout(() => {
-        intro(email);
+        intro(email, setNewUser);
       }, 1000);
     }
   }, [newUser, email, fetching, lists]);
@@ -237,7 +238,7 @@ export default function ListTabs({
         scrollButtons={matches ? "on" : "auto"}
         indicatorColor="secondary"
         aria-label="list tabs"
-        value={value}
+        value={parseInt(value)}
         className={matches ? classes.tabsMobile : classes.tabs}
         id="list-tabs"
       >
