@@ -10,7 +10,7 @@ export default function Offline() {
         <title>Offline - My Watchlists</title>
       </Head>
       <div style={{ textAlign: "center", paddingTop: "1rem" }}>
-        <Typography variant="h4">Not available</Typography>
+        <Typography variant="h4">Not available 😢</Typography>
         <Typography variant="h6" style={{ paddingBottom: "1rem" }}>
           Come back when you&apos;re online.
         </Typography>

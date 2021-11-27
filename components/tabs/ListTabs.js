@@ -191,26 +191,29 @@ export default function ListTabs({
   const [email, setEmail] = useState("");
 
   useEffect(() => {
+    var isMounted = true;
     const controller = new AbortController();
     const signal = controller.signal;
 
     const getProps = async () => {
-      await fetch("/api/lists/newuser", { signal })
-        .then((res) => res.json())
-        .then((res) => {
-          setNewUser(res?.data?.newUser);
-          setEmail(res?.data?.email);
-          setFetching(false);
-        })
-        .catch((err) => {
-          console.error(err);
-          setFetching(false);
-        });
+      if (isMounted)
+        await fetch("/api/lists/newuser", { signal })
+          .then((res) => res.json())
+          .then((res) => {
+            if (isMounted) setNewUser(res?.data?.newUser);
+            if (isMounted) setEmail(res?.data?.email);
+            if (isMounted) setFetching(false);
+          })
+          .catch((err) => {
+            console.error(err);
+            if (isMounted) setFetching(false);
+          });
     };
     getProps();
 
     return () => {
       controller.abort();
+      isMounted = false;
     };
   }, []);
 

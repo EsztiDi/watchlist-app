@@ -51,7 +51,7 @@ export default async function intro(email, setNewUser) {
           title: "Share",
           element: document.querySelector("#share"),
           intro: `You can share a read-only or editable version of your list.<br/><br/>
-                On the <b>editable</b> version the movies and the title can be changed by anyone you share the link with.<br/><br/>
+                On the <b>editable</b> version the movies and the title can be changed by everyone you share the link with.<br/><br/>
                 It's great for planning movie nights. 🤗`,
         },
         {
