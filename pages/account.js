@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import { useSession } from "next-auth/client";
 import { useRouter } from "next/router";
 import Head from "next/head";
@@ -37,12 +38,11 @@ const useStyles = makeStyles((theme) => ({
       alignItems: "center",
       justifyContent: "space-between",
       flexWrap: "wrap",
-      columnGap: theme.spacing(2.5),
-      rowGap: theme.spacing(2.5),
+      gap: theme.spacing(2.5),
       padding: `${theme.spacing(3.5)}px ${theme.spacing(2)}px`,
       "& > button": {
-        flex: "30%",
-        minWidth: "150px",
+        minWidth: "175px",
+        margin: "auto",
       },
       "& > span": {
         flex: "50%",
@@ -66,12 +66,12 @@ export default function Account({ setMessage }) {
   const classes = useStyles();
   const router = useRouter();
   const [session, loading] = useSession();
-  const [updatingForm, setUpdatingForm] = React.useState(false);
-  const [updatingPrivate, setUpdatingPrivate] = React.useState(false);
-  const [updatingEmails, setUpdatingEmails] = React.useState(false);
-  const [deletingLists, setDeletingLists] = React.useState(false);
-  const [deletingSavedLists, setDeletingSavedLists] = React.useState(false);
-  const [deletingAccount, setDeletingAccount] = React.useState(false);
+  const [updatingForm, setUpdatingForm] = useState(false);
+  const [updatingPrivate, setUpdatingPrivate] = useState(false);
+  const [updatingEmails, setUpdatingEmails] = useState(false);
+  const [deletingLists, setDeletingLists] = useState(false);
+  const [deletingSavedLists, setDeletingSavedLists] = useState(false);
+  const [deletingAccount, setDeletingAccount] = useState(false);
   var updating =
     updatingForm ||
     updatingPrivate ||
@@ -81,7 +81,7 @@ export default function Account({ setMessage }) {
     deletingAccount;
   const matches = useMediaQuery("(max-width:1024px)");
 
-  React.useEffect(() => {
+  useEffect(() => {
     const beforeRouteHandler = (url) => {
       if (
         router?.pathname !== url &&
@@ -300,7 +300,7 @@ export default function Account({ setMessage }) {
               <Divider />
               <Grid item>
                 <Typography component="span">
-                  Delete all <b>saved</b> lists:
+                  Remove all <b>saved</b> lists:
                   <Typography variant="caption" component="p">
                     (Lists others created and you saved.)
                   </Typography>
@@ -315,7 +315,7 @@ export default function Account({ setMessage }) {
                   {deletingSavedLists ? (
                     <CircularProgress size="1.5rem" thickness={5} />
                   ) : (
-                    "Delete saved lists"
+                    "Remove saved lists"
                   )}
                 </Button>
               </Grid>

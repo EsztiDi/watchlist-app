@@ -1,3 +1,5 @@
+import { useState, useEffect, useRef } from "react";
+import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
 import getDetails from "../../utils/getDetails";
 
@@ -9,8 +11,8 @@ import Snackbar from "@material-ui/core/Snackbar";
 import Alert from "@material-ui/lab/Alert";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
 
-import Dropdown from "./Dropdown";
-import DropdownModal from "./DropdownModal";
+const Dropdown = dynamic(() => import("./Dropdown"));
+const DropdownModal = dynamic(() => import("./DropdownModal"));
 
 const unloadAlert = (ev) => {
   ev.preventDefault();
@@ -19,20 +21,20 @@ const unloadAlert = (ev) => {
 
 export default function MovieSearch({
   addMovie,
-  addingMovie,
   newList,
   setUpdating,
   listID,
+  watched,
 }) {
-  const [loading, setLoading] = React.useState(false);
-  const [query, setQuery] = React.useState("");
-  const [results, setResults] = React.useState([]);
-  const [message, setMessage] = React.useState("");
+  const [loading, setLoading] = useState(false);
+  const [query, setQuery] = useState("");
+  const [results, setResults] = useState([]);
+  const [message, setMessage] = useState("");
   const matches = useMediaQuery("(max-width:1024px)");
   const matches2 = useMediaQuery("(max-width:350px)");
   const router = useRouter();
 
-  React.useEffect(() => {
+  useEffect(() => {
     const beforeRouteHandler = (url) => {
       if (
         router?.pathname !== url &&
@@ -58,9 +60,9 @@ export default function MovieSearch({
     // eslint-disable-next-line
   }, [loading]);
 
-  React.useEffect(() => {
-    var input = document.getElementById(`${listID}-input`);
+  useEffect(() => {
     if (listID) {
+      var input = document.getElementById(`${listID}-input`);
       return () => {
         input.value = "";
       };
@@ -155,12 +157,15 @@ export default function MovieSearch({
     if (newList) setUpdating(true);
 
     try {
-      var newMovie = await getDetails({
-        id: movie.id,
-        media_type: movie.media_type,
-      });
+      var newMovie = await getDetails(
+        {
+          id: movie.id,
+          media_type: movie.media_type,
+        },
+        watched
+      );
 
-      addMovie(newMovie);
+      await addMovie(newMovie);
       setLoading(false);
       if (newList) setUpdating(false);
     } catch (err) {
@@ -174,15 +179,15 @@ export default function MovieSearch({
   };
 
   // For dropdown search list
-  const [open, setOpen] = React.useState(false);
-  const anchorRef = React.useRef(null);
-  const prevOpen = React.useRef(open);
+  const [open, setOpen] = useState(false);
+  const anchorRef = useRef(null);
+  const prevOpen = useRef(open);
 
   const handleToggle = () => {
     setOpen((prev) => !prev);
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (prevOpen.current === true && open === false) {
       anchorRef.current.focus();
     }
@@ -216,6 +221,7 @@ export default function MovieSearch({
 
   const handleListItemClick = (index) => {
     getMovieDetails(results[index]);
+    document.querySelector("input[type='search']").focus();
   };
 
   return (
@@ -233,8 +239,8 @@ export default function MovieSearch({
         InputProps={{
           endAdornment: (
             <InputAdornment position="end">
-              <Button onClick={handleSearch} disabled={loading || addingMovie}>
-                {loading || addingMovie ? (
+              <Button onClick={handleSearch} disabled={loading}>
+                {loading ? (
                   <CircularProgress size="1.5rem" thickness={5} />
                 ) : (
                   "Search"

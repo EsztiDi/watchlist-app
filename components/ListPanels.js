@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { useRouter } from "next/router";
 import { useSession } from "next-auth/client";
 import useSWR from "swr";
@@ -21,7 +22,7 @@ const useStyles = makeStyles((theme) => ({
     },
     "& span": {
       display: "inline-block",
-      margin: theme.spacing(1.5),
+      margin: theme.spacing(1.3),
     },
   },
   circles: {
@@ -76,7 +77,7 @@ export default function ListPanels({ setMessage, calendar = false }) {
   var { data: list, error } = useSWR(id ? `/api/lists/${id}` : null);
   if (error) console.error(error);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (error) setMessage(error.message);
     // eslint-disable-next-line
   }, [error]);
@@ -115,15 +116,16 @@ export default function ListPanels({ setMessage, calendar = false }) {
             <Skeleton variant="circle" width={30} height={30} />
             <Skeleton variant="circle" width={30} height={30} />
             <Skeleton variant="circle" width={30} height={30} />
+            <Skeleton variant="circle" width={30} height={30} />
             <Skeleton variant="rect" width={"100%"} height={210} />
             <Skeleton variant="rect" width={"100%"} height={210} />
-            <Skeleton variant="rect" width={"100%"} height={60} />
           </>
         ) : (
           <>
             <Skeleton variant="rect" width={"25%"} height={"100%"} />
             <div className={classes.circles}>
               <Skeleton variant="circle" width={30} height={30} />
+              <Skeleton variant="circle" width={30} height={30} />
               <Skeleton variant="rect" width={100} height={30} />
               <Skeleton variant="rect" width={100} height={30} />
               <Skeleton variant="circle" width={30} height={30} />
@@ -131,7 +133,6 @@ export default function ListPanels({ setMessage, calendar = false }) {
               <Skeleton variant="circle" width={30} height={30} />
               <Skeleton variant="rect" width={"100%"} height={210} />
               <Skeleton variant="rect" width={"100%"} height={210} />
-              <Skeleton variant="rect" width={"100%"} height={60} />
             </div>
           </>
         )}

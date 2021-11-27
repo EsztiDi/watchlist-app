@@ -25,6 +25,10 @@ const WatchlistSchema = new mongoose.Schema(
     position: {
       type: Number,
     },
+    shared: {
+      type: Boolean,
+      default: false,
+    },
   },
   {
     timestamps: true,

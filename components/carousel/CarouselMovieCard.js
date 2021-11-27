@@ -1,3 +1,4 @@
+import { useState } from "react";
 import Image from "next/image";
 
 import { makeStyles } from "@material-ui/core/styles";
@@ -39,7 +40,7 @@ export default function CarouselMovieCard({
   setMessage,
 }) {
   const classes = useStyles();
-  const [data, setData] = React.useState(undefined);
+  const [data, setData] = useState(undefined);
   const show = index.toString() === data;
   const touch = useMediaQuery("(hover: none)");
 
@@ -58,13 +59,24 @@ export default function CarouselMovieCard({
       <div key={index} className={classes.movie}>
         {!movie?.poster_path && (
           <div
+            onMouseEnter={!touch && !show ? handleShowDetails : undefined}
+            data-index={index}
             style={!show ? { zIndex: "1" } : undefined}
             className={classes.title}
           >
-            <Typography variant="h6">
+            <Typography
+              variant="h6"
+              onTouchStart={touch && !show ? handleShowDetails : undefined}
+              data-index={index}
+              style={{ lineHeight: 1.4 }}
+            >
               {movie.title ? movie.title : movie.name ? movie.name : "Untitled"}
             </Typography>
-            <Typography variant="subtitle1">
+            <Typography
+              variant="subtitle1"
+              onTouchStart={touch && !show ? handleShowDetails : undefined}
+              data-index={index}
+            >
               {movie?.release_date
                 ? new Date(movie?.release_date).toLocaleDateString("en-GB", {
                     day: "numeric",
@@ -91,6 +103,7 @@ export default function CarouselMovieCard({
           </div>
         )}
         <Image
+          priority
           onMouseEnter={!touch && !show ? handleShowDetails : undefined}
           onTouchStart={touch && !show ? handleShowDetails : undefined}
           data-index={index}

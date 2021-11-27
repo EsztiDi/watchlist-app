@@ -1,9 +1,10 @@
+import { useState, useEffect } from "react";
+import PropTypes from "prop-types";
+
 import { makeStyles } from "@material-ui/core/styles";
 import Modal from "@material-ui/core/Modal";
 import Backdrop from "@material-ui/core/Backdrop";
 import Fade from "@material-ui/core/Fade";
-
-import PropTypes from "prop-types";
 import AppBar from "@material-ui/core/AppBar";
 import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
@@ -13,13 +14,7 @@ import useMediaQuery from "@material-ui/core/useMediaQuery";
 
 import WatchedButton from "./buttons/WatchedButton";
 import EpisodeCard from "./EpisodeCard";
-
-function a11yProps(index) {
-  return {
-    id: `season-tab-${index}`,
-    "aria-controls": `season-tabpanel-${index}`,
-  };
-}
+import CloseModalButton from "../CloseModalButton";
 
 const useStyles = makeStyles((theme) => ({
   modal: {
@@ -34,6 +29,14 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: "4px",
     boxShadow: theme.shadows[5],
     height: "80%",
+  },
+  tabheader: {
+    position: "fixed",
+    width: "inherit",
+    background: theme.palette.primary.light,
+  },
+  episodes: {
+    height: "100%",
     overflow: "auto",
     "&::-webkit-scrollbar": {
       width: "7px",
@@ -49,11 +52,6 @@ const useStyles = makeStyles((theme) => ({
       background: "#CECECE",
       borderRadius: "100px",
     },
-  },
-  tabheader: {
-    position: "fixed",
-    width: "inherit",
-    background: theme.palette.primary.light,
   },
   tabpanel: {
     marginTop: "48px",
@@ -88,6 +86,13 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+function a11yProps(index) {
+  return {
+    id: `season-tab-${index}`,
+    "aria-controls": `season-tabpanel-${index}`,
+  };
+}
+
 export default function Seasons({
   open,
   onClose,
@@ -98,18 +103,16 @@ export default function Seasons({
   const classes = useStyles();
   const matches = useMediaQuery("(max-width:1024px)");
 
-  const [seasonTab, setSeasonTab] = React.useState(
-    lastSeason ? lastSeason - 1 : 0
-  );
+  const [seasonTab, setSeasonTab] = useState(lastSeason ? lastSeason - 1 : 0);
 
-  React.useEffect(() => {
+  useEffect(() => {
     setSeasonTab(lastSeason ? lastSeason - 1 : 0);
   }, [open, lastSeason]);
 
   const handleChange = (event, newValue) => {
     setSeasonTab(newValue);
 
-    document.getElementById("seasons").scrollTop = 0;
+    document.getElementById("modal-description").scrollTop = 0;
   };
 
   return (
@@ -131,6 +134,7 @@ export default function Seasons({
           style={matches ? { width: "95%" } : { width: "70%" }}
           className={classes.seasons}
         >
+          <CloseModalButton onClose={onClose} />
           <AppBar position="static" className={classes.tabheader}>
             <Tabs
               id="modal-title"
@@ -162,7 +166,7 @@ export default function Seasons({
               )}
             </Tabs>
           </AppBar>
-          <div id="modal-description">
+          <div id="modal-description" className={classes.episodes}>
             {seasons &&
               seasons.length > 0 &&
               seasons

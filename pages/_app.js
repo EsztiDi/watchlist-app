@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { Provider } from "next-auth/client";
@@ -105,7 +106,9 @@ const schemaData = {
   name: "The Watchlist App",
   logo: `${process.env.BASE_URL}/android-chrome-256x256.png`,
   url: process.env.BASE_URL,
-  applicationCategory: "Watchlist",
+  applicationCategory: "EntertainmentApplication",
+  operatingSystem: "All",
+  browserRequirements: "Requires JavaScript",
   description:
     "Create, share and edit watchlists for films and TV shows to plan movie nights or to keep track of your shows.",
   featureList:
@@ -120,6 +123,16 @@ const schemaData = {
   softwareHelp: {
     "@type": "CreativeWork",
     url: `${process.env.BASE_URL}/about`,
+  },
+  offers: {
+    "@type": "Offer",
+    price: "0",
+    priceCurrency: "GBP",
+  },
+  aggregateRating: {
+    "@type": "AggregateRating",
+    ratingValue: "4/5",
+    ratingCount: "1",
   },
   review: {
     "@type": "Review",
@@ -141,12 +154,12 @@ export default function MyApp({ Component, pageProps }) {
   const classes = useStyles();
   const router = useRouter();
 
-  const [message, setMessage] = React.useState("");
-  const [install, setInstall] = React.useState(false);
+  const [message, setMessage] = useState("");
+  const [install, setInstall] = useState(false);
   const matches = useMediaQuery("(max-width:768px)");
   const touch = useMediaQuery("(hover: none)");
 
-  React.useEffect(() => {
+  useEffect(() => {
     var registered = true;
     // Register service worker to control making site work offline
     if ("serviceWorker" in navigator) {
@@ -193,7 +206,7 @@ export default function MyApp({ Component, pageProps }) {
     });
   }, []);
 
-  React.useEffect(() => {
+  useEffect(() => {
     // Removing the server-side injected CSS
     const jssStyles = document.querySelector("#jss-server-side");
     if (jssStyles) {
@@ -201,7 +214,7 @@ export default function MyApp({ Component, pageProps }) {
     }
   }, []);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (router?.query?.error?.includes("OAuthAccountNotLinked")) {
       setMessage(
         "Please sign in with the same account you used originally or email contact@mywatchlists.watch"
@@ -213,7 +226,7 @@ export default function MyApp({ Component, pageProps }) {
     }
   }, [router?.query]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     return () => {
       setMessage("");
     };
@@ -232,6 +245,10 @@ export default function MyApp({ Component, pageProps }) {
         <meta
           name="viewport"
           content="minimum-scale=1, initial-scale=1, width=device-width"
+        />
+        <link
+          rel="manifest"
+          href={`${process.env.BASE_URL}/site.webmanifest`}
         />
         <link rel="shortcut icon" href="/favicon.ico" />
         <link
@@ -256,8 +273,10 @@ export default function MyApp({ Component, pageProps }) {
         <meta name="apple-mobile-web-app-title" content="Watchlist App" />
         <meta name="application-name" content="Watchlist App" />
         <meta name="msapplication-TileColor" content="#ffc40d" />
-        <meta name="msapplication-config" content="/browserconfig.xml" />
-        <link rel="manifest" href="/site.webmanifest" />
+        <meta
+          name="msapplication-config"
+          content={`${process.env.BASE_URL}/browserconfig.xml`}
+        />
         <meta name="robots" content="noimageindex, nofollow" />
 
         <meta property="og:url" content={process.env.BASE_URL} key="url" />

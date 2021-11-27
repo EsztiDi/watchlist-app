@@ -23,9 +23,11 @@ export default async function handler(req, res) {
           var results = await Watchlist.find(
             { "user.email": session?.user?.email },
             "_id"
-          ).sort({
-            position: -1,
-          });
+          )
+            .sort({
+              position: -1,
+            })
+            .catch((err) => console.error(err));
           hasLists = results.length > 0;
           if (hasLists) {
             id = await JSON.parse(JSON.stringify(results[0]._id));
@@ -33,9 +35,11 @@ export default async function handler(req, res) {
             var results2 = await Savedlist.find(
               { "user.email": session?.user?.email },
               "listid uid"
-            ).sort({
-              position: -1,
-            });
+            )
+              .sort({
+                position: -1,
+              })
+              .catch((err) => console.error(err));
             hasSavedLists = results2.length > 0;
           }
           if (hasSavedLists) {
@@ -114,9 +118,11 @@ export default async function handler(req, res) {
           var results = await Watchlist.find(
             { "user.email": session?.user?.email },
             "_id"
-          ).sort({
-            position: -1,
-          });
+          )
+            .sort({
+              position: -1,
+            })
+            .catch((err) => console.error(err));
           hasLists = results.length > 0;
           if (hasLists) {
             id = await JSON.parse(JSON.stringify(results[0]._id));

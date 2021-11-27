@@ -1,8 +1,8 @@
+import { useState } from "react";
 import Image from "next/image";
 
 import { makeStyles } from "@material-ui/core/styles";
 import ClickAwayListener from "@material-ui/core/ClickAwayListener";
-import Typography from "@material-ui/core/Typography";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
 
 import ListDetails from "./ListDetails";
@@ -25,7 +25,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function ListCard({ list, index, setMessage }) {
   const classes = useStyles();
-  const [data, setData] = React.useState(undefined);
+  const [data, setData] = useState(undefined);
   const show = index.toString() === data;
   const touch = useMediaQuery("(hover: none)");
 
@@ -51,7 +51,7 @@ export default function ListCard({ list, index, setMessage }) {
       >
         {list.movies?.length > 0
           ? list.movies
-              .sort((a, b) => a.position - b.position)
+              .sort((a, b) => b.position - a.position)
               .slice(0, 4)
               .map((movie, index) => {
                 return (
@@ -92,9 +92,9 @@ export default function ListCard({ list, index, setMessage }) {
         <ListDetails
           listID={list._id}
           title={list.title}
-          creator={{ name: list.user.name, email: list.user.email }}
+          creator={list.user}
           movies={list.movies
-            .sort((a, b) => a.position - b.position)
+            .sort((a, b) => b.position - a.position)
             .map((movie) => {
               return {
                 title: movie.title,

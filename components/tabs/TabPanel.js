@@ -1,28 +1,25 @@
-import Link from "next/link";
+import { useState, useEffect } from "react";
+import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
 import { useSession } from "next-auth/client";
 import useSWR from "swr";
 
 import { makeStyles } from "@material-ui/core/styles";
 import Box from "@material-ui/core/Box";
-import CircularProgress from "@material-ui/core/CircularProgress";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
-import Switch from "@material-ui/core/Switch";
-import Tooltip from "@material-ui/core/Tooltip";
-import HelpOutlineRoundedIcon from "@material-ui/icons/HelpOutlineRounded";
-import IconButton from "@material-ui/core/IconButton";
-import FormatListBulletedRoundedIcon from "@material-ui/icons/FormatListBulletedRounded";
-import TodayRoundedIcon from "@material-ui/icons/TodayRounded";
-import ShareRoundedIcon from "@material-ui/icons/ShareRounded";
-import OpenInNewRoundedIcon from "@material-ui/icons/OpenInNewRounded";
-import HighlightOffRoundedIcon from "@material-ui/icons/HighlightOffRounded";
+import Collapse from "@material-ui/core/Collapse";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
 
-import Calendar from "../calendar/Calendar";
-import Movies from "../Movies";
-import MovieSearch from "../movieSearch/MovieSearch";
-import DeleteDialog from "./DeleteDialog";
-import Share from "./Share";
+import AddMovieButton from "./buttons/AddMovieButton";
+import Toggle from "./buttons/Toggle";
+import DeleteButton from "./buttons/DeleteButton";
+import ViewButton from "./buttons/ViewButton";
+import NewTabButton from "./buttons/NewTabButton";
+import ShareButton from "./buttons/ShareButton";
+const DeleteDialog = dynamic(() => import("./DeleteDialog"));
+const Share = dynamic(() => import("./Share"));
+const MovieSearch = dynamic(() => import("../movieSearch/MovieSearch"));
+const Calendar = dynamic(() => import("../calendar/Calendar"));
+const Movies = dynamic(() => import("../Movies"));
 
 const useStyles = makeStyles((theme) => ({
   panel: {
@@ -54,12 +51,13 @@ const useStyles = makeStyles((theme) => ({
     position: "relative",
     display: "flex",
     alignItems: "center",
-    "& > *": {
-      marginRight: theme.spacing(1),
-    },
+    columnGap: theme.spacing(1),
     "& > *:first-child": {
       marginLeft: theme.spacing(1),
       marginRight: "auto",
+    },
+    "& > *:last-child": {
+      marginRight: theme.spacing(1),
     },
   },
   buttonsMobile: {
@@ -67,71 +65,38 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     flexWrap: "wrap",
     alignItems: "center",
-    justifyContent: "space-evenly",
+    justifyContent: "center",
     columnGap: theme.spacing(1),
+    rowGap: theme.spacing(0.5),
     padding: theme.spacing(0.5),
     "& svg": {
-      fontSize: "1.7rem",
+      fontSize: "1.6rem",
     },
   },
-  tooltip: {
-    fontSize: "0.85rem",
-    textAlign: "center",
-    lineHeight: 1.3,
-    margin: theme.spacing(0.6),
-  },
-  tooltipPadding: {
-    padding: `${theme.spacing(0.5)}px ${theme.spacing(1)}px`,
-    margin: `${theme.spacing(2.5)}px 0 ${theme.spacing(1)}px`,
-  },
-  miniIcon: {
-    fontSize: "1rem!important",
-    color: theme.palette.text.hint,
-    marginLeft: theme.spacing(0.25),
-  },
-  label: {
-    width: "45%",
-    whiteSpace: "nowrap",
+  subButtons: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-around",
+    columnGap: theme.spacing(1),
   },
   button: {
     padding: theme.spacing(0.5),
   },
   topIcon: {
-    fontSize: "1.9rem",
+    fontSize: "1.7rem",
     color: theme.palette.primary.light,
+    transition: "color 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms",
     "&:hover": {
       color: theme.palette.primary.main,
     },
   },
-  updating: {
-    position: "absolute",
-    bottom: "29px",
-    left: "50px",
-  },
-  updatingMobile: {
-    position: "absolute",
-    bottom: "37px",
-    left: "60px",
-  },
-  updatingMobile2: {
-    position: "absolute",
-    bottom: "20px",
-    left: "13px",
-  },
-  delete: {
-    fontSize: "1.9rem",
-    color: theme.palette.secondary.light,
-    "&:hover": {
-      color: theme.palette.secondary.main,
-    },
-  },
   search: {
     position: "relative",
-    margin: `${theme.spacing(4)}px ${theme.spacing(2)}px 0`,
+    margin: `${theme.spacing(4)}px ${theme.spacing(2)}px ${theme.spacing(2)}px`,
   },
   searchMobile: {
     position: "relative",
-    margin: `${theme.spacing(4)}px 0 0`,
+    margin: `${theme.spacing(4)}px 0 ${theme.spacing(2)}px`,
   },
 }));
 
@@ -147,16 +112,15 @@ export default function TabPanel(props) {
     addMovie,
     deleteMovie,
     moveMovie,
-    addingMovie,
     calendar,
     emails,
+    openSearch2,
     ...other
   } = props;
 
   const classes = useStyles();
   const matches = useMediaQuery("(max-width:1024px)");
   const matches2 = useMediaQuery("(max-width:768px)");
-  const matches3 = useMediaQuery("(max-width:490px)");
 
   const router = useRouter();
   const { id: ids } = router?.query;
@@ -176,23 +140,57 @@ export default function TabPanel(props) {
     ({ title, private: privateList, createdAt } = list);
   }
 
-  React.useEffect(() => {
-    if (!newTab && document.getElementById(`tabpanel-${listID}`))
-      document.getElementById(`tabpanel-${listID}`).scrollTop = 0;
+  useEffect(() => {
+    var panel = document.getElementById(`tabpanel-${listID}`);
+    if (!newTab && panel) {
+      panel.scrollTop = 0;
+      setOpenSearch(false);
+    }
   }, [listID, newTab]);
 
-  // For DeleteDialog
-  const [openDelete, setOpenDelete] = React.useState(false);
+  // Locale for Calendar and Movies
+  const [loc, setLoc] = useState("");
+  useEffect(() => {
+    var isMounted = true;
+    const controller = new AbortController();
+    const signal = controller.signal;
 
+    const getLocale = async () => {
+      await fetch("/api/account/locale", { signal })
+        .then((res) => res.json())
+        .then((res) => {
+          if (isMounted) setLoc(res.data || "US");
+        })
+        .catch((err) => {
+          console.error(err);
+        });
+    };
+    getLocale();
+
+    return () => {
+      controller.abort();
+      isMounted = false;
+    };
+    // eslint-disable-next-line
+  }, []);
+
+  // For AddMovieButton
+  const [openSearch, setOpenSearch] = useState(false);
+  const handleOpenSearch = () => {
+    setOpenSearch((prev) => !prev);
+  };
+
+  // For DeleteDialog
+  const [openDelete, setOpenDelete] = useState(false);
   const handleOpenDelete = () => {
     setOpenDelete((prev) => !prev);
   };
 
   // For Share modal and editable parts
-  const [openShare, setOpenShare] = React.useState(false);
+  const [openShare, setOpenShare] = useState(false);
   const uid = new Date(createdAt).getTime().toString().substring(0, 12);
   const auth = session && list?.user?.email === session?.user?.email;
-  const editable = ids.length > 1 ? ids[1] === uid : auth;
+  const editable = ids.length > 1 ? ids[1] === uid : auth && !newTab;
 
   const handleOpenShare = () => {
     setOpenShare((prev) => !prev);
@@ -208,232 +206,128 @@ export default function TabPanel(props) {
         aria-labelledby={!newTab ? `tab-${listID}` : null}
         {...other}
       >
-        <div className={matches ? classes.buttonsMobile : classes.buttons}>
-          {newTab && updating && (
-            <CircularProgress
-              size="1.5rem"
-              thickness={5}
-              className={
-                matches2
-                  ? classes.updatingMobile2
-                  : matches
-                  ? classes.updatingMobile
-                  : classes.updating
-              }
-            />
-          )}
-          {!newTab && (
-            <>
-              {!matches ? (
-                calendar ? (
-                  <Link
-                    href={`/lists/${listID}${ids.length > 1 ? `/${uid}` : ""}`}
-                    replace
-                    passHref
-                  >
-                    <IconButton
-                      aria-label="list view"
-                      title="List view"
-                      className={classes.button}
-                    >
-                      <FormatListBulletedRoundedIcon
-                        className={classes.topIcon}
-                      />
-                    </IconButton>
-                  </Link>
-                ) : (
-                  <Link
-                    href={`/lists/calendar/${listID}${
-                      ids.length > 1 ? `/${uid}` : ""
-                    }`}
-                    replace
-                    passHref
-                  >
-                    <IconButton
-                      id="calendar"
-                      aria-label="calendar view"
-                      title="Calendar view"
-                      className={classes.button}
-                    >
-                      <TodayRoundedIcon className={classes.topIcon} />
-                    </IconButton>
-                  </Link>
-                )
-              ) : (
-                ""
-              )}
-              {auth && (
-                <span className={matches3 ? classes.label : undefined}>
-                  <FormControlLabel
-                    id="private"
-                    label={
-                      <>
-                        <span>Private</span>
-                        <Tooltip
-                          arrow
-                          enterDelay={400}
-                          enterNextDelay={400}
-                          enterTouchDelay={50}
-                          leaveTouchDelay={5000}
-                          classes={{
-                            tooltip: classes.tooltipPadding,
-                          }}
-                          title={
-                            <p className={classes.tooltip}>
-                              Private lists are NOT featured on the{" "}
-                              <em>Discover</em> page but can still be shared by
-                              you
-                            </p>
-                          }
-                        >
-                          <HelpOutlineRoundedIcon
-                            onClick={(ev) => {
-                              ev.preventDefault();
-                            }}
-                            className={classes.miniIcon}
-                          />
-                        </Tooltip>
-                      </>
-                    }
-                    labelPlacement={!matches3 ? "start" : "end"}
-                    control={
-                      <Switch
-                        color="primary"
-                        name="private"
-                        checked={privateList}
-                        onChange={onChange}
-                      />
-                    }
-                  />
-                </span>
-              )}
-              <span className={matches3 ? classes.label : undefined}>
-                <FormControlLabel
-                  id="emails"
-                  label={
-                    <>
-                      <span>Emails</span>
-                      <Tooltip
-                        arrow
-                        enterDelay={400}
-                        enterNextDelay={400}
-                        enterTouchDelay={50}
-                        leaveTouchDelay={5000}
-                        classes={{
-                          tooltip: classes.tooltipPadding,
-                        }}
-                        title={
-                          <p className={classes.tooltip}>
-                            Include this list in the weekly releases summary
-                            email on Thursdays
-                          </p>
-                        }
-                      >
-                        <HelpOutlineRoundedIcon
-                          onClick={(ev) => {
-                            ev.preventDefault();
-                          }}
-                          className={classes.miniIcon}
-                        />
-                      </Tooltip>
-                    </>
-                  }
-                  labelPlacement={!matches3 ? "start" : "end"}
-                  control={
-                    <Switch
-                      color="primary"
-                      name="emails"
-                      checked={emails}
-                      onChange={onChange}
-                    />
-                  }
+        {matches && !newTab && (
+          <div className={classes.buttonsMobile}>
+            {auth && (
+              <Toggle
+                privateToggle={true}
+                privateList={privateList}
+                onChange={onChange}
+              />
+            )}
+            <Toggle privateToggle={false} emails={emails} onChange={onChange} />
+            <span className={classes.subButtons} style={{ flexGrow: 1 }}>
+              <DeleteButton
+                auth={auth}
+                updating={updating}
+                handleOpenDelete={handleOpenDelete}
+                classes={{ button: classes.button }}
+              />
+              <NewTabButton
+                calendar={calendar}
+                listID={listID}
+                editable={ids?.length > 0}
+                uid={uid}
+                classes={{ button: classes.button, topIcon: classes.topIcon }}
+              />
+              <ShareButton
+                handleOpenShare={handleOpenShare}
+                openShare={openShare}
+                classes={{ button: classes.button, topIcon: classes.topIcon }}
+              />
+              {calendar ? (
+                <ViewButton
+                  listID={listID}
+                  editable={ids?.length > 0}
+                  uid={uid}
+                  classes={{ button: classes.button, topIcon: classes.topIcon }}
                 />
-              </span>
-              {matches ? (
-                calendar ? (
-                  <Link
-                    href={`/lists/${listID}${ids.length > 1 ? `/${uid}` : ""}`}
-                    replace
-                    passHref
-                  >
-                    <IconButton
-                      aria-label="list view"
-                      title="List view"
-                      className={classes.button}
-                    >
-                      <FormatListBulletedRoundedIcon
-                        className={classes.topIcon}
-                      />
-                    </IconButton>
-                  </Link>
-                ) : (
-                  <Link
-                    href={`/lists/calendar/${listID}${
-                      ids.length > 1 ? `/${uid}` : ""
-                    }`}
-                    replace
-                    passHref
-                  >
-                    <IconButton
-                      id="calendar"
-                      aria-label="calendar view"
-                      title="Calendar view"
-                      className={classes.button}
-                    >
-                      <TodayRoundedIcon className={classes.topIcon} />
-                    </IconButton>
-                  </Link>
-                )
               ) : (
-                ""
+                <ViewButton
+                  calendar={true}
+                  listID={listID}
+                  editable={ids?.length > 0}
+                  uid={uid}
+                  classes={{ button: classes.button, topIcon: classes.topIcon }}
+                />
               )}
-              <IconButton
-                id="share"
-                aria-label="share watchlist"
-                title="Share"
-                component="span"
-                onClick={handleOpenShare}
-                className={classes.button}
-                disabled={openShare}
-              >
-                <ShareRoundedIcon className={classes.topIcon} />
-              </IconButton>
+              {editable && !calendar && (
+                <AddMovieButton
+                  listID={listID}
+                  openSearch={openSearch}
+                  handleOpenSearch={handleOpenSearch}
+                />
+              )}
+            </span>
+          </div>
+        )}
+        {!matches && !newTab && (
+          <div className={classes.buttons}>
+            {calendar ? (
+              <ViewButton
+                listID={listID}
+                editable={ids?.length > 0}
+                uid={uid}
+                classes={{ button: classes.button, topIcon: classes.topIcon }}
+              />
+            ) : (
+              <ViewButton
+                calendar={true}
+                listID={listID}
+                editable={ids?.length > 0}
+                uid={uid}
+                classes={{ button: classes.button, topIcon: classes.topIcon }}
+              />
+            )}
+            {editable && !calendar && (
+              <AddMovieButton
+                openSearch={openSearch}
+                handleOpenSearch={handleOpenSearch}
+              />
+            )}
+            {auth && (
+              <Toggle
+                privateToggle={true}
+                privateList={privateList}
+                onChange={onChange}
+              />
+            )}
+            <Toggle privateToggle={false} emails={emails} onChange={onChange} />
+            <span className={classes.subButtons}>
+              <ShareButton
+                handleOpenShare={handleOpenShare}
+                openShare={openShare}
+                classes={{ button: classes.button, topIcon: classes.topIcon }}
+              />
+              <NewTabButton
+                calendar={calendar}
+                listID={listID}
+                editable={ids?.length > 0}
+                uid={uid}
+                classes={{ button: classes.button, topIcon: classes.topIcon }}
+              />
+              <DeleteButton
+                auth={auth}
+                updating={updating}
+                handleOpenDelete={handleOpenDelete}
+                classes={{ button: classes.button }}
+              />
+            </span>
+          </div>
+        )}
+        {!newTab && (
+          <>
+            {openShare && (
               <Share
                 listID={listID}
-                uid={uid}
+                uid={editable || auth ? uid : ""}
+                auth={auth}
                 title={title}
                 open={openShare}
                 onClose={handleOpenShare}
               />
-              <Link
-                href={
-                  calendar
-                    ? `/list/calendar/${listID}${
-                        ids.length > 1 ? `/${uid}` : ""
-                      }`
-                    : `/list/${listID}${ids.length > 1 ? `/${uid}` : ""}`
-                }
-                passHref
-              >
-                <IconButton
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label="open in new tab"
-                  title="Open in new tab"
-                  className={classes.button}
-                >
-                  <OpenInNewRoundedIcon className={classes.topIcon} />
-                </IconButton>
-              </Link>
-              <IconButton
-                aria-label="delete watchlist"
-                title={auth ? "Delete" : "Remove"}
-                disabled={updating}
-                onClick={handleOpenDelete}
-                className={classes.button}
-              >
-                <HighlightOffRoundedIcon className={classes.delete} />
-              </IconButton>
+            )}
+            {openDelete && (
               <DeleteDialog
                 open={openDelete}
                 listID={listID}
@@ -443,31 +337,33 @@ export default function TabPanel(props) {
                 updating={updating}
                 setUpdating={setUpdating}
               />
-            </>
-          )}
-        </div>
-
+            )}
+          </>
+        )}
+        {editable && !calendar && (
+          <Collapse in={openSearch || openSearch2}>
+            <div className={matches2 ? classes.searchMobile : classes.search}>
+              <MovieSearch
+                addMovie={addMovie}
+                newList={newList}
+                setUpdating={setUpdating}
+                listID={listID}
+                watched={/^Watched$/i.test(title).toString()}
+              />
+            </div>
+          </Collapse>
+        )}
         {calendar ? (
-          <Calendar listID={listID} newTab={newTab} />
+          <Calendar listID={listID} loc={loc} newTab={newTab} />
         ) : (
           <Movies
             listID={listID}
+            loc={loc}
             deleteMovie={editable ? deleteMovie : undefined}
             moveMovie={editable ? moveMovie : undefined}
             updating={updating}
             setMessage={setMessage}
           />
-        )}
-        {editable && !calendar && (
-          <div className={matches2 ? classes.searchMobile : classes.search}>
-            <MovieSearch
-              addMovie={addMovie}
-              addingMovie={addingMovie}
-              newList={newList}
-              setUpdating={setUpdating}
-              listID={listID}
-            />
-          </div>
         )}
       </Box>
     )

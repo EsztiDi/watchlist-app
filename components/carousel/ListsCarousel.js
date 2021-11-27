@@ -1,3 +1,4 @@
+import { useState } from "react";
 import useSWR from "swr";
 
 import { makeStyles } from "@material-ui/core/styles";
@@ -114,6 +115,7 @@ const useStyles = makeStyles((theme) => ({
   icon: {
     fontSize: "1.6rem",
     color: theme.palette.primary.light,
+    transition: "color 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms",
     "&:hover": {
       color: theme.palette.primary.main,
     },
@@ -149,10 +151,10 @@ export default function ListsCarousel({ setMessage }) {
   }
 
   // For list search
-  const [loading, setLoading] = React.useState(false);
-  const [query, setQuery] = React.useState("");
-  const [results, setResults] = React.useState([]);
-  const [alert, setAlert] = React.useState("");
+  const [loading, setLoading] = useState(false);
+  const [query, setQuery] = useState("");
+  const [results, setResults] = useState([]);
+  const [alert, setAlert] = useState("");
 
   if (results.length > 0 && query) {
     sliced = [];

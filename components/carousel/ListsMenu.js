@@ -1,12 +1,13 @@
+import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/router";
 import { useSession } from "next-auth/client";
 import useSWR, { mutate } from "swr";
 
 import { makeStyles } from "@material-ui/core/styles";
+import Popper from "@material-ui/core/Popper";
 import ClickAwayListener from "@material-ui/core/ClickAwayListener";
 import Grow from "@material-ui/core/Grow";
 import Paper from "@material-ui/core/Paper";
-import Popper from "@material-ui/core/Popper";
 import MenuList from "@material-ui/core/MenuList";
 import MenuItem from "@material-ui/core/MenuItem";
 import Typography from "@material-ui/core/Typography";
@@ -48,27 +49,27 @@ export default function ListsMenu({
   const contentType = "application/json";
   movieID = movieID ? movieID : movie.id;
 
-  const [updating, setUpdating] = React.useState(false);
-  const [added, setAdded] = React.useState(false);
-  const [value, setValue] = React.useState("");
-  const isMounted = React.useRef(null);
+  const [updating, setUpdating] = useState(false);
+  const [added, setAdded] = useState(false);
+  const [value, setValue] = useState("");
+  const isMounted = useRef(null);
 
   const [session] = useSession();
   const { data: lists, error } = useSWR(session ? "/api/lists" : null);
   const { data: savedLists, error: error2 } = useSWR(
     session ? "/api/lists/saved" : null
   );
-  if (error) console.error(error);
-  if (error2) console.error(error2);
+  if (error) console.error("lists - " + error);
+  if (error2) console.error("savedLists - " + error2);
 
-  React.useEffect(() => {
+  useEffect(() => {
     isMounted.current = true;
     return () => {
       isMounted.current = false;
     };
   }, []);
 
-  React.useEffect(() => {
+  useEffect(() => {
     const beforeRouteHandler = (url) => {
       if (
         router?.pathname !== url &&
@@ -189,7 +190,7 @@ export default function ListsMenu({
                     .map((list, index) => {
                       return (
                         <SavedListItem
-                          key={list.listid}
+                          key={list?.listid}
                           movieID={movieID}
                           listID={list?.listid}
                           index={index + lists?.length}

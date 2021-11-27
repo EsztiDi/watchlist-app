@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import ClickAwayListener from "@material-ui/core/ClickAwayListener";
 import TextField from "@material-ui/core/TextField";
@@ -16,7 +17,7 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(0.5),
   },
   icon: {
-    fontSize: "2rem",
+    fontSize: "1.8rem",
   },
   iconMobile: {
     fontSize: "1.6rem",
@@ -34,7 +35,7 @@ export default function EditTitle({
   const matches = useMediaQuery("(max-width:1024px)");
   const matches2 = useMediaQuery("(max-width:768px)");
 
-  const [newTitle, setTitle] = React.useState({ title });
+  const [newTitle, setTitle] = useState({ title });
 
   const handleChange = (ev) => {
     setTitle({
@@ -44,16 +45,14 @@ export default function EditTitle({
 
   const handleSubmit = (ev) => {
     ev.preventDefault();
-    setUpdating(true);
 
     if (newTitle.title !== title) {
+      setUpdating(true);
       putData(newTitle).then(() => {
         closeEditTitle();
-        setUpdating(false);
       });
     } else {
       closeEditTitle();
-      setUpdating(false);
     }
   };
 

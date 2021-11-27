@@ -1,3 +1,6 @@
+import { useState, useEffect, useRef } from "react";
+import dynamic from "next/dynamic";
+
 import { makeStyles } from "@material-ui/core/styles";
 import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
@@ -6,7 +9,7 @@ import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
 
-import Seasons from "./Seasons";
+const Seasons = dynamic(() => import("./Seasons"));
 import WatchedButton from "./buttons/WatchedButton";
 import AddButton from "./buttons/AddButton";
 import MovieInfo from "./MovieInfo";
@@ -52,8 +55,8 @@ const useStyles = makeStyles((theme) => ({
   },
   image: {
     position: "relative",
-    minWidth: "16%",
-    paddingTop: "24%",
+    minWidth: "15%",
+    paddingTop: "22.5%",
     backgroundSize: "contain",
   },
   imageMobile: {
@@ -104,6 +107,7 @@ export default function MovieCard({
     id,
     poster_path,
     title,
+    release_date,
     media_type,
     overview,
     details,
@@ -124,16 +128,16 @@ export default function MovieCard({
   const matches = useMediaQuery("(max-width:768px)");
   const matches2 = useMediaQuery("(max-width:500px)");
   const contentType = "application/json";
-  const isMounted = React.useRef(null);
+  const isMounted = useRef(null);
 
   // For Seasons modal
-  const [seasonsOpen, setSeasonsOpen] = React.useState(false);
+  const [seasonsOpen, setSeasonsOpen] = useState(false);
 
   const handleSeasonsOpen = () => {
     setSeasonsOpen((prev) => !prev);
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     const details = document.querySelectorAll("details");
     details.forEach((detail) => {
       detail.removeAttribute("open");
@@ -143,33 +147,37 @@ export default function MovieCard({
     // eslint-disable-next-line
   }, [id, listID]);
 
-  React.useEffect(() => {
+  useEffect(() => {
+    // Check for unwatched episodes
     isMounted.current = true;
     const checkProps = async () => {
-      if (media_type === "tv") {
-        try {
-          const res = await fetch(`/api/lists/watched/check`, {
-            method: "POST",
-            headers: {
-              Accept: contentType,
-              "Content-Type": contentType,
-            },
-            body: JSON.stringify({
-              movieID: id,
-              season_number,
-              listID,
-            }),
-          });
+      try {
+        const res = await fetch(`/api/lists/watched/check`, {
+          method: "POST",
+          headers: {
+            Accept: contentType,
+            "Content-Type": contentType,
+          },
+          body: JSON.stringify({
+            movieID: id,
+            season_number,
+            listID,
+          }),
+        });
 
-          if (!res.ok) {
-            throw new Error(res.status);
-          }
-        } catch (error) {
-          console.error(error);
+        if (!res.ok) {
+          throw new Error(res.status);
         }
+      } catch (error) {
+        console.error(error);
       }
     };
-    checkProps();
+    var this_year = new Date().getFullYear();
+    var end_year;
+    if (release_date) {
+      end_year = new Date(release_date).getFullYear();
+    }
+    if (media_type === "tv" && end_year >= this_year) checkProps();
     return () => {
       isMounted.current = false;
     };
@@ -177,44 +185,44 @@ export default function MovieCard({
   }, []);
 
   return (
-    <>
-      <Card
-        id={id}
-        className={matches ? classes.moviecardMobile : classes.moviecard}
+    <Card
+      id={id}
+      className={matches ? classes.moviecardMobile : classes.moviecard}
+    >
+      <CardMedia
+        data-image="background"
+        className={matches2 ? classes.imageMobile : classes.image}
+        image={poster}
       >
-        <CardMedia
-          data-image="background"
-          className={matches2 ? classes.imageMobile : classes.image}
-          image={poster}
+        <WatchedButton movie={movie} />
+      </CardMedia>
+      <CardContent
+        className={matches ? classes.contentMobile : classes.content}
+      >
+        <Typography
+          variant="h6"
+          className={classes.title}
+          style={
+            matches2
+              ? { fontSize: "0.9rem" }
+              : matches
+              ? { fontSize: "1.1rem" }
+              : { fontSize: "1.25rem" }
+          }
         >
-          <WatchedButton movie={movie} />
-        </CardMedia>
-        <CardContent
-          className={matches ? classes.contentMobile : classes.content}
-        >
-          <Typography
-            variant="h6"
-            className={classes.title}
-            style={
-              matches2
-                ? { fontSize: "0.9rem" }
-                : matches
-                ? { fontSize: "1.1rem" }
-                : { fontSize: "1.25rem" }
-            }
-          >
-            {number_of_episodes > 0 && (
-              <>
-                <Button
-                  size="small"
-                  variant="outlined"
-                  onClick={handleSeasonsOpen}
-                  style={{
-                    fontSize: matches2 ? "0.65rem" : "0.75rem",
-                  }}
-                >
-                  {number_of_episodes + (matches2 ? " ep" : " episodes")}
-                </Button>
+          {number_of_episodes > 0 && (
+            <>
+              <Button
+                size="small"
+                variant="outlined"
+                onClick={handleSeasonsOpen}
+                style={{
+                  fontSize: matches2 ? "0.65rem" : "0.75rem",
+                }}
+              >
+                {number_of_episodes + (matches2 ? " ep" : " episodes")}
+              </Button>
+              {seasonsOpen && (
                 <Seasons
                   open={seasonsOpen}
                   onClose={handleSeasonsOpen}
@@ -222,45 +230,45 @@ export default function MovieCard({
                   lastSeason={season_number}
                   movieID={id}
                 />
-              </>
-            )}
-            {newEpisode && (
-              <Typography
-                variant="caption"
-                component="div"
-                className={classes.new}
-                style={{
-                  fontSize: matches2 ? "0.6rem" : "0.7rem",
-                }}
-              >
-                New
-              </Typography>
-            )}
-            <span>{title || "Untitled"}</span>
-            {(!matches2 || !deleteMovie) && (
-              <AddButton
-                movie={movie}
-                updating={updating}
-                setMessage={setMessage}
-              />
-            )}
-          </Typography>
+              )}
+            </>
+          )}
+          {newEpisode && deleteMovie && (
+            <Typography
+              variant="caption"
+              component="div"
+              className={classes.new}
+              style={{
+                fontSize: matches2 ? "0.6rem" : "0.7rem",
+              }}
+            >
+              New
+            </Typography>
+          )}
+          <span>{title || "Untitled"}</span>
+          {(!matches2 || !deleteMovie) && (
+            <AddButton
+              movie={movie}
+              updating={updating}
+              setMessage={setMessage}
+            />
+          )}
+        </Typography>
 
-          <MovieInfo movie={movie} listID={listID} loc={loc} user={user} />
-          <Overview overview={overview} movieCard={true} />
-        </CardContent>
-        {deleteMovie && (
-          <Buttons
-            movie={movie}
-            index={index}
-            moviesLength={moviesLength}
-            deleteMovie={deleteMovie}
-            moveMovie={moveMovie}
-            updating={updating}
-            setMessage={setMessage}
-          />
-        )}
-      </Card>
-    </>
+        <MovieInfo movie={movie} listID={listID} loc={loc} user={user} />
+        <Overview overview={overview} movieCard={true} />
+      </CardContent>
+      {deleteMovie && (
+        <Buttons
+          movie={movie}
+          index={index}
+          moviesLength={moviesLength}
+          deleteMovie={deleteMovie}
+          moveMovie={moveMovie}
+          updating={updating}
+          setMessage={setMessage}
+        />
+      )}
+    </Card>
   );
 }

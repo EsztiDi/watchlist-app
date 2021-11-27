@@ -9,6 +9,7 @@ import useMediaQuery from "@material-ui/core/useMediaQuery";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
+    overflowWrap: "anywhere",
     "& > h6:first-of-type": {
       marginTop: theme.spacing(1),
     },
@@ -22,7 +23,6 @@ const useStyles = makeStyles((theme) => ({
     },
     "& > ul, a": {
       fontSize: "1rem",
-      wordBreak: "break-word",
     },
   },
   link: {

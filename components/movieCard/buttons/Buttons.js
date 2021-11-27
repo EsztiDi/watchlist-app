@@ -14,6 +14,10 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
+    "& svg": {
+      fontSize: "1.6rem",
+      transition: "color 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms",
+    },
   },
   buttonsMobile: {
     flexBasis: "95%",
@@ -22,6 +26,7 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: "space-between",
     "& svg": {
       fontSize: "1.5rem",
+      transition: "color 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms",
     },
   },
   bigbutton: {
@@ -31,21 +36,18 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(0.5),
   },
   delete: {
-    fontSize: "1.8rem",
     color: theme.palette.secondary.light,
     "&:hover": {
       color: theme.palette.secondary.main,
     },
   },
   bigarrow: {
-    fontSize: "1.5rem",
     color: theme.palette.primary.light,
     "&:hover": {
       color: theme.palette.primary.main,
     },
   },
   arrow: {
-    fontSize: "1.8rem",
     color: theme.palette.primary.light,
     "&:hover": {
       color: theme.palette.primary.main,
@@ -94,7 +96,12 @@ export default function Buttons({
               disabled={updating}
               onClick={() => moveMovie("top", index, position)}
             >
-              <VerticalAlignTopRoundedIcon className={classes.bigarrow} />
+              <VerticalAlignTopRoundedIcon
+                className={classes.bigarrow}
+                style={
+                  matches2 ? { fontSize: "1.2rem" } : { fontSize: "1.3rem" }
+                }
+              />
             </IconButton>
           )}
           <IconButton
@@ -138,7 +145,12 @@ export default function Buttons({
               disabled={updating}
               onClick={() => moveMovie("bottom", index, position)}
             >
-              <VerticalAlignBottomRoundedIcon className={classes.bigarrow} />
+              <VerticalAlignBottomRoundedIcon
+                className={classes.bigarrow}
+                style={
+                  matches2 ? { fontSize: "1.2rem" } : { fontSize: "1.3rem" }
+                }
+              />
             </IconButton>
           )}
         </>

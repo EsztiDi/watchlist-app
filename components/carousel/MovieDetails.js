@@ -1,3 +1,5 @@
+import { useState, useEffect, useRef } from "react";
+import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
 import { useSession } from "next-auth/client";
 import useSWR from "swr";
@@ -10,7 +12,8 @@ import Button from "@material-ui/core/Button";
 import PlaylistAddRoundedIcon from "@material-ui/icons/PlaylistAddRounded";
 
 import Overview from "../movieCard/Overview";
-import ListsMenu from "./ListsMenu";
+import JustWatchLink from "../movieCard/JustWatchLink";
+const ListsMenu = dynamic(() => import("./ListsMenu"));
 
 const useStyles = makeStyles((theme) => ({
   details: {
@@ -29,7 +32,7 @@ const useStyles = makeStyles((theme) => ({
     paddingTop: theme.spacing(1.5),
     color: "#fff",
     "& > :nth-child(2)": {
-      marginTop: theme.spacing(0.5),
+      marginTop: theme.spacing(0.75),
       marginBottom: theme.spacing(1),
     },
     "& > details": {
@@ -67,6 +70,7 @@ const useStyles = makeStyles((theme) => ({
   external: {
     whiteSpace: "nowrap",
     fontWeight: "700",
+    lineHeight: 1.6,
     transition: "color 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms",
     "&:hover": {
       color: theme.palette.primary.light,
@@ -89,7 +93,7 @@ export default function MovieDetails({
   const { data: lists, error } = useSWR(session ? "/api/lists" : null);
   if (error) console.error(error);
 
-  const [external_ids, setExternalIDs] = React.useState({});
+  const [external_ids, setExternalIDs] = useState({});
   var {
     id,
     title,
@@ -100,7 +104,7 @@ export default function MovieDetails({
     first_air_date,
   } = movie;
 
-  React.useEffect(() => {
+  useEffect(() => {
     var isMounted = true;
     const controller = new AbortController();
     const signal = controller.signal;
@@ -131,7 +135,7 @@ export default function MovieDetails({
     // eslint-disable-next-line
   }, []);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (!show) handleMenuClose();
   }, [show]);
 
@@ -153,9 +157,14 @@ export default function MovieDetails({
       })
     : "No release date";
 
+  var justWatch =
+    release_date === "No release date"
+      ? true
+      : release_date && new Date(release_date) < new Date();
+
   // For ListsMenu
-  const [menuOpen, setMenuOpen] = React.useState(false);
-  const anchorRef = React.useRef(null);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const anchorRef = useRef(null);
 
   const handleButtonClick = () => {
     if (!loading && !session) {
@@ -191,7 +200,9 @@ export default function MovieDetails({
       style={!show ? { zIndex: "-99", opacity: 0 } : undefined}
       onMouseLeave={handleMouse}
     >
-      <Typography variant="h6">{title}</Typography>
+      <Typography variant="h6" style={{ lineHeight: 1.4 }}>
+        {title}
+      </Typography>
       <Typography variant="subtitle1">
         {release_date}
         {media_type === "movie" && (
@@ -231,6 +242,13 @@ export default function MovieDetails({
             <TheatersRoundedIcon className={classes.miniIcon} /> IMDb
           </a>
         )}
+        {justWatch && (
+          <JustWatchLink
+            locale={locale}
+            title={title}
+            classes={{ external: classes.external, miniIcon: classes.miniIcon }}
+          />
+        )}
       </span>
       <Overview overview={overview} carousel={true} />
       <Button
@@ -245,7 +263,7 @@ export default function MovieDetails({
         <PlaylistAddRoundedIcon />
         &nbsp;Add
       </Button>
-      {session && (
+      {session && menuOpen && (
         <ListsMenu
           menuOpen={menuOpen}
           anchorEl={anchorRef.current}

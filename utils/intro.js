@@ -1,6 +1,6 @@
-import introJs from "intro.js";
+export default async function intro(email, setNewUser) {
+  var { default: introJs } = await import("intro.js");
 
-export default function intro(email) {
   introJs()
     .setOptions({
       disableInteraction: true,
@@ -15,7 +15,7 @@ export default function intro(email) {
           title: "Your watchlists",
           element: document.querySelector("#list-tabs"),
           intro: `You will find all the watchlists you create here as well as any <b>saved lists</b> that others made.<br/><br/>
-                You can change their <b>order</b> with the arrows and the <b>title</b> with the pen.`,
+                You can change their <b>order</b> with the arrows and <b>title</b> with the pen.`,
         },
         {
           title: "The Watched list",
@@ -27,7 +27,12 @@ export default function intro(email) {
         {
           title: "The Watched list",
           element: document.querySelector("a[data-id='watched-tab']"),
-          intro: `If you have a tv show on this list that has new episodes you haven't marked as watched, you'll see a "<b>NEW</b>" badge at their title.`,
+          intro: `If you have a tv show on this list that has episodes you haven't seen, you'll see a "<b>NEW</b>" badge at their title.`,
+        },
+        {
+          title: "Add movies",
+          element: document.querySelector("#add"),
+          intro: `Click here to add movies and TV shows to the list.`,
         },
         {
           title: "Privacy setting",
@@ -61,6 +66,7 @@ export default function intro(email) {
       ],
     })
     .onbeforeexit(() => {
+      setNewUser(false);
       return confirm("Close tutorial?");
     })
     .start();

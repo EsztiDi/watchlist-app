@@ -19,7 +19,7 @@ export default async function handler(req, res) {
               updatedAt: -1,
             },
           }
-        );
+        ).catch((err) => console.error(err));
         res.status(200).json({ success: true, data: publicLists });
       } catch (err) {
         console.error(`Lists not found - ${JSON.stringify(err)}`);

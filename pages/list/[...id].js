@@ -25,11 +25,19 @@ export async function getServerSideProps(context) {
     width: "256",
     height: "256",
   };
-  var movies = (list) => list?.movies.sort((a, b) => a.position - b.position);
+  var movies = (list) => list?.movies.sort((a, b) => b.position - a.position);
 
   if (id) {
     try {
-      var result = await Watchlist.findById(id[0]);
+      var result = await Watchlist.findById(id[0]).catch((err) => {
+        console.error(err);
+        return {
+          redirect: {
+            destination: "/404",
+            permanent: false,
+          },
+        };
+      });
     } catch (error) {
       return {
         redirect: {

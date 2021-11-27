@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { signIn, useSession } from "next-auth/client";
 import { useRouter } from "next/router";
 import Head from "next/head";
@@ -84,7 +85,7 @@ export default function Login({ setMessage }) {
   const matches = useMediaQuery("(max-width:700px)");
 
   // For EmailLogin
-  const [openEmail, setOpenEmail] = React.useState(false);
+  const [openEmail, setOpenEmail] = useState(false);
 
   const handleOpenEmail = () => {
     setOpenEmail((prev) => !prev);

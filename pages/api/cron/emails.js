@@ -36,7 +36,9 @@ export default async function handler(req, res) {
             },
           };
 
-          var emails = await Releasesemail.find();
+          var emails = await Releasesemail.find().catch((err) =>
+            console.error(err)
+          );
           emails = emails
             .map((user) => user.email)
             .filter((email, index, arr) => arr.indexOf(email) === index);
@@ -46,7 +48,7 @@ export default async function handler(req, res) {
             const lists = await Watchlist.find({
               "user.email": email,
               emails: true,
-            });
+            }).catch((err) => console.error(err));
             if (lists.length === 0) {
               const deletedEmails = await Releasesemail.deleteMany({
                 email: email,
@@ -62,7 +64,7 @@ export default async function handler(req, res) {
             const savedLists = await Savedlist.find({
               "user.email": email,
               emails: true,
-            });
+            }).catch((err) => console.error(err));
             if (savedLists.length === 0) {
               const deletedEmails2 = await Releasesemail.deleteMany({
                 email: email,
@@ -148,7 +150,7 @@ export default async function handler(req, res) {
                               id: list._id,
                               uid: savedList.uid,
                               title: list.title,
-                              creator: savedList.creator?.name || "Nameless",
+                              creator: list.user?.name || "Nameless",
                               movies: movies.sort(
                                 (a, b) =>
                                   new Date(a.release_date) -
@@ -165,7 +167,9 @@ export default async function handler(req, res) {
               .catch((err) => console.error(err));
 
             if (upcoming.length > 0) {
-              var user = await Releasesemail.findOne({ email: email });
+              var user = await Releasesemail.findOne({ email: email }).catch(
+                (err) => console.error(err)
+              );
               recipient = [new Recipient(email, user?.name)];
               response.data.recipients.push(email);
             }

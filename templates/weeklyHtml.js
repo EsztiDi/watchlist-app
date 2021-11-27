@@ -907,13 +907,6 @@ export default function weeklyHTML(lists) {
                       "
                       valign="top"
                       width="100%"
-                    ><a
-                    href="https://mywatchlists.watch/lists/${list.id}${
-      list.uid ? `/${list.uid}` : ""
-    }"
-                    rel="noopener"
-                    style="text-decoration: none; color: #000"
-                    target="_blank"
                     ><h3
                         title="Opens in new tab"
                         style="
@@ -931,11 +924,43 @@ export default function weeklyHTML(lists) {
                           margin-top: 0;
                           margin-bottom: 0;
                         "
+                      ><a
+                      href="https://mywatchlists.watch/lists/${list.id}${
+      list.uid ? `/${list.uid}` : ""
+    }"
+                      rel="noopener"
+                      style="text-decoration: none; color: #000"
+                      target="_blank"
                       >
                         ${list.title}&nbsp;<span
                         style="font-weight: bold"
-                        >&#x2197;</span>
-                      </h3></a>
+                        >&#x2197;</span></a>
+                      </h3>
+                      ${
+                        list.creator
+                          ? `<p
+                            style="
+                        color: #000;
+                        direction: ltr;
+                        font-family: Trebuchet MS, Lucida Grande,
+                          Lucida Sans Unicode, Lucida Sans, Tahoma,
+                          sans-serif;
+                        font-size: 14px;
+                        text-transform: uppercase;
+                        font-weight: normal;
+                        letter-spacing: normal;
+                        line-height: 150%;
+                        text-align: center;
+                        margin-left: -15px;
+                        font-style: italic;
+                        margin-top: 0;
+                        margin-bottom: 0;
+                      "
+                          >
+                            by ${list.creator}
+                          </p>`
+                          : ""
+                      }
                     </td>
                   </tr>
                 </table>

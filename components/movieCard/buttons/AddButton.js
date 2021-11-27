@@ -1,3 +1,5 @@
+import { useState, useEffect, useRef } from "react";
+import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
 import { useSession } from "next-auth/client";
 import useSWR from "swr";
@@ -6,15 +8,16 @@ import { makeStyles } from "@material-ui/core/styles";
 import IconButton from "@material-ui/core/IconButton";
 import PlaylistAddRoundedIcon from "@material-ui/icons/PlaylistAddRounded";
 
-import ListsMenu from "../../carousel/ListsMenu";
+const ListsMenu = dynamic(() => import("../../carousel/ListsMenu"));
 
 const useStyles = makeStyles((theme) => ({
   button: {
     padding: theme.spacing(0.5),
   },
   icon: {
-    fontSize: "1.8rem",
+    fontSize: "1.6rem",
     color: theme.palette.primary.light,
+    transition: "color 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms",
     "&:hover": {
       color: theme.palette.primary.main,
     },
@@ -30,10 +33,10 @@ export default function AddButton({ movie, updating, setMessage }) {
   const { data: lists, error } = useSWR(session ? "/api/lists" : null);
   if (error) console.error(error);
 
-  const [menuOpen, setMenuOpen] = React.useState(false);
-  const anchorRef = React.useRef(null);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const anchorRef = useRef(null);
 
-  React.useEffect(() => {
+  useEffect(() => {
     return () => {
       setMenuOpen(false);
     };
@@ -77,7 +80,7 @@ export default function AddButton({ movie, updating, setMessage }) {
       >
         <PlaylistAddRoundedIcon className={classes.icon} />
       </IconButton>
-      {session && (
+      {session && menuOpen && (
         <ListsMenu
           menuOpen={menuOpen}
           anchorEl={anchorRef.current}

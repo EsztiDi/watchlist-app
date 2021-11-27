@@ -15,7 +15,7 @@ export default function Custom500() {
           We&apos;re sorry, something went wrong. Please try again or email
           contact@mywatchlists.watch
         </Typography>
-        <Image src="/puppy1.jpg" alt="" width={360} height={480} />
+        <Image priority src="/puppy1.jpg" alt="" width={360} height={480} />
         <br />
         <a
           href="https://www.pexels.com/photo/adult-black-pug-1851164/"

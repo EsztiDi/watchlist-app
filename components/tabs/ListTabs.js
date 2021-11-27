@@ -1,3 +1,5 @@
+import { useState, useEffect } from "react";
+import dynamic from "next/dynamic";
 import Link from "next/link";
 import useSWR from "swr";
 import intro from "../../utils/intro";
@@ -80,7 +82,8 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(0.5),
     borderRadius: "50%",
     color: theme.palette.primary.light,
-    transition: "background-color 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms",
+    transition:
+      "color, background-color 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms",
     "&:hover": {
       color: theme.palette.primary.main,
       backgroundColor: "rgba(0, 0, 0, 0.04)",
@@ -100,6 +103,8 @@ const useStyles = makeStyles((theme) => ({
   },
   arrow: {
     borderRadius: "50%",
+    transition:
+      "color, background-color 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms",
     "&:hover": {
       color: theme.palette.primary.main,
       backgroundColor: "rgba(0, 0, 0, 0.04)",
@@ -130,7 +135,7 @@ export default function ListTabs({
 }) {
   const classes = useStyles();
   const matches = useMediaQuery("(max-width:1024px)");
-  const [editTitle, setEditTitle] = React.useState(false);
+  const [editTitle, setEditTitle] = useState(false);
 
   const { data: lists, error } = useSWR("/api/lists");
   const { data: savedLists, error: error2 } = useSWR("/api/lists/saved");
@@ -141,6 +146,7 @@ export default function ListTabs({
   const hasSavedLists = savedLists && savedLists.length > 0;
   const listIDs = hasLists && lists?.map((list) => list._id);
   const savedListIDs = hasSavedLists && savedLists?.map((list) => list.listid);
+
   var value =
     listIDs && listIDs?.includes(id)
       ? listIDs?.indexOf(id)
@@ -180,11 +186,11 @@ export default function ListTabs({
   };
 
   // For introJs tutorial on first login
-  const [fetching, setFetching] = React.useState(true);
-  const [newUser, setNewUser] = React.useState(false);
-  const [email, setEmail] = React.useState("");
+  const [fetching, setFetching] = useState(true);
+  const [newUser, setNewUser] = useState(false);
+  const [email, setEmail] = useState("");
 
-  React.useEffect(() => {
+  useEffect(() => {
     const controller = new AbortController();
     const signal = controller.signal;
 
@@ -194,8 +200,12 @@ export default function ListTabs({
         .then((res) => {
           setNewUser(res?.data?.newUser);
           setEmail(res?.data?.email);
+          setFetching(false);
+        })
+        .catch((err) => {
+          console.error(err);
+          setFetching(false);
         });
-      setFetching(false);
     };
     getProps();
 
@@ -204,10 +214,11 @@ export default function ListTabs({
     };
   }, []);
 
-  React.useEffect(() => {
-    if (!fetching && newUser && lists) {
+  useEffect(() => {
+    var tab = document.querySelector("a[data-id='watched-tab']");
+    if (!fetching && newUser && lists && tab) {
       setTimeout(() => {
-        intro(email);
+        intro(email, setNewUser);
       }, 1000);
     }
   }, [newUser, email, fetching, lists]);
@@ -227,7 +238,7 @@ export default function ListTabs({
         scrollButtons={matches ? "on" : "auto"}
         indicatorColor="secondary"
         aria-label="list tabs"
-        value={value}
+        value={parseInt(value)}
         className={matches ? classes.tabsMobile : classes.tabs}
         id="list-tabs"
       >
@@ -288,7 +299,7 @@ export default function ListTabs({
                               className={classes.edit}
                               style={
                                 matches
-                                  ? { fontSize: "1.5rem" }
+                                  ? { fontSize: "1.6rem" }
                                   : { fontSize: "1.8rem" }
                               }
                               onClick={openEditTitle}
@@ -311,7 +322,7 @@ export default function ListTabs({
                               className={classes.arrow}
                               style={
                                 matches
-                                  ? { fontSize: "1.5rem" }
+                                  ? { fontSize: "1.6rem" }
                                   : { fontSize: "1.8rem" }
                               }
                               onClick={() => moveListUp(index)}
@@ -325,7 +336,7 @@ export default function ListTabs({
                               className={classes.arrow}
                               style={
                                 matches
-                                  ? { fontSize: "1.5rem" }
+                                  ? { fontSize: "1.6rem" }
                                   : { fontSize: "1.8rem" }
                               }
                               onClick={() => moveListDown(index)}
@@ -409,7 +420,7 @@ export default function ListTabs({
                               className={classes.edit}
                               style={
                                 matches
-                                  ? { fontSize: "1.5rem" }
+                                  ? { fontSize: "1.6rem" }
                                   : { fontSize: "1.8rem" }
                               }
                               onClick={openEditTitle}
@@ -432,7 +443,7 @@ export default function ListTabs({
                               className={classes.arrow}
                               style={
                                 matches
-                                  ? { fontSize: "1.5rem" }
+                                  ? { fontSize: "1.6rem" }
                                   : { fontSize: "1.8rem" }
                               }
                               onClick={() => moveSavedListUp(index)}
@@ -446,7 +457,7 @@ export default function ListTabs({
                               className={classes.arrow}
                               style={
                                 matches
-                                  ? { fontSize: "1.5rem" }
+                                  ? { fontSize: "1.6rem" }
                                   : { fontSize: "1.8rem" }
                               }
                               onClick={() => moveSavedListDown(index)}

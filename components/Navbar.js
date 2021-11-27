@@ -1,3 +1,4 @@
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { signOut, useSession } from "next-auth/client";
@@ -8,10 +9,10 @@ import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
 import IconButton from "@material-ui/core/IconButton";
+import Popper from "@material-ui/core/Popper";
 import ClickAwayListener from "@material-ui/core/ClickAwayListener";
 import Grow from "@material-ui/core/Grow";
 import Paper from "@material-ui/core/Paper";
-import Popper from "@material-ui/core/Popper";
 import MenuItem from "@material-ui/core/MenuItem";
 import MenuList from "@material-ui/core/MenuList";
 import MenuRoundedIcon from "@material-ui/icons/MenuRounded";
@@ -51,7 +52,6 @@ const useStyles = makeStyles((theme) => ({
   },
   menu: {
     marginLeft: theme.spacing(1.5),
-    padding: 0,
   },
   avatar: {
     borderRadius: "50%",
@@ -74,8 +74,8 @@ export default function Navbar() {
   const [session, loading] = useSession();
   const user = session?.user;
 
-  const [menuOpen, setMenuOpen] = React.useState(false);
-  const anchorRef = React.useRef(null);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const anchorRef = useRef(null);
 
   const handleMenuToggle = () => {
     setMenuOpen((prevOpen) => !prevOpen);
@@ -100,8 +100,8 @@ export default function Navbar() {
   };
 
   // Return focus to button when menu is closed
-  const prevOpen = React.useRef(menuOpen);
-  React.useEffect(() => {
+  const prevOpen = useRef(menuOpen);
+  useEffect(() => {
     if (prevOpen.current === true && menuOpen === false) {
       anchorRef.current.focus();
     }
@@ -117,6 +117,7 @@ export default function Navbar() {
             <Link href="/">
               <a style={{ height: matches ? "40px" : "48px" }}>
                 <Image
+                  priority
                   src="/logo.png"
                   alt=""
                   width={matches ? 40 : 48}
@@ -150,14 +151,16 @@ export default function Navbar() {
                   </Link>
                   <IconButton
                     size="medium"
-                    className={classes.menu}
                     ref={anchorRef}
                     aria-label="menu"
                     aria-controls={menuOpen ? "menu-list" : undefined}
                     aria-haspopup="true"
                     onClick={handleMenuToggle}
+                    className={classes.menu}
+                    style={{ padding: 0 }}
                   >
                     <Image
+                      priority
                       src={user.image ? user.image : "/deadpool.jpg"}
                       alt=""
                       width={48}
@@ -237,12 +240,13 @@ export default function Navbar() {
             <>
               <IconButton
                 size="medium"
-                className={classes.menu}
                 ref={anchorRef}
                 aria-label="menu"
                 aria-controls={menuOpen ? "menu-list" : undefined}
                 aria-haspopup="true"
                 onClick={handleMenuToggle}
+                className={classes.menu}
+                style={{ padding: "10px" }}
               >
                 <MenuRoundedIcon />
               </IconButton>

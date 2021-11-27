@@ -1,3 +1,5 @@
+import { useState, useEffect } from "react";
+import { mutate } from "swr";
 import {
   EmailShareButton,
   FacebookShareButton,
@@ -14,8 +16,8 @@ import {
 } from "react-share";
 
 import { makeStyles } from "@material-ui/core/styles";
-import Typography from "@material-ui/core/Typography";
 import Modal from "@material-ui/core/Modal";
+import Typography from "@material-ui/core/Typography";
 import Backdrop from "@material-ui/core/Backdrop";
 import Fade from "@material-ui/core/Fade";
 import Divider from "@material-ui/core/Divider";
@@ -28,6 +30,8 @@ import FormControlLabel from "@material-ui/core/FormControlLabel";
 import FormControl from "@material-ui/core/FormControl";
 import Collapse from "@material-ui/core/Collapse";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
+
+import CloseModalButton from "../CloseModalButton";
 
 const useStyles = makeStyles((theme) => ({
   modal: {
@@ -74,33 +78,68 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function Share({ listID, uid, title, open, onClose }) {
+export default function Share({ listID, uid, auth, title, open, onClose }) {
   const classes = useStyles();
+  const touch = useMediaQuery("(hover: none)");
 
   const iconSize = 48;
   const textVariant = "caption";
   const shareUrl = `${window.location.origin}/list/${listID}`;
   const editableUrl = `${window.location.origin}/list/${listID}/${uid}`;
-  const [shareLink, setShareLink] = React.useState("");
-  const [editable, setEditable] = React.useState("false");
-  const [copied, setCopied] = React.useState(false);
-  const touch = useMediaQuery("(hover: none)");
+  const [shareLink, setShareLink] = useState("");
+  const [editable, setEditable] = useState("false");
+  const [copied, setCopied] = useState(false);
+  const [updating, setUpdating] = useState(false);
 
-  React.useEffect(() => {
+  useEffect(() => {
     setShareLink(`${window.location.origin}/list/${listID}`);
     setEditable("false");
   }, [listID]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     setCopied(false);
   }, [editable]);
+
+  const contentType = "application/json";
+  const updateShared = async (value) => {
+    try {
+      const res = await fetch(`/api/lists/${listID}`, {
+        method: "PUT",
+        headers: {
+          Accept: contentType,
+          "Content-Type": contentType,
+        },
+        body: JSON.stringify({ shared: value }),
+      });
+
+      if (!res.ok) {
+        throw new Error(res.status);
+      }
+
+      mutate(`/api/lists/shared/${listID}`);
+      setUpdating(false);
+    } catch (error) {
+      console.error(error);
+      setUpdating(false);
+    }
+  };
 
   const handleEditableChange = (ev) => {
     setEditable(ev.target.value);
 
-    ev.target.value === "true"
-      ? setShareLink(editableUrl)
-      : setShareLink(shareUrl);
+    if (ev.target.value === "true") {
+      setShareLink(editableUrl);
+      if (auth) {
+        setUpdating(true);
+        updateShared(true);
+      }
+    } else {
+      setShareLink(shareUrl);
+      // if (auth) {
+      //   setUpdating(true);
+      //   updateShared(false);
+      // }
+    }
   };
 
   const copyLink = () => {
@@ -129,6 +168,7 @@ export default function Share({ listID, uid, title, open, onClose }) {
     >
       <Fade in={open}>
         <div className={classes.share}>
+          <CloseModalButton onClose={onClose} />
           <Typography variant="h5" id="modal-title" className={classes.title}>
             Share
           </Typography>
@@ -192,13 +232,14 @@ export default function Share({ listID, uid, title, open, onClose }) {
                 control={<Radio color="primary" />}
                 label="Read-only"
                 labelPlacement="start"
+                disabled={updating}
               />
               <FormControlLabel
                 value="true"
                 control={<Radio color="secondary" />}
                 label="Editable"
                 labelPlacement="start"
-                disabled={/^Watched$/i.test(title)}
+                disabled={/^Watched$/i.test(title) || !uid || updating}
               />
             </RadioGroup>
           </FormControl>

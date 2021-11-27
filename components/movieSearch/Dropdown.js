@@ -1,5 +1,4 @@
-import React from "react";
-
+import { Fragment } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Popper from "@material-ui/core/Popper";
 import ClickAwayListener from "@material-ui/core/ClickAwayListener";
@@ -97,7 +96,7 @@ export default function Dropdown({ dropdownProps, results }) {
           onKeyDown={handleKeys}
         >
           {results.map((movie, index) => (
-            <React.Fragment key={index}>
+            <Fragment key={index}>
               <ListItem
                 button
                 onClick={() => handleListItemClick(index)}
@@ -106,7 +105,7 @@ export default function Dropdown({ dropdownProps, results }) {
                 <MovieListItem movie={movie} />
               </ListItem>
               <Divider />
-            </React.Fragment>
+            </Fragment>
           ))}
         </Paper>
       </ClickAwayListener>

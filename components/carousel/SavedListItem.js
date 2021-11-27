@@ -21,6 +21,11 @@ const useStyles = makeStyles((theme) => ({
     width: "100%",
     color: "#009688",
   },
+  name: {
+    fontStyle: "italic",
+    fontSize: "0.65rem",
+    lineHeight: 1,
+  },
 }));
 
 export default function SavedListItem({
@@ -37,7 +42,7 @@ export default function SavedListItem({
   var { data: savedList, error } = useSWR(
     listID ? `/api/lists/${listID}` : null
   );
-  if (error) console.error(error);
+  if (error) console.error("savedList - " + error);
 
   return !savedList ? (
     <div className={classes.empty}>
@@ -62,6 +67,9 @@ export default function SavedListItem({
           savedList?.movies?.map((mov) => mov.id)?.includes(movieID) &&
           added &&
           " ✔"}
+        <div className={classes.name}>
+          by {savedList?.user?.name || "Nameless"}
+        </div>
       </Typography>
     </MenuItem>
   );

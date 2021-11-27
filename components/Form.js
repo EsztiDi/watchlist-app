@@ -1,3 +1,4 @@
+import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/router";
 import useSWR, { mutate } from "swr";
 import { useSession } from "next-auth/client";
@@ -58,6 +59,8 @@ export default function Form({
   list,
   setMessage,
   calendar,
+  openSearch2, // For ListPage titlebar
+  setUpdating2, // For ListPage titlebar
   newList = true,
   newTab = false,
 }) {
@@ -82,16 +85,15 @@ export default function Form({
   );
   if (error2) console.error(error2);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (error2) {
       setMessage("This list has been removed.");
     }
     // eslint-disable-next-line
   }, [error2]);
 
-  const newMovie = React.useRef(false);
-  const [updating, setUpdating] = React.useState(false);
-  const [form, setForm] = React.useState({
+  const [updating, setUpdating] = useState(false);
+  const [form, setForm] = useState({
     title: list.title,
     movies: list.movies,
     private: list.private,
@@ -99,7 +101,7 @@ export default function Form({
   });
   var { movies } = form;
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (!newList) {
       setForm({
         title: list.title,
@@ -107,29 +109,11 @@ export default function Form({
         private: list.private,
         emails: savedList ? savedList.emails : list.emails,
       });
-
-      if (newMovie.current) newMovie.current = false;
     }
     // eslint-disable-next-line
   }, [list, savedList]);
 
-  React.useEffect(() => {
-    if (!newList && (form.private !== list.private || movies !== list.movies)) {
-      setUpdating(true);
-      putData({ private: form.private, movies });
-    }
-
-    if (savedList && savedList.title !== form.title) {
-      setUpdating(true);
-      updateSavedList({
-        title: form.title,
-      });
-    }
-
-    // eslint-disable-next-line
-  }, [form.private, form.emails, movies, form.title]);
-
-  React.useEffect(() => {
+  useEffect(() => {
     const beforeRouteHandler = (url) => {
       if (
         router?.pathname !== url &&
@@ -201,16 +185,23 @@ export default function Form({
         throw new Error(res.status);
       }
 
-      await mutate("/api/lists");
-      await mutate(`/api/lists/${id}`);
-      await mutate("/api/lists/saved");
-      await mutate(`/api/lists/saved/${id}`);
+      mutate(`/api/lists/${id}`);
+      mutate(`/api/lists/saved/${id}`);
+      if (
+        newForm.hasOwnProperty("position") ||
+        newForm.hasOwnProperty("title")
+      ) {
+        mutate("/api/lists");
+        mutate("/api/lists/saved");
+      }
       setTimeout(() => {
         setUpdating(false);
+        if (setUpdating2) setUpdating2(false);
       }, 500);
     } catch (error) {
       setMessage(`${error.message} - Failed to update list, please try again.`);
       setUpdating(false);
+      if (setUpdating2) setUpdating2(false);
     }
   };
 
@@ -229,16 +220,20 @@ export default function Form({
         throw new Error(res.status);
       }
 
-      await mutate("/api/lists");
-      await mutate(`/api/lists/${id}`);
-      await mutate("/api/lists/saved");
-      await mutate(`/api/lists/saved/${id}`);
+      mutate(`/api/lists/${id}`);
+      mutate(`/api/lists/saved/${id}`);
+      if (list.hasOwnProperty("position") || list.hasOwnProperty("title")) {
+        mutate("/api/lists");
+        mutate("/api/lists/saved");
+      }
       setTimeout(() => {
         setUpdating(false);
+        if (setUpdating2) setUpdating2(false);
       }, 500);
     } catch (error) {
       setMessage(`${error.message} - Failed to update list, please try again.`);
       setUpdating(false);
+      if (setUpdating2) setUpdating2(false);
     }
   };
 
@@ -298,11 +293,6 @@ export default function Form({
         : target.value;
     const name = target.name;
 
-    setForm({
-      ...form,
-      [name]: value,
-    });
-
     if (name === "emails" && target.checked) {
       setUpdating(true);
       postEmail({
@@ -312,22 +302,33 @@ export default function Form({
         uid: uid ? uid : "",
         savedList: auth ? false : true,
       });
-      !newList
-        ? auth
-          ? putData({ emails: value })
-          : updateSavedList({ emails: value })
-        : null;
     } else if (name === "emails" && !target.checked) {
       setUpdating(true);
       deleteEmail({
         email: email,
         listid: id ? id : "",
       });
-      !newList
-        ? auth
-          ? putData({ emails: value })
-          : updateSavedList({ emails: value })
-        : null;
+    }
+    if (!newList) {
+      switch (name) {
+        case "private":
+          setUpdating(true);
+          putData({ private: value });
+          break;
+        case "emails":
+          setUpdating(true);
+          auth
+            ? putData({ emails: value })
+            : updateSavedList({ emails: value });
+          break;
+        default:
+          console.error("HandleChange has missing 'name'");
+      }
+    } else {
+      setForm({
+        ...form,
+        [name]: value,
+      });
     }
   };
 
@@ -347,7 +348,6 @@ export default function Form({
 
     var ids = movies.map((mov) => mov.id);
     if (ids?.includes(movie.id)) {
-      newMovie.current = false;
       setMessage("It's already on the list \\(^-^)/");
       if (newTab || newList) {
         const yOffset = -56 - 12 + 1;
@@ -365,46 +365,33 @@ export default function Form({
         window.scrollTo({ top: 0, behavior: "smooth" });
       }
     } else {
-      // If adding to the "Watched" list, change movie to "watched"
-      if (!newList && /^Watched$/i.test(form.title)) {
-        try {
-          const res = await fetch(`/api/lists/watched`, {
-            method: "POST",
-            headers: {
-              Accept: contentType,
-              "Content-Type": contentType,
-            },
-            body: JSON.stringify({
-              watched: "true",
-              movieID: movie.id,
-              movie,
-              listID: id,
-            }),
-          });
-
-          if (!res.ok) {
-            throw new Error(res.status);
-          }
-        } catch (error) {
-          console.error(error);
-        }
+      if (!newList) {
+        setUpdating(true);
+        if (setUpdating2) setUpdating2(true);
+        putData({ movies: [...movies, movie] });
       } else {
         setForm({
           ...form,
           movies: [...movies, movie],
         });
       }
-      if (!newList) newMovie.current = true;
     }
   };
 
   const deleteMovie = (index) => {
-    setForm({
-      ...form,
-      movies: [...movies.filter((movie, i) => i !== index)],
-    });
-  };
+    let updatedMovies = [...movies.filter((movie, i) => i !== index)];
 
+    if (!newList) {
+      setUpdating(true);
+      if (setUpdating2) setUpdating2(true);
+      putData({ movies: updatedMovies });
+    } else {
+      setForm({
+        ...form,
+        movies: updatedMovies,
+      });
+    }
+  };
   const moveMovie = (action, index, position) => {
     // Getting adjacent position
     switch (action) {
@@ -420,12 +407,15 @@ export default function Form({
 
     let updatedMovies = [
       ...movies
-        .sort((a, b) => a.position - b.position)
-        .map((movie, i) => {
+        .sort((a, b) => b.position - a.position)
+        .map((movie, i, arr) => {
           switch (action) {
             case "top":
-              if (movie.position < position) ++movie.position;
-              if (i === index) movie.position = 0;
+              if (i === index) {
+                movie.position =
+                  movies.sort((a, b) => b.position - a.position)[0].position +
+                  1;
+              }
               break;
             case "up":
               if (i === index - 1) movie.position = position;
@@ -436,9 +426,8 @@ export default function Form({
               if (i === index + 1) movie.position = position;
               break;
             case "bottom":
-              if (i === index) {
-                movie.position = movies[movies.length - 1].position + 1;
-              }
+              if (movie.position < position) ++movie.position;
+              if (i === index) movie.position = 0;
               break;
 
             default:
@@ -447,11 +436,16 @@ export default function Form({
           return movie;
         }),
     ];
-
-    setForm({
-      ...form,
-      movies: updatedMovies,
-    });
+    if (!newList) {
+      setUpdating(true);
+      if (setUpdating2) setUpdating2(true);
+      putData({ movies: updatedMovies });
+    } else {
+      setForm({
+        ...form,
+        movies: updatedMovies,
+      });
+    }
   };
 
   return !newList ? (
@@ -478,9 +472,9 @@ export default function Form({
         addMovie={addMovie}
         deleteMovie={deleteMovie}
         moveMovie={moveMovie}
-        addingMovie={newMovie.current}
         calendar={calendar}
         emails={form.emails}
+        openSearch2={openSearch2}
       />
     </>
   ) : (
@@ -515,9 +509,9 @@ export default function Form({
             <Grid item className={classes.relative}>
               <MovieSearch
                 addMovie={addMovie}
-                addingMovie={newMovie.current}
                 newList={newList}
                 setUpdating={setUpdating}
+                watched={/^Watched$/i.test(form.title).toString()}
               />
             </Grid>
             {movies.length > 0 && (

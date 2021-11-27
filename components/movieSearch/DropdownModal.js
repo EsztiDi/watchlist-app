@@ -1,5 +1,4 @@
-import React from "react";
-
+import { Fragment } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Modal from "@material-ui/core/Modal";
 import Backdrop from "@material-ui/core/Backdrop";
@@ -10,6 +9,7 @@ import Divider from "@material-ui/core/Divider";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
 
 import MovieListItem from "./MovieListItem";
+import CloseModalButton from "../CloseModalButton";
 
 const useStyles = makeStyles((theme) => ({
   modal: {
@@ -17,10 +17,14 @@ const useStyles = makeStyles((theme) => ({
     alignItems: "center",
     justifyContent: "center",
   },
+  container: {
+    position: "relative",
+    height: "80%",
+  },
   list: {
     paddingTop: 0,
     paddingBottom: 0,
-    height: "80%",
+    height: "100%",
     border: "2px solid #F7C550",
     borderRadius: "4px",
     boxShadow: theme.shadows[5],
@@ -70,25 +74,26 @@ export default function DropdownModal({ dropdownProps, results }) {
       }}
     >
       <Fade in={open}>
-        <Paper
-          id="movie-list"
-          style={matches ? { width: "95%" } : { width: "80%" }}
-          className={classes.list}
-          onClick={handleClose}
+        <div
+          style={matches ? { width: "96%" } : { width: "80%" }}
+          className={classes.container}
         >
-          {results.map((movie, index) => (
-            <React.Fragment key={index}>
-              <ListItem
-                button
-                onClick={() => handleListItemClick(index)}
-                className={matches ? classes.itemMobile : undefined}
-              >
-                <MovieListItem movie={movie} />
-              </ListItem>
-              <Divider />
-            </React.Fragment>
-          ))}
-        </Paper>
+          <CloseModalButton onClose={handleClose} />
+          <Paper id="movie-list" className={classes.list} onClick={handleClose}>
+            {results.map((movie, index) => (
+              <Fragment key={index}>
+                <ListItem
+                  button
+                  onClick={() => handleListItemClick(index)}
+                  className={matches ? classes.itemMobile : undefined}
+                >
+                  <MovieListItem movie={movie} />
+                </ListItem>
+                <Divider />
+              </Fragment>
+            ))}
+          </Paper>
+        </div>
       </Fade>
     </Modal>
   );

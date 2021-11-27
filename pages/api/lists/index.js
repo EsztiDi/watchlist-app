@@ -6,18 +6,24 @@ export default async function handler(req, res) {
   const { method } = req;
   const session = await getSession({ req });
 
-  await dbConnect();
+  var db = await dbConnect();
 
   switch (method) {
     case "GET":
       try {
-        const lists = await Watchlist.find(
-          { "user.email": session?.user?.email },
-          "_id title movies position"
-        ).sort({
-          position: -1,
-        });
-        res.status(200).json({ success: true, data: lists });
+        if (db) {
+          const lists = await Watchlist.find(
+            { "user.email": session?.user?.email },
+            "_id title movies position"
+          )
+            .sort({
+              position: -1,
+            })
+            .catch((err) => console.error(err));
+          res.status(200).json({ success: true, data: lists });
+        } else {
+          res.status(200).json({ success: true, data: [] });
+        }
       } catch (err) {
         console.error(
           `Lists not found -  user: ${JSON.stringify(
@@ -32,16 +38,18 @@ export default async function handler(req, res) {
         const watchedList = await Watchlist.findOne({
           "user.email": session?.user?.email,
           title: /^Watched$/i,
-        });
+        }).catch((err) => console.error(err));
         if (watchedList && /^Watched$/i.test(req.body.title)) {
           res.statusMessage = `You already have a Watched list`;
           res.status(400).end();
         } else {
           const lists = await Watchlist.find({
             "user.email": session?.user?.email,
-          }).sort({
-            position: -1,
-          });
+          })
+            .sort({
+              position: -1,
+            })
+            .catch((err) => console.error(err));
 
           if (lists.length > 0) {
             req.body.position = lists[0].position + 1;
@@ -56,24 +64,26 @@ export default async function handler(req, res) {
             await Watchlist.find({
               "user.email": session?.user?.email,
               "movies.watched": "true",
-            }).then(async (lists) => {
-              var movies = lists.reduce(
-                (list1, list2) => [...list1, ...list2.movies],
-                []
-              );
-              var uniques = movies
-                .filter((movie) => movie.watched === "true")
-                ?.filter(
-                  (movie, index, array) =>
-                    array.findIndex((el) => el.id === movie.id) === index
+            })
+              .then(async (lists) => {
+                var movies = lists.reduce(
+                  (list1, list2) => [...list1, ...list2.movies],
+                  []
                 );
-              if (uniques.length > 0) {
-                req.body.movies = [...req.body.movies, ...uniques].filter(
-                  (movie, index, array) =>
-                    array.findIndex((el) => el.id === movie.id) === index
-                );
-              }
-            });
+                var uniques = movies
+                  .filter((movie) => movie.watched === "true")
+                  ?.filter(
+                    (movie, index, array) =>
+                      array.findIndex((el) => el.id === movie.id) === index
+                  );
+                if (uniques.length > 0) {
+                  req.body.movies = [...req.body.movies, ...uniques].filter(
+                    (movie, index, array) =>
+                      array.findIndex((el) => el.id === movie.id) === index
+                  );
+                }
+              })
+              .catch((err) => console.error(err));
           }
 
           const list = await Watchlist.create(req.body).catch((err) =>

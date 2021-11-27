@@ -23,9 +23,4 @@ module.exports = {
       "localhost",
     ],
   },
-  // Temporary fix for react import
-  webpack: (config, { buildId, dev, isServer, defaultLoaders, webpack }) => {
-    config.plugins.push(new webpack.ProvidePlugin({ React: "react" }));
-    return config;
-  },
 };

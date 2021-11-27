@@ -14,7 +14,7 @@ export default function Offline() {
         <Typography variant="h6" style={{ paddingBottom: "1rem" }}>
           Come back when you&apos;re online.
         </Typography>
-        <Image src="/dog_meme.jpg" alt="" width={360} height={270} />
+        <Image priority src="/dog_meme.jpg" alt="" width={360} height={270} />
       </div>
     </>
   );

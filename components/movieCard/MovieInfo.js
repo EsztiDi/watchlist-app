@@ -1,3 +1,4 @@
+import { useState, useEffect, useRef } from "react";
 import { useSession } from "next-auth/client";
 
 import getLocalDate from "../../utils/getLocalDate";
@@ -6,9 +7,10 @@ import { makeStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 import StarRoundedIcon from "@material-ui/icons/StarRounded";
 import TheatersRoundedIcon from "@material-ui/icons/TheatersRounded";
-import PlayArrowRoundedIcon from "@material-ui/icons/PlayArrowRounded";
-import Button from "@material-ui/core/Button";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
+
+import Cast from "./Cast";
+import JustWatchLink from "./JustWatchLink";
 
 const useStyles = makeStyles((theme) => ({
   info: {
@@ -36,35 +38,6 @@ const useStyles = makeStyles((theme) => ({
     color: theme.palette.primary.main,
     verticalAlign: "text-top",
   },
-  hidden: {
-    whiteSpace: "nowrap",
-    overflow: "hidden",
-    position: "relative",
-    fontWeight: "normal",
-  },
-  more: {
-    position: "absolute",
-    right: 0,
-    padding: "3px",
-    backgroundColor: "#fff",
-    boxShadow: "none",
-    minWidth: 0,
-    fontWeight: "normal",
-    lineHeight: 1.6,
-    "&:hover": {
-      backgroundColor: "#f5f5f5",
-    },
-  },
-  less: {
-    padding: "3px",
-    backgroundColor: "#fff",
-    boxShadow: "none",
-    minWidth: "45px",
-    lineHeight: 1.2,
-    "&:hover": {
-      backgroundColor: "#f5f5f5",
-    },
-  },
 }));
 
 export default function MovieInfo({ movie, listID, loc, user }) {
@@ -82,51 +55,21 @@ export default function MovieInfo({ movie, listID, loc, user }) {
       runtime,
     } = details;
   }
+  var this_year = new Date().getFullYear();
+  var end_year;
+  if (release_date && media_type === "tv") {
+    end_year = new Date(release_date).getFullYear();
+  }
+
   release_date = release_date || "No date";
   var { imdb_id } = external_ids;
-  var countries = [
-    "AU",
-    "BG",
-    "CA",
-    "DK",
-    "GR",
-    "HK",
-    "HU",
-    "ID",
-    "IE",
-    "IN",
-    "LT",
-    "LV",
-    "MY",
-    "NL",
-    "NO",
-    "NZ",
-    "PH",
-    "PL",
-    "RO",
-    "SE",
-    "SG",
-    "TH",
-    "TW",
-    "US",
-    "ZA",
-  ];
-  var justWatchLink = `https://www.justwatch.com/${
-    loc === "GB" || locale === "GB"
-      ? "UK"
-      : countries.includes(loc)
-      ? loc
-      : countries.includes(locale)
-      ? locale
-      : "us"
-  }/search?q=${encodeURIComponent(title)}`;
 
   const classes = useStyles();
   const matches = useMediaQuery("(max-width:768px)");
   const matches2 = useMediaQuery("(max-width:500px)");
   const contentType = "application/json";
-  const isMounted = React.useRef(null);
-  React.useEffect(() => {
+  const isMounted = useRef(null);
+  useEffect(() => {
     isMounted.current = true;
     return () => {
       isMounted.current = false;
@@ -136,21 +79,13 @@ export default function MovieInfo({ movie, listID, loc, user }) {
   const [session] = useSession();
   const auth = user ? session && user?.email === session?.user?.email : false;
 
-  const [date, setDate] = React.useState("");
+  const [date, setDate] = useState("");
+  var justWatch =
+    release_date && year >= this_year
+      ? new Date(date || release_date) < new Date()
+      : true;
 
-  // For directors and cast "more" buttons
-  const [overflows1, setOverflows1] = React.useState(false);
-  const [overflows2, setOverflows2] = React.useState(false);
-  const [visible1, setVisible1] = React.useState(false);
-  const [visible2, setVisible2] = React.useState(false);
-
-  React.useEffect(() => {
-    if (visible1) handleLess1();
-    if (visible2) handleLess2();
-    // eslint-disable-next-line
-  }, [id, listID]);
-
-  React.useEffect(() => {
+  useEffect(() => {
     // Check if locale is different and get local release date
     const checkProps = async () => {
       if (loc && locale !== loc) {
@@ -176,38 +111,6 @@ export default function MovieInfo({ movie, listID, loc, user }) {
     // eslint-disable-next-line
   }, [auth, loc]);
 
-  React.useEffect(() => {
-    var list1 = document.getElementById(`${id}-directors`);
-    var list2 = document.getElementById(`${id}-cast`);
-    if (isMounted.current) setOverflows1(list1.offsetWidth < list1.scrollWidth);
-    if (isMounted.current) setOverflows2(list2.offsetWidth < list2.scrollWidth);
-  }, [id, listID, matches, matches2]);
-
-  const handleMore1 = () => {
-    setOverflows1(false);
-    setVisible1(true);
-    var list1 = document.getElementById(`${id}-directors`);
-    list1.style.whiteSpace = "break-spaces";
-  };
-  const handleMore2 = () => {
-    setOverflows2(false);
-    setVisible2(true);
-    var list2 = document.getElementById(`${id}-cast`);
-    list2.style.whiteSpace = "break-spaces";
-  };
-  const handleLess1 = () => {
-    setOverflows1(true);
-    setVisible1(false);
-    var list1 = document.getElementById(`${id}-directors`);
-    if (list1) list1.style.whiteSpace = "nowrap";
-  };
-  const handleLess2 = () => {
-    setOverflows2(true);
-    setVisible2(false);
-    var list2 = document.getElementById(`${id}-cast`);
-    if (list2) list2.style.whiteSpace = "nowrap";
-  };
-
   return (
     <>
       <Typography
@@ -223,7 +126,13 @@ export default function MovieInfo({ movie, listID, loc, user }) {
         }
       >
         {media_type === "tv" ? (
-          `TV series, ${year}–`
+          `Series, ${year}${
+            end_year < this_year && year !== end_year
+              ? "–" + end_year
+              : year !== end_year
+              ? "–"
+              : ""
+          }`
         ) : (
           <span className={classes.media}>{media_type || "–"}</span>
         )}
@@ -283,78 +192,24 @@ export default function MovieInfo({ movie, listID, loc, user }) {
             <TheatersRoundedIcon className={classes.miniIcon} /> IMDb
           </a>
         )}{" "}
-        <a
-          href={justWatchLink}
-          target="_blank"
-          rel="noopener noreferrer"
-          className={classes.external}
-        >
-          <PlayArrowRoundedIcon className={classes.miniIcon} />
-          JustWatch
-        </a>
-      </Typography>
-      <Typography
-        id={`${id}-directors`}
-        className={classes.hidden}
-        style={matches2 ? { fontSize: "0.8rem" } : { fontSize: "0.95rem" }}
-      >
-        {media_type === "tv" ? <b>Created by: </b> : <b>Director: </b>}
-        {creators || directors || "-"}
-        {overflows1 && (
-          <Button
-            size="small"
-            className={classes.more}
-            style={matches2 ? { fontSize: "0.6rem" } : { fontSize: "0.7rem" }}
-            onClick={handleMore1}
-          >
-            ...More
-          </Button>
-        )}
-        {visible1 && (
-          <>
-            <br />
-            <Button
-              size="small"
-              className={classes.less}
-              style={matches2 ? { fontSize: "0.7rem" } : { fontSize: "0.8rem" }}
-              onClick={handleLess1}
-            >
-              Less
-            </Button>
-          </>
+        {justWatch && (
+          <JustWatchLink
+            loc={loc}
+            locale={locale}
+            title={title}
+            classes={{ external: classes.external, miniIcon: classes.miniIcon }}
+          />
         )}
       </Typography>
-      <Typography
-        id={`${id}-cast`}
-        className={classes.hidden}
-        style={matches2 ? { fontSize: "0.8rem" } : { fontSize: "0.95rem" }}
-      >
-        <b>Cast: </b>
-        {cast || "-"}
-        {overflows2 && (
-          <Button
-            size="small"
-            className={classes.more}
-            style={matches2 ? { fontSize: "0.6rem" } : { fontSize: "0.7rem" }}
-            onClick={handleMore2}
-          >
-            ...More
-          </Button>
-        )}
-        {visible2 && (
-          <>
-            <br />
-            <Button
-              size="small"
-              className={classes.less}
-              style={matches2 ? { fontSize: "0.7rem" } : { fontSize: "0.8rem" }}
-              onClick={handleLess2}
-            >
-              Less
-            </Button>
-          </>
-        )}
-      </Typography>
+      <Cast
+        variant="directors"
+        media_type={media_type}
+        creators={creators}
+        directors={directors}
+        id={id}
+        listID={listID}
+      />
+      <Cast variant="cast" cast={cast} id={id} listID={listID} />
     </>
   );
 }

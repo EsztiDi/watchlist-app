@@ -1,6 +1,6 @@
+import { useState, useEffect } from "react";
 import Head from "next/head";
 import Image from "next/image";
-import Link from "next/link";
 import { useRouter } from "next/router";
 import { useSession } from "next-auth/client";
 import useSWR, { mutate } from "swr";
@@ -15,11 +15,11 @@ import StarBorderRoundedIcon from "@material-ui/icons/StarBorderRounded";
 import StarRoundedIcon from "@material-ui/icons/StarRounded";
 import Snackbar from "@material-ui/core/Snackbar";
 import Alert from "@material-ui/lab/Alert";
-import FormatListBulletedRoundedIcon from "@material-ui/icons/FormatListBulletedRounded";
-import TodayRoundedIcon from "@material-ui/icons/TodayRounded";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
 
 import Form from "./Form";
+import AddMovieButton from "./tabs/buttons/AddMovieButton";
+import ViewButton from "./tabs/buttons/ViewButton";
 
 const useStyles = makeStyles((theme) => ({
   containerMobile: {
@@ -36,26 +36,21 @@ const useStyles = makeStyles((theme) => ({
   titleContainer: {
     margin: theme.spacing(1.5),
     padding: theme.spacing(1),
-    "& > h4": {
-      display: "flex",
-      justifyContent: "center",
-      alignItems: "center",
-      "& > span": {
-        flexGrow: 1,
-      },
-    },
   },
   titleContainerMobile: {
     margin: 0,
     marginTop: theme.spacing(1.5),
     padding: theme.spacing(0.5),
-    "& > h4": {
-      display: "flex",
-      justifyContent: "center",
-      alignItems: "center",
-      "& > span": {
-        flexGrow: 1,
-      },
+  },
+  title: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    flexWrap: "wrap",
+    gap: "4px",
+    "& > span": {
+      flexGrow: 1,
+      overflowWrap: "anywhere",
     },
   },
   backdrop: {
@@ -71,16 +66,18 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(0.5),
   },
   star: {
-    fontSize: "2.1rem",
+    fontSize: "2rem",
     color: theme.palette.primary.light,
     opacity: 0.75,
+    transition: "color 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms",
     "&:hover": {
       color: theme.palette.primary.main,
     },
   },
   topIcon: {
-    fontSize: "1.9rem",
+    fontSize: "1.7rem",
     color: theme.palette.primary.light,
+    transition: "color 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms",
     "&:hover": {
       color: theme.palette.primary.main,
     },
@@ -102,13 +99,16 @@ export default function ListPage({
   const matches = useMediaQuery("(max-width:1024px)");
   const matches2 = useMediaQuery("(max-width:768px)");
 
-  var movies = (list) => list?.movies?.sort((a, b) => a.position - b.position);
-  const [updating, setUpdating] = React.useState(false);
-  const [backdrop, setBackdrop] = React.useState("");
-  const [alert, setAlert] = React.useState("");
+  var movies = (list) => list?.movies?.sort((a, b) => b.position - a.position);
+  const [updating2, setUpdating2] = useState(false);
+  const [backdrop, setBackdrop] = useState("");
+  const [alert, setAlert] = useState("");
 
+  const { data: shared, error: error3 } = useSWR(
+    id[0] ? `/api/lists/shared/${id[0]}` : null
+  );
   const { data: list, error } = useSWR(id[0] ? `/api/lists/${id[0]}` : null, {
-    refreshInterval: 2000,
+    refreshInterval: shared ? 2000 : 0,
     initialData: initialList, // For og metatags
   });
   const { data: savedLists, error: error2 } = useSWR(
@@ -116,6 +116,7 @@ export default function ListPage({
   );
   if (error) console.error(error);
   if (error2) console.error(error2);
+  if (error3) console.error(error3);
 
   const auth = session && list?.user?.email === session?.user?.email;
   const saved = savedLists?.map((list) => list.listid)?.includes(id[0]);
@@ -124,7 +125,7 @@ export default function ListPage({
   const uid = new Date(list?.createdAt).getTime().toString().substring(0, 12);
   const editable = id.length > 1 ? id[1] === uid : false;
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (
       list?.movies &&
       list.movies.length > 0 &&
@@ -136,7 +137,7 @@ export default function ListPage({
     }
   }, [list]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (error) {
       setMessage(error.message);
       router?.push("/");
@@ -166,11 +167,11 @@ export default function ListPage({
       mutate("/api/lists/saved", (lists) => {
         return [...lists, list];
       });
-      setUpdating(false);
+      setUpdating2(false);
       setAlert("List saved!");
     } catch (error) {
       setMessage(`${error.message} - Failed to add list, please try again.`);
-      setUpdating(false);
+      setUpdating2(false);
     }
   };
 
@@ -185,12 +186,18 @@ export default function ListPage({
       }
 
       mutate("/api/lists/saved");
-      setUpdating(false);
+      setUpdating2(false);
       setAlert("List removed");
     } catch (error) {
       setMessage(`${error.message} - Failed to delete list.`);
-      setUpdating(false);
+      setUpdating2(false);
     }
+  };
+
+  // For AddMovieButton
+  const [openSearch2, setOpenSearch] = useState(false);
+  const handleOpenSearch2 = () => {
+    setOpenSearch((prev) => !prev);
   };
 
   const handleButtonClick = () => {
@@ -198,7 +205,7 @@ export default function ListPage({
       router?.push("/login");
     }
     if (session) {
-      setUpdating(true);
+      setUpdating2(true);
       if (saved) {
         deleteList(id[0]);
       } else {
@@ -206,7 +213,7 @@ export default function ListPage({
           listid: id[0],
           uid: editable && !/^Watched$/i.test(list.title) ? uid : "",
           title: list?.title,
-          creator: { name: list?.user.name, email: list?.user.email },
+          creator: list?.user,
           emails: false,
         });
       }
@@ -249,7 +256,13 @@ export default function ListPage({
         >
           {Object.keys(list).length !== 0 && backdrop.length > 0 && (
             <div className={classes.backdrop} data-background="backdrop">
-              <Image layout="fill" objectFit="cover" src={backdrop} alt="" />
+              <Image
+                priority
+                layout="fill"
+                objectFit="cover"
+                src={backdrop}
+                alt=""
+              />
             </div>
           )}
           {alert && (
@@ -281,14 +294,14 @@ export default function ListPage({
                 matches2 ? classes.titleContainerMobile : classes.titleContainer
               }
             >
-              <Typography variant="h4">
+              <Typography variant="h4" className={classes.title}>
                 {auth !== undefined &&
                   !auth &&
                   (saved ? (
                     <IconButton
                       aria-label="remove list"
                       title="Remove list"
-                      disabled={updating}
+                      disabled={updating2}
                       onClick={handleButtonClick}
                       className={classes.button}
                     >
@@ -298,53 +311,55 @@ export default function ListPage({
                     <IconButton
                       aria-label="save list"
                       title="Save list"
-                      disabled={updating}
+                      disabled={updating2}
                       onClick={handleButtonClick}
                       className={classes.button}
                     >
                       <StarBorderRoundedIcon className={classes.star} />
                     </IconButton>
                   ))}
+                {updating2 && <CircularProgress size="1.5rem" thickness={5} />}
                 <span>{list.title}</span>
-                {calendar ? (
-                  <Link
-                    href={editable ? `/list/${id[0]}/${uid}` : `/list/${id[0]}`}
-                    passHref
-                  >
-                    <IconButton
-                      aria-label="list view"
-                      title="List view"
-                      className={classes.button}
-                    >
-                      <FormatListBulletedRoundedIcon
-                        className={classes.topIcon}
-                      />
-                    </IconButton>
-                  </Link>
-                ) : (
-                  <Link
-                    href={
-                      editable
-                        ? `/list/calendar/${id[0]}/${uid}`
-                        : `/list/calendar/${id[0]}`
-                    }
-                    passHref
-                  >
-                    <IconButton
-                      aria-label="calendar view"
-                      title="Calendar view"
-                      className={classes.button}
-                    >
-                      <TodayRoundedIcon className={classes.topIcon} />
-                    </IconButton>
-                  </Link>
-                )}
+                <div>
+                  {editable && !calendar && (
+                    <AddMovieButton
+                      openSearch={openSearch2}
+                      handleOpenSearch={handleOpenSearch2}
+                    />
+                  )}
+                  {calendar ? (
+                    <ViewButton
+                      newTab={true}
+                      listID={id[0]}
+                      editable={editable}
+                      uid={uid}
+                      classes={{
+                        button: classes.button,
+                        topIcon: classes.topIcon,
+                      }}
+                    />
+                  ) : (
+                    <ViewButton
+                      newTab={true}
+                      calendar={true}
+                      listID={id[0]}
+                      editable={editable}
+                      uid={uid}
+                      classes={{
+                        button: classes.button,
+                        topIcon: classes.topIcon,
+                      }}
+                    />
+                  )}
+                </div>
               </Typography>
             </Paper>
             <Form
               list={list ? list : initialList}
               setMessage={setMessage}
               calendar={calendar}
+              openSearch2={openSearch2}
+              setUpdating2={setUpdating2}
               newList={false}
               newTab={true}
             />
