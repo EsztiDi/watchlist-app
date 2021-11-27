@@ -7,6 +7,7 @@ import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
+import { Typography } from "@material-ui/core";
 
 const useStyles = makeStyles((theme) => ({
   emailDialog: {
@@ -17,6 +18,9 @@ const useStyles = makeStyles((theme) => ({
       padding: `${theme.spacing(1)}px ${theme.spacing(3)}px ${theme.spacing(
         2
       )}px`,
+    },
+    "& h6": {
+      paddingTop: theme.spacing(1),
     },
   },
   buttons: {
@@ -63,6 +67,9 @@ export default function EmailLogin({ open, onOpenEmail, signIn, setMessage }) {
             fullWidth
             onChange={handleChange}
           />
+          <Typography variant="subtitle1">
+            We&apos;ll email you a magic link for password-free login.
+          </Typography>
         </DialogContent>
         <DialogActions className={classes.buttons}>
           <Button
@@ -81,7 +88,7 @@ export default function EmailLogin({ open, onOpenEmail, signIn, setMessage }) {
             disableFocusRipple
             type="submit"
           >
-            {matches ? "Send link" : "Send login link"}
+            Send link
           </Button>
         </DialogActions>
       </form>
