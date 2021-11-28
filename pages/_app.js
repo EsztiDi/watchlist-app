@@ -35,7 +35,6 @@ const theme = createTheme({
       letterSpacing: "1px",
       textAlign: "center",
       cursor: "default",
-      userSelect: "none",
     },
     h6: {
       cursor: "default",
@@ -246,10 +245,7 @@ export default function MyApp({ Component, pageProps }) {
           name="viewport"
           content="minimum-scale=1, initial-scale=1, width=device-width"
         />
-        <link
-          rel="manifest"
-          href={`${process.env.BASE_URL}/site.webmanifest`}
-        />
+        <link rel="manifest" href={`${process.env.BASE_URL}/manifest.json`} />
         <link rel="shortcut icon" href="/favicon.ico" />
         <link
           rel="apple-touch-icon"
