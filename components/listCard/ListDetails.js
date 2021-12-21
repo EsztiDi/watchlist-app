@@ -26,42 +26,38 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(1),
     paddingTop: theme.spacing(1.5),
     color: "#fff",
-    "& > a > h6": {
-      display: "flex",
-      flexWrap: "wrap",
-      alignItems: "center",
-      justifyContent: "center",
-      cursor: "pointer",
-      transition: "color 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms",
-      "&:hover": {
-        color: theme.palette.primary.light,
-      },
+  },
+  title: {
+    cursor: "pointer",
+    transition: "color 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms",
+    "&:hover": {
+      color: theme.palette.primary.light,
     },
-    "& > ul": {
-      fontSize: "0.95rem",
-      textAlign: "left",
-      paddingInlineStart: "24px",
-      maxHeight: "53.5%",
-      overflow: "auto",
-      "&::-webkit-scrollbar": {
-        width: "6px",
-        height: "6px",
-        background: "#F0F0F0",
-        borderRadius: "100px",
-      },
-      "&::-webkit-scrollbar-track": {
-        background: "#F0F0F0",
-        borderRadius: "100px",
-      },
-      "&::-webkit-scrollbar-thumb": {
-        background: "#CECECE",
-        borderRadius: "100px",
-      },
+  },
+  movies: {
+    fontSize: "0.95rem",
+    textAlign: "left",
+    paddingInlineStart: "24px",
+    maxHeight: "53.5%",
+    overflow: "auto",
+    "&::-webkit-scrollbar": {
+      width: "6px",
+      height: "6px",
+      background: "#F0F0F0",
+      borderRadius: "100px",
     },
-    "& > button": {
-      margin: `auto 0 ${theme.spacing(1)}px`,
-      fontWeight: "bold",
+    "&::-webkit-scrollbar-track": {
+      background: "#F0F0F0",
+      borderRadius: "100px",
     },
+    "&::-webkit-scrollbar-thumb": {
+      background: "#CECECE",
+      borderRadius: "100px",
+    },
+  },
+  button: {
+    margin: `auto 0 ${theme.spacing(1)}px`,
+    fontWeight: "bold",
   },
   name: {
     fontStyle: "italic",
@@ -74,10 +70,6 @@ const useStyles = makeStyles((theme) => ({
   avatar: {
     borderRadius: "50%",
   },
-  // open: {
-  //   fontSize: "1rem",
-  //   marginLeft: theme.spacing(0.5),
-  // },
 }));
 
 export default function ListDetails({
@@ -178,10 +170,8 @@ export default function ListDetails({
     >
       <Link href={`/list/${listID}`} passHref>
         <a>
-          {/* target="_blank" rel="noopener noreferrer" */}
-          <Typography variant="h6">
+          <Typography variant="h6" className={classes.title}>
             {title}
-            {/* <OpenInNewRoundedIcon className={classes.open} /> */}
           </Typography>
         </a>
       </Link>
@@ -197,7 +187,7 @@ export default function ListDetails({
           />
         )}
       </Typography>
-      <ul>
+      <ul className={classes.movies}>
         {movies?.map((movie, index) => {
           return <li key={index}>{movie.title}</li>;
         })}
@@ -209,6 +199,7 @@ export default function ListDetails({
           variant="contained"
           disabled={updating}
           onClick={handleButtonClick}
+          className={classes.button}
         >
           {updating ? (
             <CircularProgress size="1.5rem" thickness={5} />

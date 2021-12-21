@@ -14,16 +14,12 @@ export default class MyDocument extends Document {
             crossOrigin=""
           />
           <link
-            href="https://fonts.googleapis.com/css2?family=Bangers&family=Carter+One&family=Roboto:wght@300;400;500;700;900&display=swap"
             rel="stylesheet"
+            href="https://fonts.googleapis.com/css2?family=Bangers&family=Carter+One&family=Roboto:wght@300;400;500;700;900&display=swap"
           />
           <link
             rel="stylesheet"
             href="https://fonts.googleapis.com/icon?family=Material+Icons"
-          />
-          <link
-            rel="stylesheet"
-            href="https://cdnjs.cloudflare.com/ajax/libs/intro.js/4.2.2/introjs.min.css"
           />
         </Head>
         <body>

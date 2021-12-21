@@ -1,6 +1,40 @@
 const withPWA = require("next-pwa");
 
 module.exports = withPWA({
+  async headers() {
+    return [
+      {
+        // Apply headers to all routes
+        source: "/(.*)",
+        headers: [
+          {
+            key: "X-XSS-Protection",
+            value: "1; mode=block",
+          },
+          {
+            key: "X-Frame-Options",
+            value: "SAMEORIGIN",
+          },
+          {
+            key: "X-Content-Type-Options",
+            value: "nosniff",
+          },
+          {
+            key: "Referrer-Policy",
+            value: "strict-origin-when-cross-origin",
+          },
+          {
+            key: "Permissions-Policy",
+            value: "camera=(), microphone=(), geolocation=(), payment=()",
+          },
+          {
+            key: "Content-Security-Policy",
+            value: "",
+          },
+        ],
+      },
+    ];
+  },
   env: {
     BASE_URL:
       process.env.NODE_ENV === "development"

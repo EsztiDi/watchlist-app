@@ -44,7 +44,7 @@ export default function Footer() {
     <Box className={classes.footer}>
       <Typography style={{ fontSize: "0.95rem" }} data-nosnippet>
         <Link href="/about">
-          <a>About & Contact</a>
+          <a>About&nbsp;& Contact</a>
         </Link>
         {" | "}
         <Link href="/privacy">

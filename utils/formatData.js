@@ -81,7 +81,7 @@ export default function formatData(movie) {
   genres && genres.length > 0
     ? (genres = genres
         .map((genre, index) =>
-          index === genres.length - 1 ? genre.name : genre.name + " | "
+          index === genres.length - 1 ? genre.name : genre.name + "\u00A0| "
         )
         .join(""))
     : (genres = "");

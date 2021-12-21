@@ -284,38 +284,40 @@ export default function ListsCarousel({ setMessage }) {
       ) : lists.length === 0 ? (
         <Typography variant="h6">No public watchlists to show</Typography>
       ) : (
-        <Carousel
-          id="lists-carousel"
-          className={classes.carousel}
-          autoPlay={false}
-          interval={5000}
-          timeout={300}
-          navButtonsProps={{
-            style: {
-              margin: 0,
-            },
-          }}
-          indicatorContainerProps={{
-            style: {
-              display: "flex",
-              flexWrap: "wrap",
-              justifyContent: "center",
-            },
-          }}
-        >
-          {sliced.map((page) => {
-            return page.map((list, index) => {
-              return (
-                <ListCard
-                  key={index}
-                  list={list}
-                  index={index}
-                  setMessage={setMessage}
-                />
-              );
-            });
-          })}
-        </Carousel>
+        <div id="lists-carousel">
+          <Carousel
+            autoPlay={false}
+            timeout={300}
+            navButtonsAlwaysVisible
+            navButtonsProps={{
+              style: {
+                margin: 0,
+                padding: "6px",
+                opacity: 0.25,
+              },
+            }}
+            indicatorContainerProps={{
+              style: {
+                display: "flex",
+                flexWrap: "wrap",
+                justifyContent: "center",
+              },
+            }}
+          >
+            {sliced.map((page) => {
+              return page.map((list, index) => {
+                return (
+                  <ListCard
+                    key={index}
+                    list={list}
+                    index={index}
+                    setMessage={setMessage}
+                  />
+                );
+              });
+            })}
+          </Carousel>
+        </div>
       )}
     </Paper>
   );

@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import dynamic from "next/dynamic";
 import Link from "next/link";
 import useSWR from "swr";
 import intro from "../../utils/intro";
@@ -113,6 +112,9 @@ const useStyles = makeStyles((theme) => ({
   name: {
     fontStyle: "italic",
     fontSize: "0.75rem",
+  },
+  total: {
+    fontSize: "0.85rem",
   },
 }));
 
@@ -268,7 +270,16 @@ export default function ListTabs({
                 data-id={
                   /^Watched$/i.test(list.title) ? "watched-tab" : undefined
                 }
-                label={list.title}
+                label={
+                  <span>
+                    {list.title}
+                    <span className={classes.total}>
+                      {list.movies?.length > 0
+                        ? ` (${list.movies?.length})`
+                        : ""}
+                    </span>
+                  </span>
+                }
                 wrapped={matches ? false : true}
                 disableFocusRipple
                 disabled={updating}

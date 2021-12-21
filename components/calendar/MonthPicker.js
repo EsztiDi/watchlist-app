@@ -105,7 +105,6 @@ export default function MonthPicker({
             views={["year", "month"]}
             autoFocus={false}
             autoOk
-            id="month-picker"
             minDate={new Date(1870, 0, 1)}
             maxDate={new Date(today.getFullYear() + 10, 11, 31)}
             value={new Date(year, month)}

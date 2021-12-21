@@ -31,7 +31,11 @@ export default function AddButton({ movie, updating, setMessage }) {
   const [session, loading] = useSession();
   const router = useRouter();
   const { data: lists, error } = useSWR(session ? "/api/lists" : null);
+  const { data: savedLists, error: error2 } = useSWR(
+    session ? "/api/lists/saved" : null
+  );
   if (error) console.error(error);
+  if (error2) console.error(error2);
 
   const [menuOpen, setMenuOpen] = useState(false);
   const anchorRef = useRef(null);
@@ -45,7 +49,14 @@ export default function AddButton({ movie, updating, setMessage }) {
   const handleButtonClick = () => {
     if (!loading && !session) {
       router?.push("/login");
-    } else if (lists && lists.length === 0) {
+    } else if (
+      lists &&
+      lists.length === 0 &&
+      savedLists &&
+      savedLists.filter((list) => {
+        return list?.uid;
+      }).length === 0
+    ) {
       setMessage("Create a list first.");
     } else {
       setMenuOpen((prevOpen) => !prevOpen);

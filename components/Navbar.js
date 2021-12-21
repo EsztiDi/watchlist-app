@@ -31,6 +31,7 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     alignItems: "center",
     outline: "none",
+    userSelect: "none",
   },
   text: {
     cursor: "pointer",
