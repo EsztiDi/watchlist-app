@@ -39,6 +39,9 @@ const useStyles = makeStyles((theme) => ({
   },
   carouselTitle: {
     marginBottom: theme.spacing(1),
+    "& > span": {
+      display: "block",
+    },
   },
   divider: {
     marginBottom: theme.spacing(2.5),
