@@ -47,6 +47,7 @@ const useStyles = makeStyles((theme) => ({
       padding: `${theme.spacing(0.5)}px ${theme.spacing(1.5)}px`,
       fontWeight: "bold",
     },
+    scrollbarWidth: "thin",
     "&::-webkit-scrollbar": {
       width: "6px",
       height: "6px",
@@ -227,7 +228,6 @@ export default function MovieDetails({
         )}
       </Typography>
       <span>
-        {" "}
         {vote_average ? (
           <a
             href={`https://www.themoviedb.org/${media_type}/${id}`}
@@ -241,7 +241,7 @@ export default function MovieDetails({
           </a>
         ) : (
           ""
-        )}
+        )}{" "}
         {imdb_id && (
           <a
             href={`https://www.imdb.com/title/${imdb_id}`}
@@ -252,7 +252,7 @@ export default function MovieDetails({
             {" "}
             <TheatersRoundedIcon className={classes.miniIcon} /> IMDb
           </a>
-        )}
+        )}{" "}
         {justWatch && (
           <JustWatchLink
             locale={locale}

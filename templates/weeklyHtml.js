@@ -1177,9 +1177,14 @@ export default function weeklyHTML(lists) {
                           color: #f5b829;
                           "
                       >
-                        <span style="font-size: 17px">${
+                        <span style="font-size: 17px">${new Date(
                           movie.release_date
-                        }</span>
+                        ).toLocaleDateString("en-GB", {
+                          weekday: "short",
+                          day: "numeric",
+                          month: "short",
+                          year: "numeric",
+                        })}</span>
                       </p>
                     </div>
                   </div>

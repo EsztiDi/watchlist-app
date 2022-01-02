@@ -38,6 +38,7 @@ const useStyles = makeStyles((theme) => ({
   episodes: {
     height: "100%",
     overflow: "auto",
+    scrollbarWidth: "thin",
     "&::-webkit-scrollbar": {
       width: "7px",
       height: "7px",
@@ -237,7 +238,7 @@ function TabPanel(props) {
               ))
           ) : (
             <Typography variant="h6" className={classes.none}>
-              No episodes to show
+              No episodes yet
             </Typography>
           )}
         </Box>

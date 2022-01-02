@@ -29,6 +29,7 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: "4px",
     boxShadow: theme.shadows[5],
     overflow: "auto",
+    scrollbarWidth: "thin",
     "&::-webkit-scrollbar": {
       width: "7px",
       height: "7px",

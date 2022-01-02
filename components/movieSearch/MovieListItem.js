@@ -38,6 +38,7 @@ const useStyles = makeStyles((theme) => ({
   },
   overview: {
     overflow: "auto",
+    scrollbarWidth: "thin",
     "&::-webkit-scrollbar": {
       width: "6px",
       height: "6px",

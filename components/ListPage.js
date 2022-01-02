@@ -234,7 +234,7 @@ export default function ListPage({
           />
           <meta
             property="og:description"
-            content="Look what I have created!"
+            content="Watchlist created with The Watchlist App."
             key="description"
           />
           <meta property="og:image" content={image?.url} key="image" />

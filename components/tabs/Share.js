@@ -78,7 +78,15 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function Share({ listID, uid, auth, title, open, onClose }) {
+export default function Share({
+  listID,
+  uid,
+  auth,
+  shared,
+  title,
+  open,
+  onClose,
+}) {
   const classes = useStyles();
   const touch = useMediaQuery("(hover: none)");
 
@@ -129,16 +137,12 @@ export default function Share({ listID, uid, auth, title, open, onClose }) {
 
     if (ev.target.value === "true") {
       setShareLink(editableUrl);
-      if (auth) {
+      if (auth && !shared) {
         setUpdating(true);
         updateShared(true);
       }
     } else {
       setShareLink(shareUrl);
-      // if (auth) {
-      //   setUpdating(true);
-      //   updateShared(false);
-      // }
     }
   };
 

@@ -26,7 +26,12 @@ export default function weeklyText(lists) {
         movie.media_type === "tv"
           ? `S${movie.details?.next_episode_to_air?.season_number} E${movie.details?.next_episode_to_air?.episode_number}\n`
           : ""
-      }${movie.release_date}\n\n`;
+      }${new Date(movie.release_date).toLocaleDateString("en-GB", {
+        weekday: "short",
+        day: "numeric",
+        month: "short",
+        year: "numeric",
+      })}\n\n`;
     }
 
     middle += movies;

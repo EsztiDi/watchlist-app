@@ -89,6 +89,9 @@ export default async function handler(req, res) {
           list = await Watchlist.findByIdAndUpdate(id, req.body, {
             new: true,
             runValidators: true,
+            timestamps:
+              req.body.hasOwnProperty("title") ||
+              req.body.hasOwnProperty("movies"),
           }).catch((err) => console.error(err));
 
           if (req.body.hasOwnProperty("title")) {

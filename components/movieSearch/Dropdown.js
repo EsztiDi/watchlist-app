@@ -17,6 +17,7 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: "4px",
     zIndex: "1111",
     overflow: "auto",
+    scrollbarWidth: "thin",
     "&::-webkit-scrollbar": {
       width: "6px",
       height: "6px",

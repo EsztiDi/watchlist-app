@@ -40,6 +40,7 @@ const useStyles = makeStyles((theme) => ({
     paddingInlineStart: "24px",
     maxHeight: "53.5%",
     overflow: "auto",
+    scrollbarWidth: "thin",
     "&::-webkit-scrollbar": {
       width: "6px",
       height: "6px",

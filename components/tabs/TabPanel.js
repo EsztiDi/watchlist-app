@@ -28,6 +28,7 @@ const useStyles = makeStyles((theme) => ({
     height: "100%",
     overflow: "auto",
     textAlign: "center",
+    scrollbarWidth: "thin",
     "&::-webkit-scrollbar": {
       width: "7px",
       height: "7px",
@@ -134,10 +135,9 @@ export default function TabPanel(props) {
   const { data: list, error } = useSWR(listID ? `/api/lists/${listID}` : null);
   if (error) console.error(error);
 
-  var title, privateList, createdAt;
-
+  var title, privateList, shared, createdAt;
   if (list) {
-    ({ title, private: privateList, createdAt } = list);
+    ({ title, private: privateList, shared, createdAt } = list);
   }
 
   useEffect(() => {
@@ -322,6 +322,7 @@ export default function TabPanel(props) {
                 listID={listID}
                 uid={editable || auth ? uid : ""}
                 auth={auth}
+                shared={shared}
                 title={title}
                 open={openShare}
                 onClose={handleOpenShare}

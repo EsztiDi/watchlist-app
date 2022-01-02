@@ -18,6 +18,7 @@ const useStyles = makeStyles((theme) => ({
   panel: {
     width: "100%",
     overflow: "auto",
+    scrollbarWidth: "thin",
     "&::-webkit-scrollbar": {
       width: "7px",
       height: "7px",
