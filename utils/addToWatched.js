@@ -1,3 +1,4 @@
+import updateChanges from "./updateChanges";
 import Watchlist from "../models/Watchlist";
 
 export default async function addToWatched(user, id, watched, movie) {
@@ -49,6 +50,21 @@ export default async function addToWatched(user, id, watched, movie) {
 
         if (!updatedList) {
           console.error(`List not found - user: ${JSON.stringify(user)}`);
+        }
+
+        // Add info to change log
+        if (watched === "true" && movie && !ids?.includes(id)) {
+          await updateChanges(
+            updatedList?._id,
+            { action: "added", movie: movie?.title },
+            user?.name
+          );
+        } else if (watched === "false" && ids?.includes(id)) {
+          await updateChanges(
+            updatedList?._id,
+            { action: "removed", movie: movie?.title },
+            user?.name
+          );
         }
       }
     })

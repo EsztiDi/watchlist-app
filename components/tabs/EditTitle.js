@@ -1,4 +1,7 @@
 import { useState } from "react";
+import { mutate } from "swr";
+import updateChanges from "../../utils/updateChanges";
+
 import { makeStyles } from "@material-ui/core/styles";
 import ClickAwayListener from "@material-ui/core/ClickAwayListener";
 import TextField from "@material-ui/core/TextField";
@@ -25,6 +28,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function EditTitle({
+  listID,
   title,
   closeEditTitle,
   updating,
@@ -48,7 +52,14 @@ export default function EditTitle({
 
     if (newTitle.title !== title) {
       setUpdating(true);
-      putData(newTitle).then(() => {
+      putData(newTitle).then(async () => {
+        // Add info to change log
+        await updateChanges(listID, {
+          action: "title",
+          newTitle: newTitle.title,
+          oldTitle: title,
+        });
+        mutate(`/api/lists/changes/${listID}`);
         closeEditTitle();
       });
     } else {

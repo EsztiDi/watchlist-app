@@ -118,6 +118,7 @@ export default function ListsMenu({
 
       await mutate(`/api/lists/${id}`);
       await mutate("/api/lists");
+      mutate(`/api/lists/changes/${id}`);
 
       if (isMounted.current && success) setAdded(true);
       if (isMounted.current) setUpdating(false);

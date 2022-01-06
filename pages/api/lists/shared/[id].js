@@ -17,7 +17,7 @@ export default async function handler(req, res) {
             console.error(err)
           );
           if (!list) {
-            console.error(`List ${id} not found`);
+            console.error(`List ${id} for shared not found`);
             return res.status(400).json({ success: false });
           }
           res.status(200).json({ success: true, data: list?.shared });
@@ -32,7 +32,7 @@ export default async function handler(req, res) {
 
     default:
       console.error(
-        `Wrong fetch method used for api/lists/shared/[id] - user: ${id} - ${method}`
+        `Wrong fetch method used for api/lists/shared/[id] - list: ${id} - ${method}`
       );
       res.status(400).json({ success: false });
       break;

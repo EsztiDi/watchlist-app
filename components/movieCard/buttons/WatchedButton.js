@@ -112,6 +112,7 @@ export default function WatchedButton({
       }
 
       await mutate(`/api/lists/${listID}`);
+      mutate(`/api/lists/changes/${listID}`);
       if (isMounted.current) setUpdating(false);
     } catch (error) {
       console.error(error);
@@ -140,6 +141,7 @@ export default function WatchedButton({
       }
 
       await mutate(`/api/lists/${listID}`);
+      mutate(`/api/lists/changes/${listID}`);
       if (isMounted.current) setUpdating(false);
     } catch (error) {
       console.error(error);
@@ -169,6 +171,7 @@ export default function WatchedButton({
       }
 
       await mutate(`/api/lists/${listID}`);
+      mutate(`/api/lists/changes/${listID}`);
       if (isMounted.current) setUpdating(false);
     } catch (error) {
       console.error(error);

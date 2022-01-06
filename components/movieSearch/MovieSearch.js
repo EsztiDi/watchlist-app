@@ -1,7 +1,9 @@
 import { useState, useEffect, useRef } from "react";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
+import { mutate } from "swr";
 import getDetails from "../../utils/getDetails";
+import updateChanges from "../../utils/updateChanges";
 
 import TextField from "@material-ui/core/TextField";
 import InputAdornment from "@material-ui/core/InputAdornment";
@@ -166,6 +168,10 @@ export default function MovieSearch({
       );
 
       await addMovie(newMovie);
+      // Add info to change log
+      await updateChanges(listID, { action: "added", movie: newMovie?.title });
+      mutate(`/api/lists/changes/${listID}`);
+
       setLoading(false);
       if (newList) setUpdating(false);
     } catch (err) {

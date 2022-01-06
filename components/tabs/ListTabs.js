@@ -37,12 +37,14 @@ const useStyles = makeStyles((theme) => ({
     minWidth: "100%",
     minHeight: "3.6rem",
     paddingLeft: `${theme.spacing(0.75)}px`,
+    overflowWrap: "anywhere",
   },
   tabSelected: {
     fontSize: "0.95rem",
     minWidth: "100%",
     minHeight: "3.6rem",
     paddingLeft: `${theme.spacing(0.75)}px`,
+    overflowWrap: "anywhere",
     "& > :first-child": {
       display: "grid",
       gridTemplateColumns: "1fr auto 1fr",
@@ -59,12 +61,14 @@ const useStyles = makeStyles((theme) => ({
     maxWidth: "100%",
     minWidth: "50%",
     minHeight: "60px",
+    overflowWrap: "anywhere",
   },
   tabMobileSelected: {
     fontSize: "0.875rem",
     maxWidth: "100%",
     minWidth: "50%",
     minHeight: "60px",
+    overflowWrap: "anywhere",
     "& > :first-child": {
       display: "grid",
       gridTemplateColumns: "1fr auto 1fr",
@@ -251,6 +255,7 @@ export default function ListTabs({
           editTitle && value === index ? (
             <EditTitle
               key={list._id}
+              listID={list._id}
               title={list.title}
               closeEditTitle={closeEditTitle}
               updating={updating}
@@ -369,6 +374,7 @@ export default function ListTabs({
           editTitle && value === index + lists?.length ? (
             <EditTitle
               key={list._id}
+              listID={list.listid}
               title={list.title}
               closeEditTitle={closeEditTitle}
               updating={updating}

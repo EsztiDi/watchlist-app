@@ -224,8 +224,8 @@ export default function MovieCard({
               </Button>
               {seasonsOpen && (
                 <Seasons
-                  open={seasonsOpen}
-                  onClose={handleSeasonsOpen}
+                  seasonsOpen={seasonsOpen}
+                  handleSeasonsOpen={handleSeasonsOpen}
                   seasons={seasons}
                   lastSeason={season_number}
                   movieID={id}
@@ -260,6 +260,7 @@ export default function MovieCard({
       </CardContent>
       {deleteMovie && (
         <Buttons
+          listID={listID}
           movie={movie}
           index={index}
           moviesLength={moviesLength}

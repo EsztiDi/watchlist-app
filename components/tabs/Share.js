@@ -84,8 +84,8 @@ export default function Share({
   auth,
   shared,
   title,
-  open,
-  onClose,
+  openShare,
+  handleOpenShare,
 }) {
   const classes = useStyles();
   const touch = useMediaQuery("(hover: none)");
@@ -162,17 +162,17 @@ export default function Share({
       aria-labelledby="modal-title"
       aria-describedby="modal-description"
       className={classes.modal}
-      open={open}
-      onClose={onClose}
+      open={openShare}
+      onClose={handleOpenShare}
       closeAfterTransition
       BackdropComponent={Backdrop}
       BackdropProps={{
         timeout: 500,
       }}
     >
-      <Fade in={open}>
+      <Fade in={openShare}>
         <div className={classes.share}>
-          <CloseModalButton onClose={onClose} />
+          <CloseModalButton onClose={handleOpenShare} />
           <Typography variant="h5" id="modal-title" className={classes.title}>
             Share
           </Typography>

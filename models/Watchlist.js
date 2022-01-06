@@ -29,6 +29,9 @@ const WatchlistSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    changes: {
+      type: Array,
+    },
   },
   {
     timestamps: true,

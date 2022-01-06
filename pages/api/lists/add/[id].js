@@ -4,6 +4,7 @@ import dbConnect from "../../../../utils/dbConnect";
 import Watchlist from "../../../../models/Watchlist";
 import getDetails from "../../../../utils/getDetails";
 import setWatched from "../../../../utils/setWatched";
+import updateChanges from "../../../../utils/updateChanges";
 
 export default async function handler(req, res) {
   const {
@@ -53,6 +54,21 @@ export default async function handler(req, res) {
             `List ${id} not found - user: ${JSON.stringify(session?.user)}`
           );
           return res.status(400).json({ success: false });
+        }
+
+        // Add info to change log
+        if (ids?.includes(movie.id)) {
+          await updateChanges(
+            id,
+            { action: "removed", movie: movie?.title },
+            session?.user?.name
+          );
+        } else {
+          await updateChanges(
+            id,
+            { action: "added", movie: movie?.title },
+            session?.user?.name
+          );
         }
 
         // If adding to the "Watched" list, change movie to "watched"

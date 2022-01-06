@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import dynamic from "next/dynamic";
 import Head from "next/head";
 import Image from "next/image";
 import { useRouter } from "next/router";
@@ -19,7 +20,9 @@ import useMediaQuery from "@material-ui/core/useMediaQuery";
 
 import Form from "./Form";
 import AddMovieButton from "./tabs/buttons/AddMovieButton";
+import HistoryButton from "./tabs/buttons/HistoryButton";
 import ViewButton from "./tabs/buttons/ViewButton";
+const History = dynamic(() => import("./tabs/History"));
 
 const useStyles = makeStyles((theme) => ({
   containerMobile: {
@@ -98,6 +101,7 @@ export default function ListPage({
 
   const matches = useMediaQuery("(max-width:1024px)");
   const matches2 = useMediaQuery("(max-width:768px)");
+  const matches3 = useMediaQuery("(max-width:360px)");
 
   var movies = (list) => list?.movies?.sort((a, b) => b.position - a.position);
   const [updating2, setUpdating2] = useState(false);
@@ -194,12 +198,6 @@ export default function ListPage({
     }
   };
 
-  // For AddMovieButton
-  const [openSearch2, setOpenSearch] = useState(false);
-  const handleOpenSearch2 = () => {
-    setOpenSearch((prev) => !prev);
-  };
-
   const handleButtonClick = () => {
     if (!loading && !session) {
       router?.push("/login");
@@ -219,6 +217,26 @@ export default function ListPage({
       }
     }
   };
+
+  // For AddMovieButton
+  const [openSearch2, setOpenSearch] = useState(false);
+  const handleOpenSearch2 = () => {
+    setOpenSearch((prev) => !prev);
+  };
+
+  // For History modal
+  const [openHistory, setOpenHistory] = useState(false);
+  const handleOpenHistory = () => {
+    setOpenHistory((prev) => !prev);
+  };
+
+  const { data: changes, error: error4 } = useSWR(
+    id[0] ? `/api/lists/changes/${id[0]}` : null,
+    {
+      refreshInterval: shared && openHistory ? 4000 : 0,
+    }
+  );
+  if (error4) console.error(error4);
 
   if (!list) return <CircularProgress size="3rem" thickness={3} />;
 
@@ -295,56 +313,103 @@ export default function ListPage({
               }
             >
               <Typography variant="h4" className={classes.title}>
-                {auth !== undefined &&
-                  !auth &&
-                  (saved ? (
-                    <IconButton
-                      aria-label="remove list"
-                      title="Remove list"
-                      disabled={updating2}
-                      onClick={handleButtonClick}
-                      className={classes.button}
-                    >
-                      <StarRoundedIcon className={classes.star} />
-                    </IconButton>
-                  ) : (
-                    <IconButton
-                      aria-label="save list"
-                      title="Save list"
-                      disabled={updating2}
-                      onClick={handleButtonClick}
-                      className={classes.button}
-                    >
-                      <StarBorderRoundedIcon className={classes.star} />
-                    </IconButton>
-                  ))}
-                {updating2 && <CircularProgress size="1.5rem" thickness={5} />}
+                {!matches3 && (
+                  <div>
+                    {auth !== undefined &&
+                      !auth &&
+                      (saved ? (
+                        <IconButton
+                          aria-label="remove list"
+                          title="Remove list"
+                          disabled={updating2}
+                          onClick={handleButtonClick}
+                          className={classes.button}
+                        >
+                          <StarRoundedIcon className={classes.star} />
+                        </IconButton>
+                      ) : (
+                        <IconButton
+                          aria-label="save list"
+                          title="Save list"
+                          disabled={updating2}
+                          onClick={handleButtonClick}
+                          className={classes.button}
+                        >
+                          <StarBorderRoundedIcon className={classes.star} />
+                        </IconButton>
+                      ))}
+                    {changes?.length > 0 && editable && (
+                      <HistoryButton
+                        openHistory={openHistory}
+                        handleOpenHistory={handleOpenHistory}
+                        classes={{
+                          button: classes.button,
+                          topIcon: classes.topIcon,
+                        }}
+                      />
+                    )}
+                    {updating2 && (
+                      <CircularProgress size="1.5rem" thickness={5} />
+                    )}
+                  </div>
+                )}
                 <span>{list.title}</span>
                 <div>
+                  {matches3 && (
+                    <span>
+                      {updating2 && (
+                        <CircularProgress size="1.5rem" thickness={5} />
+                      )}
+                      {auth !== undefined &&
+                        !auth &&
+                        (saved ? (
+                          <IconButton
+                            aria-label="remove list"
+                            title="Remove list"
+                            disabled={updating2}
+                            onClick={handleButtonClick}
+                            className={classes.button}
+                          >
+                            <StarRoundedIcon className={classes.star} />
+                          </IconButton>
+                        ) : (
+                          <IconButton
+                            aria-label="save list"
+                            title="Save list"
+                            disabled={updating2}
+                            onClick={handleButtonClick}
+                            className={classes.button}
+                          >
+                            <StarBorderRoundedIcon className={classes.star} />
+                          </IconButton>
+                        ))}
+                      {changes?.length > 0 && editable && (
+                        <HistoryButton
+                          openHistory={openHistory}
+                          handleOpenHistory={handleOpenHistory}
+                          classes={{
+                            button: classes.button,
+                            topIcon: classes.topIcon,
+                          }}
+                        />
+                      )}
+                    </span>
+                  )}
+                  <ViewButton
+                    newTab={true}
+                    calendar={!calendar}
+                    listID={id[0]}
+                    editable={editable}
+                    uid={uid}
+                    classes={{
+                      button: classes.button,
+                      topIcon: classes.topIcon,
+                    }}
+                  />
                   {editable && !calendar && (
                     <AddMovieButton
                       openSearch={openSearch2}
                       handleOpenSearch={handleOpenSearch2}
-                    />
-                  )}
-                  {calendar ? (
-                    <ViewButton
-                      newTab={true}
-                      listID={id[0]}
-                      editable={editable}
-                      uid={uid}
-                      classes={{
-                        button: classes.button,
-                        topIcon: classes.topIcon,
-                      }}
-                    />
-                  ) : (
-                    <ViewButton
-                      newTab={true}
-                      calendar={true}
-                      listID={id[0]}
-                      editable={editable}
-                      uid={uid}
                       classes={{
                         button: classes.button,
                         topIcon: classes.topIcon,
@@ -353,6 +418,13 @@ export default function ListPage({
                   )}
                 </div>
               </Typography>
+              {openHistory && (
+                <History
+                  openHistory={openHistory}
+                  handleOpenHistory={handleOpenHistory}
+                  changes={changes}
+                />
+              )}
             </Paper>
             <Form
               list={list ? list : initialList}

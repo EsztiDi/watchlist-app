@@ -21,10 +21,10 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function DeleteDialog({
-  open,
   listID,
   auth,
-  onOpenDelete,
+  openDelete,
+  handleOpenDelete,
   setMessage,
   updating,
   setUpdating,
@@ -93,8 +93,8 @@ export default function DeleteDialog({
 
   return (
     <Dialog
-      open={open}
-      onClose={onOpenDelete}
+      open={openDelete}
+      onClose={handleOpenDelete}
       aria-labelledby="alert-dialog-title"
       aria-describedby="alert-dialog-description"
       className={classes.delete}
@@ -116,7 +116,7 @@ export default function DeleteDialog({
           size="large"
           disableFocusRipple
           disabled={updating}
-          onClick={onOpenDelete}
+          onClick={handleOpenDelete}
         >
           Cancel
         </Button>

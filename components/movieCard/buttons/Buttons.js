@@ -1,3 +1,6 @@
+import { mutate } from "swr";
+import updateChanges from "../../../utils/updateChanges";
+
 import { makeStyles } from "@material-ui/core/styles";
 import IconButton from "@material-ui/core/IconButton";
 import HighlightOffRoundedIcon from "@material-ui/icons/HighlightOffRounded";
@@ -56,6 +59,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function Buttons({
+  listID,
   movie,
   index,
   moviesLength,
@@ -64,12 +68,16 @@ export default function Buttons({
   updating,
   setMessage,
 }) {
-  var { position } = movie;
+  var { position, title } = movie;
 
   const classes = useStyles();
   const matches2 = useMediaQuery("(max-width:500px)");
 
   const handleDelete = async (idx) => {
+    // Add info to change log
+    await updateChanges(listID, { action: "removed", movie: title });
+    mutate(`/api/lists/changes/${listID}`);
+
     deleteMovie(idx);
   };
 

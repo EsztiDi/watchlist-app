@@ -15,6 +15,8 @@ import DeleteButton from "./buttons/DeleteButton";
 import ViewButton from "./buttons/ViewButton";
 import NewTabButton from "./buttons/NewTabButton";
 import ShareButton from "./buttons/ShareButton";
+import HistoryButton from "./buttons/HistoryButton";
+const History = dynamic(() => import("./History"));
 const DeleteDialog = dynamic(() => import("./DeleteDialog"));
 const Share = dynamic(() => import("./Share"));
 const MovieSearch = dynamic(() => import("../movieSearch/MovieSearch"));
@@ -196,6 +198,20 @@ export default function TabPanel(props) {
     setOpenShare((prev) => !prev);
   };
 
+  // For History modal
+  const [openHistory, setOpenHistory] = useState(false);
+  const handleOpenHistory = () => {
+    setOpenHistory((prev) => !prev);
+  };
+
+  const { data: changes, error: error2 } = useSWR(
+    listID ? `/api/lists/changes/${listID}` : null,
+    {
+      refreshInterval: shared && openHistory ? 4000 : 0,
+    }
+  );
+  if (error2) console.error(error2);
+
   return (
     (hasLists || hasSavedLists || newTab) && (
       <Box
@@ -226,7 +242,7 @@ export default function TabPanel(props) {
               <NewTabButton
                 calendar={calendar}
                 listID={listID}
-                editable={ids?.length > 0}
+                editable={ids?.length > 1}
                 uid={uid}
                 classes={{ button: classes.button, topIcon: classes.topIcon }}
               />
@@ -235,27 +251,25 @@ export default function TabPanel(props) {
                 openShare={openShare}
                 classes={{ button: classes.button, topIcon: classes.topIcon }}
               />
-              {calendar ? (
-                <ViewButton
-                  listID={listID}
-                  editable={ids?.length > 0}
-                  uid={uid}
-                  classes={{ button: classes.button, topIcon: classes.topIcon }}
-                />
-              ) : (
-                <ViewButton
-                  calendar={true}
-                  listID={listID}
-                  editable={ids?.length > 0}
-                  uid={uid}
+              {changes?.length > 0 && editable && (
+                <HistoryButton
+                  openHistory={openHistory}
+                  handleOpenHistory={handleOpenHistory}
                   classes={{ button: classes.button, topIcon: classes.topIcon }}
                 />
               )}
+              <ViewButton
+                calendar={!calendar}
+                listID={listID}
+                editable={ids?.length > 1}
+                uid={uid}
+                classes={{ button: classes.button, topIcon: classes.topIcon }}
+              />
               {editable && !calendar && (
                 <AddMovieButton
-                  listID={listID}
                   openSearch={openSearch}
                   handleOpenSearch={handleOpenSearch}
+                  classes={{ button: classes.button, topIcon: classes.topIcon }}
                 />
               )}
             </span>
@@ -263,26 +277,25 @@ export default function TabPanel(props) {
         )}
         {!matches && !newTab && (
           <div className={classes.buttons}>
-            {calendar ? (
-              <ViewButton
-                listID={listID}
-                editable={ids?.length > 0}
-                uid={uid}
-                classes={{ button: classes.button, topIcon: classes.topIcon }}
-              />
-            ) : (
-              <ViewButton
-                calendar={true}
-                listID={listID}
-                editable={ids?.length > 0}
-                uid={uid}
-                classes={{ button: classes.button, topIcon: classes.topIcon }}
-              />
-            )}
+            <ViewButton
+              calendar={!calendar}
+              listID={listID}
+              editable={ids?.length > 1}
+              uid={uid}
+              classes={{ button: classes.button, topIcon: classes.topIcon }}
+            />
             {editable && !calendar && (
               <AddMovieButton
                 openSearch={openSearch}
                 handleOpenSearch={handleOpenSearch}
+                classes={{ button: classes.button, topIcon: classes.topIcon }}
+              />
+            )}
+            {changes?.length > 0 && editable && (
+              <HistoryButton
+                openHistory={openHistory}
+                handleOpenHistory={handleOpenHistory}
+                classes={{ button: classes.button, topIcon: classes.topIcon }}
               />
             )}
             {auth && (
@@ -302,7 +315,7 @@ export default function TabPanel(props) {
               <NewTabButton
                 calendar={calendar}
                 listID={listID}
-                editable={ids?.length > 0}
+                editable={ids?.length > 1}
                 uid={uid}
                 classes={{ button: classes.button, topIcon: classes.topIcon }}
               />
@@ -315,6 +328,13 @@ export default function TabPanel(props) {
             </span>
           </div>
         )}
+        {openHistory && (
+          <History
+            openHistory={openHistory}
+            handleOpenHistory={handleOpenHistory}
+            changes={changes}
+          />
+        )}
         {!newTab && (
           <>
             {openShare && (
@@ -324,16 +344,16 @@ export default function TabPanel(props) {
                 auth={auth}
                 shared={shared}
                 title={title}
-                open={openShare}
-                onClose={handleOpenShare}
+                openShare={openShare}
+                handleOpenShare={handleOpenShare}
               />
             )}
             {openDelete && (
               <DeleteDialog
-                open={openDelete}
                 listID={listID}
                 auth={auth}
-                onOpenDelete={handleOpenDelete}
+                openDelete={openDelete}
+                handleOpenDelete={handleOpenDelete}
                 setMessage={setMessage}
                 updating={updating}
                 setUpdating={setUpdating}

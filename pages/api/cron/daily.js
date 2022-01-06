@@ -69,6 +69,7 @@ export default async function handler(req, res) {
           .then(async (lists) => {
             return await Promise.all(
               lists.map(async (list) => {
+                // TODO: remove old changes from list.changes
                 if (list.movies.length > 0) {
                   var originalList = JSON.stringify(list);
 

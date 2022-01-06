@@ -95,8 +95,8 @@ function a11yProps(index) {
 }
 
 export default function Seasons({
-  open,
-  onClose,
+  seasonsOpen,
+  handleSeasonsOpen,
   seasons,
   lastSeason,
   movieID,
@@ -108,7 +108,7 @@ export default function Seasons({
 
   useEffect(() => {
     setSeasonTab(lastSeason ? lastSeason - 1 : 0);
-  }, [open, lastSeason]);
+  }, [seasonsOpen, lastSeason]);
 
   const handleChange = (event, newValue) => {
     setSeasonTab(newValue);
@@ -121,21 +121,21 @@ export default function Seasons({
       aria-labelledby="modal-title"
       aria-describedby="modal-description"
       className={classes.modal}
-      open={open}
-      onClose={onClose}
+      open={seasonsOpen}
+      onClose={handleSeasonsOpen}
       closeAfterTransition
       BackdropComponent={Backdrop}
       BackdropProps={{
         timeout: 500,
       }}
     >
-      <Fade in={open}>
+      <Fade in={seasonsOpen}>
         <div
           id="seasons"
           style={matches ? { width: "95%" } : { width: "70%" }}
           className={classes.seasons}
         >
-          <CloseModalButton onClose={onClose} />
+          <CloseModalButton onClose={handleSeasonsOpen} />
           <AppBar position="static" className={classes.tabheader}>
             <Tabs
               id="modal-title"

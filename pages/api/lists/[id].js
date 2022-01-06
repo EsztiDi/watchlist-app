@@ -18,9 +18,10 @@ export default async function handler(req, res) {
     case "GET":
       try {
         if (db) {
-          const list = await Watchlist.findById(id).catch((err) =>
-            console.error(err)
-          );
+          const list = await Watchlist.findById(
+            id,
+            "_id user title movies private emails position shared createdAt"
+          ).catch((err) => console.error(err));
           if (!list) {
             console.error(
               `List ${id} not found - user: ${JSON.stringify(session?.user)}`
