@@ -9,7 +9,7 @@ import useMediaQuery from "@material-ui/core/useMediaQuery";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
-    overflowWrap: "anywhere",
+    overflowWrap: "break-word",
     "& > h6:first-of-type": {
       marginTop: theme.spacing(1),
     },

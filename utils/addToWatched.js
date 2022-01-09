@@ -56,13 +56,13 @@ export default async function addToWatched(user, id, watched, movie) {
         if (watched === "true" && movie && !ids?.includes(id)) {
           await updateChanges(
             updatedList?._id,
-            { action: "added", movie: movie?.title },
+            { action: "added", change: movie?.title },
             user?.name
           );
         } else if (watched === "false" && ids?.includes(id)) {
           await updateChanges(
             updatedList?._id,
-            { action: "removed", movie: movie?.title },
+            { action: "removed", change: movie?.title },
             user?.name
           );
         }

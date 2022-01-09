@@ -138,7 +138,7 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(0.8),
   },
   break: {
-    overflowWrap: "anywhere",
+    overflowWrap: "break-word",
   },
   visuallyHidden: {
     border: 0,
@@ -194,6 +194,7 @@ export default function History({ openHistory, handleOpenHistory, changes }) {
               aria-labelledby="modal-title"
               aria-label="changes table"
             >
+              <caption>Only the last 50 changes are saved.</caption>
               <EnhancedTableHead
                 classes={{ visuallyHidden: classes.visuallyHidden }}
                 order={order}
@@ -228,9 +229,7 @@ export default function History({ openHistory, handleOpenHistory, changes }) {
                           </mark>
                         </TableCell>
                         <TableCell className={classes.break}>
-                          {row.movie
-                            ? row.movie
-                            : `${row.oldTitle} \u27A2 ${row.newTitle}`}
+                          {row.change}
                         </TableCell>
                         <TableCell>{row.user}</TableCell>
                       </TableRow>
@@ -240,7 +239,6 @@ export default function History({ openHistory, handleOpenHistory, changes }) {
               </TableBody>
             </Table>
           </TableContainer>
-          {/* </div> */}
         </div>
       </Fade>
     </Modal>

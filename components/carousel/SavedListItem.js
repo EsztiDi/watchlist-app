@@ -68,7 +68,7 @@ export default function SavedListItem({
           added &&
           " ✔"}
         <div className={classes.name}>
-          by {savedList?.user?.name || "Nameless"}
+          by {savedList?.user?.name || "Anonymous"}
         </div>
       </Typography>
     </MenuItem>

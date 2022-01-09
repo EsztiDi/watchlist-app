@@ -75,7 +75,7 @@ export default function Buttons({
 
   const handleDelete = async (idx) => {
     // Add info to change log
-    await updateChanges(listID, { action: "removed", movie: title });
+    await updateChanges(listID, { action: "removed", change: title });
     mutate(`/api/lists/changes/${listID}`);
 
     deleteMovie(idx);

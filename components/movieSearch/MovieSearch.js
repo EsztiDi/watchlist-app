@@ -169,7 +169,7 @@ export default function MovieSearch({
 
       await addMovie(newMovie);
       // Add info to change log
-      await updateChanges(listID, { action: "added", movie: newMovie?.title });
+      await updateChanges(listID, { action: "added", change: newMovie?.title });
       mutate(`/api/lists/changes/${listID}`);
 
       setLoading(false);

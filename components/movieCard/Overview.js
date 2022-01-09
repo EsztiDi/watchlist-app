@@ -4,7 +4,7 @@ import useMediaQuery from "@material-ui/core/useMediaQuery";
 
 const useStyles = makeStyles((theme) => ({
   overview: {
-    overflowWrap: "anywhere",
+    overflowWrap: "break-word",
     marginTop: theme.spacing(1),
     marginBottom: theme.spacing(0.5),
     "& *": {
@@ -12,7 +12,7 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   overviewMobile: {
-    overflowWrap: "anywhere",
+    overflowWrap: "break-word",
     marginTop: theme.spacing(0.5),
     marginBottom: theme.spacing(1),
     "& *": {

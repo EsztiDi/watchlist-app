@@ -150,7 +150,7 @@ export default async function handler(req, res) {
                               id: list._id,
                               uid: savedList.uid,
                               title: list.title,
-                              creator: list.user?.name || "Nameless",
+                              creator: list.user?.name || "Anonymous",
                               movies: movies.sort(
                                 (a, b) =>
                                   new Date(a.release_date) -

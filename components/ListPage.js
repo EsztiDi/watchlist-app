@@ -53,7 +53,7 @@ const useStyles = makeStyles((theme) => ({
     gap: "4px",
     "& > span": {
       flexGrow: 1,
-      overflowWrap: "anywhere",
+      overflowWrap: "break-word",
     },
   },
   backdrop: {

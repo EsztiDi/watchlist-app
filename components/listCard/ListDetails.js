@@ -177,7 +177,7 @@ export default function ListDetails({
         </a>
       </Link>
       <Typography variant="subtitle1" className={classes.name}>
-        By {creator?.name || "Nameless"}
+        By {creator?.name || "Anonymous"}
         {creator?.image && (
           <Image
             src={creator?.image}

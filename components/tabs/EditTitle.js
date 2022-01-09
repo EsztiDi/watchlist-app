@@ -56,6 +56,7 @@ export default function EditTitle({
         // Add info to change log
         await updateChanges(listID, {
           action: "title",
+          change: `${title} \u27A2 ${newTitle.title}`,
           newTitle: newTitle.title,
           oldTitle: title,
         });

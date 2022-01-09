@@ -60,13 +60,13 @@ export default async function handler(req, res) {
         if (ids?.includes(movie.id)) {
           await updateChanges(
             id,
-            { action: "removed", movie: movie?.title },
+            { action: "removed", change: movie?.title },
             session?.user?.name
           );
         } else {
           await updateChanges(
             id,
-            { action: "added", movie: movie?.title },
+            { action: "added", change: movie?.title },
             session?.user?.name
           );
         }

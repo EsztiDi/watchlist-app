@@ -36,8 +36,12 @@ export default async function handler(req, res) {
         var changes = await Watchlist.findById(id, "changes").catch((err) =>
           console.error(err)
         );
-        req.body.user = session?.user?.name || req.body.user || "Nameless";
+        req.body.user = session?.user?.name || req.body.user || "Anonymous";
         req.body.date = new Date();
+
+        if (changes?.changes?.length > 49) {
+          changes?.changes?.sort((a, b) => b.date - a.date).pop();
+        }
 
         var list = await Watchlist.findByIdAndUpdate(
           id,

@@ -37,14 +37,14 @@ const useStyles = makeStyles((theme) => ({
     minWidth: "100%",
     minHeight: "3.6rem",
     paddingLeft: `${theme.spacing(0.75)}px`,
-    overflowWrap: "anywhere",
+    overflowWrap: "break-word",
   },
   tabSelected: {
     fontSize: "0.95rem",
     minWidth: "100%",
     minHeight: "3.6rem",
     paddingLeft: `${theme.spacing(0.75)}px`,
-    overflowWrap: "anywhere",
+    overflowWrap: "break-word",
     "& > :first-child": {
       display: "grid",
       gridTemplateColumns: "1fr auto 1fr",
@@ -61,14 +61,14 @@ const useStyles = makeStyles((theme) => ({
     maxWidth: "100%",
     minWidth: "50%",
     minHeight: "60px",
-    overflowWrap: "anywhere",
+    overflowWrap: "break-word",
   },
   tabMobileSelected: {
     fontSize: "0.875rem",
     maxWidth: "100%",
     minWidth: "50%",
     minHeight: "60px",
-    overflowWrap: "anywhere",
+    overflowWrap: "break-word",
     "& > :first-child": {
       display: "grid",
       gridTemplateColumns: "1fr auto 1fr",
@@ -400,7 +400,7 @@ export default function ListTabs({
                     {list.title}
                     <br />
                     <span className={classes.name}>
-                      by {list.creator?.name || "Nameless"}
+                      by {list.creator?.name || "Anonymous"}
                     </span>
                   </span>
                 }
