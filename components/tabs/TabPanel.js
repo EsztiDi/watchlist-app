@@ -84,6 +84,7 @@ const useStyles = makeStyles((theme) => ({
   },
   button: {
     padding: theme.spacing(0.5),
+    lineHeight: 1,
   },
   topIcon: {
     fontSize: "1.7rem",
