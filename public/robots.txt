@@ -21,4 +21,4 @@ Disallow: /*.jpg$
 Disallow: /*.svg$
 Disallow: /*.ico$
 
-Sitemap: https://mywatchlists.watch/sitemap.xml
+Sitemap: https://mywatchlists.xyz/sitemap.xml

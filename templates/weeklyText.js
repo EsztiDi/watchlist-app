@@ -37,12 +37,12 @@ export default function weeklyText(lists) {
     middle += movies;
   }
 
-  const bottom = `\nEnjoy! 🙂\n\n\nLists: https://mywatchlists.watch/lists\n
-Account: https://mywatchlists.watch/account\n
-Privacy Notice: https://mywatchlists.watch/privacy\n\n\n\n
-You are receiving this email because you have opted in for the weekly releases summary for one or more of your watchlists on mywatchlists.watch\n\n
-If you would prefer not to receive emails anymore, you can unsubscribe from all in your account - https://mywatchlists.watch/account - or unselect the "Emails" option - https://mywatchlists.watch/emails-toggle.jpg - for individual watchlists to receive fewer emails.\n\n\n
-The Watchlist App  |  London, UK  |  contact@mywatchlists.watch\n\n`;
+  const bottom = `\nEnjoy! 🙂\n\n\nLists: https://mywatchlists.xyz/lists\n
+Account: https://mywatchlists.xyz/account\n
+Privacy Notice: https://mywatchlists.xyz/privacy\n\n\n\n
+You are receiving this email because you have opted in for the weekly releases summary for one or more of your watchlists on mywatchlists.xyz\n\n
+If you would prefer not to receive emails anymore, you can unsubscribe from all in your account - https://mywatchlists.xyz/account - or unselect the "Emails" option - https://mywatchlists.xyz/emails-toggle.jpg - for individual watchlists to receive fewer emails.\n\n\n
+The Watchlist App  |  London, UK  |  contact@mywatchlists.xyz\n\n`;
 
   return top + middle + bottom;
 }

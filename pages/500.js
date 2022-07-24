@@ -13,7 +13,7 @@ export default function Custom500() {
         <Typography variant="h4">Server Error</Typography>
         <Typography variant="h6" style={{ paddingBottom: "1rem" }}>
           We&apos;re sorry, something went wrong. Please try again or email
-          contact@mywatchlists.watch
+          contact@mywatchlists.xyz
         </Typography>
         <Image priority src="/puppy1.jpg" alt="" width={360} height={480} />
         <br />

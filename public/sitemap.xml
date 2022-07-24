@@ -6,13 +6,13 @@
             http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
 
 <url>
-  <loc>https://mywatchlists.watch/</loc>
+  <loc>https://mywatchlists.xyz/</loc>
 </url>
 <url>
-  <loc>https://mywatchlists.watch/login</loc>
+  <loc>https://mywatchlists.xyz/login</loc>
 </url>
 <url>
-  <loc>https://mywatchlists.watch/about</loc>
+  <loc>https://mywatchlists.xyz/about</loc>
 </url>
 
 </urlset>

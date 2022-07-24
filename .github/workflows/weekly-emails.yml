@@ -9,4 +9,4 @@ jobs:
       - name: Call api/cron/emails
         run: |
           curl --request GET \
-          --url 'https://mywatchlists.watch/api/cron/emails' \
+          --url 'https://mywatchlists.xyz/api/cron/emails' \

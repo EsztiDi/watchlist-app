@@ -245,7 +245,7 @@ export default function loginHTML({ url, email }) {
         mso-table-rspace: 0pt;
         width: 100%;
         background-color: #f8d070;
-        background-image: url('https://mywatchlists.watch/popcorn.png');
+        background-image: url('https://mywatchlists.xyz/popcorn.png');
         background-position: center top;
         background-repeat: repeat;
       "
@@ -278,7 +278,7 @@ export default function loginHTML({ url, email }) {
                     display: table;
                     width: 100%;
                     background-color: transparent;
-                    background-image: url('https://mywatchlists.watch/top.png');
+                    background-image: url('https://mywatchlists.xyz/top.png');
                     background-position: top left;
                     background-repeat: repeat;
                   "
@@ -390,7 +390,7 @@ export default function loginHTML({ url, email }) {
                         >
                           <!--[if mso]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr style="line-height:0px"><td style="padding-right: 0px;padding-left: 0px;" align="center"><!
                           [endif]--><a
-                            href="https://mywatchlists.watch"
+                            href="https://mywatchlists.xyz"
                             style="outline: none"
                             tabindex="-1"
                             target="_blank"
@@ -399,7 +399,7 @@ export default function loginHTML({ url, email }) {
                               align="center"
                               border="0"
                               class="center fixedwidth col_cont"
-                              src="https://mywatchlists.watch/logo.png"
+                              src="https://mywatchlists.xyz/logo.png"
                               style="
                                 text-decoration: none;
                                 -ms-interpolation-mode: bicubic;
@@ -466,7 +466,7 @@ export default function loginHTML({ url, email }) {
                         >
                           <!--[if mso]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr style="line-height:0px"><td style="padding-right: 0px;padding-left: 0px;" align="center"><!
                           [endif]--><a
-                            href="https://mywatchlists.watch"
+                            href="https://mywatchlists.xyz"
                             style="outline: none"
                             tabindex="-1"
                             target="_blank"
@@ -475,7 +475,7 @@ export default function loginHTML({ url, email }) {
                               align="center"
                               border="0"
                               class="center autowidth"
-                              src="https://mywatchlists.watch/title.png"
+                              src="https://mywatchlists.xyz/title.png"
                               style="
                                 text-decoration: none;
                                 -ms-interpolation-mode: bicubic;
@@ -1217,7 +1217,7 @@ export default function loginHTML({ url, email }) {
 			<tr>
 			<td style="padding-top:15px;padding-right:15px;padding-bottom:15px;padding-left:15px"><!
                                 [endif]--><a
-                                  href="https://mywatchlists.watch/privacy"
+                                  href="https://mywatchlists.xyz/privacy"
                                   style="
                                     padding-top: 15px;
                                     padding-bottom: 15px;
@@ -1359,11 +1359,11 @@ export default function loginHTML({ url, email }) {
                               The&nbsp;Watchlist&nbsp;App&nbsp;&nbsp;| 
                               London,&nbsp;UK&nbsp;&nbsp;| 
                               <a
-                                href="mailto:contact@mywatchlists.watch?subject=Enquiry"
+                                href="mailto:contact@mywatchlists.xyz?subject=Enquiry"
                                 rel="noopener"
                                 style="text-decoration: none; color: #a5a5a5"
                                 target="_blank"
-                                >contact@mywatchlists.watch</a
+                                >contact@mywatchlists.xyz</a
                               >
                             </p>
                           </div>
@@ -1401,7 +1401,7 @@ export default function loginHTML({ url, email }) {
                     display: table;
                     width: 100%;
                     background-color: transparent;
-                    background-image: url('https://mywatchlists.watch/top.png');
+                    background-image: url('https://mywatchlists.xyz/top.png');
                     background-position: top left;
                     background-repeat: repeat;
                   "
@@ -1573,7 +1573,7 @@ export default function loginHTML({ url, email }) {
                                         align="center"
                                         class="icon"
                                         height="32"
-                                        src="https://mywatchlists.watch/bee.png"
+                                        src="https://mywatchlists.xyz/bee.png"
                                         style="border: 0"
                                         width="null"
                                     /></a>

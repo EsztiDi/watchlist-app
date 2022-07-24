@@ -216,11 +216,11 @@ export default function MyApp({ Component, pageProps }) {
   useEffect(() => {
     if (router?.query?.error?.includes("OAuthAccountNotLinked")) {
       setMessage(
-        "Please sign in with the same account you used originally or email contact@mywatchlists.watch"
+        "Please sign in with the same account you used originally or email contact@mywatchlists.xyz"
       );
     } else if (router?.query?.error) {
       setMessage(
-        `${router?.query?.error} – Please try again or email contact@mywatchlists.watch`
+        `${router?.query?.error} – Please try again or email contact@mywatchlists.xyz`
       );
     }
   }, [router?.query]);

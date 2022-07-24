@@ -63,7 +63,7 @@ export default function About() {
           <Typography>All enquiries, feedback are welcome.</Typography>
           <Typography>
             <b>Email: </b>
-            contact@mywatchlists.watch
+            contact@mywatchlists.xyz
           </Typography>
           <Typography variant="h4">About</Typography>
           <Typography>

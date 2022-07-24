@@ -179,7 +179,7 @@ export default async function handler(req, res) {
               const text = weeklyText(upcoming);
 
               const emailParams = new EmailParams()
-                .setFrom("releases@mywatchlists.watch")
+                .setFrom("releases@mywatchlists.xyz")
                 .setFromName("Watchlist App")
                 .setRecipients(recipient)
                 .setSubject("Your weekly releases summary")

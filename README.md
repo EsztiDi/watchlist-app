@@ -8,7 +8,7 @@ Offers a calendar view and subscription to a weekly releases summary email.
 
 ## Getting Started
 
-https://mywatchlists.watch/
+https://mywatchlists.xyz/
 
 To create or save watchlists a user account is required which can be created with social login or an email address.
 

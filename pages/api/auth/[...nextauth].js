@@ -45,7 +45,7 @@ export default NextAuth({
             `Sign in as ${email} to ${site}\n${url}\n\n`;
 
           const emailParams = new EmailParams()
-            .setFrom("contact@mywatchlists.watch")
+            .setFrom("contact@mywatchlists.xyz")
             .setFromName("Watchlist App")
             .setRecipients(recipient)
             .setSubject(`Sign in to ${site}`)
